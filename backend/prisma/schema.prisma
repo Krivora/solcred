@@ -1,0 +1,296 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Rol {
+  ADMIN
+  ANALISTA
+  CLIENTE
+}
+
+enum TipoPersona {
+  FISICA
+  MORAL
+}
+
+enum EstatusSolicitud {
+  BORRADOR
+  PENDIENTE
+  EN_REVISION
+  APROBADO
+  RECHAZADO
+}
+
+enum EstadoCivil {
+  SOLTERO
+  CASADO
+  DIVORCIADO
+  VIUDO
+  UNION_LIBRE
+}
+
+enum NivelEstudio {
+  PRIMARIA
+  SECUNDARIA
+  PREPARATORIA
+  TECNICO
+  LICENCIATURA
+  MAESTRIA
+  DOCTORADO
+}
+
+enum TamanoEmpresa {
+  MICRO
+  PEQUENA
+  MEDIANA
+  GRANDE
+}
+
+enum Sector {
+  AGROPECUARIO
+  INDUSTRIAL
+  COMERCIAL
+  SERVICIOS
+  TECNOLOGIA
+  OTRO
+}
+
+// ─────────────────────────────────────────
+// USUARIOS DEL SISTEMA
+// ─────────────────────────────────────────
+
+model Usuario {
+  id              String      @id @default(uuid())
+  correo          String      @unique
+  contrasena      String
+  rol             Rol         @default(CLIENTE)
+  tipoPersona     TipoPersona
+
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  curp            String?     @unique
+  rfc             String?     @unique
+
+  activo          Boolean     @default(true)
+  creadoEn        DateTime    @default(now())
+  actualizadoEn   DateTime    @updatedAt
+
+  solicitudes  Solicitud[]
+}
+
+// ─────────────────────────────────────────
+// PROGRAMAS DE CRÉDITO
+// ─────────────────────────────────────────
+
+model Programa {
+  id                    String      @id @default(uuid())
+  nombre                String
+  descripcion           String
+  objetivo              String
+
+  // Tipos de persona permitidos
+  permitePersonaFisica  Boolean     @default(true)
+  permitePersonaMoral   Boolean     @default(true)
+
+  // Montos
+  montoMinimo           Float
+  montoMaximo           Float
+
+  // Tasas (%)
+  tasaOrdinaria         Float
+  tasaMoratoria         Float
+  tasaAnual             Float
+
+  // Plazo en meses
+  plazoMinimoMeses      Int
+  plazoMaximoMeses      Int
+
+  // Configuración de campos requeridos
+  avalObligatorio       Boolean     @default(false)
+  avalOpcional          Boolean     @default(false)
+  garantiaObligatoria   Boolean     @default(false)
+  garantiaOpcional      Boolean     @default(false)
+  datosFinancierosCompletos Boolean @default(false)
+  requiereCurp          Boolean     @default(true)
+  requiereRfc           Boolean     @default(true)
+
+  activo                Boolean     @default(true)
+  creadoEn              DateTime    @default(now())
+  actualizadoEn         DateTime    @updatedAt
+
+  documentosRequeridos  ProgramaDocumento[]
+  solicitudes  Solicitud[]
+}
+
+// ─────────────────────────────────────────
+// TIPOS DE DOCUMENTO
+// ─────────────────────────────────────────
+
+model TipoDocumento {
+  id          String               @id @default(uuid())
+  nombre      String               @unique
+  descripcion String?
+  creadoEn    DateTime             @default(now())
+
+  programas   ProgramaDocumento[]
+  documentos  DocumentoSolicitud[]
+}
+
+model ProgramaDocumento {
+  id              String        @id @default(uuid())
+  programa        Programa      @relation(fields: [programaId], references: [id])
+  programaId      String
+  tipoDocumento   TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
+  tipoDocumentoId String
+  esObligatorio   Boolean       @default(true)
+  aplicaA         TipoPersona?  // null = aplica a ambos tipos de persona
+
+  @@unique([programaId, tipoDocumentoId])
+}
+
+// ─────────────────────────────────────────
+// SOLICITUDES DE CRÉDITO
+// ─────────────────────────────────────────
+
+model Solicitud {
+  id              String           @id @default(uuid())
+  programa        Programa         @relation(fields: [programaId], references: [id])
+  programaId      String
+  solicitante     Usuario          @relation(fields: [solicitanteId], references: [id])
+  solicitanteId   String
+
+  estatus         EstatusSolicitud @default(BORRADOR)
+  tipoPersona     TipoPersona
+  sector          Sector
+  tamanoEmpresa   TamanoEmpresa?
+
+  montoSolicitado Float
+  plazoSolicitado Int
+
+  datosSolicitante DatosSolicitante?
+  datosAval        DatosAval?
+  documentos       DocumentoSolicitud[]
+
+  creadoEn        DateTime         @default(now())
+  actualizadoEn   DateTime         @updatedAt
+}
+
+
+// ─────────────────────────────────────────
+// DATOS GENERALES DEL SOLICITANTE
+// ─────────────────────────────────────────
+model DatosSolicitante {
+  id              String     @id @default(uuid())
+  solicitud       Solicitud  @relation(fields: [solicitudId], references: [id])
+  solicitudId     String     @unique
+
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  curp            String?
+  rfc             String?
+
+  telefono        String?
+  celular         String?
+  correo          String?
+
+  calle           String?
+  numeroExterior  String?
+  numeroInterior  String?
+  colonia         String?
+  ciudad          String?
+  estado          String?
+  codigoPostal    String?
+
+  nivelEstudio    NivelEstudio?
+  universidad     String?
+  estadoCivil     EstadoCivil?
+
+  creadoEn        DateTime   @default(now())
+  actualizadoEn   DateTime   @updatedAt
+}
+
+model DatosAval {
+  id              String     @id @default(uuid())
+  solicitud       Solicitud  @relation(fields: [solicitudId], references: [id])
+  solicitudId     String     @unique
+
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  curp            String?
+  rfc             String?
+
+  telefono        String?
+  celular         String?
+  correo          String?
+
+  calle           String?
+  numeroExterior  String?
+  numeroInterior  String?
+  colonia         String?
+  ciudad          String?
+  estado          String?
+  codigoPostal    String?
+
+  nivelEstudio    NivelEstudio?
+  universidad     String?
+  estadoCivil     EstadoCivil?
+
+  creadoEn        DateTime   @default(now())
+  actualizadoEn   DateTime   @updatedAt
+}
+
+model DocumentoSolicitud {
+  id              String        @id @default(uuid())
+  solicitud       Solicitud     @relation(fields: [solicitudId], references: [id])
+  solicitudId     String
+  tipoDocumento   TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
+  tipoDocumentoId String
+  urlArchivo      String
+  nombreArchivo   String
+  subidoEn        DateTime      @default(now())
+
+  @@unique([solicitudId, tipoDocumentoId])
+}
+
+enum AccionLog {
+  CREAR
+  ACTUALIZAR
+  ELIMINAR
+  CONSULTAR
+  LOGIN
+  LOGOUT
+  ERROR
+}
+
+enum ModuloLog {
+  AUTH
+  USUARIOS
+  PROGRAMAS
+  SOLICITUDES
+  DOCUMENTOS
+}
+
+model LogAuditoria {
+  id          String     @id @default(uuid())
+  accion      AccionLog
+  modulo      ModuloLog
+  descripcion String
+  entidadId   String?    // ID del recurso afectado
+  usuarioId   String?    // null si aún no está autenticado (ej: login fallido)
+  ip          String?
+  userAgent   String?
+  metadata    Json?      // datos extra si se necesitan
+  creadoEn    DateTime   @default(now())
+}
