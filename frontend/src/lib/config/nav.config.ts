@@ -6,12 +6,19 @@ import {
   Briefcase,
   Users,
   Settings,
-  FolderCheck,
+  FolderKanban,
   UserCheck,
   ClipboardList,
   Building2,
-  FileBadge,
+  FileBadge2,
   ShieldCheck,
+  BookOpen,
+  AlertCircle,
+  MessageSquarePlus,
+  TicketCheck,
+  LifeBuoy,
+  BadgeDollarSign,
+  FilePlus2,
 } from "lucide-react";
 import { Rol } from "@/lib/types/auth.types";
 
@@ -25,7 +32,7 @@ export interface NavItem {
 }
 
 export const navConfig: NavItem[] = [
-  // ── Dashboard general
+  // ── Inicio
   {
     label: "Inicio",
     href: "/dashboard",
@@ -33,7 +40,21 @@ export const navConfig: NavItem[] = [
     roles: ["ADMIN", "ANALISTA", "CLIENTE"],
   },
 
-  // ── Departamento de Promoción
+  // ── Solicitudes (Cliente)
+  {
+    label: "Mis Solicitudes",
+    href: "/dashboard/solicitudes",
+    icon: FileText,
+    roles: ["CLIENTE"],
+  },
+  {
+    label: "Nueva Solicitud",
+    href: "/dashboard/solicitudes/nueva",
+    icon: FilePlus2,
+    roles: ["CLIENTE"],
+  },
+
+  // ── Promoción (Admin / Analista)
   {
     label: "Promoción",
     icon: Briefcase,
@@ -43,10 +64,10 @@ export const navConfig: NavItem[] = [
         label: "Todas las Solicitudes",
         href: "/dashboard/promocion/solicitudes",
         icon: FileText,
-        roles: ["ADMIN"], // Jefe de Promoción = ADMIN por ahora
+        roles: ["ADMIN"],
       },
       {
-        label: "Pendientes de Aprobación",
+        label: "Pendientes",
         href: "/dashboard/promocion/pendientes",
         icon: Clock,
         roles: ["ADMIN"],
@@ -54,16 +75,16 @@ export const navConfig: NavItem[] = [
       {
         label: "Mis Casos",
         href: "/dashboard/promocion/mis-casos",
-        icon: FolderCheck,
+        icon: FolderKanban,
         roles: ["ADMIN", "ANALISTA"],
       },
     ],
   },
 
-  // ── Financiamiento
+  // ── Financiamiento (Admin / Analista)
   {
     label: "Financiamiento",
-    icon: ClipboardList,
+    icon: BadgeDollarSign,
     roles: ["ADMIN", "ANALISTA"],
     children: [
       {
@@ -73,7 +94,7 @@ export const navConfig: NavItem[] = [
         roles: ["ADMIN", "ANALISTA"],
       },
       {
-        label: "Asignación a Analistas",
+        label: "Asignación",
         href: "/dashboard/financiamiento/asignacion",
         icon: UserCheck,
         roles: ["ADMIN"],
@@ -81,7 +102,7 @@ export const navConfig: NavItem[] = [
       {
         label: "Mis Casos",
         href: "/dashboard/financiamiento/mis-casos",
-        icon: FolderCheck,
+        icon: FolderKanban,
         roles: ["ANALISTA"],
       },
       {
@@ -93,36 +114,22 @@ export const navConfig: NavItem[] = [
     ],
   },
 
-  // ── Portal del cliente
-  {
-    label: "Mis Solicitudes",
-    href: "/dashboard/solicitudes",
-    icon: FileText,
-    roles: ["CLIENTE"],
-  },
-  {
-    label: "Nueva Solicitud",
-    href: "/dashboard/solicitudes/nueva",
-    icon: FileBadge,
-    roles: ["CLIENTE"],
-  },
-
-  // ── Gestión del Sistema (Admin)
+  // ── Administración (Admin)
   {
     label: "Gestión del Sistema",
     icon: Settings,
     roles: ["ADMIN"],
     children: [
       {
-        label: "Programas de Crédito",
+        label: "Programas",
         href: "/dashboard/admin/programas",
         icon: Building2,
         roles: ["ADMIN"],
       },
       {
-        label: "Documentos por Programa",
+        label: "Documentos",
         href: "/dashboard/admin/documentos",
-        icon: FileBadge,
+        icon: FileBadge2,
         roles: ["ADMIN"],
       },
       {
@@ -132,10 +139,43 @@ export const navConfig: NavItem[] = [
         roles: ["ADMIN"],
       },
       {
-        label: "Logs de Auditoría",
+        label: "Auditoría",
         href: "/dashboard/admin/logs",
         icon: ClipboardList,
         roles: ["ADMIN"],
+      },
+    ],
+  },
+
+  // ── Soporte (Todos)
+  {
+    label: "Soporte",
+    icon: LifeBuoy,
+    roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+    children: [
+      {
+        label: "Mis Tickets",
+        href: "/dashboard/soporte/tickets",
+        icon: TicketCheck,
+        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+      },
+      {
+        label: "Nuevo Ticket",
+        href: "/dashboard/soporte/nuevo",
+        icon: MessageSquarePlus,
+        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+      },
+      {
+        label: "Reportar Problema",
+        href: "/dashboard/soporte/reporte",
+        icon: AlertCircle,
+        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+      },
+      {
+        label: "Base de Conocimiento",
+        href: "/dashboard/soporte/conocimiento",
+        icon: BookOpen,
+        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
       },
     ],
   },

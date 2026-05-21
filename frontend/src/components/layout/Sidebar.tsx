@@ -7,8 +7,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import { getNavForRole, NavItem } from "@/lib/config/nav.config";
 import { useAuthStore } from "@/lib/store/auth.store";
-import { ChevronRight, LogOut, Sun, Moon } from "lucide-react";
+import { ChevronRight, LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -26,53 +29,89 @@ function NavItemComponent({
 }) {
   const pathname = usePathname();
   const hasChildren = item.children && item.children.length > 0;
-
-  // Auto-expand if current path matches a child
   const isChildActive = item.children?.some(
     (child) => child.href && pathname.startsWith(child.href)
   );
   const [open, setOpen] = useState(!!isChildActive);
-
   const isActive = item.href ? pathname === item.href : false;
   const Icon = item.icon;
 
-  if (hasChildren) {
-    return (
-      <div>
-        <button
-          onClick={() => setOpen((v) => !v)}
+  const itemContent = (
+    <>
+      <span
+        className={cn(
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition-all duration-200",
+          isActive
+            ? "text-sidebar-primary-foreground"
+            : isChildActive
+            ? "bg-sidebar-primary/10 text-sidebar-primary"
+            : "text-sidebar-foreground/50 group-hover:bg-sidebar-accent group-hover:text-sidebar-accent-foreground"
+        )}
+      >
+        <Icon className="h-4 w-4" />
+      </span>
+      {!collapsed && (
+        <span
           className={cn(
-            "group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
-            "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-            isChildActive &&
-              "bg-sidebar-accent/50 text-sidebar-accent-foreground",
-            collapsed && "justify-center px-2"
+            "flex-1 w-0 truncate text-left text-sm leading-none transition-colors",
+           isActive
+            ? "font-medium text-sidebar-primary-foreground"
+            : isChildActive
+            ? "font-medium text-sidebar-primary"
+            : "font-normal text-sidebar-foreground/60 group-hover:text-sidebar-accent-foreground"
           )}
-          title={collapsed ? item.label : undefined}
         >
-          <Icon
+          {item.label}
+        </span>
+      )}
+      {!collapsed && item.badge && (
+        <Badge variant="secondary" className="ml-auto h-5 px-1.5 text-[10px]">
+          {item.badge}
+        </Badge>
+      )}
+    </>
+  );
+
+  if (hasChildren) {
+    const trigger = (
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "group flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 transition-all duration-150",
+          "hover:bg-sidebar-accent",
+          isChildActive && "bg-sidebar-accent/60",
+          collapsed && "justify-center"
+        )}
+      >
+        {itemContent}
+        {!collapsed && (
+          <ChevronRight
             className={cn(
-              "shrink-0 transition-colors",
-              collapsed ? "h-5 w-5" : "h-4 w-4",
-              isChildActive && "text-primary"
+              "ml-1 h-3.5 w-3.5 shrink-0 text-sidebar-foreground/30 transition-transform duration-200",
+              open && "rotate-90"
             )}
           />
-          {!collapsed && (
-            <>
-              <span className="flex-1 text-left">{item.label}</span>
-              <ChevronRight
-                className={cn(
-                  "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
-                  open && "rotate-90"
-                )}
-              />
-            </>
-          )}
-        </button>
+        )}
+      </button>
+    );
 
-        {/* Children */}
+    return (
+      <div>
+        {collapsed ? (
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+              <TooltipContent side="right" className="text-xs">
+                {item.label}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          trigger
+        )}
+
         {!collapsed && open && (
-          <div className="ml-3 mt-0.5 border-l border-sidebar-border/50 pl-3 space-y-0.5">
+          <div className="ml-1 mt-0.5 space-y-0.5 border-l border-sidebar-border/50 pl-3">
             {item.children!.map((child) => (
               <NavItemComponent
                 key={child.label}
@@ -87,142 +126,223 @@ function NavItemComponent({
     );
   }
 
-  return (
+  const link = (
     <Link
       href={item.href!}
       className={cn(
-        "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
-        "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-        isActive &&
-          "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
-        collapsed && "justify-center px-2"
+        "group flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-all duration-150",
+        isActive
+          ? "bg-sidebar-primary hover:bg-sidebar-primary/90"
+          : "hover:bg-sidebar-accent",
+        collapsed && "justify-center"
       )}
-      title={collapsed ? item.label : undefined}
     >
-      <Icon
-        className={cn(
-          "shrink-0 transition-colors",
-          collapsed ? "h-5 w-5" : "h-4 w-4",
-          isActive && "text-primary"
-        )}
-      />
-      {!collapsed && <span className="truncate">{item.label}</span>}
-      {!collapsed && isActive && (
-        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
-      )}
+      {itemContent}
     </Link>
+  );
+
+  return collapsed ? (
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right" className="text-xs">
+          {item.label}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ) : (
+    link
   );
 }
 
-const ROLE_LABELS: Record<string, { label: string; color: string }> = {
-  ADMIN: { label: "Administrador", color: "bg-amber-500/15 text-amber-600 dark:text-amber-400" },
-  ANALISTA: { label: "Analista", color: "bg-blue-500/15 text-blue-600 dark:text-blue-400" },
-  CLIENTE: { label: "Cliente", color: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" },
+const ROLE_CONFIG: Record<string, { label: string; className: string }> = {
+  ADMIN: {
+    label: "Admin",
+    className: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  },
+  ANALISTA: {
+    label: "Analista",
+    className: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
+  },
+  CLIENTE: {
+    label: "Cliente",
+    className: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  },
 };
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { usuario, logout } = useAuthStore();
   const navItems = usuario ? getNavForRole(usuario.rol) : [];
-  const roleInfo = usuario ? ROLE_LABELS[usuario.rol] : null;
+  const roleConfig = usuario ? ROLE_CONFIG[usuario.rol] : null;
+
   const initials = usuario
     ? `${usuario.nombre[0]}${usuario.apellidoPaterno[0]}`.toUpperCase()
     : "?";
 
+  const fullName = usuario
+    ? `${usuario.nombre} ${usuario.apellidoPaterno}`
+    : "";
+
   return (
     <aside
       className={cn(
-        "flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-in-out",
-        collapsed ? "w-[60px]" : "w-[240px]"
+        "relative flex h-screen flex-col bg-sidebar border-r border-sidebar-border",
+        "transition-[width] duration-300 ease-in-out will-change-[width]",
+        collapsed ? "w-[60px]" : "w-[232px]"
       )}
     >
-      {/* Logo / Brand */}
+      {/* ── Brand ── */}
       <div
         className={cn(
-          "flex h-16 items-center border-b border-sidebar-border px-4",
-          collapsed ? "justify-center" : "gap-3"
+          "flex h-14 shrink-0 items-center border-b border-sidebar-border",
+          collapsed ? "justify-center px-3" : "gap-2.5 px-4"
         )}
       >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
+        <div
+          className={cn(
+            "flex h-7 w-7 shrink-0 items-center justify-center rounded-md",
+            "bg-sidebar-primary text-sidebar-primary-foreground text-xs font-bold tracking-tight shadow-sm"
+          )}
+        >
           SC
         </div>
         {!collapsed && (
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-sidebar-foreground truncate">
+          <div className="min-w-0 leading-tight">
+            <p className="truncate text-sm font-semibold text-sidebar-foreground tracking-tight">
               SolCred
             </p>
-            <p className="text-[10px] text-sidebar-foreground/50 truncate">
-              Gestión de Crédito
+            <p className="truncate text-[10px] text-sidebar-foreground/50">
+              Gestión de crédito
             </p>
           </div>
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-3 space-y-0.5">
-        {navItems.map((item) => (
-          <NavItemComponent key={item.label} item={item} collapsed={collapsed} />
-        ))}
+      {/* ── Navigation ── */}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-3">
+        <div className="space-y-0.5">
+          {navItems.map((item, i) => {
+            const prevItem = navItems[i - 1];
+            const showSeparator =
+              i > 0 &&
+              !collapsed &&
+              prevItem &&
+              prevItem.href !== undefined &&
+              item.children;
+
+            return (
+              <div key={item.label}>
+                {showSeparator && (
+                  <div className="my-2 px-2">
+                    <Separator className="opacity-40" />
+                  </div>
+                )}
+                <NavItemComponent item={item} collapsed={collapsed} />
+              </div>
+            );
+          })}
+        </div>
       </nav>
 
-      {/* User section */}
-      <div className="border-t border-sidebar-border p-2 space-y-1">
-        {/* User info */}
+      {/* ── Footer ── */}
+      <div className="shrink-0 border-t border-sidebar-border px-2 py-2 space-y-1">
+        {/* User pill */}
         {!collapsed && usuario && (
-          <div className="flex items-center gap-3 rounded-lg px-3 py-2 mb-1">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
+          <div className="flex items-center gap-2.5 rounded-lg px-2 py-2 mb-1">
+            <div
+              className={cn(
+                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+                "bg-sidebar-primary/10 text-sidebar-primary text-[11px] font-semibold"
+              )}
+            >
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-sidebar-foreground truncate">
-                {usuario.nombre} {usuario.apellidoPaterno}
+              <p className="truncate text-xs font-medium text-sidebar-foreground leading-tight">
+                {fullName}
               </p>
-              {roleInfo && (
+              {roleConfig && (
                 <span
                   className={cn(
-                    "inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium",
-                    roleInfo.color
+                    "mt-0.5 inline-block rounded-sm px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                    roleConfig.className
                   )}
                 >
-                  {roleInfo.label}
+                  {roleConfig.label}
                 </span>
               )}
             </div>
           </div>
         )}
 
-        {/* Collapse toggle */}
+        {/* Collapsed avatar */}
+        {collapsed && usuario && (
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex justify-center py-1">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-primary/10 text-sidebar-primary text-[11px] font-semibold">
+                    {initials}
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="text-xs">
+                {fullName}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+
+        {/* Toggle collapse */}
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggle}
           className={cn(
-            "w-full text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent",
-            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3"
+            "w-full h-8 text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            collapsed ? "justify-center px-0" : "justify-start gap-2.5 px-2"
           )}
         >
-          <ChevronRight
-            className={cn(
-              "h-4 w-4 shrink-0 transition-transform duration-300",
-              !collapsed && "rotate-180"
-            )}
-          />
-          {!collapsed && <span className="text-xs">Colapsar</span>}
+          {collapsed ? (
+            <PanelLeftOpen className="h-4 w-4 shrink-0" />
+          ) : (
+            <>
+              <PanelLeftClose className="h-4 w-4 shrink-0" />
+              <span className="text-xs text-left">Colapsar panel</span>
+            </>
+          )}
         </Button>
 
         {/* Logout */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={logout}
-          className={cn(
-            "w-full text-sidebar-foreground/60 hover:text-destructive hover:bg-destructive/10",
-            collapsed ? "justify-center px-0" : "justify-start gap-3 px-3"
-          )}
-          title={collapsed ? "Cerrar sesión" : undefined}
-        >
-          <LogOut className="h-4 w-4 shrink-0" />
-          {!collapsed && <span className="text-xs">Cerrar sesión</span>}
-        </Button>
+        {collapsed ? (
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="w-full h-8 justify-center px-0 text-sidebar-foreground/50 hover:text-destructive hover:bg-destructive/10"
+                >
+                  <LogOut className="h-4 w-4 shrink-0" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="text-xs">
+                Cerrar sesión
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={logout}
+            className="w-full h-8 justify-start gap-2.5 px-2 text-sidebar-foreground/50 hover:text-destructive hover:bg-destructive/10"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            <span className="text-xs text-left">Cerrar sesión</span>
+          </Button>
+        )}
       </div>
     </aside>
   );
