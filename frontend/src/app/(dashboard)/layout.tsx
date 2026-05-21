@@ -36,13 +36,25 @@ export default function DashboardLayout({
   if (!isAuthenticated) return null;
 
   return (
+    // h-screen + overflow-hidden en el root: nada se desborda del viewport
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
 
-      <div className="flex flex-1 flex-col overflow-hidden">
+      {/* Columna derecha: header fijo + contenido con scroll propio */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        {/* Header no se mueve */}
         <Header />
+
+        {/* Solo este elemento scrollea */}
         <main className="flex-1 overflow-y-auto">
-          <div className="container mx-auto max-w-7xl p-6">{children}</div>
+          {/*
+            - No hay max-w fijo; el form usa todo el ancho disponible menos la sidebar
+            - px-6 py-6 da aire lateral sin desperdiciar espacio
+            - En pantallas grandes podés agregar max-w-screen-xl si querés limitar
+          */}
+          <div className="px-6 py-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>

@@ -54,7 +54,7 @@ function NavItemComponent({
         <span
           className={cn(
             "flex-1 w-0 truncate text-left text-sm leading-none transition-colors",
-           isActive
+            isActive
             ? "font-medium text-sidebar-primary-foreground"
             : isChildActive
             ? "font-medium text-sidebar-primary"
@@ -171,7 +171,7 @@ const ROLE_CONFIG: Record<string, { label: string; className: string }> = {
 };
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
-  const { usuario, logout } = useAuthStore();
+  const { usuario, clearAuth: logout } = useAuthStore();
   const navItems = usuario ? getNavForRole(usuario.rol) : [];
   const roleConfig = usuario ? ROLE_CONFIG[usuario.rol] : null;
 
@@ -188,13 +188,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       className={cn(
         "relative flex h-screen flex-col bg-sidebar border-r border-sidebar-border",
         "transition-[width] duration-300 ease-in-out will-change-[width]",
-        collapsed ? "w-[60px]" : "w-[232px]"
+        collapsed ? "w-15" : "w-58"
       )}
     >
       {/* ── Brand ── */}
       <div
         className={cn(
-          "flex h-14 shrink-0 items-center border-b border-sidebar-border",
+          "flex h-16 shrink-0 items-center border-b border-sidebar-border",
           collapsed ? "justify-center px-3" : "gap-2.5 px-4"
         )}
       >

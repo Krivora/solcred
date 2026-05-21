@@ -49,7 +49,23 @@ export async function apiRequest<T>(
     );
   }
 
-  // El backend siempre retorna { success, message, data }
-  // retornamos data directamente
   return json.data as T;
+}
+
+// ── Helper autenticado ─────────────────────────────────────
+// Lee el token del store de Zustand fuera de React y lo inyecta automáticamente
+export async function apiAuth<T>(
+  endpoint: string,
+  options: Omit<RequestOptions, 'token'> = {},
+): Promise<T> {
+  // Zustand guarda el estado en localStorage con persist
+  // getState() funciona fuera de componentes
+  const { useAuthStore } = await import('@/lib/store/auth.store');
+  const token = useAuthStore.getState().token;
+
+  if (!token) {
+    throw new ApiError(401, 'No autorizado');
+  }
+
+  return apiRequest<T>(endpoint, { ...options, token });
 }
