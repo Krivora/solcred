@@ -106,7 +106,7 @@ export default function DetalleProgramaPage() {
     if (!programa) return null;
 
     return (
-        <div className="mx-auto max-w-3xl space-y-6">
+        <div className="mx-auto max-w-5xl space-y-6">
             {/* ── Breadcrumb ───────────────────────────────────── */}
             <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
                 <Link href="/dashboard/admin/programas">

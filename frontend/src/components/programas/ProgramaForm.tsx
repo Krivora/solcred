@@ -202,10 +202,11 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-8xl mx-auto">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-5xl mx-auto">
 
             {/* ── Row 1: Información general (2/3) + Tipo de persona (1/3) ── */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
                 {/* General — ocupa 2 columnas */}
                 <Card className="lg:col-span-2">
                     <SectionHeading icon={FileText} title="Información General" description="Nombre, descripción y objetivo del programa" />
@@ -283,86 +284,88 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                         </div>
                     )}
                 </Card>
-                <Card className="lg:col-span-2">
-                    <SectionHeading icon={DollarSign} title="Condiciones Financieras" description="Montos, tasas y plazos del programa" />
-                    <div className="space-y-5">
-
-                        {/* Montos */}
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <FieldRow label="Monto mínimo (MXN)" required error={errors.montoMinimo?.message}>
-                                <NumberInput
-                                    prefix="$" min={0} step={1000}
-                                    error={!!errors.montoMinimo}
-                                    {...register("montoMinimo", {
-                                        required: "Campo requerido",
-                                        min: { value: 1, message: "Debe ser mayor a 0" },
-                                        validate: v => Number(v) < Number(watch("montoMaximo")) || "Debe ser menor al monto máximo",
-                                    })}
-                                />
-                            </FieldRow>
-                            <FieldRow label="Monto máximo (MXN)" required error={errors.montoMaximo?.message}>
-                                <NumberInput
-                                    prefix="$" min={0} step={1000}
-                                    error={!!errors.montoMaximo}
-                                    {...register("montoMaximo", {
-                                        required: "Campo requerido",
-                                        validate: v => Number(v) > Number(watch("montoMinimo")) || "Debe ser mayor al monto mínimo",
-                                    })}
-                                />
-                            </FieldRow>
-                        </div>
-
-                        <Divider label="Tasas de interés" />
-
-                        {/* Tasas — 3 iguales */}
-                        <div className="grid gap-4 grid-cols-3">
-                            <FieldRow label="Tasa ordinaria" error={errors.tasaOrdinaria?.message}>
-                                <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaOrdinaria}
-                                    {...register("tasaOrdinaria", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
-                            </FieldRow>
-                            <FieldRow label="Tasa moratoria" error={errors.tasaMoratoria?.message}>
-                                <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaMoratoria}
-                                    {...register("tasaMoratoria", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
-                            </FieldRow>
-                            <FieldRow label="Tasa anual (CAT)" error={errors.tasaAnual?.message}>
-                                <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaAnual}
-                                    {...register("tasaAnual", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
-                            </FieldRow>
-                        </div>
-
-                        <Divider label="Plazos" />
-
-                        {/* Plazos — 2 iguales + info badge */}
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <FieldRow label="Plazo mínimo" required error={errors.plazoMinimoMeses?.message}>
-                                <NumberInput suffix="meses" min={1} error={!!errors.plazoMinimoMeses}
-                                    {...register("plazoMinimoMeses", {
-                                        required: "Campo requerido",
-                                        min: { value: 1, message: "Mínimo 1 mes" },
-                                        validate: v => Number(v) < Number(watch("plazoMaximoMeses")) || "Debe ser menor al plazo máximo",
-                                    })} />
-                            </FieldRow>
-                            <FieldRow label="Plazo máximo" required error={errors.plazoMaximoMeses?.message}>
-                                <NumberInput suffix="meses" min={1} error={!!errors.plazoMaximoMeses}
-                                    {...register("plazoMaximoMeses", {
-                                        required: "Campo requerido",
-                                        validate: v => Number(v) > Number(watch("plazoMinimoMeses")) || "Debe ser mayor al plazo mínimo",
-                                    })} />
-                            </FieldRow>
-                        </div>
-
-                        {/* Inline range hint */}
-                        {Number(watch("plazoMaximoMeses")) > Number(watch("plazoMinimoMeses")) && (
-                            <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2.5">
-                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                <span className="text-xs text-muted-foreground">
-                                    Rango activo: <span className="font-semibold text-foreground">{watch("plazoMinimoMeses")} – {watch("plazoMaximoMeses")} meses</span>
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                </Card>
             </div>
+
+            {/* ── Row 2: Financiero — 3 columnas iguales ──────────────────── */}
+            <Card>
+                <SectionHeading icon={DollarSign} title="Condiciones Financieras" description="Montos, tasas y plazos del programa" />
+                <div className="space-y-5">
+
+                    {/* Montos */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <FieldRow label="Monto mínimo (MXN)" required error={errors.montoMinimo?.message}>
+                            <NumberInput
+                                prefix="$" min={0} step={1000}
+                                error={!!errors.montoMinimo}
+                                {...register("montoMinimo", {
+                                    required: "Campo requerido",
+                                    min: { value: 1, message: "Debe ser mayor a 0" },
+                                    validate: v => Number(v) < Number(watch("montoMaximo")) || "Debe ser menor al monto máximo",
+                                })}
+                            />
+                        </FieldRow>
+                        <FieldRow label="Monto máximo (MXN)" required error={errors.montoMaximo?.message}>
+                            <NumberInput
+                                prefix="$" min={0} step={1000}
+                                error={!!errors.montoMaximo}
+                                {...register("montoMaximo", {
+                                    required: "Campo requerido",
+                                    validate: v => Number(v) > Number(watch("montoMinimo")) || "Debe ser mayor al monto mínimo",
+                                })}
+                            />
+                        </FieldRow>
+                    </div>
+
+                    <Divider label="Tasas de interés" />
+
+                    {/* Tasas — 3 iguales */}
+                    <div className="grid gap-4 grid-cols-3">
+                        <FieldRow label="Tasa ordinaria" error={errors.tasaOrdinaria?.message}>
+                            <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaOrdinaria}
+                                {...register("tasaOrdinaria", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
+                        </FieldRow>
+                        <FieldRow label="Tasa moratoria" error={errors.tasaMoratoria?.message}>
+                            <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaMoratoria}
+                                {...register("tasaMoratoria", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
+                        </FieldRow>
+                        <FieldRow label="Tasa anual (CAT)" error={errors.tasaAnual?.message}>
+                            <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaAnual}
+                                {...register("tasaAnual", { min: { value: 0, message: "Mín 0" }, max: { value: 100, message: "Máx 100" } })} />
+                        </FieldRow>
+                    </div>
+
+                    <Divider label="Plazos" />
+
+                    {/* Plazos — 2 iguales + info badge */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <FieldRow label="Plazo mínimo" required error={errors.plazoMinimoMeses?.message}>
+                            <NumberInput suffix="meses" min={1} error={!!errors.plazoMinimoMeses}
+                                {...register("plazoMinimoMeses", {
+                                    required: "Campo requerido",
+                                    min: { value: 1, message: "Mínimo 1 mes" },
+                                    validate: v => Number(v) < Number(watch("plazoMaximoMeses")) || "Debe ser menor al plazo máximo",
+                                })} />
+                        </FieldRow>
+                        <FieldRow label="Plazo máximo" required error={errors.plazoMaximoMeses?.message}>
+                            <NumberInput suffix="meses" min={1} error={!!errors.plazoMaximoMeses}
+                                {...register("plazoMaximoMeses", {
+                                    required: "Campo requerido",
+                                    validate: v => Number(v) > Number(watch("plazoMinimoMeses")) || "Debe ser mayor al plazo mínimo",
+                                })} />
+                        </FieldRow>
+                    </div>
+
+                    {/* Inline range hint */}
+                    {Number(watch("plazoMaximoMeses")) > Number(watch("plazoMinimoMeses")) && (
+                        <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2.5">
+                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                                Rango activo: <span className="font-semibold text-foreground">{watch("plazoMinimoMeses")} – {watch("plazoMaximoMeses")} meses</span>
+                            </span>
+                        </div>
+                    )}
+                </div>
+            </Card>
 
             {/* ── Row 3: Requisitos — aval (2 col) + documentación (3 col) ── */}
             <Card>
@@ -381,7 +384,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
 
                     <Divider label="Documentación" />
 
-                    <div className="grid gap-3 sm:grid-cols-4">
+                    <div className="grid gap-3 sm:grid-cols-3">
                         <ToggleCard label="Datos Financieros"   description="Estados financieros e información contable"  icon={DollarSign}   {...toggle("datosFinancierosCompletos")} />
                         <ToggleCard label="Requiere CURP"       description="CURP del solicitante obligatorio"              icon={FileCheck2}   {...toggle("requiereCurp")} />
                         <ToggleCard label="Requiere RFC"        description="RFC del solicitante obligatorio"               icon={FileText}     {...toggle("requiereRfc")} />

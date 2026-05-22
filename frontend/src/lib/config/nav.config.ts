@@ -61,14 +61,14 @@ export const navConfig: NavItem[] = [
     roles: ["ADMIN", "ANALISTA"],
     children: [
       {
-        label: "Todas las Solicitudes",
+        label: "Solicitudes",
         href: "/dashboard/promocion/solicitudes",
         icon: FileText,
         roles: ["ADMIN"],
       },
       {
-        label: "Pendientes",
-        href: "/dashboard/promocion/pendientes",
+        label: "Aprobación",
+        href: "/dashboard/promocion/aprobacion",
         icon: Clock,
         roles: ["ADMIN"],
       },

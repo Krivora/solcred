@@ -10,7 +10,7 @@ import { ProgramaForm } from "@/components/programas/ProgramaForm";
 export default function NuevoProgramaPage() {
     return (
         // h-full para ocupar todo el main sin restricción de ancho
-        <div className="flex h-full flex-col gap-5">
+        <div className="mx-auto max-w-5xl space-y-6">
             {/* ── Encabezado de página ─────────────────────── */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">

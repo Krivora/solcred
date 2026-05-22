@@ -24,7 +24,7 @@ export default function EditarProgramaPage() {
     }, [id]);
 
     return (
-        <div className="mx-auto max-w-2xl space-y-6">
+        <div className="mx-auto max-w-5xl space-y-6">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
                     <Link href={`/dashboard/admin/programas/${id}`}>
