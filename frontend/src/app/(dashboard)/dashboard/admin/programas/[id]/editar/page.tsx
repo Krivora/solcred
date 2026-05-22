@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProgramaForm } from "@/components/programas/ProgramaForm";
 import { getPrograma } from "@/lib/api/programas";
 import type { Programa } from "@/lib/types/programa.types";
+import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
 
 export default function EditarProgramaPage() {
     const { id } = useParams<{ id: string }>();
@@ -24,7 +25,7 @@ export default function EditarProgramaPage() {
     }, [id]);
 
     return (
-        <div className="mx-auto max-w-5xl space-y-6">
+        <div className="mx-auto max-w-8xl space-y-6">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
                     <Link href={`/dashboard/admin/programas/${id}`}>
@@ -51,7 +52,15 @@ export default function EditarProgramaPage() {
                 <p className="text-sm text-destructive">{error}</p>
             ) : programa ? (
                 <ProgramaForm programa={programa} />
+                
             ) : null}
+            {programa && (
+                <DocumentosPrograma
+                    programaId={programa.id}
+                    documentos={programa.documentos ?? []}
+                    onCambio={() => getPrograma(id).then(setPrograma)}
+                />
+            )}
         </div>
     );
 }

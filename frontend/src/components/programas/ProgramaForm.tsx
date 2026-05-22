@@ -202,7 +202,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-5xl mx-auto">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-8xl mx-auto">
 
             {/* ── Row 1: Información general (2/3) + Tipo de persona (1/3) ── */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -380,14 +380,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                             <ToggleCard label="Garantía Obligatoria" description="Garantía patrimonial requerida"   icon={ShieldCheck} {...toggle("garantiaObligatoria")} />
                             <ToggleCard label="Garantía Opcional"   description="Se puede incluir opcionalmente"   icon={Banknote}    {...toggle("garantiaOpcional")} />
                         </div>
-                    </div>
-
-                    <Divider label="Documentación" />
-
-                    <div className="grid gap-3 sm:grid-cols-3">
-                        <ToggleCard label="Datos Financieros"   description="Estados financieros e información contable"  icon={DollarSign}   {...toggle("datosFinancierosCompletos")} />
-                        <ToggleCard label="Requiere CURP"       description="CURP del solicitante obligatorio"              icon={FileCheck2}   {...toggle("requiereCurp")} />
-                        <ToggleCard label="Requiere RFC"        description="RFC del solicitante obligatorio"               icon={FileText}     {...toggle("requiereRfc")} />
                     </div>
                 </div>
             </Card>

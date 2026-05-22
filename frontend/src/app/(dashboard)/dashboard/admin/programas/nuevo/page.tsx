@@ -6,11 +6,12 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProgramaForm } from "@/components/programas/ProgramaForm";
+import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
 
 export default function NuevoProgramaPage() {
     return (
         // h-full para ocupar todo el main sin restricción de ancho
-        <div className="mx-auto max-w-5xl space-y-6">
+        <div className="mx-auto max-w-8xl space-y-6">
             {/* ── Encabezado de página ─────────────────────── */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">

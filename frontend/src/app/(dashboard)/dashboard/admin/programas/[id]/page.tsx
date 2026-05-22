@@ -30,6 +30,7 @@ import {
 
 import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
 import { ProgramaBadge, TipoPersonaBadge } from "@/components/programas/ProgramaBadge";
+import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
 import type { Programa } from "@/lib/types/programa.types";
 
 const fmt = (n: number) =>
@@ -91,7 +92,7 @@ export default function DetalleProgramaPage() {
 
     if (loading) {
         return (
-            <div className="mx-auto max-w-3xl space-y-6">
+            <div className="mx-auto max-w-8xl space-y-6">
                 <Skeleton className="h-8 w-40" />
                 <Skeleton className="h-6 w-64" />
                 <div className="grid gap-4 md:grid-cols-2">
@@ -237,53 +238,13 @@ export default function DetalleProgramaPage() {
                 </Card>
 
                 {/* ── Documentos requeridos ─────────────────── */}
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-primary" />
-                            Documentos Requeridos
-                        </CardTitle>
-                        <CardDescription>
-                            {programa.documentos?.length
-                                ? `${programa.documentos.length} documento(s) configurado(s)`
-                                : "Sin documentos asignados aún"}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {!programa.documentos?.length ? (
-                            <p className="text-xs text-muted-foreground">
-                                Los documentos se configuran desde el módulo de Documentos.
-                            </p>
-                        ) : (
-                            <div className="space-y-2">
-                                {programa.documentos.map((doc) => (
-                                    <div
-                                        key={doc.id}
-                                        className="flex items-center justify-between text-sm"
-                                    >
-                                        <span>{doc.tipoDocumento.nombre}</span>
-                                        <div className="flex gap-1.5">
-                                            {doc.esObligatorio ? (
-                                                <Badge variant="outline" className="text-xs">
-                                                    Obligatorio
-                                                </Badge>
-                                            ) : (
-                                                <Badge variant="secondary" className="text-xs">
-                                                    Opcional
-                                                </Badge>
-                                            )}
-                                            {doc.aplicaA && (
-                                                <Badge variant="secondary" className="text-xs">
-                                                    {doc.aplicaA === "FISICA" ? "Física" : "Moral"}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                <div className="md:col-span-2">
+                    <DocumentosPrograma
+                        programaId={programa.id}
+                        documentos={programa.documentos ?? []}
+                        onCambio={cargar}
+                    />
+                </div>
             </div>
         </div>
     );
