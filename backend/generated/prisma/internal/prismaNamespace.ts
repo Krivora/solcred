@@ -1150,13 +1150,9 @@ export const ProgramaScalarFieldEnum = {
   tasaAnual: 'tasaAnual',
   plazoMinimoMeses: 'plazoMinimoMeses',
   plazoMaximoMeses: 'plazoMaximoMeses',
-  avalObligatorio: 'avalObligatorio',
-  avalOpcional: 'avalOpcional',
-  garantiaObligatoria: 'garantiaObligatoria',
-  garantiaOpcional: 'garantiaOpcional',
+  aval: 'aval',
+  garantia: 'garantia',
   datosFinancierosCompletos: 'datosFinancierosCompletos',
-  requiereCurp: 'requiereCurp',
-  requiereRfc: 'requiereRfc',
   activo: 'activo',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -1422,6 +1418,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Requerimiento'
+ */
+export type EnumRequerimientoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Requerimiento'>
+    
+
+
+/**
+ * Reference to a field of type 'Requerimiento[]'
+ */
+export type ListEnumRequerimientoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Requerimiento[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TipoPersonaDocumento'
+ */
+export type EnumTipoPersonaDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoPersonaDocumento'>
+    
+
+
+/**
+ * Reference to a field of type 'TipoPersonaDocumento[]'
+ */
+export type ListEnumTipoPersonaDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoPersonaDocumento[]'>
     
 
 

@@ -10,14 +10,17 @@ import {
     Dialog, DialogContent, DialogDescription,
     DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
+import { crearTipoDocumento } from "@/lib/api/programas";
+import type { TipoDocumento } from "@/lib/types/programa.types";
 
 interface Props {
     open: boolean;
     onOpenChange: (v: boolean) => void;
-    onGuardar: (data: { nombre: string; descripcion?: string }) => Promise<void>;
+    onGuardar?: (data: { nombre: string; descripcion?: string }) => Promise<void>;
+    onSuccess?: (tipo: TipoDocumento) => void;
 }
 
-export function TipoDocumentoDialog({ open, onOpenChange, onGuardar }: Props) {
+export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }: Props) {
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [guardando, setGuardando] = useState(false);
@@ -29,10 +32,19 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar }: Props) {
         if (!nombre.trim()) { setError("El nombre es requerido"); return; }
         setGuardando(true);
         try {
-            await onGuardar({ nombre: nombre.trim(), descripcion: descripcion.trim() || undefined });
+            if (onGuardar) {
+                await onGuardar({ nombre: nombre.trim(), descripcion: descripcion.trim() || undefined });
+            } else if (onSuccess) {
+                const nuevo = await crearTipoDocumento({
+                    nombre: nombre.trim(),
+                    descripcion: descripcion.trim() || undefined,
+                });
+                onSuccess(nuevo);
+            }
             reset();
-        } catch (e: any) {
-            setError(e?.message ?? "Error al guardar");
+            onOpenChange(false); // ← cierra el dialog al guardar
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : "Error al guardar");
         } finally {
             setGuardando(false);
         }
@@ -55,6 +67,7 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar }: Props) {
                             placeholder="Ej: INE, CURP, Acta constitutiva"
                             value={nombre}
                             onChange={(e) => { setNombre(e.target.value); setError(""); }}
+                            onKeyDown={(e) => e.key === "Enter" && handleGuardar()}
                         />
                         {error && <p className="text-xs text-destructive">{error}</p>}
                     </div>

@@ -9,21 +9,15 @@ import {
     Banknote,
     Clock,
     Percent,
-    FileText,
-    CheckCircle2,
-    XCircle,
     ShieldCheck,
-    UserCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -31,7 +25,8 @@ import {
 import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
 import { ProgramaBadge, TipoPersonaBadge } from "@/components/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
-import type { Programa } from "@/lib/types/programa.types";
+import { Requerimiento, type Programa } from "@/lib/types/programa.types";
+import { cn } from "@/lib/utils/cn";
 
 const fmt = (n: number) =>
     new Intl.NumberFormat("es-MX", {
@@ -40,15 +35,26 @@ const fmt = (n: number) =>
         maximumFractionDigits: 0,
     }).format(n);
 
-function BoolRow({ label, value }: { label: string; value: boolean }) {
+function RequerimientoRow({ label, value }: { label: string; value: Requerimiento }) {
+    const colorMap: Record<Requerimiento, string> = {
+        [Requerimiento.OBLIGATORIO]: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+        [Requerimiento.OPCIONAL]: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+        [Requerimiento.NO_REQUIERE]: "bg-muted text-muted-foreground",
+    };
+    const labelMap: Record<Requerimiento, string> = {
+        [Requerimiento.OBLIGATORIO]: "Obligatorio",
+        [Requerimiento.OPCIONAL]: "Opcional",
+        [Requerimiento.NO_REQUIERE]: "No requiere",
+    };
     return (
         <div className="flex items-center justify-between py-2.5">
             <span className="text-sm text-muted-foreground">{label}</span>
-            {value ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            ) : (
-                <XCircle className="h-4 w-4 text-muted-foreground/40" />
-            )}
+            <span className={cn(
+                "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                colorMap[value]
+            )}>
+                {labelMap[value]}
+            </span>
         </div>
     );
 }
@@ -65,7 +71,7 @@ export default function DetalleProgramaPage() {
             const data = await getPrograma(id);
             setPrograma(data);
         } catch {
-            router.push("/dashboard/admin/programas");
+            router.push("/dashboard/admin/configuracion/programas");
         } finally {
             setLoading(false);
         }
@@ -90,6 +96,7 @@ export default function DetalleProgramaPage() {
         }
     };
 
+
     if (loading) {
         return (
             <div className="mx-auto max-w-8xl space-y-6">
@@ -107,10 +114,11 @@ export default function DetalleProgramaPage() {
     if (!programa) return null;
 
     return (
-        <div className="mx-auto max-w-5xl space-y-6">
+
+        <div className="mx-auto max-w-8xl space-y-6">
             {/* ── Breadcrumb ───────────────────────────────────── */}
             <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
-                <Link href="/dashboard/admin/programas">
+                <Link href="/dashboard/admin/configuracion/programas">
                     <ChevronLeft className="h-4 w-4" />
                     Programas
                 </Link>
@@ -140,7 +148,7 @@ export default function DetalleProgramaPage() {
                         {programa.activo ? "Desactivar" : "Activar"}
                     </Button>
                     <Button size="sm" asChild>
-                        <Link href={`/dashboard/admin/programas/${programa.id}/editar`}>
+                        <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>
                             <Pencil className="mr-2 h-3.5 w-3.5" />
                             Editar
                         </Link>
@@ -212,28 +220,8 @@ export default function DetalleProgramaPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="divide-y">
-                        <BoolRow label="Aval obligatorio" value={programa.avalObligatorio} />
-                        <BoolRow label="Aval opcional" value={programa.avalOpcional} />
-                        <BoolRow label="Garantía obligatoria" value={programa.garantiaObligatoria} />
-                        <BoolRow label="Garantía opcional" value={programa.garantiaOpcional} />
-                    </CardContent>
-                </Card>
-
-                {/* ── Información Requerida ─────────────────── */}
-                <Card>
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                            <UserCheck className="h-4 w-4 text-primary" />
-                            Información Requerida
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="divide-y">
-                        <BoolRow label="Requiere CURP" value={programa.requiereCurp} />
-                        <BoolRow label="Requiere RFC" value={programa.requiereRfc} />
-                        <BoolRow
-                            label="Datos financieros completos"
-                            value={programa.datosFinancierosCompletos}
-                        />
+                        <RequerimientoRow label="Aval" value={programa.aval} />
+                        <RequerimientoRow label="Garantía" value={programa.garantia} />
                     </CardContent>
                 </Card>
 
@@ -241,7 +229,7 @@ export default function DetalleProgramaPage() {
                 <div className="md:col-span-2">
                     <DocumentosPrograma
                         programaId={programa.id}
-                        documentos={programa.documentos ?? []}
+                        documentos={programa.documentosRequeridos ?? []}
                         onCambio={cargar}
                     />
                 </div>

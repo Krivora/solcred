@@ -29,7 +29,7 @@ export type ProgramaDocumentoMinAggregateOutputType = {
   programaId: string | null
   tipoDocumentoId: string | null
   esObligatorio: boolean | null
-  aplicaA: $Enums.TipoPersona | null
+  aplicaA: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoMaxAggregateOutputType = {
@@ -37,7 +37,7 @@ export type ProgramaDocumentoMaxAggregateOutputType = {
   programaId: string | null
   tipoDocumentoId: string | null
   esObligatorio: boolean | null
-  aplicaA: $Enums.TipoPersona | null
+  aplicaA: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCountAggregateOutputType = {
@@ -152,7 +152,7 @@ export type ProgramaDocumentoGroupByOutputType = {
   programaId: string
   tipoDocumentoId: string
   esObligatorio: boolean
-  aplicaA: $Enums.TipoPersona | null
+  aplicaA: $Enums.TipoPersonaDocumento | null
   _count: ProgramaDocumentoCountAggregateOutputType | null
   _min: ProgramaDocumentoMinAggregateOutputType | null
   _max: ProgramaDocumentoMaxAggregateOutputType | null
@@ -181,7 +181,7 @@ export type ProgramaDocumentoWhereInput = {
   programaId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   tipoDocumentoId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   esObligatorio?: Prisma.BoolFilter<"ProgramaDocumento"> | boolean
-  aplicaA?: Prisma.EnumTipoPersonaNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersona | null
+  aplicaA?: Prisma.EnumTipoPersonaDocumentoNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersonaDocumento | null
   programa?: Prisma.XOR<Prisma.ProgramaScalarRelationFilter, Prisma.ProgramaWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
 }
@@ -205,7 +205,7 @@ export type ProgramaDocumentoWhereUniqueInput = Prisma.AtLeast<{
   programaId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   tipoDocumentoId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   esObligatorio?: Prisma.BoolFilter<"ProgramaDocumento"> | boolean
-  aplicaA?: Prisma.EnumTipoPersonaNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersona | null
+  aplicaA?: Prisma.EnumTipoPersonaDocumentoNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersonaDocumento | null
   programa?: Prisma.XOR<Prisma.ProgramaScalarRelationFilter, Prisma.ProgramaWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
 }, "id" | "programaId_tipoDocumentoId">
@@ -229,13 +229,13 @@ export type ProgramaDocumentoScalarWhereWithAggregatesInput = {
   programaId?: Prisma.StringWithAggregatesFilter<"ProgramaDocumento"> | string
   tipoDocumentoId?: Prisma.StringWithAggregatesFilter<"ProgramaDocumento"> | string
   esObligatorio?: Prisma.BoolWithAggregatesFilter<"ProgramaDocumento"> | boolean
-  aplicaA?: Prisma.EnumTipoPersonaNullableWithAggregatesFilter<"ProgramaDocumento"> | $Enums.TipoPersona | null
+  aplicaA?: Prisma.EnumTipoPersonaDocumentoNullableWithAggregatesFilter<"ProgramaDocumento"> | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateInput = {
   id?: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
   programa: Prisma.ProgramaCreateNestedOneWithoutDocumentosRequeridosInput
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutProgramasInput
 }
@@ -245,13 +245,13 @@ export type ProgramaDocumentoUncheckedCreateInput = {
   programaId: string
   tipoDocumentoId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutDocumentosRequeridosNestedInput
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutProgramasNestedInput
 }
@@ -261,7 +261,7 @@ export type ProgramaDocumentoUncheckedUpdateInput = {
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateManyInput = {
@@ -269,13 +269,13 @@ export type ProgramaDocumentoCreateManyInput = {
   programaId: string
   tipoDocumentoId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUncheckedUpdateManyInput = {
@@ -283,7 +283,7 @@ export type ProgramaDocumentoUncheckedUpdateManyInput = {
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoListRelationFilter = {
@@ -409,14 +409,14 @@ export type ProgramaDocumentoUncheckedUpdateManyWithoutTipoDocumentoNestedInput 
   deleteMany?: Prisma.ProgramaDocumentoScalarWhereInput | Prisma.ProgramaDocumentoScalarWhereInput[]
 }
 
-export type NullableEnumTipoPersonaFieldUpdateOperationsInput = {
-  set?: $Enums.TipoPersona | null
+export type NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput = {
+  set?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateWithoutProgramaInput = {
   id?: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutProgramasInput
 }
 
@@ -424,7 +424,7 @@ export type ProgramaDocumentoUncheckedCreateWithoutProgramaInput = {
   id?: string
   tipoDocumentoId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateOrConnectWithoutProgramaInput = {
@@ -461,13 +461,13 @@ export type ProgramaDocumentoScalarWhereInput = {
   programaId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   tipoDocumentoId?: Prisma.StringFilter<"ProgramaDocumento"> | string
   esObligatorio?: Prisma.BoolFilter<"ProgramaDocumento"> | boolean
-  aplicaA?: Prisma.EnumTipoPersonaNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersona | null
+  aplicaA?: Prisma.EnumTipoPersonaDocumentoNullableFilter<"ProgramaDocumento"> | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateWithoutTipoDocumentoInput = {
   id?: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
   programa: Prisma.ProgramaCreateNestedOneWithoutDocumentosRequeridosInput
 }
 
@@ -475,7 +475,7 @@ export type ProgramaDocumentoUncheckedCreateWithoutTipoDocumentoInput = {
   id?: string
   programaId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateOrConnectWithoutTipoDocumentoInput = {
@@ -508,13 +508,13 @@ export type ProgramaDocumentoCreateManyProgramaInput = {
   id?: string
   tipoDocumentoId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUpdateWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutProgramasNestedInput
 }
 
@@ -522,27 +522,27 @@ export type ProgramaDocumentoUncheckedUpdateWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUncheckedUpdateManyWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoCreateManyTipoDocumentoInput = {
   id?: string
   programaId: string
   esObligatorio?: boolean
-  aplicaA?: $Enums.TipoPersona | null
+  aplicaA?: $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUpdateWithoutTipoDocumentoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutDocumentosRequeridosNestedInput
 }
 
@@ -550,14 +550,14 @@ export type ProgramaDocumentoUncheckedUpdateWithoutTipoDocumentoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 export type ProgramaDocumentoUncheckedUpdateManyWithoutTipoDocumentoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   esObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  aplicaA?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  aplicaA?: Prisma.NullableEnumTipoPersonaDocumentoFieldUpdateOperationsInput | $Enums.TipoPersonaDocumento | null
 }
 
 
@@ -625,7 +625,7 @@ export type $ProgramaDocumentoPayload<ExtArgs extends runtime.Types.Extensions.I
     programaId: string
     tipoDocumentoId: string
     esObligatorio: boolean
-    aplicaA: $Enums.TipoPersona | null
+    aplicaA: $Enums.TipoPersonaDocumento | null
   }, ExtArgs["result"]["programaDocumento"]>
   composites: {}
 }
@@ -1055,7 +1055,7 @@ export interface ProgramaDocumentoFieldRefs {
   readonly programaId: Prisma.FieldRef<"ProgramaDocumento", 'String'>
   readonly tipoDocumentoId: Prisma.FieldRef<"ProgramaDocumento", 'String'>
   readonly esObligatorio: Prisma.FieldRef<"ProgramaDocumento", 'Boolean'>
-  readonly aplicaA: Prisma.FieldRef<"ProgramaDocumento", 'TipoPersona'>
+  readonly aplicaA: Prisma.FieldRef<"ProgramaDocumento", 'TipoPersonaDocumento'>
 }
     
 

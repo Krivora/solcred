@@ -35,13 +35,9 @@ const programaBaseSchema = z.object({
   plazoMaximoMeses: z
     .number({ message: "El plazo máximo es requerido" })
     .int().positive(),
-  avalObligatorio: z.boolean().default(false),
-  avalOpcional: z.boolean().default(false),
-  garantiaObligatoria: z.boolean().default(false),
-  garantiaOpcional: z.boolean().default(false),
+  aval: z.enum(["NO_REQUIERE", "OPCIONAL", "OBLIGATORIO"]).default("NO_REQUIERE"),
+  garantia: z.enum(["NO_REQUIERE", "OPCIONAL", "OBLIGATORIO"]).default("NO_REQUIERE"),
   datosFinancierosCompletos: z.boolean().default(false),
-  requiereCurp: z.boolean().default(true),
-  requiereRfc: z.boolean().default(true),
 });
 
 export const crearProgramaSchema = programaBaseSchema
@@ -86,7 +82,7 @@ export const agregarDocumentoSchema = z.object({
     .string({ message: "El tipo de documento es requerido" })
     .uuid("ID de documento inválido"),
   esObligatorio: z.boolean().default(true),
-  aplicaA: z.enum(["FISICA", "MORAL"]).optional(),
+  aplicaA: z.enum(["FISICA", "MORAL", "AMBOS"]).optional(),
 });
 
 export const crearTipoDocumentoSchema = z.object({

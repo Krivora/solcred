@@ -12,7 +12,7 @@ export const registro = async (
 ): Promise<void> => {
   try {
     const resultado = await authService.registrarUsuario(req.body);
-
+    console.log("BODY:", req.body);
     await registrarLog({
       accion: AccionLog.CREAR,
       modulo: ModuloLog.AUTH,
@@ -24,6 +24,9 @@ export const registro = async (
 
     res.status(201).json(ok("Usuario registrado exitosamente", resultado));
   } catch (error) {
+    console.error("ERROR EN REGISTRO:");
+    console.error(error);
+
     next(error);
   }
 };

@@ -5,12 +5,8 @@ import {
   Clock,
   Briefcase,
   Users,
-  Settings,
   FolderKanban,
   UserCheck,
-  ClipboardList,
-  Building2,
-  FileBadge2,
   ShieldCheck,
   BookOpen,
   AlertCircle,
@@ -109,39 +105,6 @@ export const navConfig: NavItem[] = [
         label: "Comité de Crédito",
         href: "/dashboard/financiamiento/comite",
         icon: Users,
-        roles: ["ADMIN"],
-      },
-    ],
-  },
-
-  // ── Administración (Admin)
-  {
-    label: "Gestión del Sistema",
-    icon: Settings,
-    roles: ["ADMIN"],
-    children: [
-      {
-        label: "Programas",
-        href: "/dashboard/admin/programas",
-        icon: Building2,
-        roles: ["ADMIN"],
-      },
-      {
-        label: "Documentos",
-        href: "/dashboard/admin/documentos",
-        icon: FileBadge2,
-        roles: ["ADMIN"],
-      },
-      {
-        label: "Usuarios",
-        href: "/dashboard/admin/usuarios",
-        icon: Users,
-        roles: ["ADMIN"],
-      },
-      {
-        label: "Auditoría",
-        href: "/dashboard/admin/logs",
-        icon: ClipboardList,
         roles: ["ADMIN"],
       },
     ],

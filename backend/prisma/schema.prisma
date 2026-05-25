@@ -21,7 +21,11 @@ enum TipoPersona {
   FISICA
   MORAL
 }
-
+enum TipoPersonaDocumento {
+  FISICA
+  MORAL
+  AMBOS
+}
 enum EstatusSolicitud {
   BORRADOR
   PENDIENTE
@@ -62,6 +66,12 @@ enum Sector {
   SERVICIOS
   TECNOLOGIA
   OTRO
+}
+
+enum Requerimiento {
+  NO_REQUIERE
+  OPCIONAL
+  OBLIGATORIO
 }
 
 // ─────────────────────────────────────────
@@ -116,18 +126,12 @@ model Programa {
   plazoMaximoMeses      Int
 
   // Configuración de campos requeridos
-  avalObligatorio       Boolean     @default(false)
-  avalOpcional          Boolean     @default(false)
-  garantiaObligatoria   Boolean     @default(false)
-  garantiaOpcional      Boolean     @default(false)
+  aval                Requerimiento @default(NO_REQUIERE)
+  garantia            Requerimiento @default(NO_REQUIERE)
   datosFinancierosCompletos Boolean @default(false)
-  requiereCurp          Boolean     @default(true)
-  requiereRfc           Boolean     @default(true)
-
   activo                Boolean     @default(true)
   creadoEn              DateTime    @default(now())
   actualizadoEn         DateTime    @updatedAt
-
   documentosRequeridos  ProgramaDocumento[]
   solicitudes  Solicitud[]
 }
@@ -153,7 +157,7 @@ model ProgramaDocumento {
   tipoDocumento   TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
   tipoDocumentoId String
   esObligatorio   Boolean       @default(true)
-  aplicaA         TipoPersona?  // null = aplica a ambos tipos de persona
+  aplicaA         TipoPersonaDocumento?  // null = aplica a ambos tipos de persona
 
   @@unique([programaId, tipoDocumentoId])
 }

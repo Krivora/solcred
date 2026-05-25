@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
@@ -17,18 +17,20 @@ export default function EditarProgramaPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        getPrograma(id)
+    const cargarPrograma = useCallback(() => {
+        return getPrograma(id)
             .then(setPrograma)
-            .catch(() => setError("No se pudo cargar el programa."))
-            .finally(() => setLoading(false));
+            .catch(() => setError("No se pudo cargar el programa."));
     }, [id]);
 
-    return (
+    useEffect(() => {
+        cargarPrograma().finally(() => setLoading(false));
+    }, [cargarPrograma]);
+    return (    
         <div className="mx-auto max-w-8xl space-y-6">
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
-                    <Link href={`/dashboard/admin/programas/${id}`}>
+                    <Link href={`/dashboard/admin/configuracion/programas/${id}`}>
                         <ChevronLeft className="h-4 w-4" />
                         Detalle del programa
                     </Link>
@@ -51,16 +53,16 @@ export default function EditarProgramaPage() {
             ) : error ? (
                 <p className="text-sm text-destructive">{error}</p>
             ) : programa ? (
-                <ProgramaForm programa={programa} />
-                
+                <>
+                    <ProgramaForm programa={programa} />
+                    <DocumentosPrograma
+                        key={programa.id}                              // solo remonta si cambia el programa
+                        programaId={programa.id}
+                        documentos={programa.documentosRequeridos ?? []}
+                        onCambio={() => {}}
+                    />
+                </>
             ) : null}
-            {programa && (
-                <DocumentosPrograma
-                    programaId={programa.id}
-                    documentos={programa.documentos ?? []}
-                    onCambio={() => getPrograma(id).then(setPrograma)}
-                />
-            )}
         </div>
     );
 }

@@ -3,10 +3,10 @@ import Link from "next/link";
 import {
     Building2,
     ArrowRight, MoreHorizontal,
-    CheckCircle2, XCircle, 
+    CheckCircle2, XCircle,
 
 } from "lucide-react";
-import { Button }   from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -61,11 +61,11 @@ const fmt = (n: number) =>
 
 const fmtCompact = (n: number) => {
     if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-    if (n >= 1_000)     return `$${(n / 1_000).toFixed(0)}K`;
+    if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
     return fmt(n);
 };
 export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaCardProps) {
-     return (
+    return (
         <div className="group flex flex-col rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md overflow-hidden">
             {/* Top accent strip */}
             <div className={["h-1 w-full transition-colors", programa.activo ? "bg-primary" : "bg-muted"].join(" ")} />
@@ -98,10 +98,10 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-40">
                                 <DropdownMenuItem asChild>
-                                    <Link href={`/dashboard/admin/programas/${programa.id}`}>Ver detalle</Link>
+                                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}`}>Ver detalle</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href={`/dashboard/admin/programas/${programa.id}/editar`}>Editar</Link>
+                                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
@@ -155,10 +155,10 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
             {/* Footer CTA */}
             <div className="flex items-center justify-between gap-2 px-5 py-3 bg-muted/20">
                 <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground px-2" asChild>
-                    <Link href={`/dashboard/admin/programas/${programa.id}/editar`}>Editar</Link>
+                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
                 </Button>
                 <Button size="sm" className="h-7 text-xs gap-1" asChild>
-                    <Link href={`/dashboard/admin/programas/${programa.id}`}>
+                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}`}>
                         Ver <ArrowRight className="h-3 w-3" />
                     </Link>
                 </Button>

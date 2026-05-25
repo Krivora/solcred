@@ -26,6 +26,15 @@ export const TipoPersona = {
 export type TipoPersona = (typeof TipoPersona)[keyof typeof TipoPersona]
 
 
+export const TipoPersonaDocumento = {
+  FISICA: 'FISICA',
+  MORAL: 'MORAL',
+  AMBOS: 'AMBOS'
+} as const
+
+export type TipoPersonaDocumento = (typeof TipoPersonaDocumento)[keyof typeof TipoPersonaDocumento]
+
+
 export const EstatusSolicitud = {
   BORRADOR: 'BORRADOR',
   PENDIENTE: 'PENDIENTE',
@@ -81,6 +90,15 @@ export const Sector = {
 } as const
 
 export type Sector = (typeof Sector)[keyof typeof Sector]
+
+
+export const Requerimiento = {
+  NO_REQUIERE: 'NO_REQUIERE',
+  OPCIONAL: 'OPCIONAL',
+  OBLIGATORIO: 'OBLIGATORIO'
+} as const
+
+export type Requerimiento = (typeof Requerimiento)[keyof typeof Requerimiento]
 
 
 export const AccionLog = {

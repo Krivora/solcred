@@ -81,7 +81,7 @@ export default function ProgramasPage() {
                     </p>
                 </div>
                 <Button asChild>
-                    <Link href="/dashboard/admin/programas/nuevo">
+                    <Link href="/dashboard/admin/configuracion/programas/nuevo">
                         <Plus className="mr-2 h-4 w-4" />
                         Nuevo Programa
                     </Link>
@@ -142,7 +142,7 @@ export default function ProgramasPage() {
                     </div>
                     {!search && (
                         <Button asChild size="sm">
-                            <Link href="/dashboard/admin/programas/nuevo">Crear primer programa</Link>
+                            <Link href="/dashboard/admin/configuracion/programas/nuevo">Crear primer programa</Link>
                         </Button>
                     )}
                 </div>

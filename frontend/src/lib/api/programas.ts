@@ -42,7 +42,7 @@ export async function crearTipoDocumento(data: {
 
 export async function agregarDocumento(
     programaId: string,
-    data: { tipoDocumentoId: string; esObligatorio: boolean; aplicaA?: "FISICA" | "MORAL" | null }
+    data: { tipoDocumentoId: string; esObligatorio: boolean; aplicaA?: "FISICA" | "MORAL" | 'AMBOS' }
 ): Promise<void> {
     return apiAuth(`/programas/${programaId}/documentos`, { method: "POST", body: data });
 }

@@ -6,18 +6,18 @@ import { useState } from "react";
 import {
     Loader2, FileText, DollarSign, ShieldCheck,
     AlertCircle, Check, User, Building2,
-    BadgeCheck, FileCheck2, Banknote, Calendar,
+    BadgeCheck, Calendar,
 } from "lucide-react";
 
-import { Button }   from "@/components/ui/button";
-import { Input }    from "@/components/ui/input";
-import { Label }    from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge }    from "@/components/ui/badge";
-import { cn }       from "@/lib/utils/cn";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils/cn";
 
 import { crearPrograma, actualizarPrograma } from "@/lib/api/programas";
-import type { Programa, ProgramaFormData }   from "@/lib/types/programa.types";
+import { Requerimiento, type Programa, type ProgramaFormData } from "@/lib/types/programa.types";
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
 interface ProgramaFormProps { programa?: Programa; }
@@ -28,11 +28,28 @@ const defaultValues: ProgramaFormData = {
     montoMinimo: 0, montoMaximo: 0,
     tasaOrdinaria: 0, tasaMoratoria: 0, tasaAnual: 0,
     plazoMinimoMeses: 1, plazoMaximoMeses: 12,
-    avalObligatorio: false, avalOpcional: false,
-    garantiaObligatoria: false, garantiaOpcional: false,
-    datosFinancierosCompletos: false, requiereCurp: true, requiereRfc: true,
+    aval: Requerimiento.NO_REQUIERE,
+    garantia: Requerimiento.NO_REQUIERE,
+    datosFinancierosCompletos: false,
 };
 
+const requerimientoOptions = [
+    {
+        value: Requerimiento.NO_REQUIERE,
+        label: "No requiere",
+        description: "No es necesario para el trámite",
+    },
+    {
+        value: Requerimiento.OPCIONAL,
+        label: "Opcional",
+        description: "Puede incluirse voluntariamente",
+    },
+    {
+        value: Requerimiento.OBLIGATORIO,
+        label: "Obligatorio",
+        description: "Requisito indispensable",
+    },
+];
 /* ── Sub-components ───────────────────────────────────────────────────────── */
 
 function SectionHeading({ icon: Icon, title, description }: {
@@ -71,8 +88,7 @@ function FieldRow({ label, error, hint, required, children }: {
     );
 }
 
-/* Inputs with optional prefix / suffix overlay */
-function NumberInput({ prefix, suffix, error, className, ...props }: 
+function NumberInput({ prefix, suffix, error, className, ...props }:
     React.InputHTMLAttributes<HTMLInputElement> & { prefix?: string; suffix?: string; error?: boolean }
 ) {
     return (
@@ -86,9 +102,9 @@ function NumberInput({ prefix, suffix, error, className, ...props }:
                 type="number"
                 className={cn(
                     "bg-background",
-                    prefix  && "pl-7",
-                    suffix  && "pr-14",
-                    error   && "border-destructive ring-destructive/20 focus-visible:ring-destructive/30",
+                    prefix && "pl-7",
+                    suffix && "pr-14",
+                    error && "border-destructive ring-destructive/20 focus-visible:ring-destructive/30",
                     className
                 )}
                 {...props}
@@ -161,7 +177,7 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
 
 /* ── Main Component ───────────────────────────────────────────────────────── */
 export function ProgramaForm({ programa }: ProgramaFormProps) {
-    const router  = useRouter();
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
 
@@ -174,7 +190,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     });
 
     const toggle = (name: keyof ProgramaFormData) => ({
-        checked:  !!watch(name),
+        checked: !!watch(name),
         onChange: (v: boolean) => setValue(name, v),
     });
 
@@ -183,16 +199,16 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
         try {
             const parsed = {
                 ...data,
-                montoMinimo:      Number(data.montoMinimo),
-                montoMaximo:      Number(data.montoMaximo),
-                tasaOrdinaria:    Number(data.tasaOrdinaria),
-                tasaMoratoria:    Number(data.tasaMoratoria),
-                tasaAnual:        Number(data.tasaAnual),
+                montoMinimo: Number(data.montoMinimo),
+                montoMaximo: Number(data.montoMaximo),
+                tasaOrdinaria: Number(data.tasaOrdinaria),
+                tasaMoratoria: Number(data.tasaMoratoria),
+                tasaAnual: Number(data.tasaAnual),
                 plazoMinimoMeses: Number(data.plazoMinimoMeses),
                 plazoMaximoMeses: Number(data.plazoMaximoMeses),
             };
             programa ? await actualizarPrograma(programa.id, parsed) : await crearPrograma(parsed);
-            router.push("/dashboard/admin/programas");
+            router.push("/dashboard/admin/configuracion/programas");
             router.refresh();
         } catch (err: unknown) {
             setApiError(err instanceof Error ? err.message : "Ocurrió un error inesperado");
@@ -366,21 +382,97 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                     )}
                 </div>
             </Card>
-
-            {/* ── Row 3: Requisitos — aval (2 col) + documentación (3 col) ── */}
+            {/* ── Row 3: Requisitos ── */}
             <Card>
                 <SectionHeading icon={ShieldCheck} title="Requisitos" description="Garantías, aval e información requerida del solicitante" />
                 <div className="space-y-5">
 
+                    {/* Aval */}
                     <div>
-                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Aval y garantía</p>
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            <ToggleCard label="Aval Obligatorio"    description="Requisito indispensable"           icon={BadgeCheck}  {...toggle("avalObligatorio")} />
-                            <ToggleCard label="Aval Opcional"       description="Puede incluirse voluntariamente"   icon={User}        {...toggle("avalOpcional")} />
-                            <ToggleCard label="Garantía Obligatoria" description="Garantía patrimonial requerida"   icon={ShieldCheck} {...toggle("garantiaObligatoria")} />
-                            <ToggleCard label="Garantía Opcional"   description="Se puede incluir opcionalmente"   icon={Banknote}    {...toggle("garantiaOpcional")} />
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Aval</p>
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            {requerimientoOptions.map((opt) => {
+                                const checked = watch("aval") === opt.value;
+                                return (
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        onClick={() => setValue("aval", opt.value)}
+                                        className={cn(
+                                            "group flex w-full items-start gap-3 rounded-lg border p-4 text-left",
+                                            "transition-colors duration-150 cursor-pointer",
+                                            checked
+                                                ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
+                                                : "border-border bg-background hover:bg-muted/40",
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors",
+                                            checked ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+                                        )}>
+                                            <BadgeCheck className="h-4 w-4" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className={cn("text-sm font-medium leading-none", checked ? "text-primary" : "text-foreground")}>
+                                                {opt.label}
+                                            </p>
+                                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
+                                        </div>
+                                        <div className={cn(
+                                            "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                                            checked ? "border-primary bg-primary" : "border-muted-foreground/30"
+                                        )}>
+                                            {checked && <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />}
+                                        </div>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
+
+                    {/* Garantía */}
+                    <div>
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Garantía</p>
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            {requerimientoOptions.map((opt) => {
+                                const checked = watch("garantia") === opt.value;
+                                return (
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        onClick={() => setValue("garantia", opt.value)}
+                                        className={cn(
+                                            "group flex w-full items-start gap-3 rounded-lg border p-4 text-left",
+                                            "transition-colors duration-150 cursor-pointer",
+                                            checked
+                                                ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
+                                                : "border-border bg-background hover:bg-muted/40",
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors",
+                                            checked ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+                                        )}>
+                                            <ShieldCheck className="h-4 w-4" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className={cn("text-sm font-medium leading-none", checked ? "text-primary" : "text-foreground")}>
+                                                {opt.label}
+                                            </p>
+                                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
+                                        </div>
+                                        <div className={cn(
+                                            "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                                            checked ? "border-primary bg-primary" : "border-muted-foreground/30"
+                                        )}>
+                                            {checked && <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />}
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
                 </div>
             </Card>
 

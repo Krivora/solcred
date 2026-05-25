@@ -60,13 +60,9 @@ export type ProgramaMinAggregateOutputType = {
   tasaAnual: number | null
   plazoMinimoMeses: number | null
   plazoMaximoMeses: number | null
-  avalObligatorio: boolean | null
-  avalOpcional: boolean | null
-  garantiaObligatoria: boolean | null
-  garantiaOpcional: boolean | null
+  aval: $Enums.Requerimiento | null
+  garantia: $Enums.Requerimiento | null
   datosFinancierosCompletos: boolean | null
-  requiereCurp: boolean | null
-  requiereRfc: boolean | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -86,13 +82,9 @@ export type ProgramaMaxAggregateOutputType = {
   tasaAnual: number | null
   plazoMinimoMeses: number | null
   plazoMaximoMeses: number | null
-  avalObligatorio: boolean | null
-  avalOpcional: boolean | null
-  garantiaObligatoria: boolean | null
-  garantiaOpcional: boolean | null
+  aval: $Enums.Requerimiento | null
+  garantia: $Enums.Requerimiento | null
   datosFinancierosCompletos: boolean | null
-  requiereCurp: boolean | null
-  requiereRfc: boolean | null
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -112,13 +104,9 @@ export type ProgramaCountAggregateOutputType = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio: number
-  avalOpcional: number
-  garantiaObligatoria: number
-  garantiaOpcional: number
+  aval: number
+  garantia: number
   datosFinancierosCompletos: number
-  requiereCurp: number
-  requiereRfc: number
   activo: number
   creadoEn: number
   actualizadoEn: number
@@ -160,13 +148,9 @@ export type ProgramaMinAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  avalObligatorio?: true
-  avalOpcional?: true
-  garantiaObligatoria?: true
-  garantiaOpcional?: true
+  aval?: true
+  garantia?: true
   datosFinancierosCompletos?: true
-  requiereCurp?: true
-  requiereRfc?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -186,13 +170,9 @@ export type ProgramaMaxAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  avalObligatorio?: true
-  avalOpcional?: true
-  garantiaObligatoria?: true
-  garantiaOpcional?: true
+  aval?: true
+  garantia?: true
   datosFinancierosCompletos?: true
-  requiereCurp?: true
-  requiereRfc?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -212,13 +192,9 @@ export type ProgramaCountAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  avalObligatorio?: true
-  avalOpcional?: true
-  garantiaObligatoria?: true
-  garantiaOpcional?: true
+  aval?: true
+  garantia?: true
   datosFinancierosCompletos?: true
-  requiereCurp?: true
-  requiereRfc?: true
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -325,13 +301,9 @@ export type ProgramaGroupByOutputType = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio: boolean
-  avalOpcional: boolean
-  garantiaObligatoria: boolean
-  garantiaOpcional: boolean
+  aval: $Enums.Requerimiento
+  garantia: $Enums.Requerimiento
   datosFinancierosCompletos: boolean
-  requiereCurp: boolean
-  requiereRfc: boolean
   activo: boolean
   creadoEn: Date
   actualizadoEn: Date
@@ -374,13 +346,9 @@ export type ProgramaWhereInput = {
   tasaAnual?: Prisma.FloatFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntFilter<"Programa"> | number
-  avalObligatorio?: Prisma.BoolFilter<"Programa"> | boolean
-  avalOpcional?: Prisma.BoolFilter<"Programa"> | boolean
-  garantiaObligatoria?: Prisma.BoolFilter<"Programa"> | boolean
-  garantiaOpcional?: Prisma.BoolFilter<"Programa"> | boolean
+  aval?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFilter<"Programa"> | boolean
-  requiereCurp?: Prisma.BoolFilter<"Programa"> | boolean
-  requiereRfc?: Prisma.BoolFilter<"Programa"> | boolean
   activo?: Prisma.BoolFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
@@ -402,13 +370,9 @@ export type ProgramaOrderByWithRelationInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  avalObligatorio?: Prisma.SortOrder
-  avalOpcional?: Prisma.SortOrder
-  garantiaObligatoria?: Prisma.SortOrder
-  garantiaOpcional?: Prisma.SortOrder
+  aval?: Prisma.SortOrder
+  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
-  requiereCurp?: Prisma.SortOrder
-  requiereRfc?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -433,13 +397,9 @@ export type ProgramaWhereUniqueInput = Prisma.AtLeast<{
   tasaAnual?: Prisma.FloatFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntFilter<"Programa"> | number
-  avalObligatorio?: Prisma.BoolFilter<"Programa"> | boolean
-  avalOpcional?: Prisma.BoolFilter<"Programa"> | boolean
-  garantiaObligatoria?: Prisma.BoolFilter<"Programa"> | boolean
-  garantiaOpcional?: Prisma.BoolFilter<"Programa"> | boolean
+  aval?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFilter<"Programa"> | boolean
-  requiereCurp?: Prisma.BoolFilter<"Programa"> | boolean
-  requiereRfc?: Prisma.BoolFilter<"Programa"> | boolean
   activo?: Prisma.BoolFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
@@ -461,13 +421,9 @@ export type ProgramaOrderByWithAggregationInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  avalObligatorio?: Prisma.SortOrder
-  avalOpcional?: Prisma.SortOrder
-  garantiaObligatoria?: Prisma.SortOrder
-  garantiaOpcional?: Prisma.SortOrder
+  aval?: Prisma.SortOrder
+  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
-  requiereCurp?: Prisma.SortOrder
-  requiereRfc?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -495,13 +451,9 @@ export type ProgramaScalarWhereWithAggregatesInput = {
   tasaAnual?: Prisma.FloatWithAggregatesFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntWithAggregatesFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntWithAggregatesFilter<"Programa"> | number
-  avalObligatorio?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
-  avalOpcional?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
-  garantiaObligatoria?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
-  garantiaOpcional?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
+  aval?: Prisma.EnumRequerimientoWithAggregatesFilter<"Programa"> | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoWithAggregatesFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
-  requiereCurp?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
-  requiereRfc?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
   activo?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Programa"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"Programa"> | Date | string
@@ -521,13 +473,9 @@ export type ProgramaCreateInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -549,13 +497,9 @@ export type ProgramaUncheckedCreateInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -577,13 +521,9 @@ export type ProgramaUpdateInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,13 +545,9 @@ export type ProgramaUncheckedUpdateInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -633,13 +569,9 @@ export type ProgramaCreateManyInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -659,13 +591,9 @@ export type ProgramaUpdateManyMutationInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -685,13 +613,9 @@ export type ProgramaUncheckedUpdateManyInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -711,13 +635,9 @@ export type ProgramaCountOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  avalObligatorio?: Prisma.SortOrder
-  avalOpcional?: Prisma.SortOrder
-  garantiaObligatoria?: Prisma.SortOrder
-  garantiaOpcional?: Prisma.SortOrder
+  aval?: Prisma.SortOrder
+  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
-  requiereCurp?: Prisma.SortOrder
-  requiereRfc?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -747,13 +667,9 @@ export type ProgramaMaxOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  avalObligatorio?: Prisma.SortOrder
-  avalOpcional?: Prisma.SortOrder
-  garantiaObligatoria?: Prisma.SortOrder
-  garantiaOpcional?: Prisma.SortOrder
+  aval?: Prisma.SortOrder
+  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
-  requiereCurp?: Prisma.SortOrder
-  requiereRfc?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -773,13 +689,9 @@ export type ProgramaMinOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  avalObligatorio?: Prisma.SortOrder
-  avalOpcional?: Prisma.SortOrder
-  garantiaObligatoria?: Prisma.SortOrder
-  garantiaOpcional?: Prisma.SortOrder
+  aval?: Prisma.SortOrder
+  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
-  requiereCurp?: Prisma.SortOrder
-  requiereRfc?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -814,6 +726,10 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type EnumRequerimientoFieldUpdateOperationsInput = {
+  set?: $Enums.Requerimiento
 }
 
 export type ProgramaCreateNestedOneWithoutDocumentosRequeridosInput = {
@@ -858,13 +774,9 @@ export type ProgramaCreateWithoutDocumentosRequeridosInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -885,13 +797,9 @@ export type ProgramaUncheckedCreateWithoutDocumentosRequeridosInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -928,13 +836,9 @@ export type ProgramaUpdateWithoutDocumentosRequeridosInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -955,13 +859,9 @@ export type ProgramaUncheckedUpdateWithoutDocumentosRequeridosInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -982,13 +882,9 @@ export type ProgramaCreateWithoutSolicitudesInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -1009,13 +905,9 @@ export type ProgramaUncheckedCreateWithoutSolicitudesInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: $Enums.Requerimiento
+  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -1052,13 +944,9 @@ export type ProgramaUpdateWithoutSolicitudesInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1079,13 +967,9 @@ export type ProgramaUncheckedUpdateWithoutSolicitudesInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  avalObligatorio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  avalOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaObligatoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  garantiaOpcional?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
+  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereCurp?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiereRfc?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1146,13 +1030,9 @@ export type ProgramaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: boolean
+  garantia?: boolean
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1175,13 +1055,9 @@ export type ProgramaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: boolean
+  garantia?: boolean
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1201,13 +1077,9 @@ export type ProgramaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: boolean
+  garantia?: boolean
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
@@ -1227,19 +1099,15 @@ export type ProgramaSelectScalar = {
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  avalObligatorio?: boolean
-  avalOpcional?: boolean
-  garantiaObligatoria?: boolean
-  garantiaOpcional?: boolean
+  aval?: boolean
+  garantia?: boolean
   datosFinancierosCompletos?: boolean
-  requiereCurp?: boolean
-  requiereRfc?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type ProgramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "objetivo" | "permitePersonaFisica" | "permitePersonaMoral" | "montoMinimo" | "montoMaximo" | "tasaOrdinaria" | "tasaMoratoria" | "tasaAnual" | "plazoMinimoMeses" | "plazoMaximoMeses" | "avalObligatorio" | "avalOpcional" | "garantiaObligatoria" | "garantiaOpcional" | "datosFinancierosCompletos" | "requiereCurp" | "requiereRfc" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["programa"]>
+export type ProgramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "objetivo" | "permitePersonaFisica" | "permitePersonaMoral" | "montoMinimo" | "montoMaximo" | "tasaOrdinaria" | "tasaMoratoria" | "tasaAnual" | "plazoMinimoMeses" | "plazoMaximoMeses" | "aval" | "garantia" | "datosFinancierosCompletos" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["programa"]>
 export type ProgramaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documentosRequeridos?: boolean | Prisma.Programa$documentosRequeridosArgs<ExtArgs>
   solicitudes?: boolean | Prisma.Programa$solicitudesArgs<ExtArgs>
@@ -1268,13 +1136,9 @@ export type $ProgramaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     tasaAnual: number
     plazoMinimoMeses: number
     plazoMaximoMeses: number
-    avalObligatorio: boolean
-    avalOpcional: boolean
-    garantiaObligatoria: boolean
-    garantiaOpcional: boolean
+    aval: $Enums.Requerimiento
+    garantia: $Enums.Requerimiento
     datosFinancierosCompletos: boolean
-    requiereCurp: boolean
-    requiereRfc: boolean
     activo: boolean
     creadoEn: Date
     actualizadoEn: Date
@@ -1716,13 +1580,9 @@ export interface ProgramaFieldRefs {
   readonly tasaAnual: Prisma.FieldRef<"Programa", 'Float'>
   readonly plazoMinimoMeses: Prisma.FieldRef<"Programa", 'Int'>
   readonly plazoMaximoMeses: Prisma.FieldRef<"Programa", 'Int'>
-  readonly avalObligatorio: Prisma.FieldRef<"Programa", 'Boolean'>
-  readonly avalOpcional: Prisma.FieldRef<"Programa", 'Boolean'>
-  readonly garantiaObligatoria: Prisma.FieldRef<"Programa", 'Boolean'>
-  readonly garantiaOpcional: Prisma.FieldRef<"Programa", 'Boolean'>
+  readonly aval: Prisma.FieldRef<"Programa", 'Requerimiento'>
+  readonly garantia: Prisma.FieldRef<"Programa", 'Requerimiento'>
   readonly datosFinancierosCompletos: Prisma.FieldRef<"Programa", 'Boolean'>
-  readonly requiereCurp: Prisma.FieldRef<"Programa", 'Boolean'>
-  readonly requiereRfc: Prisma.FieldRef<"Programa", 'Boolean'>
   readonly activo: Prisma.FieldRef<"Programa", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"Programa", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"Programa", 'DateTime'>

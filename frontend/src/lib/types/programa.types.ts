@@ -1,4 +1,10 @@
-export type AplicaA = "FISICA" | "MORAL" | null;
+export type AplicaA = "FISICA" | "MORAL" | "AMBOS";
+
+export enum Requerimiento {
+    NO_REQUIERE = "NO_REQUIERE",
+    OPCIONAL = "OPCIONAL",
+    OBLIGATORIO = "OBLIGATORIO",
+}
 
 export interface TipoDocumento {
     id: string;
@@ -29,15 +35,11 @@ export interface Programa {
     tasaAnual: number;
     plazoMinimoMeses: number;
     plazoMaximoMeses: number;
-    avalObligatorio: boolean;
-    avalOpcional: boolean;
-    garantiaObligatoria: boolean;
-    garantiaOpcional: boolean;
+    aval: Requerimiento;
+    garantia: Requerimiento;
     datosFinancierosCompletos: boolean;
-    requiereCurp: boolean;
-    requiereRfc: boolean;
     activo: boolean;
-    documentos?: ProgramaDocumento[];
+    documentosRequeridos?: ProgramaDocumento[];
     creadoEn?: string;
     actualizadoEn?: string;
 }
@@ -46,32 +48,22 @@ export interface ProgramaFormData {
     nombre: string;
     descripcion: string;
     objetivo: string;
+
     permitePersonaFisica: boolean;
     permitePersonaMoral: boolean;
+
     montoMinimo: number;
     montoMaximo: number;
+
     tasaOrdinaria: number;
     tasaMoratoria: number;
     tasaAnual: number;
+
     plazoMinimoMeses: number;
     plazoMaximoMeses: number;
-    avalObligatorio: boolean;
-    avalOpcional: boolean;
-    garantiaObligatoria: boolean;
-    garantiaOpcional: boolean;
+
+    aval: Requerimiento;
+    garantia: Requerimiento;
+
     datosFinancierosCompletos: boolean;
-    requiereCurp: boolean;
-    requiereRfc: boolean;
-}
-
-export interface ProgramasResponse {
-    success: boolean;
-    message: string;
-    data: Programa[];
-}
-
-export interface ProgramaResponse {
-    success: boolean;
-    message: string;
-    data: Programa;
 }
