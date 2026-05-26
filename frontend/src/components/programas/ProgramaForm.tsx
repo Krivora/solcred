@@ -5,21 +5,27 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
     Loader2, FileText, DollarSign, ShieldCheck,
-    AlertCircle, Check, User, Building2,
-    BadgeCheck, Calendar,
+    Check, User, Building2, BadgeCheck, Calendar,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
+import { toast } from "@/lib/utils/toast";
+
+import { Card } from "./form/Card";
+import { Divider } from "./form/Divider";
+import { FieldRow } from "./form/FieldRow";
+import { NumberInput } from "./form/NumberInput";
+import { RequerimientoSelector } from "./form/RequerimientoSelector";
+import { SectionHeading } from "./form/SectionHeading";
+import { ToggleCard } from "./form/ToggleCard";
 
 import { crearPrograma, actualizarPrograma } from "@/lib/api/programas";
 import { Requerimiento, type Programa, type ProgramaFormData } from "@/lib/types/programa.types";
 
-/* ── Types ────────────────────────────────────────────────────────────────── */
 interface ProgramaFormProps { programa?: Programa; }
 
 const defaultValues: ProgramaFormData = {
@@ -33,159 +39,12 @@ const defaultValues: ProgramaFormData = {
     datosFinancierosCompletos: false,
 };
 
-const requerimientoOptions = [
-    {
-        value: Requerimiento.NO_REQUIERE,
-        label: "No requiere",
-        description: "No es necesario para el trámite",
-    },
-    {
-        value: Requerimiento.OPCIONAL,
-        label: "Opcional",
-        description: "Puede incluirse voluntariamente",
-    },
-    {
-        value: Requerimiento.OBLIGATORIO,
-        label: "Obligatorio",
-        description: "Requisito indispensable",
-    },
-];
-/* ── Sub-components ───────────────────────────────────────────────────────── */
-
-function SectionHeading({ icon: Icon, title, description }: {
-    icon: React.ElementType; title: string; description: string;
-}) {
-    return (
-        <div className="flex items-center gap-3 mb-5">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-4 w-4" />
-            </div>
-            <div>
-                <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-                <p className="text-xs text-muted-foreground">{description}</p>
-            </div>
-        </div>
-    );
-}
-
-function FieldRow({ label, error, hint, required, children }: {
-    label: string; error?: string; hint?: string;
-    required?: boolean; children: React.ReactNode;
-}) {
-    return (
-        <div className="space-y-1.5">
-            <Label className="text-xs font-medium text-foreground/75">
-                {label}{required && <span className="ml-0.5 text-destructive">*</span>}
-            </Label>
-            {children}
-            {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
-            {error && (
-                <p className="flex items-center gap-1 text-xs text-destructive font-medium">
-                    <AlertCircle className="h-3 w-3 shrink-0" />{error}
-                </p>
-            )}
-        </div>
-    );
-}
-
-function NumberInput({ prefix, suffix, error, className, ...props }:
-    React.InputHTMLAttributes<HTMLInputElement> & { prefix?: string; suffix?: string; error?: boolean }
-) {
-    return (
-        <div className="relative">
-            {prefix && (
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
-                    {prefix}
-                </span>
-            )}
-            <Input
-                type="number"
-                className={cn(
-                    "bg-background",
-                    prefix && "pl-7",
-                    suffix && "pr-14",
-                    error && "border-destructive ring-destructive/20 focus-visible:ring-destructive/30",
-                    className
-                )}
-                {...props}
-            />
-            {suffix && (
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
-                    {suffix}
-                </span>
-            )}
-        </div>
-    );
-}
-
-/* Toggle card that looks like a proper shadcn-themed option */
-function ToggleCard({ label, description, icon: Icon, checked, onChange }: {
-    label: string; description: string; icon: React.ElementType;
-    checked: boolean; onChange: (v: boolean) => void;
-}) {
-    return (
-        <button
-            type="button"
-            onClick={() => onChange(!checked)}
-            className={cn(
-                "group flex w-full items-start gap-3 rounded-lg border p-4 text-left",
-                "transition-colors duration-150 cursor-pointer",
-                checked
-                    ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
-                    : "border-border bg-background hover:border-border hover:bg-muted/40",
-            )}
-        >
-            <div className={cn(
-                "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors",
-                checked ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
-            )}>
-                <Icon className="h-4 w-4" />
-            </div>
-            <div className="flex-1 min-w-0">
-                <p className={cn("text-sm font-medium leading-none", checked ? "text-primary" : "text-foreground")}>
-                    {label}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{description}</p>
-            </div>
-            <div className={cn(
-                "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                checked ? "border-primary bg-primary" : "border-muted-foreground/30"
-            )}>
-                {checked && <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />}
-            </div>
-        </button>
-    );
-}
-
-function Divider({ label }: { label: string }) {
-    return (
-        <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{label}</span>
-            <div className="h-px flex-1 bg-border" />
-        </div>
-    );
-}
-
-function Card({ children, className }: { children: React.ReactNode; className?: string }) {
-    return (
-        <div className={cn("rounded-xl border border-border bg-card p-6 shadow-sm", className)}>
-            {children}
-        </div>
-    );
-}
-
-/* ── Main Component ───────────────────────────────────────────────────────── */
 export function ProgramaForm({ programa }: ProgramaFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [apiError, setApiError] = useState<string | null>(null);
 
-    const {
-        register, handleSubmit, watch, setValue,
-        formState: { errors },
-    } = useForm<ProgramaFormData>({
-        defaultValues: programa ? { ...programa } : defaultValues,
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<ProgramaFormData>({
+        defaultValues: programa ?? defaultValues,
         mode: "onTouched",
     });
 
@@ -195,23 +54,38 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     });
 
     const onSubmit = async (data: ProgramaFormData) => {
-        setLoading(true); setApiError(null);
+        if (!data.permitePersonaFisica && !data.permitePersonaMoral) {
+            toast.warning("Selecciona al menos un tipo de solicitante");
+            return;
+        }
+
+        setLoading(true);
         try {
             const parsed = {
                 ...data,
-                montoMinimo: Number(data.montoMinimo),
-                montoMaximo: Number(data.montoMaximo),
-                tasaOrdinaria: Number(data.tasaOrdinaria),
-                tasaMoratoria: Number(data.tasaMoratoria),
-                tasaAnual: Number(data.tasaAnual),
+                montoMinimo:     Number(data.montoMinimo),
+                montoMaximo:     Number(data.montoMaximo),
+                tasaOrdinaria:   Number(data.tasaOrdinaria),
+                tasaMoratoria:   Number(data.tasaMoratoria),
+                tasaAnual:       Number(data.tasaAnual),
                 plazoMinimoMeses: Number(data.plazoMinimoMeses),
                 plazoMaximoMeses: Number(data.plazoMaximoMeses),
             };
-            programa ? await actualizarPrograma(programa.id, parsed) : await crearPrograma(parsed);
+            programa
+                ? await actualizarPrograma(programa.id, parsed)
+                : await crearPrograma(parsed);
+
+           toast.success(programa ? "Programa actualizado" : "Programa creado", 
+                programa 
+                    ? `Los cambios en "${programa.nombre}" se guardaron correctamente` 
+                    : `El programa "${data.nombre}" ya está disponible en el sistema`
+            );
             router.push("/dashboard/admin/configuracion/programas");
-            router.refresh();
         } catch (err: unknown) {
-            setApiError(err instanceof Error ? err.message : "Ocurrió un error inesperado");
+           toast.error(
+                programa ? "Error al actualizar el programa" : "Error al crear el programa",
+                err instanceof Error ? err.message : "Ocurrió un error inesperado, intenta de nuevo"
+            );
         } finally {
             setLoading(false);
         }
@@ -220,10 +94,8 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-8xl mx-auto">
 
-            {/* ── Row 1: Información general (2/3) + Tipo de persona (1/3) ── */}
+            {/* Row 1: Info general + Tipo de persona */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-
-                {/* General — ocupa 2 columnas */}
                 <Card className="lg:col-span-2">
                     <SectionHeading icon={FileText} title="Información General" description="Nombre, descripción y objetivo del programa" />
                     <div className="space-y-4">
@@ -238,12 +110,10 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                                 })}
                             />
                         </FieldRow>
-
                         <div className="grid gap-4 sm:grid-cols-2">
                             <FieldRow label="Descripción" required error={errors.descripcion?.message}>
                                 <Textarea
-                                    rows={4}
-                                    placeholder="Descripción del programa..."
+                                    rows={4} placeholder="Descripción del programa..."
                                     className={cn("bg-background resize-none", errors.descripcion && "border-destructive")}
                                     {...register("descripcion", {
                                         required: "La descripción es obligatoria",
@@ -253,8 +123,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                             </FieldRow>
                             <FieldRow label="Objetivo" required error={errors.objetivo?.message}>
                                 <Textarea
-                                    rows={4}
-                                    placeholder="Objetivo principal del financiamiento..."
+                                    rows={4} placeholder="Objetivo principal del financiamiento..."
                                     className={cn("bg-background resize-none", errors.objetivo && "border-destructive")}
                                     {...register("objetivo", {
                                         required: "El objetivo es obligatorio",
@@ -266,7 +135,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                     </div>
                 </Card>
 
-                {/* Tipo de persona — 1 columna */}
                 <Card>
                     <SectionHeading icon={User} title="Tipo de Solicitante" description="¿Quién puede aplicar?" />
                     <div className="space-y-3">
@@ -283,8 +151,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                             {...toggle("permitePersonaMoral")}
                         />
                     </div>
-
-                    {/* Active badges */}
                     {(watch("permitePersonaFisica") || watch("permitePersonaMoral")) && (
                         <div className="mt-4 flex gap-2 flex-wrap border-t border-border pt-4">
                             {watch("permitePersonaFisica") && (
@@ -302,17 +168,13 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                 </Card>
             </div>
 
-            {/* ── Row 2: Financiero — 3 columnas iguales ──────────────────── */}
+            {/* Row 2: Condiciones financieras */}
             <Card>
                 <SectionHeading icon={DollarSign} title="Condiciones Financieras" description="Montos, tasas y plazos del programa" />
                 <div className="space-y-5">
-
-                    {/* Montos */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <FieldRow label="Monto mínimo (MXN)" required error={errors.montoMinimo?.message}>
-                            <NumberInput
-                                prefix="$" min={0} step={1000}
-                                error={!!errors.montoMinimo}
+                            <NumberInput prefix="$" min={0} step={1000} error={!!errors.montoMinimo}
                                 {...register("montoMinimo", {
                                     required: "Campo requerido",
                                     min: { value: 1, message: "Debe ser mayor a 0" },
@@ -321,9 +183,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                             />
                         </FieldRow>
                         <FieldRow label="Monto máximo (MXN)" required error={errors.montoMaximo?.message}>
-                            <NumberInput
-                                prefix="$" min={0} step={1000}
-                                error={!!errors.montoMaximo}
+                            <NumberInput prefix="$" min={0} step={1000} error={!!errors.montoMaximo}
                                 {...register("montoMaximo", {
                                     required: "Campo requerido",
                                     validate: v => Number(v) > Number(watch("montoMinimo")) || "Debe ser mayor al monto mínimo",
@@ -334,7 +194,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
 
                     <Divider label="Tasas de interés" />
 
-                    {/* Tasas — 3 iguales */}
                     <div className="grid gap-4 grid-cols-3">
                         <FieldRow label="Tasa ordinaria" error={errors.tasaOrdinaria?.message}>
                             <NumberInput suffix="%" step={0.01} min={0} max={100} error={!!errors.tasaOrdinaria}
@@ -352,7 +211,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
 
                     <Divider label="Plazos" />
 
-                    {/* Plazos — 2 iguales + info badge */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <FieldRow label="Plazo mínimo" required error={errors.plazoMinimoMeses?.message}>
                             <NumberInput suffix="meses" min={1} error={!!errors.plazoMinimoMeses}
@@ -371,7 +229,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                         </FieldRow>
                     </div>
 
-                    {/* Inline range hint */}
                     {Number(watch("plazoMaximoMeses")) > Number(watch("plazoMinimoMeses")) && (
                         <div className="flex items-center gap-2 rounded-lg bg-muted px-4 py-2.5">
                             <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
@@ -382,108 +239,27 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                     )}
                 </div>
             </Card>
-            {/* ── Row 3: Requisitos ── */}
+
+            {/* Row 3: Requisitos */}
             <Card>
                 <SectionHeading icon={ShieldCheck} title="Requisitos" description="Garantías, aval e información requerida del solicitante" />
                 <div className="space-y-5">
-
-                    {/* Aval */}
-                    <div>
-                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Aval</p>
-                        <div className="grid gap-3 sm:grid-cols-3">
-                            {requerimientoOptions.map((opt) => {
-                                const checked = watch("aval") === opt.value;
-                                return (
-                                    <button
-                                        key={opt.value}
-                                        type="button"
-                                        onClick={() => setValue("aval", opt.value)}
-                                        className={cn(
-                                            "group flex w-full items-start gap-3 rounded-lg border p-4 text-left",
-                                            "transition-colors duration-150 cursor-pointer",
-                                            checked
-                                                ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
-                                                : "border-border bg-background hover:bg-muted/40",
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors",
-                                            checked ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
-                                        )}>
-                                            <BadgeCheck className="h-4 w-4" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className={cn("text-sm font-medium leading-none", checked ? "text-primary" : "text-foreground")}>
-                                                {opt.label}
-                                            </p>
-                                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
-                                        </div>
-                                        <div className={cn(
-                                            "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                                            checked ? "border-primary bg-primary" : "border-muted-foreground/30"
-                                        )}>
-                                            {checked && <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />}
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Garantía */}
-                    <div>
-                        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Garantía</p>
-                        <div className="grid gap-3 sm:grid-cols-3">
-                            {requerimientoOptions.map((opt) => {
-                                const checked = watch("garantia") === opt.value;
-                                return (
-                                    <button
-                                        key={opt.value}
-                                        type="button"
-                                        onClick={() => setValue("garantia", opt.value)}
-                                        className={cn(
-                                            "group flex w-full items-start gap-3 rounded-lg border p-4 text-left",
-                                            "transition-colors duration-150 cursor-pointer",
-                                            checked
-                                                ? "border-primary/50 bg-primary/5 ring-1 ring-primary/20"
-                                                : "border-border bg-background hover:bg-muted/40",
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition-colors",
-                                            checked ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
-                                        )}>
-                                            <ShieldCheck className="h-4 w-4" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className={cn("text-sm font-medium leading-none", checked ? "text-primary" : "text-foreground")}>
-                                                {opt.label}
-                                            </p>
-                                            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
-                                        </div>
-                                        <div className={cn(
-                                            "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                                            checked ? "border-primary bg-primary" : "border-muted-foreground/30"
-                                        )}>
-                                            {checked && <Check className="h-2.5 w-2.5 text-primary-foreground" strokeWidth={3} />}
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
+                    <RequerimientoSelector
+                        label="Aval"
+                        icon={BadgeCheck}
+                        value={watch("aval")}
+                        onChange={(v) => setValue("aval", v)}
+                    />
+                    <RequerimientoSelector
+                        label="Garantía"
+                        icon={ShieldCheck}
+                        value={watch("garantia")}
+                        onChange={(v) => setValue("garantia", v)}
+                    />
                 </div>
             </Card>
 
-            {/* ── Error + Actions ───────────────────────────────────────────── */}
-            {apiError && (
-                <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
-                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-                    <p className="text-sm text-destructive">{apiError}</p>
-                </div>
-            )}
-
+            {/* Actions */}
             <div className="flex items-center justify-between border-t border-border pt-5">
                 <p className="text-xs text-muted-foreground">
                     Los campos con <span className="text-destructive font-bold">*</span> son obligatorios
@@ -498,7 +274,6 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                     </Button>
                 </div>
             </div>
-
         </form>
     );
 }

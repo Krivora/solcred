@@ -11,6 +11,7 @@ import {
     DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { crearTipoDocumento } from "@/lib/api/programas";
+import { toast } from "@/lib/utils/toast";
 import type { TipoDocumento } from "@/lib/types/programa.types";
 
 interface Props {
@@ -24,12 +25,13 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [guardando, setGuardando] = useState(false);
-    const [error, setError] = useState("");
+    const [errorNombre, setErrorNombre] = useState("");
 
-    const reset = () => { setNombre(""); setDescripcion(""); setError(""); };
+    const reset = () => { setNombre(""); setDescripcion(""); setErrorNombre(""); };
 
     const handleGuardar = async () => {
-        if (!nombre.trim()) { setError("El nombre es requerido"); return; }
+        if (!nombre.trim()) { setErrorNombre("El nombre es requerido"); return; }
+
         setGuardando(true);
         try {
             if (onGuardar) {
@@ -41,10 +43,11 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                 });
                 onSuccess(nuevo);
             }
+           toast.success("Tipo de documento creado", "El tipo de documento se ha creado correctamente");
             reset();
-            onOpenChange(false); // ← cierra el dialog al guardar
+            onOpenChange(false);
         } catch (e: unknown) {
-            setError(e instanceof Error ? e.message : "Error al guardar");
+            toast.error("Error al guardar", e instanceof Error ? e.message : "Ocurrió un error inesperado, intenta de nuevo");
         } finally {
             setGuardando(false);
         }
@@ -66,10 +69,10 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                             id="td-nombre"
                             placeholder="Ej: INE, CURP, Acta constitutiva"
                             value={nombre}
-                            onChange={(e) => { setNombre(e.target.value); setError(""); }}
+                            onChange={(e) => { setNombre(e.target.value); setErrorNombre(""); }}
                             onKeyDown={(e) => e.key === "Enter" && handleGuardar()}
                         />
-                        {error && <p className="text-xs text-destructive">{error}</p>}
+                        {errorNombre && <p className="text-xs text-destructive">{errorNombre}</p>}
                     </div>
                     <div className="space-y-1.5">
                         <Label htmlFor="td-desc">

@@ -1,12 +1,8 @@
 "use client";
 
-// src/app/(dashboard)/dashboard/admin/programas/nuevo/page.tsx
-// (ajusta la ruta según tu estructura)
-
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProgramaForm } from "@/components/programas/ProgramaForm";
-import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
 
 export default function NuevoProgramaPage() {
     return (
@@ -16,7 +12,7 @@ export default function NuevoProgramaPage() {
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3">
                     <Link
-                        href="/dashboard/admin/programas"
+                        href="/dashboard/admin/configuracion/programas"
                         className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />

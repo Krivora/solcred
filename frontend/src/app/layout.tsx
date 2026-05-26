@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sileo";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,8 +28,22 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
-      >
-        {children}
+      > 
+        <Toaster
+          position="top-right"
+          theme="system"
+          options={{
+              styles: {
+                  title: "text-[--foreground]!",
+                  description: "text-[--muted-foreground]!",
+                  badge: "bg-[--primary]/15!",
+                  button: "bg-[--primary]/10! hover:bg-[--primary]/20!",
+              },
+          }}
+        />
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );

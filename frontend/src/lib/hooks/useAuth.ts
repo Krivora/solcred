@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/auth.store';
 import { authApi } from '../api/auth';
 import { ApiError } from '../api/client';
 import type { LoginFormValues, RegisterFormValues } from '../schemas/auth.schemas';
-
+import { toast } from '@/lib/utils/toast';
 interface UseAuthReturn {
   isLoading: boolean;
   error: string | null;
@@ -27,12 +27,16 @@ export function useAuth(): UseAuthReturn {
     try {
       const data = await authApi.login(values);
       setAuth(data.usuario, data.token);
+      toast.success('Bienvenido de vuelta');
       router.push('/dashboard');
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
+        toast.error(err.message);
       } else {
-        setError('Ocurrió un error inesperado. Intenta de nuevo.');
+        const msg = 'Ocurrió un error inesperado. Intenta de nuevo.';
+        setError(msg);
+        toast.error(msg);
       }
     } finally {
       setIsLoading(false);
@@ -49,12 +53,16 @@ export function useAuth(): UseAuthReturn {
         rfc: values.rfc || undefined,
       };
       await authApi.registro(payload);
+      toast.success('Cuenta creada correctamente');
       router.push('/login?registered=true');
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
+        toast.error(err.message);
       } else {
-        setError('Ocurrió un error inesperado. Intenta de nuevo.');
+        const msg = 'Ocurrió un error inesperado. Intenta de nuevo.';
+        setError(msg);
+        toast.error(msg);
       }
     } finally {
       setIsLoading(false);

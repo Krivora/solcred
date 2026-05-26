@@ -10,6 +10,7 @@ export interface TipoDocumento {
     id: string;
     nombre: string;
     descripcion?: string | null;
+    creadoEn?: string;
 }
 
 export interface ProgramaDocumento {

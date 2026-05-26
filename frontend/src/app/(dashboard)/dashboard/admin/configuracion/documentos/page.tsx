@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { TipoDocumentoDialog } from "@/components/documentos/TipoDocumentoDialog";
 import { getTiposDocumento } from "@/lib/api/programas";
+import { toast } from "@/lib/utils/toast";
 import type { TipoDocumento } from "@/lib/types/programa.types";
 
 export default function DocumentosPage() {
@@ -19,31 +20,25 @@ export default function DocumentosPage() {
     const [search, setSearch] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    useEffect(() => { fetchTipos(); }, []);
 
-    async function fetchTipos() {
-        setLoading(true);
-        try {
-            setTipos(await getTiposDocumento());
-        } finally {
-            setLoading(false);
-        }
-    }
+    useEffect(() => {
+    getTiposDocumento()
+        .then(setTipos)
+        .catch((e: unknown) => {
+            toast.error(e instanceof Error ? e.message : "Error al cargar los documentos");
+        })
+        .finally(() => setLoading(false));
+}, []);
 
     const filtered = tipos
-    .filter((t) =>
-        t.nombre.toLowerCase().includes(search.toLowerCase()) ||
-        (t.descripcion ?? "").toLowerCase().includes(search.toLowerCase())
-    )
-    .sort((a, b) =>
-        a.nombre.localeCompare(b.nombre, "es", {
-            sensitivity: "base",
-        })
-    );
+        .filter((t) =>
+            t.nombre.toLowerCase().includes(search.toLowerCase()) ||
+            (t.descripcion ?? "").toLowerCase().includes(search.toLowerCase())
+        )
+        .sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -62,7 +57,6 @@ export default function DocumentosPage() {
                 </Button>
             </div>
 
-            {/* Search */}
             <div className="relative max-w-sm">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -73,7 +67,6 @@ export default function DocumentosPage() {
                 />
             </div>
 
-            {/* Table */}
             <div className="rounded-xl border border-border overflow-hidden">
                 <Table>
                     <TableHeader>
@@ -142,7 +135,6 @@ export default function DocumentosPage() {
                     </TableBody>
                 </Table>
 
-                {/* Footer con conteo */}
                 {!loading && filtered.length > 0 && (
                     <div className="border-t border-border bg-muted/20 px-4 py-2.5">
                         <p className="text-xs text-muted-foreground">
