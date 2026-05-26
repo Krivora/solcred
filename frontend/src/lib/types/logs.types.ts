@@ -33,7 +33,6 @@ export interface LogAuditoria {
   userAgent?: string | null;
   metadata?: Record<string, unknown> | null;
   creadoEn: string; // ISO date string
-  // Relación opcional si el backend popula el usuario
   usuario?: {
     id: string;
     correo: string;
@@ -51,8 +50,8 @@ export interface LogsQueryParams {
   accion?: AccionLog;
   modulo?: ModuloLog;
   usuarioId?: string;
-  fechaInicio?: string; // ISO date
-  fechaFin?: string;   // ISO date
+  fechaInicio?: string;
+  fechaFin?: string;
   pagina?: number;
   limite?: number;
 }
@@ -65,13 +64,43 @@ export interface LogsPaginados {
   totalPaginas: number;
 }
 
+// Shapes que devuelve Prisma groupBy en el backend
+export interface AccionCount {
+  _count: { accion: number };
+  accion: AccionLog;
+}
+
+export interface ModuloCount {
+  _count: { modulo: number };
+  modulo: ModuloLog;
+}
+
+// Alineado con la respuesta real del endpoint GET /api/logs/resumen
 export interface ResumenLogs {
   totalAcciones: number;
-  porAccion: Record<AccionLog, number>;
-  porModulo: Record<ModuloLog, number>;
-  ultimasHoras: number; // periodo del resumen
-  usuariosActivos: number;
-  erroresRecientes: number;
+  totalErrores: number;
+  accionesPorDia: AccionCount[];     // agrupa por tipo de acción
+  accionesPorModulo: ModuloCount[];  // agrupa por módulo
+}
+
+// ─────────────────────────────────────────
+// HELPERS DE LECTURA
+// ─────────────────────────────────────────
+
+/** Extrae el conteo de una acción concreta del array groupBy */
+export function getConteoAccion(
+  accionesPorDia: AccionCount[],
+  accion: AccionLog,
+): number {
+  return accionesPorDia.find((a) => a.accion === accion)?._count.accion ?? 0;
+}
+
+/** Extrae el conteo de un módulo concreto del array groupBy */
+export function getConteoModulo(
+  accionesPorModulo: ModuloCount[],
+  modulo: ModuloLog,
+): number {
+  return accionesPorModulo.find((m) => m.modulo === modulo)?._count.modulo ?? 0;
 }
 
 // ─────────────────────────────────────────
@@ -84,7 +113,7 @@ export interface LogFilters {
   usuarioId: string;
   fechaInicio: string;
   fechaFin: string;
-  busqueda: string; // búsqueda libre en descripción
+  busqueda: string;
 }
 
 export const ACCIONES_LOG: AccionLog[] = [

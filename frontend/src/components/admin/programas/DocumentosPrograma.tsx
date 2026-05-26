@@ -13,7 +13,7 @@ import {
     SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { TipoDocumentoDialog } from "@/components/documentos/TipoDocumentoDialog";
+import { TipoDocumentoDialog } from "@/components/admin/documentos/TipoDocumentoDialog";
 import {
     getTiposDocumento, agregarDocumento,
     quitarDocumento, crearTipoDocumento,

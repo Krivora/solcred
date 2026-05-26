@@ -2,10 +2,10 @@
 
 import { ShieldCheck, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LogsStats } from '@/components/logs/LogsStats';
-import { LogsFilters } from '@/components/logs/LogsFilters';
-import { LogsTable } from '@/components/logs/LogsTable';
-import { LogDetailModal } from '@/components/logs/LogDetailModal';
+import { LogsStats } from '@/components/admin/logs/LogsStats';
+import { LogsFilters } from '@/components/admin/logs/LogsFilters';
+import { LogsTable } from '@/components/admin/logs/LogsTable';
+import { LogDetailModal } from '@/components/admin/logs/LogDetailModal';
 import { useLogs } from '@/lib/hooks/useLogs';
 
 export default function LogsPage() {

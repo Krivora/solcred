@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/card";
 
 import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
-import { ProgramaBadge, TipoPersonaBadge } from "@/components/programas/ProgramaBadge";
-import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
+import { ProgramaBadge, TipoPersonaBadge } from "@/components/admin/programas/ProgramaBadge";
+import { DocumentosPrograma } from "@/components/admin/programas/DocumentosPrograma";
 import { Requerimiento, type Programa } from "@/lib/types/programa.types";
 import { cn } from "@/lib/utils/cn";
 

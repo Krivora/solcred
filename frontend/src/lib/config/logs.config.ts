@@ -11,47 +11,68 @@ export type AccionConfig = {
   icon: string; // nombre Lucide
 };
 
+/*
+  Paleta disponible (globals.css):
+  primary / primary-foreground
+  secondary / secondary-foreground
+  muted / muted-foreground
+  accent / accent-foreground
+  destructive / destructive-foreground
+  border · foreground
+  chart-1 (azul principal) · chart-2 (azul claro) · chart-3 (azul medio)
+  chart-4 (azul grisáceo) · chart-5 (azul muy claro)
+
+  Estrategia de diferenciación semántica:
+  CREAR     → primary   (acción constructiva principal)
+  ACTUALIZAR→ chart-2   (variante informativa de la paleta)
+  ELIMINAR  → destructive
+  CONSULTAR → muted     (acción neutra, sin énfasis)
+  LOGIN     → chart-3   (acceso — positivo pero distinto a crear)
+  LOGOUT    → chart-4   (salida — neutro-oscuro)
+  ERROR     → destructive con mayor peso visual que ELIMINAR
+*/
+
 export const ACCION_CONFIG: Record<AccionLog, AccionConfig> = {
   CREAR: {
     label: 'Crear',
     variant: 'success',
-    className: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
+    className: 'bg-primary/10 text-primary border-primary/30',
     icon: 'Plus',
   },
   ACTUALIZAR: {
     label: 'Actualizar',
     variant: 'info',
-    className: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
+    className: 'bg-[color:var(--chart-2)]/10 text-[color:var(--chart-2)] border-[color:var(--chart-2)]/30',
     icon: 'Pencil',
   },
   ELIMINAR: {
     label: 'Eliminar',
     variant: 'destructive',
-    className: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
+    className: 'bg-destructive/10 text-destructive border-destructive/30',
     icon: 'Trash2',
   },
   CONSULTAR: {
     label: 'Consultar',
     variant: 'secondary',
-    className: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    className: 'bg-muted text-muted-foreground border-border',
     icon: 'Eye',
   },
   LOGIN: {
     label: 'Login',
     variant: 'default',
-    className: 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-800',
+    className: 'bg-[color:var(--chart-3)]/10 text-[color:var(--chart-3)] border-[color:var(--chart-3)]/30',
     icon: 'LogIn',
   },
   LOGOUT: {
     label: 'Logout',
     variant: 'warning',
-    className: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
+    className: 'bg-[color:var(--chart-4)]/15 text-foreground border-[color:var(--chart-4)]/30',
     icon: 'LogOut',
   },
   ERROR: {
     label: 'Error',
     variant: 'destructive',
-    className: 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800',
+    className: 'bg-destructive/20 text-destructive border-destructive/50',
     icon: 'AlertTriangle',
   },
 };
@@ -66,30 +87,38 @@ export type ModuloConfig = {
   icon: string;
 };
 
+/*
+  Los 5 módulos se diferencian usando los 5 chart tokens de la paleta.
+  chart-1 (azul principal) · chart-2 · chart-3 · chart-4 · chart-5
+  Todos usan el mismo patrón: fondo /10, texto directo, borde /30.
+  Funciona en light y dark sin variantes adicionales porque los tokens
+  ya cambian con el tema en globals.css.
+*/
+
 export const MODULO_CONFIG: Record<ModuloLog, ModuloConfig> = {
   AUTH: {
     label: 'Auth',
-    className: 'bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-950/50 dark:text-violet-400',
+    className: 'bg-[color:var(--chart-1)]/10 text-[color:var(--chart-1)] border-[color:var(--chart-1)]/30',
     icon: 'Shield',
   },
   USUARIOS: {
     label: 'Usuarios',
-    className: 'bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-950/50 dark:text-sky-400',
+    className: 'bg-[color:var(--chart-2)]/10 text-[color:var(--chart-2)] border-[color:var(--chart-2)]/30',
     icon: 'Users',
   },
   PROGRAMAS: {
     label: 'Programas',
-    className: 'bg-teal-50 text-teal-600 border-teal-200 dark:bg-teal-950/50 dark:text-teal-400',
+    className: 'bg-[color:var(--chart-3)]/10 text-[color:var(--chart-3)] border-[color:var(--chart-3)]/30',
     icon: 'BookOpen',
   },
   SOLICITUDES: {
     label: 'Solicitudes',
-    className: 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-950/50 dark:text-orange-400',
+    className: 'bg-[color:var(--chart-4)]/10 text-[color:var(--chart-4)] border-[color:var(--chart-4)]/30',
     icon: 'FileText',
   },
   DOCUMENTOS: {
     label: 'Documentos',
-    className: 'bg-yellow-50 text-yellow-600 border-yellow-200 dark:bg-yellow-950/50 dark:text-yellow-400',
+    className: 'bg-[color:var(--chart-5)]/10 text-[color:var(--chart-5)] border-[color:var(--chart-5)]/30',
     icon: 'Paperclip',
   },
 };

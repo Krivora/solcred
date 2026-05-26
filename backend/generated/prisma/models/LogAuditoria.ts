@@ -218,6 +218,7 @@ export type LogAuditoriaWhereInput = {
   userAgent?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
   metadata?: Prisma.JsonNullableFilter<"LogAuditoria">
   creadoEn?: Prisma.DateTimeFilter<"LogAuditoria"> | Date | string
+  usuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
 }
 
 export type LogAuditoriaOrderByWithRelationInput = {
@@ -231,6 +232,7 @@ export type LogAuditoriaOrderByWithRelationInput = {
   userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
+  usuario?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type LogAuditoriaWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type LogAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   userAgent?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
   metadata?: Prisma.JsonNullableFilter<"LogAuditoria">
   creadoEn?: Prisma.DateTimeFilter<"LogAuditoria"> | Date | string
+  usuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
 }, "id">
 
 export type LogAuditoriaOrderByWithAggregationInput = {
@@ -287,11 +290,11 @@ export type LogAuditoriaCreateInput = {
   modulo: $Enums.ModuloLog
   descripcion: string
   entidadId?: string | null
-  usuarioId?: string | null
   ip?: string | null
   userAgent?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
+  usuario?: Prisma.UsuarioCreateNestedOneWithoutLogsInput
 }
 
 export type LogAuditoriaUncheckedCreateInput = {
@@ -313,11 +316,11 @@ export type LogAuditoriaUpdateInput = {
   modulo?: Prisma.EnumModuloLogFieldUpdateOperationsInput | $Enums.ModuloLog
   descripcion?: Prisma.StringFieldUpdateOperationsInput | string
   entidadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  usuarioId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuario?: Prisma.UsuarioUpdateOneWithoutLogsNestedInput
 }
 
 export type LogAuditoriaUncheckedUpdateInput = {
@@ -352,7 +355,6 @@ export type LogAuditoriaUpdateManyMutationInput = {
   modulo?: Prisma.EnumModuloLogFieldUpdateOperationsInput | $Enums.ModuloLog
   descripcion?: Prisma.StringFieldUpdateOperationsInput | string
   entidadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  usuarioId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -370,6 +372,16 @@ export type LogAuditoriaUncheckedUpdateManyInput = {
   userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LogAuditoriaListRelationFilter = {
+  every?: Prisma.LogAuditoriaWhereInput
+  some?: Prisma.LogAuditoriaWhereInput
+  none?: Prisma.LogAuditoriaWhereInput
+}
+
+export type LogAuditoriaOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type LogAuditoriaCountOrderByAggregateInput = {
@@ -409,12 +421,168 @@ export type LogAuditoriaMinOrderByAggregateInput = {
   creadoEn?: Prisma.SortOrder
 }
 
+export type LogAuditoriaCreateNestedManyWithoutUsuarioInput = {
+  create?: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput> | Prisma.LogAuditoriaCreateWithoutUsuarioInput[] | Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput[]
+  connectOrCreate?: Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput | Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput[]
+  createMany?: Prisma.LogAuditoriaCreateManyUsuarioInputEnvelope
+  connect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+}
+
+export type LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput = {
+  create?: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput> | Prisma.LogAuditoriaCreateWithoutUsuarioInput[] | Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput[]
+  connectOrCreate?: Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput | Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput[]
+  createMany?: Prisma.LogAuditoriaCreateManyUsuarioInputEnvelope
+  connect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+}
+
+export type LogAuditoriaUpdateManyWithoutUsuarioNestedInput = {
+  create?: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput> | Prisma.LogAuditoriaCreateWithoutUsuarioInput[] | Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput[]
+  connectOrCreate?: Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput | Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput[]
+  upsert?: Prisma.LogAuditoriaUpsertWithWhereUniqueWithoutUsuarioInput | Prisma.LogAuditoriaUpsertWithWhereUniqueWithoutUsuarioInput[]
+  createMany?: Prisma.LogAuditoriaCreateManyUsuarioInputEnvelope
+  set?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  disconnect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  delete?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  connect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  update?: Prisma.LogAuditoriaUpdateWithWhereUniqueWithoutUsuarioInput | Prisma.LogAuditoriaUpdateWithWhereUniqueWithoutUsuarioInput[]
+  updateMany?: Prisma.LogAuditoriaUpdateManyWithWhereWithoutUsuarioInput | Prisma.LogAuditoriaUpdateManyWithWhereWithoutUsuarioInput[]
+  deleteMany?: Prisma.LogAuditoriaScalarWhereInput | Prisma.LogAuditoriaScalarWhereInput[]
+}
+
+export type LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput = {
+  create?: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput> | Prisma.LogAuditoriaCreateWithoutUsuarioInput[] | Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput[]
+  connectOrCreate?: Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput | Prisma.LogAuditoriaCreateOrConnectWithoutUsuarioInput[]
+  upsert?: Prisma.LogAuditoriaUpsertWithWhereUniqueWithoutUsuarioInput | Prisma.LogAuditoriaUpsertWithWhereUniqueWithoutUsuarioInput[]
+  createMany?: Prisma.LogAuditoriaCreateManyUsuarioInputEnvelope
+  set?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  disconnect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  delete?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  connect?: Prisma.LogAuditoriaWhereUniqueInput | Prisma.LogAuditoriaWhereUniqueInput[]
+  update?: Prisma.LogAuditoriaUpdateWithWhereUniqueWithoutUsuarioInput | Prisma.LogAuditoriaUpdateWithWhereUniqueWithoutUsuarioInput[]
+  updateMany?: Prisma.LogAuditoriaUpdateManyWithWhereWithoutUsuarioInput | Prisma.LogAuditoriaUpdateManyWithWhereWithoutUsuarioInput[]
+  deleteMany?: Prisma.LogAuditoriaScalarWhereInput | Prisma.LogAuditoriaScalarWhereInput[]
+}
+
 export type EnumAccionLogFieldUpdateOperationsInput = {
   set?: $Enums.AccionLog
 }
 
 export type EnumModuloLogFieldUpdateOperationsInput = {
   set?: $Enums.ModuloLog
+}
+
+export type LogAuditoriaCreateWithoutUsuarioInput = {
+  id?: string
+  accion: $Enums.AccionLog
+  modulo: $Enums.ModuloLog
+  descripcion: string
+  entidadId?: string | null
+  ip?: string | null
+  userAgent?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Date | string
+}
+
+export type LogAuditoriaUncheckedCreateWithoutUsuarioInput = {
+  id?: string
+  accion: $Enums.AccionLog
+  modulo: $Enums.ModuloLog
+  descripcion: string
+  entidadId?: string | null
+  ip?: string | null
+  userAgent?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Date | string
+}
+
+export type LogAuditoriaCreateOrConnectWithoutUsuarioInput = {
+  where: Prisma.LogAuditoriaWhereUniqueInput
+  create: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput>
+}
+
+export type LogAuditoriaCreateManyUsuarioInputEnvelope = {
+  data: Prisma.LogAuditoriaCreateManyUsuarioInput | Prisma.LogAuditoriaCreateManyUsuarioInput[]
+  skipDuplicates?: boolean
+}
+
+export type LogAuditoriaUpsertWithWhereUniqueWithoutUsuarioInput = {
+  where: Prisma.LogAuditoriaWhereUniqueInput
+  update: Prisma.XOR<Prisma.LogAuditoriaUpdateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedUpdateWithoutUsuarioInput>
+  create: Prisma.XOR<Prisma.LogAuditoriaCreateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedCreateWithoutUsuarioInput>
+}
+
+export type LogAuditoriaUpdateWithWhereUniqueWithoutUsuarioInput = {
+  where: Prisma.LogAuditoriaWhereUniqueInput
+  data: Prisma.XOR<Prisma.LogAuditoriaUpdateWithoutUsuarioInput, Prisma.LogAuditoriaUncheckedUpdateWithoutUsuarioInput>
+}
+
+export type LogAuditoriaUpdateManyWithWhereWithoutUsuarioInput = {
+  where: Prisma.LogAuditoriaScalarWhereInput
+  data: Prisma.XOR<Prisma.LogAuditoriaUpdateManyMutationInput, Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioInput>
+}
+
+export type LogAuditoriaScalarWhereInput = {
+  AND?: Prisma.LogAuditoriaScalarWhereInput | Prisma.LogAuditoriaScalarWhereInput[]
+  OR?: Prisma.LogAuditoriaScalarWhereInput[]
+  NOT?: Prisma.LogAuditoriaScalarWhereInput | Prisma.LogAuditoriaScalarWhereInput[]
+  id?: Prisma.StringFilter<"LogAuditoria"> | string
+  accion?: Prisma.EnumAccionLogFilter<"LogAuditoria"> | $Enums.AccionLog
+  modulo?: Prisma.EnumModuloLogFilter<"LogAuditoria"> | $Enums.ModuloLog
+  descripcion?: Prisma.StringFilter<"LogAuditoria"> | string
+  entidadId?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
+  usuarioId?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
+  ip?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"LogAuditoria"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"LogAuditoria">
+  creadoEn?: Prisma.DateTimeFilter<"LogAuditoria"> | Date | string
+}
+
+export type LogAuditoriaCreateManyUsuarioInput = {
+  id?: string
+  accion: $Enums.AccionLog
+  modulo: $Enums.ModuloLog
+  descripcion: string
+  entidadId?: string | null
+  ip?: string | null
+  userAgent?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Date | string
+}
+
+export type LogAuditoriaUpdateWithoutUsuarioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accion?: Prisma.EnumAccionLogFieldUpdateOperationsInput | $Enums.AccionLog
+  modulo?: Prisma.EnumModuloLogFieldUpdateOperationsInput | $Enums.ModuloLog
+  descripcion?: Prisma.StringFieldUpdateOperationsInput | string
+  entidadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LogAuditoriaUncheckedUpdateWithoutUsuarioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accion?: Prisma.EnumAccionLogFieldUpdateOperationsInput | $Enums.AccionLog
+  modulo?: Prisma.EnumModuloLogFieldUpdateOperationsInput | $Enums.ModuloLog
+  descripcion?: Prisma.StringFieldUpdateOperationsInput | string
+  entidadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LogAuditoriaUncheckedUpdateManyWithoutUsuarioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accion?: Prisma.EnumAccionLogFieldUpdateOperationsInput | $Enums.AccionLog
+  modulo?: Prisma.EnumModuloLogFieldUpdateOperationsInput | $Enums.ModuloLog
+  descripcion?: Prisma.StringFieldUpdateOperationsInput | string
+  entidadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -430,6 +598,7 @@ export type LogAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.Internal
   userAgent?: boolean
   metadata?: boolean
   creadoEn?: boolean
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
 }, ExtArgs["result"]["logAuditoria"]>
 
 export type LogAuditoriaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -443,6 +612,7 @@ export type LogAuditoriaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   userAgent?: boolean
   metadata?: boolean
   creadoEn?: boolean
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
 }, ExtArgs["result"]["logAuditoria"]>
 
 export type LogAuditoriaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -456,6 +626,7 @@ export type LogAuditoriaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   userAgent?: boolean
   metadata?: boolean
   creadoEn?: boolean
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
 }, ExtArgs["result"]["logAuditoria"]>
 
 export type LogAuditoriaSelectScalar = {
@@ -472,10 +643,21 @@ export type LogAuditoriaSelectScalar = {
 }
 
 export type LogAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accion" | "modulo" | "descripcion" | "entidadId" | "usuarioId" | "ip" | "userAgent" | "metadata" | "creadoEn", ExtArgs["result"]["logAuditoria"]>
+export type LogAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
+}
+export type LogAuditoriaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
+}
+export type LogAuditoriaIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  usuario?: boolean | Prisma.LogAuditoria$usuarioArgs<ExtArgs>
+}
 
 export type $LogAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LogAuditoria"
-  objects: {}
+  objects: {
+    usuario: Prisma.$UsuarioPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     accion: $Enums.AccionLog
@@ -881,6 +1063,7 @@ readonly fields: LogAuditoriaFieldRefs;
  */
 export interface Prisma__LogAuditoriaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  usuario<T extends Prisma.LogAuditoria$usuarioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LogAuditoria$usuarioArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -937,6 +1120,10 @@ export type LogAuditoriaFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
+  /**
    * Filter, which LogAuditoria to fetch.
    */
   where: Prisma.LogAuditoriaWhereUniqueInput
@@ -955,6 +1142,10 @@ export type LogAuditoriaFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
+  /**
    * Filter, which LogAuditoria to fetch.
    */
   where: Prisma.LogAuditoriaWhereUniqueInput
@@ -972,6 +1163,10 @@ export type LogAuditoriaFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the LogAuditoria
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
   /**
    * Filter, which LogAuditoria to fetch.
    */
@@ -1021,6 +1216,10 @@ export type LogAuditoriaFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
+  /**
    * Filter, which LogAuditoria to fetch.
    */
   where?: Prisma.LogAuditoriaWhereInput
@@ -1068,6 +1267,10 @@ export type LogAuditoriaFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the LogAuditoria
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
   /**
    * Filter, which LogAuditorias to fetch.
    */
@@ -1117,6 +1320,10 @@ export type LogAuditoriaCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
+  /**
    * The data needed to create a LogAuditoria.
    */
   data: Prisma.XOR<Prisma.LogAuditoriaCreateInput, Prisma.LogAuditoriaUncheckedCreateInput>
@@ -1150,6 +1357,10 @@ export type LogAuditoriaCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.LogAuditoriaCreateManyInput | Prisma.LogAuditoriaCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1164,6 +1375,10 @@ export type LogAuditoriaUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the LogAuditoria
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
   /**
    * The data needed to update a LogAuditoria.
    */
@@ -1216,6 +1431,10 @@ export type LogAuditoriaUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many LogAuditorias to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1230,6 +1449,10 @@ export type LogAuditoriaUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the LogAuditoria
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
   /**
    * The filter to search for the LogAuditoria to update in case it exists.
    */
@@ -1257,6 +1480,10 @@ export type LogAuditoriaDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
+  /**
    * Filter which LogAuditoria to delete.
    */
   where: Prisma.LogAuditoriaWhereUniqueInput
@@ -1277,6 +1504,25 @@ export type LogAuditoriaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
+ * LogAuditoria.usuario
+ */
+export type LogAuditoria$usuarioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Usuario
+   */
+  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Usuario
+   */
+  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UsuarioInclude<ExtArgs> | null
+  where?: Prisma.UsuarioWhereInput
+}
+
+/**
  * LogAuditoria without action
  */
 export type LogAuditoriaDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1288,4 +1534,8 @@ export type LogAuditoriaDefaultArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the LogAuditoria
    */
   omit?: Prisma.LogAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogAuditoriaInclude<ExtArgs> | null
 }

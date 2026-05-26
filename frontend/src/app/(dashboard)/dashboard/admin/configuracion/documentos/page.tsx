@@ -9,7 +9,7 @@ import {
     Table, TableBody, TableCell,
     TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { TipoDocumentoDialog } from "@/components/documentos/TipoDocumentoDialog";
+import { TipoDocumentoDialog } from "@/components/admin/documentos/TipoDocumentoDialog";
 import { getTiposDocumento } from "@/lib/api/programas";
 import { toast } from "@/lib/utils/toast";
 import type { TipoDocumento } from "@/lib/types/programa.types";

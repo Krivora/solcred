@@ -26,21 +26,43 @@ export const listarLogs = async (filtros: FiltrosLogDto) => {
     orderBy: { creadoEn: "desc" },
     skip: (pagina - 1) * limite,
     take: limite,
+    include: {
+      usuario: {
+        select: {
+          id: true,
+          correo: true,
+          nombre: true,
+          apellidoPaterno: true,
+          rol: true,
+        },
+      },
+    },
   });
 
   return {
     logs,
-    paginacion: {
-      total,
-      pagina,
-      limite,
-      totalPaginas: Math.ceil(total / limite),
-    },
+    total,
+    pagina,
+    limite,
+    totalPaginas: Math.ceil(total / limite),
   };
 };
 
 export const obtenerLogPorId = async (id: string) => {
-  const log = await prisma.logAuditoria.findUnique({ where: { id } });
+  const log = await prisma.logAuditoria.findUnique({
+    where: { id },
+    include: {
+      usuario: {
+        select: {
+          id: true,
+          correo: true,
+          nombre: true,
+          apellidoPaterno: true,
+          rol: true,
+        },
+      },
+    },
+  });
 
   if (!log) throw new Error("Log no encontrado");
 

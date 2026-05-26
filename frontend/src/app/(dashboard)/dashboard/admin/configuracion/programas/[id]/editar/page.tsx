@@ -6,10 +6,10 @@ import { useParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ProgramaForm } from "@/components/programas/ProgramaForm";
+import { ProgramaForm } from "@/components/admin/programas/ProgramaForm";
 import { getPrograma } from "@/lib/api/programas";
 import type { Programa } from "@/lib/types/programa.types";
-import { DocumentosPrograma } from "@/components/programas/DocumentosPrograma";
+import { DocumentosPrograma } from "@/components/admin/programas/DocumentosPrograma";
 
 export default function EditarProgramaPage() {
     const { id } = useParams<{ id: string }>();

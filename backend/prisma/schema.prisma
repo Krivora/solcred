@@ -96,6 +96,7 @@ model Usuario {
   actualizadoEn   DateTime    @updatedAt
 
   solicitudes  Solicitud[]
+  logs        LogAuditoria[]
 }
 
 // ─────────────────────────────────────────
@@ -297,4 +298,5 @@ model LogAuditoria {
   userAgent   String?
   metadata    Json?      // datos extra si se necesitan
   creadoEn    DateTime   @default(now())
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
 }

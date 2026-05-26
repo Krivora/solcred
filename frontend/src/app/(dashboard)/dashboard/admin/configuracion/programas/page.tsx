@@ -16,7 +16,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { getProgramas, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
-import { ProgramaCard } from "@/components/programas/ProgramaCard";
+import { ProgramaCard } from "@/components/admin/programas/ProgramaCard";
 import type { Programa } from "@/lib/types/programa.types";
 
 export default function ProgramasPage() {
