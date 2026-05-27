@@ -4,6 +4,7 @@ import { autorizar } from "../../middlewares/roles.middleware";
 import { validate } from "../../middlewares/validate.middleware";
 import {
   crearSolicitudSchema,
+  guardarDatosGeneralesSchema,
   guardarDatosSolicitanteSchema,
   guardarDatosAvalSchema,
   cambiarEstatusSchema,
@@ -20,6 +21,7 @@ router.get("/:id", solicitudesController.obtenerPorId);
 router.post("/", autorizar("CLIENTE"), validate(crearSolicitudSchema), solicitudesController.crear);
 
 // Llenado de la solicitud — solo el cliente dueño
+router.put("/:id/generales", autorizar("CLIENTE"), validate(guardarDatosGeneralesSchema), solicitudesController.guardarDatosGenerales);
 router.put("/:id/solicitante", autorizar("CLIENTE"), validate(guardarDatosSolicitanteSchema), solicitudesController.guardarDatosSolicitante);
 router.put("/:id/aval", autorizar("CLIENTE"), validate(guardarDatosAvalSchema), solicitudesController.guardarDatosAval);
 router.patch("/:id/enviar", autorizar("CLIENTE"), solicitudesController.enviar);

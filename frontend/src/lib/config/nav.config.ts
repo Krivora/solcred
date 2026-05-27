@@ -15,6 +15,7 @@ import {
   LifeBuoy,
   BadgeDollarSign,
   FilePlus2,
+  Settings2,
 } from "lucide-react";
 import { Rol } from "@/lib/types/auth.types";
 
@@ -25,32 +26,30 @@ export interface NavItem {
   children?: NavItem[];
   roles: Rol[];
   badge?: string;
+  exact?: boolean;
 }
 
 export const navConfig: NavItem[] = [
-  // ── Inicio
   {
     label: "Inicio",
     href: "/dashboard",
     icon: LayoutDashboard,
     roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+    exact: true, // 👈
   },
-
-  // ── Solicitudes (Cliente)
   {
     label: "Mis Solicitudes",
-    href: "/dashboard/solicitudes",
+    href: "/dashboard/usuarios/solicitudes",
     icon: FileText,
     roles: ["CLIENTE"],
+    exact: true, // 👈 para que /nueva no lo active
   },
   {
     label: "Nueva Solicitud",
-    href: "/dashboard/solicitudes/nueva",
+    href: "/dashboard/usuarios/solicitudes/nueva",
     icon: FilePlus2,
     roles: ["CLIENTE"],
   },
-
-  // ── Promoción (Admin / Analista)
   {
     label: "Promoción",
     icon: Briefcase,
@@ -76,8 +75,6 @@ export const navConfig: NavItem[] = [
       },
     ],
   },
-
-  // ── Financiamiento (Admin / Analista)
   {
     label: "Financiamiento",
     icon: BadgeDollarSign,
@@ -109,12 +106,10 @@ export const navConfig: NavItem[] = [
       },
     ],
   },
-
-  // ── Soporte (Todos)
   {
     label: "Soporte",
     icon: LifeBuoy,
-    roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+    roles: ["ADMIN", "ANALISTA"],
     children: [
       {
         label: "Mis Tickets",
@@ -143,6 +138,14 @@ export const navConfig: NavItem[] = [
     ],
   },
 ];
+
+// Ítem separado para el fondo del sidebar (solo ADMIN)
+export const settingsNavItem: NavItem = {
+  label: "Gestión del Sistema",
+  href: "/dashboard/admin/configuracion",
+  icon: Settings2,
+  roles: ["ADMIN"],
+};
 
 export function getNavForRole(role: Rol): NavItem[] {
   return navConfig

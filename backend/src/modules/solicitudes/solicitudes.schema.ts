@@ -4,24 +4,14 @@ export const crearSolicitudSchema = z.object({
   programaId: z
     .string({ message: "El programa es requerido" })
     .uuid("ID de programa inválido"),
-  tipoPersona: z.enum(["FISICA", "MORAL"], {
-    message: "El tipo de persona es requerido",
-  }),
-  sector: z.enum(
-    ["AGROPECUARIO", "INDUSTRIAL", "COMERCIAL", "SERVICIOS", "TECNOLOGIA", "OTRO"],
-    { message: "El sector es requerido" }
-  ),
-  tamanoEmpresa: z
-    .enum(["MICRO", "PEQUENA", "MEDIANA", "GRANDE"])
-    .optional(),
-  montoSolicitado: z
-    .number({ message: "El monto solicitado es requerido" })
-    .positive("El monto debe ser mayor a 0"),
-  plazoSolicitado: z
-    .number({ message: "El plazo solicitado es requerido" })
-    .int("El plazo debe ser un número entero")
-    .positive("El plazo debe ser mayor a 0"),
 });
+
+export const guardarDatosGeneralesSchema = z.object({
+  tipoPersona: z.enum(['FISICA', 'MORAL']),
+  sector: z.enum(['AGROPECUARIO', 'INDUSTRIAL', 'COMERCIAL', 'SERVICIOS', 'TECNOLOGIA', 'OTRO']),
+  tamanoEmpresa: z.enum(['MICRO', 'PEQUENA', 'MEDIANA', 'GRANDE']).optional(),
+})
+
 
 const datosPersonaSchema = z.object({
   nombre: z
@@ -92,6 +82,7 @@ export const cambiarEstatusSchema = z.object({
 });
 
 export type CrearSolicitudDto = z.infer<typeof crearSolicitudSchema>;
+export type GuardarDatosGeneralesDto = z.infer<typeof guardarDatosGeneralesSchema>;
 export type GuardarDatosSolicitanteDto = z.infer<typeof guardarDatosSolicitanteSchema>;
 export type GuardarDatosAvalDto = z.infer<typeof guardarDatosAvalSchema>;
 export type CambiarEstatusDto = z.infer<typeof cambiarEstatusSchema>;

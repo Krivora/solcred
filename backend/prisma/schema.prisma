@@ -175,12 +175,12 @@ model Solicitud {
   solicitanteId   String
 
   estatus         EstatusSolicitud @default(BORRADOR)
-  tipoPersona     TipoPersona
-  sector          Sector
+  tipoPersona     TipoPersona?      // ← opcional
+  sector          Sector?           // ← opcional
   tamanoEmpresa   TamanoEmpresa?
 
-  montoSolicitado Float
-  plazoSolicitado Int
+  montoSolicitado Float?            // ← opcional
+  plazoSolicitado Int?              // ← opcional
 
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?

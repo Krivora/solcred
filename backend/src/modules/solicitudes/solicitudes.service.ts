@@ -3,6 +3,7 @@ import { AppError } from "../../middlewares/error.middleware";
 import {
   CambiarEstatusDto,
   CrearSolicitudDto,
+  GuardarDatosGeneralesDto,
   GuardarDatosAvalDto,
   GuardarDatosSolicitanteDto,
 } from "./solicitudes.schema";
@@ -72,48 +73,38 @@ export const crearSolicitud = async (
   if (!programa) throw new AppError("Programa no encontrado", 404);
   if (!programa.activo) throw new AppError("El programa no está disponible", 400);
 
-  // Validar tipo de persona contra el programa
-  if (dto.tipoPersona === "FISICA" && !programa.permitePersonaFisica) {
-    throw new AppError("Este programa no está disponible para personas físicas", 400);
-  }
-  if (dto.tipoPersona === "MORAL" && !programa.permitePersonaMoral) {
-    throw new AppError("Este programa no está disponible para personas morales", 400);
-  }
-
-  // Validar monto contra el programa
-  if (dto.montoSolicitado < programa.montoMinimo) {
-    throw new AppError(
-      `El monto mínimo para este programa es $${programa.montoMinimo}`,
-      400
-    );
-  }
-  if (dto.montoSolicitado > programa.montoMaximo) {
-    throw new AppError(
-      `El monto máximo para este programa es $${programa.montoMaximo}`,
-      400
-    );
-  }
-
-  // Validar plazo contra el programa
-  if (dto.plazoSolicitado < programa.plazoMinimoMeses) {
-    throw new AppError(
-      `El plazo mínimo para este programa es ${programa.plazoMinimoMeses} meses`,
-      400
-    );
-  }
-  if (dto.plazoSolicitado > programa.plazoMaximoMeses) {
-    throw new AppError(
-      `El plazo máximo para este programa es ${programa.plazoMaximoMeses} meses`,
-      400
-    );
-  }
-
+  // Solo crea el registro base — sin datos generales todavía
   return prisma.solicitud.create({
     data: {
-      ...dto,
+      programaId: dto.programaId,
       solicitanteId,
     },
-    include: incluyeTodo,
+  });
+};
+
+export const guardarDatosGenerales = async (
+  solicitudId: string,
+  dto: GuardarDatosGeneralesDto,
+  usuarioId: string,
+  rol: string
+) => {
+  const solicitud = await prisma.solicitud.findUnique({
+    where: { id: solicitudId },
+  });
+
+  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+  if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+    throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+  }
+
+  if (solicitud.estatus !== "BORRADOR") {
+    throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+  }
+
+  return prisma.solicitud.update({
+    where: { id: solicitudId },
+    data: dto,
   });
 };
 

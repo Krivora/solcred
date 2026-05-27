@@ -84,6 +84,33 @@ export const crear = async (
   }
 };
 
+export const guardarDatosGenerales = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const datos = await solicitudesService.guardarDatosGenerales(
+      req.params.id as string,
+      req.body,
+      req.usuario!.id,
+      req.usuario!.rol
+    );
+
+    await registrarLog({
+      accion: AccionLog.ACTUALIZAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `Datos generales guardados en solicitud: ${req.params.id}`,
+      usuarioId: req.usuario!.id,
+      entidadId: req.params.id as string,
+      req,
+    });
+
+    res.status(200).json(ok("Datos generales guardados", datos));
+  } catch (error) {
+    next(error);
+  }
+};
 export const guardarDatosSolicitante = async (
   req: RequestAutenticado,
   res: Response,

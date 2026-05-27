@@ -1,93 +1,30 @@
-import {
-    Solicitud,
-    CrearSolicitudPayload,
-    ActualizarDatosPersonaPayload,
-} from '@/lib/types/solicitudes.types';
+import { apiAuth } from './client'
+import type {
+  CrearSolicitudDto,
+  DatosGenerales,
+  DatosPersona,
+  Solicitud,
+} from '../types/solicitudes.types'
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+export const solicitudesApi = {
+  listar: () =>
+    apiAuth<Solicitud[]>('/solicitudes'),
 
-function getHeaders(): HeadersInit {
-    const token =
-        typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    return {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    };
-}
+  obtener: (id: string) =>
+    apiAuth<Solicitud>(`/solicitudes/${id}`),
 
-async function handleResponse<T>(res: Response): Promise<T> {
-    const body = await res.json();
-    if (!res.ok || !body.success) {
-        throw new Error(body.message ?? 'Error desconocido');
-    }
-    return body.data as T;
-}
+  crear: (dto: CrearSolicitudDto) =>
+    apiAuth<Solicitud>('/solicitudes', { method: 'POST', body: dto }),
 
-// ─── Listar mis solicitudes ────────────────────────────────────────────────────
+  guardarGenerales: (id: string, dto: DatosGenerales) =>
+    apiAuth<Solicitud>(`/solicitudes/${id}/generales`, { method: 'PUT', body: dto }),
 
-export async function getMisSolicitudes(): Promise<Solicitud[]> {
-    const res = await fetch(`${BASE}/api/solicitudes`, {
-        headers: getHeaders(),
-    });
-    return handleResponse<Solicitud[]>(res);
-}
+  guardarSolicitante: (id: string, dto: DatosPersona) =>
+    apiAuth<DatosPersona>(`/solicitudes/${id}/solicitante`, { method: 'PUT', body: dto }),
 
-// ─── Obtener solicitud por ID ──────────────────────────────────────────────────
+  guardarAval: (id: string, dto: DatosPersona) =>
+    apiAuth<DatosPersona>(`/solicitudes/${id}/aval`, { method: 'PUT', body: dto }),
 
-export async function getSolicitud(id: string): Promise<Solicitud> {
-    const res = await fetch(`${BASE}/api/solicitudes/${id}`, {
-        headers: getHeaders(),
-    });
-    return handleResponse<Solicitud>(res);
-}
-
-// ─── Crear solicitud (Step 1) ─────────────────────────────────────────────────
-
-export async function crearSolicitud(
-    payload: CrearSolicitudPayload
-): Promise<Solicitud> {
-    const res = await fetch(`${BASE}/api/solicitudes`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify(payload),
-    });
-    return handleResponse<Solicitud>(res);
-}
-
-// ─── Actualizar datos del solicitante (Step 2) ────────────────────────────────
-
-export async function actualizarDatosSolicitante(
-    id: string,
-    payload: ActualizarDatosPersonaPayload
-): Promise<Solicitud> {
-    const res = await fetch(`${BASE}/api/solicitudes/${id}/solicitante`, {
-        method: 'PUT',
-        headers: getHeaders(),
-        body: JSON.stringify(payload),
-    });
-    return handleResponse<Solicitud>(res);
-}
-
-// ─── Actualizar datos del aval (Step 3) ───────────────────────────────────────
-
-export async function actualizarDatosAval(
-    id: string,
-    payload: ActualizarDatosPersonaPayload
-): Promise<Solicitud> {
-    const res = await fetch(`${BASE}/api/solicitudes/${id}/aval`, {
-        method: 'PUT',
-        headers: getHeaders(),
-        body: JSON.stringify(payload),
-    });
-    return handleResponse<Solicitud>(res);
-}
-
-// ─── Enviar solicitud (BORRADOR → PENDIENTE) ──────────────────────────────────
-
-export async function enviarSolicitud(id: string): Promise<Solicitud> {
-    const res = await fetch(`${BASE}/api/solicitudes/${id}/enviar`, {
-        method: 'PATCH',
-        headers: getHeaders(),
-    });
-    return handleResponse<Solicitud>(res);
+  enviar: (id: string) =>
+    apiAuth<Solicitud>(`/solicitudes/${id}/enviar`, { method: 'PATCH' }),
 }
