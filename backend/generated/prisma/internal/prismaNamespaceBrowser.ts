@@ -181,6 +181,11 @@ export const DatosSolicitanteScalarFieldEnum = {
   nivelEstudio: 'nivelEstudio',
   universidad: 'universidad',
   estadoCivil: 'estadoCivil',
+  nombreConyuge: 'nombreConyuge',
+  numeroINE: 'numeroINE',
+  tipoVivienda: 'tipoVivienda',
+  aniosDomicilioActual: 'aniosDomicilioActual',
+  aniosDomicilioAnterior: 'aniosDomicilioAnterior',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -209,6 +214,11 @@ export const DatosAvalScalarFieldEnum = {
   nivelEstudio: 'nivelEstudio',
   universidad: 'universidad',
   estadoCivil: 'estadoCivil',
+  nombreConyuge: 'nombreConyuge',
+  numeroINE: 'numeroINE',
+  tipoVivienda: 'tipoVivienda',
+  aniosDomicilioActual: 'aniosDomicilioActual',
+  aniosDomicilioAnterior: 'aniosDomicilioAnterior',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const

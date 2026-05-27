@@ -20,8 +20,20 @@ export type DatosSolicitanteModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateDatosSolicitante = {
   _count: DatosSolicitanteCountAggregateOutputType | null
+  _avg: DatosSolicitanteAvgAggregateOutputType | null
+  _sum: DatosSolicitanteSumAggregateOutputType | null
   _min: DatosSolicitanteMinAggregateOutputType | null
   _max: DatosSolicitanteMaxAggregateOutputType | null
+}
+
+export type DatosSolicitanteAvgAggregateOutputType = {
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
+}
+
+export type DatosSolicitanteSumAggregateOutputType = {
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
 }
 
 export type DatosSolicitanteMinAggregateOutputType = {
@@ -45,6 +57,11 @@ export type DatosSolicitanteMinAggregateOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -70,6 +87,11 @@ export type DatosSolicitanteMaxAggregateOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -95,11 +117,26 @@ export type DatosSolicitanteCountAggregateOutputType = {
   nivelEstudio: number
   universidad: number
   estadoCivil: number
+  nombreConyuge: number
+  numeroINE: number
+  tipoVivienda: number
+  aniosDomicilioActual: number
+  aniosDomicilioAnterior: number
   creadoEn: number
   actualizadoEn: number
   _all: number
 }
 
+
+export type DatosSolicitanteAvgAggregateInputType = {
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
+}
+
+export type DatosSolicitanteSumAggregateInputType = {
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
+}
 
 export type DatosSolicitanteMinAggregateInputType = {
   id?: true
@@ -122,6 +159,11 @@ export type DatosSolicitanteMinAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -147,6 +189,11 @@ export type DatosSolicitanteMaxAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -172,6 +219,11 @@ export type DatosSolicitanteCountAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -215,6 +267,18 @@ export type DatosSolicitanteAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DatosSolicitanteAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DatosSolicitanteSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DatosSolicitanteMinAggregateInputType
@@ -245,6 +309,8 @@ export type DatosSolicitanteGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: DatosSolicitanteCountAggregateInputType | true
+  _avg?: DatosSolicitanteAvgAggregateInputType
+  _sum?: DatosSolicitanteSumAggregateInputType
   _min?: DatosSolicitanteMinAggregateInputType
   _max?: DatosSolicitanteMaxAggregateInputType
 }
@@ -270,9 +336,16 @@ export type DatosSolicitanteGroupByOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date
   actualizadoEn: Date
   _count: DatosSolicitanteCountAggregateOutputType | null
+  _avg: DatosSolicitanteAvgAggregateOutputType | null
+  _sum: DatosSolicitanteSumAggregateOutputType | null
   _min: DatosSolicitanteMinAggregateOutputType | null
   _max: DatosSolicitanteMaxAggregateOutputType | null
 }
@@ -316,6 +389,11 @@ export type DatosSolicitanteWhereInput = {
   nivelEstudio?: Prisma.EnumNivelEstudioNullableFilter<"DatosSolicitante"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableFilter<"DatosSolicitante"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
+  numeroINE?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableFilter<"DatosSolicitante"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableFilter<"DatosSolicitante"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableFilter<"DatosSolicitante"> | number | null
   creadoEn?: Prisma.DateTimeFilter<"DatosSolicitante"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"DatosSolicitante"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -342,6 +420,11 @@ export type DatosSolicitanteOrderByWithRelationInput = {
   nivelEstudio?: Prisma.SortOrderInput | Prisma.SortOrder
   universidad?: Prisma.SortOrderInput | Prisma.SortOrder
   estadoCivil?: Prisma.SortOrderInput | Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroINE?: Prisma.SortOrderInput | Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   solicitud?: Prisma.SolicitudOrderByWithRelationInput
@@ -371,6 +454,11 @@ export type DatosSolicitanteWhereUniqueInput = Prisma.AtLeast<{
   nivelEstudio?: Prisma.EnumNivelEstudioNullableFilter<"DatosSolicitante"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableFilter<"DatosSolicitante"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
+  numeroINE?: Prisma.StringNullableFilter<"DatosSolicitante"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableFilter<"DatosSolicitante"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableFilter<"DatosSolicitante"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableFilter<"DatosSolicitante"> | number | null
   creadoEn?: Prisma.DateTimeFilter<"DatosSolicitante"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"DatosSolicitante"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -397,11 +485,18 @@ export type DatosSolicitanteOrderByWithAggregationInput = {
   nivelEstudio?: Prisma.SortOrderInput | Prisma.SortOrder
   universidad?: Prisma.SortOrderInput | Prisma.SortOrder
   estadoCivil?: Prisma.SortOrderInput | Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroINE?: Prisma.SortOrderInput | Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.DatosSolicitanteCountOrderByAggregateInput
+  _avg?: Prisma.DatosSolicitanteAvgOrderByAggregateInput
   _max?: Prisma.DatosSolicitanteMaxOrderByAggregateInput
   _min?: Prisma.DatosSolicitanteMinOrderByAggregateInput
+  _sum?: Prisma.DatosSolicitanteSumOrderByAggregateInput
 }
 
 export type DatosSolicitanteScalarWhereWithAggregatesInput = {
@@ -428,6 +523,11 @@ export type DatosSolicitanteScalarWhereWithAggregatesInput = {
   nivelEstudio?: Prisma.EnumNivelEstudioNullableWithAggregatesFilter<"DatosSolicitante"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableWithAggregatesFilter<"DatosSolicitante"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableWithAggregatesFilter<"DatosSolicitante"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableWithAggregatesFilter<"DatosSolicitante"> | string | null
+  numeroINE?: Prisma.StringNullableWithAggregatesFilter<"DatosSolicitante"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableWithAggregatesFilter<"DatosSolicitante"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableWithAggregatesFilter<"DatosSolicitante"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableWithAggregatesFilter<"DatosSolicitante"> | number | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"DatosSolicitante"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"DatosSolicitante"> | Date | string
 }
@@ -452,6 +552,11 @@ export type DatosSolicitanteCreateInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDatosSolicitanteInput
@@ -478,6 +583,11 @@ export type DatosSolicitanteUncheckedCreateInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -502,6 +612,11 @@ export type DatosSolicitanteUpdateInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDatosSolicitanteNestedInput
@@ -528,6 +643,11 @@ export type DatosSolicitanteUncheckedUpdateInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -553,6 +673,11 @@ export type DatosSolicitanteCreateManyInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -577,6 +702,11 @@ export type DatosSolicitanteUpdateManyMutationInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -602,6 +732,11 @@ export type DatosSolicitanteUncheckedUpdateManyInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -632,8 +767,18 @@ export type DatosSolicitanteCountOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type DatosSolicitanteAvgOrderByAggregateInput = {
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
 }
 
 export type DatosSolicitanteMaxOrderByAggregateInput = {
@@ -657,6 +802,11 @@ export type DatosSolicitanteMaxOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -682,8 +832,18 @@ export type DatosSolicitanteMinOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type DatosSolicitanteSumOrderByAggregateInput = {
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
 }
 
 export type DatosSolicitanteCreateNestedOneWithoutSolicitudInput = {
@@ -726,6 +886,10 @@ export type NullableEnumEstadoCivilFieldUpdateOperationsInput = {
   set?: $Enums.EstadoCivil | null
 }
 
+export type NullableEnumTipoViviendaFieldUpdateOperationsInput = {
+  set?: $Enums.TipoVivienda | null
+}
+
 export type DatosSolicitanteCreateWithoutSolicitudInput = {
   id?: string
   nombre: string
@@ -746,6 +910,11 @@ export type DatosSolicitanteCreateWithoutSolicitudInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -770,6 +939,11 @@ export type DatosSolicitanteUncheckedCreateWithoutSolicitudInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -810,6 +984,11 @@ export type DatosSolicitanteUpdateWithoutSolicitudInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -834,6 +1013,11 @@ export type DatosSolicitanteUncheckedUpdateWithoutSolicitudInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -861,6 +1045,11 @@ export type DatosSolicitanteSelect<ExtArgs extends runtime.Types.Extensions.Inte
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -887,6 +1076,11 @@ export type DatosSolicitanteSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -913,6 +1107,11 @@ export type DatosSolicitanteSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -939,11 +1138,16 @@ export type DatosSolicitanteSelectScalar = {
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type DatosSolicitanteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "telefono" | "celular" | "correo" | "calle" | "numeroExterior" | "numeroInterior" | "colonia" | "ciudad" | "estado" | "codigoPostal" | "nivelEstudio" | "universidad" | "estadoCivil" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["datosSolicitante"]>
+export type DatosSolicitanteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "telefono" | "celular" | "correo" | "calle" | "numeroExterior" | "numeroInterior" | "colonia" | "ciudad" | "estado" | "codigoPostal" | "nivelEstudio" | "universidad" | "estadoCivil" | "nombreConyuge" | "numeroINE" | "tipoVivienda" | "aniosDomicilioActual" | "aniosDomicilioAnterior" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["datosSolicitante"]>
 export type DatosSolicitanteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
 }
@@ -980,6 +1184,11 @@ export type $DatosSolicitantePayload<ExtArgs extends runtime.Types.Extensions.In
     nivelEstudio: $Enums.NivelEstudio | null
     universidad: string | null
     estadoCivil: $Enums.EstadoCivil | null
+    nombreConyuge: string | null
+    numeroINE: string | null
+    tipoVivienda: $Enums.TipoVivienda | null
+    aniosDomicilioActual: number | null
+    aniosDomicilioAnterior: number | null
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["datosSolicitante"]>
@@ -1426,6 +1635,11 @@ export interface DatosSolicitanteFieldRefs {
   readonly nivelEstudio: Prisma.FieldRef<"DatosSolicitante", 'NivelEstudio'>
   readonly universidad: Prisma.FieldRef<"DatosSolicitante", 'String'>
   readonly estadoCivil: Prisma.FieldRef<"DatosSolicitante", 'EstadoCivil'>
+  readonly nombreConyuge: Prisma.FieldRef<"DatosSolicitante", 'String'>
+  readonly numeroINE: Prisma.FieldRef<"DatosSolicitante", 'String'>
+  readonly tipoVivienda: Prisma.FieldRef<"DatosSolicitante", 'TipoVivienda'>
+  readonly aniosDomicilioActual: Prisma.FieldRef<"DatosSolicitante", 'Int'>
+  readonly aniosDomicilioAnterior: Prisma.FieldRef<"DatosSolicitante", 'Int'>
   readonly creadoEn: Prisma.FieldRef<"DatosSolicitante", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"DatosSolicitante", 'DateTime'>
 }

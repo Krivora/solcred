@@ -381,6 +381,13 @@ export type EnumEstadoCivilNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel> | $Enums.EstadoCivil | null
 }
 
+export type EnumTipoViviendaNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TipoVivienda | Prisma.EnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel> | $Enums.TipoVivienda | null
+}
+
 export type EnumNivelEstudioNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.NivelEstudio | Prisma.EnumNivelEstudioFieldRefInput<$PrismaModel> | null
   in?: $Enums.NivelEstudio[] | Prisma.ListEnumNivelEstudioFieldRefInput<$PrismaModel> | null
@@ -399,6 +406,16 @@ export type EnumEstadoCivilNullableWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel>
+}
+
+export type EnumTipoViviendaNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TipoVivienda | Prisma.EnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTipoViviendaNullableWithAggregatesFilter<$PrismaModel> | $Enums.TipoVivienda | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel>
 }
 
 export type EnumAccionLogFilter<$PrismaModel = never> = {
@@ -844,6 +861,13 @@ export type NestedEnumEstadoCivilNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel> | $Enums.EstadoCivil | null
 }
 
+export type NestedEnumTipoViviendaNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TipoVivienda | Prisma.EnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel> | $Enums.TipoVivienda | null
+}
+
 export type NestedEnumNivelEstudioNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.NivelEstudio | Prisma.EnumNivelEstudioFieldRefInput<$PrismaModel> | null
   in?: $Enums.NivelEstudio[] | Prisma.ListEnumNivelEstudioFieldRefInput<$PrismaModel> | null
@@ -862,6 +886,16 @@ export type NestedEnumEstadoCivilNullableWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEstadoCivilNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumTipoViviendaNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TipoVivienda | Prisma.EnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TipoVivienda[] | Prisma.ListEnumTipoViviendaFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTipoViviendaNullableWithAggregatesFilter<$PrismaModel> | $Enums.TipoVivienda | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTipoViviendaNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumAccionLogFilter<$PrismaModel = never> = {

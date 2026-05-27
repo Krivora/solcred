@@ -101,6 +101,15 @@ export const Requerimiento = {
 export type Requerimiento = (typeof Requerimiento)[keyof typeof Requerimiento]
 
 
+export const TipoVivienda = {
+  PROPIA: 'PROPIA',
+  RENTADA: 'RENTADA',
+  PAGANDO: 'PAGANDO'
+} as const
+
+export type TipoVivienda = (typeof TipoVivienda)[keyof typeof TipoVivienda]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',

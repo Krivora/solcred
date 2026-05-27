@@ -8,7 +8,6 @@ import { PersonaForm } from './form/PersonaForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/utils/toast'
-import { useAuthStore } from '@/lib/store/auth.store'
 export function NuevaSolicitudForm() {
   const router = useRouter()
   const {
@@ -30,7 +29,6 @@ export function NuevaSolicitudForm() {
     toast.success('Solicitud enviada correctamente')
     router.push('/dashboard/usuarios/solicitudes')
   }
-  const usuario = useAuthStore((s) => s.usuario)
   return (
     <div className="max-w-8xl mx-auto space-y-8">
       <StepIndicator currentIndex={stepIndex} />

@@ -74,6 +74,12 @@ enum Requerimiento {
   OBLIGATORIO
 }
 
+enum TipoVivienda {
+  PROPIA
+  RENTADA
+  PAGANDO
+}
+
 // ─────────────────────────────────────────
 // USUARIOS DEL SISTEMA
 // ─────────────────────────────────────────
@@ -195,65 +201,81 @@ model Solicitud {
 // DATOS GENERALES DEL SOLICITANTE
 // ─────────────────────────────────────────
 model DatosSolicitante {
-  id              String     @id @default(uuid())
-  solicitud       Solicitud  @relation(fields: [solicitudId], references: [id])
-  solicitudId     String     @unique
+  id                String        @id @default(uuid())
+  solicitud         Solicitud     @relation(fields: [solicitudId], references: [id])
+  solicitudId       String        @unique
 
-  nombre          String
-  apellidoPaterno String
-  apellidoMaterno String
-  curp            String?
-  rfc             String?
+  nombre            String
+  apellidoPaterno   String
+  apellidoMaterno   String
+  curp              String?
+  rfc               String?
 
-  telefono        String?
-  celular         String?
-  correo          String?
+  telefono          String?
+  celular           String?
+  correo            String?
 
-  calle           String?
-  numeroExterior  String?
-  numeroInterior  String?
-  colonia         String?
-  ciudad          String?
-  estado          String?
-  codigoPostal    String?
+  calle             String?
+  numeroExterior    String?
+  numeroInterior    String?
+  colonia           String?
+  ciudad            String?
+  estado            String?
+  codigoPostal      String?
 
-  nivelEstudio    NivelEstudio?
-  universidad     String?
-  estadoCivil     EstadoCivil?
+  nivelEstudio      NivelEstudio?
+  universidad       String?
+  estadoCivil       EstadoCivil?
 
-  creadoEn        DateTime   @default(now())
-  actualizadoEn   DateTime   @updatedAt
+  nombreConyuge         String?
+  numeroINE             String?
+
+  tipoVivienda          TipoVivienda?
+
+  aniosDomicilioActual  Int?
+  aniosDomicilioAnterior Int?
+
+  creadoEn          DateTime      @default(now())
+  actualizadoEn     DateTime      @updatedAt
 }
 
 model DatosAval {
-  id              String     @id @default(uuid())
-  solicitud       Solicitud  @relation(fields: [solicitudId], references: [id])
-  solicitudId     String     @unique
+  id                String        @id @default(uuid())
+  solicitud         Solicitud     @relation(fields: [solicitudId], references: [id])
+  solicitudId       String        @unique
 
-  nombre          String
-  apellidoPaterno String
-  apellidoMaterno String
-  curp            String?
-  rfc             String?
+  nombre            String
+  apellidoPaterno   String
+  apellidoMaterno   String
+  curp              String?
+  rfc               String?
 
-  telefono        String?
-  celular         String?
-  correo          String?
+  telefono          String?
+  celular           String?
+  correo            String?
 
-  calle           String?
-  numeroExterior  String?
-  numeroInterior  String?
-  colonia         String?
-  ciudad          String?
-  estado          String?
-  codigoPostal    String?
+  calle             String?
+  numeroExterior    String?
+  numeroInterior    String?
+  colonia           String?
+  ciudad            String?
+  estado            String?
+  codigoPostal      String?
 
-  nivelEstudio    NivelEstudio?
-  universidad     String?
-  estadoCivil     EstadoCivil?
+  nivelEstudio      NivelEstudio?
+  universidad       String?
+  estadoCivil       EstadoCivil?
 
-  creadoEn        DateTime   @default(now())
-  actualizadoEn   DateTime   @updatedAt
+  nombreConyuge         String?
+  numeroINE             String?
+
+  tipoVivienda          TipoVivienda?
+
+  aniosDomicilioActual  Int?
+  aniosDomicilioAnterior Int?
+
+  creadoEn          DateTime      @default(now())
+  actualizadoEn     DateTime      @updatedAt
 }
 
 model DocumentoSolicitud {

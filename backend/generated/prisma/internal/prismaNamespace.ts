@@ -1220,6 +1220,11 @@ export const DatosSolicitanteScalarFieldEnum = {
   nivelEstudio: 'nivelEstudio',
   universidad: 'universidad',
   estadoCivil: 'estadoCivil',
+  nombreConyuge: 'nombreConyuge',
+  numeroINE: 'numeroINE',
+  tipoVivienda: 'tipoVivienda',
+  aniosDomicilioActual: 'aniosDomicilioActual',
+  aniosDomicilioAnterior: 'aniosDomicilioAnterior',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -1248,6 +1253,11 @@ export const DatosAvalScalarFieldEnum = {
   nivelEstudio: 'nivelEstudio',
   universidad: 'universidad',
   estadoCivil: 'estadoCivil',
+  nombreConyuge: 'nombreConyuge',
+  numeroINE: 'numeroINE',
+  tipoVivienda: 'tipoVivienda',
+  aniosDomicilioActual: 'aniosDomicilioActual',
+  aniosDomicilioAnterior: 'aniosDomicilioAnterior',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -1516,6 +1526,20 @@ export type EnumEstadoCivilFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'EstadoCivil[]'
  */
 export type ListEnumEstadoCivilFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoCivil[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TipoVivienda'
+ */
+export type EnumTipoViviendaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoVivienda'>
+    
+
+
+/**
+ * Reference to a field of type 'TipoVivienda[]'
+ */
+export type ListEnumTipoViviendaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoVivienda[]'>
     
 
 

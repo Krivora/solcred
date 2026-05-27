@@ -20,8 +20,20 @@ export type DatosAvalModel = runtime.Types.Result.DefaultSelection<Prisma.$Datos
 
 export type AggregateDatosAval = {
   _count: DatosAvalCountAggregateOutputType | null
+  _avg: DatosAvalAvgAggregateOutputType | null
+  _sum: DatosAvalSumAggregateOutputType | null
   _min: DatosAvalMinAggregateOutputType | null
   _max: DatosAvalMaxAggregateOutputType | null
+}
+
+export type DatosAvalAvgAggregateOutputType = {
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
+}
+
+export type DatosAvalSumAggregateOutputType = {
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
 }
 
 export type DatosAvalMinAggregateOutputType = {
@@ -45,6 +57,11 @@ export type DatosAvalMinAggregateOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -70,6 +87,11 @@ export type DatosAvalMaxAggregateOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -95,11 +117,26 @@ export type DatosAvalCountAggregateOutputType = {
   nivelEstudio: number
   universidad: number
   estadoCivil: number
+  nombreConyuge: number
+  numeroINE: number
+  tipoVivienda: number
+  aniosDomicilioActual: number
+  aniosDomicilioAnterior: number
   creadoEn: number
   actualizadoEn: number
   _all: number
 }
 
+
+export type DatosAvalAvgAggregateInputType = {
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
+}
+
+export type DatosAvalSumAggregateInputType = {
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
+}
 
 export type DatosAvalMinAggregateInputType = {
   id?: true
@@ -122,6 +159,11 @@ export type DatosAvalMinAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -147,6 +189,11 @@ export type DatosAvalMaxAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -172,6 +219,11 @@ export type DatosAvalCountAggregateInputType = {
   nivelEstudio?: true
   universidad?: true
   estadoCivil?: true
+  nombreConyuge?: true
+  numeroINE?: true
+  tipoVivienda?: true
+  aniosDomicilioActual?: true
+  aniosDomicilioAnterior?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -215,6 +267,18 @@ export type DatosAvalAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DatosAvalAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DatosAvalSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DatosAvalMinAggregateInputType
@@ -245,6 +309,8 @@ export type DatosAvalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: DatosAvalCountAggregateInputType | true
+  _avg?: DatosAvalAvgAggregateInputType
+  _sum?: DatosAvalSumAggregateInputType
   _min?: DatosAvalMinAggregateInputType
   _max?: DatosAvalMaxAggregateInputType
 }
@@ -270,9 +336,16 @@ export type DatosAvalGroupByOutputType = {
   nivelEstudio: $Enums.NivelEstudio | null
   universidad: string | null
   estadoCivil: $Enums.EstadoCivil | null
+  nombreConyuge: string | null
+  numeroINE: string | null
+  tipoVivienda: $Enums.TipoVivienda | null
+  aniosDomicilioActual: number | null
+  aniosDomicilioAnterior: number | null
   creadoEn: Date
   actualizadoEn: Date
   _count: DatosAvalCountAggregateOutputType | null
+  _avg: DatosAvalAvgAggregateOutputType | null
+  _sum: DatosAvalSumAggregateOutputType | null
   _min: DatosAvalMinAggregateOutputType | null
   _max: DatosAvalMaxAggregateOutputType | null
 }
@@ -316,6 +389,11 @@ export type DatosAvalWhereInput = {
   nivelEstudio?: Prisma.EnumNivelEstudioNullableFilter<"DatosAval"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableFilter<"DatosAval"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableFilter<"DatosAval"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableFilter<"DatosAval"> | string | null
+  numeroINE?: Prisma.StringNullableFilter<"DatosAval"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableFilter<"DatosAval"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableFilter<"DatosAval"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableFilter<"DatosAval"> | number | null
   creadoEn?: Prisma.DateTimeFilter<"DatosAval"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"DatosAval"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -342,6 +420,11 @@ export type DatosAvalOrderByWithRelationInput = {
   nivelEstudio?: Prisma.SortOrderInput | Prisma.SortOrder
   universidad?: Prisma.SortOrderInput | Prisma.SortOrder
   estadoCivil?: Prisma.SortOrderInput | Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroINE?: Prisma.SortOrderInput | Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   solicitud?: Prisma.SolicitudOrderByWithRelationInput
@@ -371,6 +454,11 @@ export type DatosAvalWhereUniqueInput = Prisma.AtLeast<{
   nivelEstudio?: Prisma.EnumNivelEstudioNullableFilter<"DatosAval"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableFilter<"DatosAval"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableFilter<"DatosAval"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableFilter<"DatosAval"> | string | null
+  numeroINE?: Prisma.StringNullableFilter<"DatosAval"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableFilter<"DatosAval"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableFilter<"DatosAval"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableFilter<"DatosAval"> | number | null
   creadoEn?: Prisma.DateTimeFilter<"DatosAval"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"DatosAval"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -397,11 +485,18 @@ export type DatosAvalOrderByWithAggregationInput = {
   nivelEstudio?: Prisma.SortOrderInput | Prisma.SortOrder
   universidad?: Prisma.SortOrderInput | Prisma.SortOrder
   estadoCivil?: Prisma.SortOrderInput | Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroINE?: Prisma.SortOrderInput | Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrderInput | Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.DatosAvalCountOrderByAggregateInput
+  _avg?: Prisma.DatosAvalAvgOrderByAggregateInput
   _max?: Prisma.DatosAvalMaxOrderByAggregateInput
   _min?: Prisma.DatosAvalMinOrderByAggregateInput
+  _sum?: Prisma.DatosAvalSumOrderByAggregateInput
 }
 
 export type DatosAvalScalarWhereWithAggregatesInput = {
@@ -428,6 +523,11 @@ export type DatosAvalScalarWhereWithAggregatesInput = {
   nivelEstudio?: Prisma.EnumNivelEstudioNullableWithAggregatesFilter<"DatosAval"> | $Enums.NivelEstudio | null
   universidad?: Prisma.StringNullableWithAggregatesFilter<"DatosAval"> | string | null
   estadoCivil?: Prisma.EnumEstadoCivilNullableWithAggregatesFilter<"DatosAval"> | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.StringNullableWithAggregatesFilter<"DatosAval"> | string | null
+  numeroINE?: Prisma.StringNullableWithAggregatesFilter<"DatosAval"> | string | null
+  tipoVivienda?: Prisma.EnumTipoViviendaNullableWithAggregatesFilter<"DatosAval"> | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.IntNullableWithAggregatesFilter<"DatosAval"> | number | null
+  aniosDomicilioAnterior?: Prisma.IntNullableWithAggregatesFilter<"DatosAval"> | number | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"DatosAval"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"DatosAval"> | Date | string
 }
@@ -452,6 +552,11 @@ export type DatosAvalCreateInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDatosAvalInput
@@ -478,6 +583,11 @@ export type DatosAvalUncheckedCreateInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -502,6 +612,11 @@ export type DatosAvalUpdateInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDatosAvalNestedInput
@@ -528,6 +643,11 @@ export type DatosAvalUncheckedUpdateInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -553,6 +673,11 @@ export type DatosAvalCreateManyInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -577,6 +702,11 @@ export type DatosAvalUpdateManyMutationInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -602,6 +732,11 @@ export type DatosAvalUncheckedUpdateManyInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -632,8 +767,18 @@ export type DatosAvalCountOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type DatosAvalAvgOrderByAggregateInput = {
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
 }
 
 export type DatosAvalMaxOrderByAggregateInput = {
@@ -657,6 +802,11 @@ export type DatosAvalMaxOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -682,8 +832,18 @@ export type DatosAvalMinOrderByAggregateInput = {
   nivelEstudio?: Prisma.SortOrder
   universidad?: Prisma.SortOrder
   estadoCivil?: Prisma.SortOrder
+  nombreConyuge?: Prisma.SortOrder
+  numeroINE?: Prisma.SortOrder
+  tipoVivienda?: Prisma.SortOrder
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type DatosAvalSumOrderByAggregateInput = {
+  aniosDomicilioActual?: Prisma.SortOrder
+  aniosDomicilioAnterior?: Prisma.SortOrder
 }
 
 export type DatosAvalCreateNestedOneWithoutSolicitudInput = {
@@ -738,6 +898,11 @@ export type DatosAvalCreateWithoutSolicitudInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -762,6 +927,11 @@ export type DatosAvalUncheckedCreateWithoutSolicitudInput = {
   nivelEstudio?: $Enums.NivelEstudio | null
   universidad?: string | null
   estadoCivil?: $Enums.EstadoCivil | null
+  nombreConyuge?: string | null
+  numeroINE?: string | null
+  tipoVivienda?: $Enums.TipoVivienda | null
+  aniosDomicilioActual?: number | null
+  aniosDomicilioAnterior?: number | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -802,6 +972,11 @@ export type DatosAvalUpdateWithoutSolicitudInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -826,6 +1001,11 @@ export type DatosAvalUncheckedUpdateWithoutSolicitudInput = {
   nivelEstudio?: Prisma.NullableEnumNivelEstudioFieldUpdateOperationsInput | $Enums.NivelEstudio | null
   universidad?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estadoCivil?: Prisma.NullableEnumEstadoCivilFieldUpdateOperationsInput | $Enums.EstadoCivil | null
+  nombreConyuge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroINE?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tipoVivienda?: Prisma.NullableEnumTipoViviendaFieldUpdateOperationsInput | $Enums.TipoVivienda | null
+  aniosDomicilioActual?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aniosDomicilioAnterior?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -853,6 +1033,11 @@ export type DatosAvalSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -879,6 +1064,11 @@ export type DatosAvalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -905,6 +1095,11 @@ export type DatosAvalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
@@ -931,11 +1126,16 @@ export type DatosAvalSelectScalar = {
   nivelEstudio?: boolean
   universidad?: boolean
   estadoCivil?: boolean
+  nombreConyuge?: boolean
+  numeroINE?: boolean
+  tipoVivienda?: boolean
+  aniosDomicilioActual?: boolean
+  aniosDomicilioAnterior?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type DatosAvalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "telefono" | "celular" | "correo" | "calle" | "numeroExterior" | "numeroInterior" | "colonia" | "ciudad" | "estado" | "codigoPostal" | "nivelEstudio" | "universidad" | "estadoCivil" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["datosAval"]>
+export type DatosAvalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "telefono" | "celular" | "correo" | "calle" | "numeroExterior" | "numeroInterior" | "colonia" | "ciudad" | "estado" | "codigoPostal" | "nivelEstudio" | "universidad" | "estadoCivil" | "nombreConyuge" | "numeroINE" | "tipoVivienda" | "aniosDomicilioActual" | "aniosDomicilioAnterior" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["datosAval"]>
 export type DatosAvalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
 }
@@ -972,6 +1172,11 @@ export type $DatosAvalPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     nivelEstudio: $Enums.NivelEstudio | null
     universidad: string | null
     estadoCivil: $Enums.EstadoCivil | null
+    nombreConyuge: string | null
+    numeroINE: string | null
+    tipoVivienda: $Enums.TipoVivienda | null
+    aniosDomicilioActual: number | null
+    aniosDomicilioAnterior: number | null
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["datosAval"]>
@@ -1418,6 +1623,11 @@ export interface DatosAvalFieldRefs {
   readonly nivelEstudio: Prisma.FieldRef<"DatosAval", 'NivelEstudio'>
   readonly universidad: Prisma.FieldRef<"DatosAval", 'String'>
   readonly estadoCivil: Prisma.FieldRef<"DatosAval", 'EstadoCivil'>
+  readonly nombreConyuge: Prisma.FieldRef<"DatosAval", 'String'>
+  readonly numeroINE: Prisma.FieldRef<"DatosAval", 'String'>
+  readonly tipoVivienda: Prisma.FieldRef<"DatosAval", 'TipoVivienda'>
+  readonly aniosDomicilioActual: Prisma.FieldRef<"DatosAval", 'Int'>
+  readonly aniosDomicilioAnterior: Prisma.FieldRef<"DatosAval", 'Int'>
   readonly creadoEn: Prisma.FieldRef<"DatosAval", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"DatosAval", 'DateTime'>
 }

@@ -6,6 +6,7 @@ export type TamanoEmpresa = 'MICRO' | 'PEQUENA' | 'MEDIANA' | 'GRANDE'
 export type EstatusSolicitud = 'BORRADOR' | 'PENDIENTE' | 'EN_REVISION' | 'APROBADO' | 'RECHAZADO'
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'
+export type TipoVivienda =| "PROPIA"| "RENTADA"| "PAGANDO"
 
 export interface DatosPersona {
   nombre: string
@@ -26,6 +27,11 @@ export interface DatosPersona {
   nivelEstudio?: NivelEstudio
   universidad?: string
   estadoCivil?: EstadoCivil
+  nombreConyuge?: string
+  numeroINE?: string
+  tipoVivienda?: TipoVivienda
+  aniosDomicilioActual?: number
+  aniosDomicilioAnterior?: number
 }
 
 export interface CrearSolicitudDto {

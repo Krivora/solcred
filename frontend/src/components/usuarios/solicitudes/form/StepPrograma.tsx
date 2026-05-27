@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import { FormError } from '@/components/ui/FormError'
 import { cn } from '@/lib/utils/cn'
 import {
-  BadgePercent, Clock, Wallet, ChevronRight,
-  Search, Building2, User
+  ChevronRight, Search, Building2, User,
+  Wallet, ArrowDown, ArrowUp,
 } from 'lucide-react'
 
 interface Props {
@@ -35,20 +35,19 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
   }
 
   function handleSubmit() {
-    if (!selected) return setLocalError('Selecciona un programa')
-    onSubmit({
-      programaId: selected.id,
-
-    })
+    if (!selected) return setLocalError('Selecciona un programa para continuar')
+    onSubmit({ programaId: selected.id })
   }
 
-  const filtered = programas.filter((p) =>
-    p.nombre.toLowerCase().includes(search.toLowerCase()) ||
-    p.descripcion?.toLowerCase().includes(search.toLowerCase())
+  const filtered = programas.filter(
+    (p) =>
+      p.nombre.toLowerCase().includes(search.toLowerCase()) ||
+      p.descripcion?.toLowerCase().includes(search.toLowerCase()),
   )
 
   return (
     <div className="space-y-6">
+      {/* Encabezado */}
       <div>
         <h2 className="text-lg font-semibold text-foreground">Selecciona el programa</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
@@ -56,58 +55,36 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 items-start">
-
-        {/* Lista de programas */}
-        <div className="space-y-3">
-          {/* Buscador — visible solo si hay más de 4 programas */}
-          {programas.length > 4 && (
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar programa..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-          )}
-
-          <div className="space-y-2">
-            {filtered.length === 0 && (
-              <p className="text-sm text-muted-foreground py-6 text-center">
-                No se encontraron programas
-              </p>
-            )}
-            {filtered.map((p) => (
-              <ProgramaRow
-                key={p.id}
-                programa={p}
-                isSelected={selected?.id === p.id}
-                onSelect={handleSelect}
-              />
-            ))}
-          </div>
+      {/* Buscador */}
+      {programas.length > 4 && (
+        <div className="relative max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar programa..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
         </div>
+      )}
 
-        {/* Panel lateral de detalle + inputs */}
-        <div className="space-y-3">
-          {selected ? (
-            <>
-              <ProgramaDetail programa={selected} />
-            </>
-          ) : (
-            <div className="rounded-lg border border-dashed border-border bg-muted/30 p-6 flex flex-col items-center justify-center text-center gap-2 min-h-[180px]">
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-muted-foreground" />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Selecciona un programa para ver sus detalles
-              </p>
-            </div>
-          )}
+      {/* Grid de cards */}
+      {filtered.length === 0 ? (
+        <div className="py-12 text-center text-sm text-muted-foreground">
+          No se encontraron programas
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {filtered.map((p) => (
+            <ProgramaCard
+              key={p.id}
+              programa={p}
+              isSelected={selected?.id === p.id}
+              onSelect={handleSelect}
+            />
+          ))}
+        </div>
+      )}
 
       <FormError message={localError ?? error} />
 
@@ -120,9 +97,9 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
   )
 }
 
-/* ─── Sub-componentes ──────────────────────────────────────────── */
+/* ─── Card de programa ─────────────────────────────────────────── */
 
-function ProgramaRow({
+function ProgramaCard({
   programa: p,
   isSelected,
   onSelect,
@@ -135,90 +112,73 @@ function ProgramaRow({
     <button
       onClick={() => onSelect(p)}
       className={cn(
-        'w-full text-left px-4 py-3 rounded-lg border transition-all duration-150 cursor-pointer',
+        'group relative w-full text-left rounded-xl border transition-all duration-150 cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'flex flex-col gap-3 p-4',
         isSelected
-          ? 'border-primary bg-primary/5 shadow-sm'
-          : 'border-border bg-card hover:border-primary/40 hover:bg-accent/20',
+          ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20'
+          : 'border-border bg-card hover:border-primary/40 hover:bg-accent/10',
       )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Indicador de selección */}
-          <div className={cn(
-            'shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors',
-            isSelected ? 'border-primary' : 'border-muted-foreground/40',
-          )}>
-            {isSelected && (
-              <div className="w-2 h-2 rounded-full bg-primary" />
-            )}
-          </div>
+      {/* Indicador de selección */}
+      <div
+        className={cn(
+          'absolute top-3 right-3 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors',
+          isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30 group-hover:border-primary/40',
+        )}
+      >
+        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />}
+      </div>
 
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{p.nombre}</p>
-            <p className="text-xs text-muted-foreground truncate mt-0.5">{p.descripcion}</p>
-          </div>
-        </div>
+      {/* Nombre */}
+      <div className="pr-5">
+        <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">
+          {p.nombre}
+        </p>
+      </div>
 
-        {/* Pills de info rápida */}
-        <div className="shrink-0 hidden sm:flex items-center gap-2">
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
-            {p.tasaOrdinaria}% anual
+      {/* Descripción / objetivo */}
+      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3 flex-1">
+        {p.descripcion ?? 'Sin descripción disponible'}
+      </p>
+
+      {/* Separador */}
+      <div className="border-t border-border" />
+
+      {/* Montos */}
+      <div className="space-y-1.5">
+        <MontoRow
+          icon={<ArrowDown className="w-3 h-3 text-emerald-500" />}
+          label="Monto mín."
+          value={`$${(p.montoMinimo ?? 0).toLocaleString('es-MX')}`}
+        />
+        <MontoRow
+          icon={<ArrowUp className="w-3 h-3 text-primary" />}
+          label="Monto máx."
+          value={`$${p.montoMaximo.toLocaleString('es-MX')}`}
+        />
+      </div>
+
+      {/* Badges persona */}
+      <div className="flex flex-wrap gap-1.5 mt-auto">
+        {p.permitePersonaFisica && (
+          <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+            <User className="w-2.5 h-2.5" />
+            Física
           </span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground whitespace-nowrap">
-            ${(p.montoMaximo / 1000).toFixed(0)}k máx
+        )}
+        {p.permitePersonaMoral && (
+          <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+            <Building2 className="w-2.5 h-2.5" />
+            Moral
           </span>
-        </div>
+        )}
       </div>
     </button>
   )
 }
 
-function ProgramaDetail({ programa: p }: { programa: Programa }) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-4">
-      <div>
-        <p className="text-sm font-semibold text-foreground">{p.nombre}</p>
-        <p className="text-xs text-muted-foreground mt-1">{p.descripcion}</p>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        <Stat
-          icon={<Wallet className="w-3.5 h-3.5" />}
-          label="Monto máx."
-          value={`$${p.montoMaximo.toLocaleString()}`}
-        />
-        <Stat
-          icon={<Clock className="w-3.5 h-3.5" />}
-          label="Plazo máx."
-          value={`${p.plazoMaximoMeses} meses`}
-        />
-        <Stat
-          icon={<BadgePercent className="w-3.5 h-3.5" />}
-          label="Tasa"
-          value={`${p.tasaOrdinaria}%`}
-        />
-      </div>
-
-      <div className="pt-1 border-t border-border flex gap-3">
-        {p.permitePersonaFisica && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <User className="w-3.5 h-3.5" />
-            Persona Física
-          </div>
-        )}
-        {p.permitePersonaMoral && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Building2 className="w-3.5 h-3.5" />
-            Persona Moral
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function Stat({
+function MontoRow({
   icon,
   label,
   value,
@@ -228,12 +188,12 @@ function Stat({
   value: string
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex items-center justify-between gap-2">
       <div className="flex items-center gap-1 text-muted-foreground">
         {icon}
         <span className="text-[10px]">{label}</span>
       </div>
-      <span className="text-xs font-semibold text-foreground">{value}</span>
+      <span className="text-xs font-semibold text-foreground tabular-nums">{value}</span>
     </div>
   )
 }
