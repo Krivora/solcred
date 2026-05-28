@@ -74,7 +74,7 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
         )}
       />
       {!collapsed && (
-        <span className="truncate text-sm leading-none">{item.label}</span>
+        <span className="truncate text-sm leading-normal">{item.label}</span>
       )}
     </Link>
   );
@@ -134,7 +134,7 @@ function NavGroup({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
               : "text-sidebar-foreground/50 group-hover:text-sidebar-accent-foreground"
           )}
         />
-        <span className="flex-1 truncate text-sm leading-none text-left">
+        <span className="flex-1 truncate text-sm leading-normal text-left">
           {item.label}
         </span>
         <ChevronDown

@@ -25,7 +25,7 @@ export default function SolicitudesPromocionPage() {
   } = useSolicitudesPromocion()
 
   return (
-    <div className="flex flex-col gap-6 p-6 max-w-[1400px] mx-auto w-full">
+    <div className="mx-auto max-w-8xl space-y-8">
 
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">

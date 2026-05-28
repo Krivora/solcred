@@ -165,6 +165,13 @@ export const obtenerSolicitudPorId = async (
   return solicitud;
 };
 
+const generarFolio = async (): Promise<string> => {
+  const result = await prisma.$queryRaw<[{ nextval: bigint }]>`
+    SELECT nextval('solicitud_folio_seq')
+  `;
+  return String(Number(result[0].nextval)).padStart(5, '0');
+};
+
 export const crearSolicitud = async (
   dto: CrearSolicitudDto,
   solicitanteId: string
@@ -173,12 +180,14 @@ export const crearSolicitud = async (
     where: { id: dto.programaId },
   });
 
-  if (!programa) throw new AppError("Programa no encontrado", 404);
-  if (!programa.activo) throw new AppError("El programa no está disponible", 400);
+  if (!programa) throw new AppError('Programa no encontrado', 404);
+  if (!programa.activo) throw new AppError('El programa no está disponible', 400);
 
-  // Solo crea el registro base — sin datos generales todavía
+  const folio = await generarFolio();
+
   return prisma.solicitud.create({
     data: {
+      folio,
       programaId: dto.programaId,
       solicitanteId,
     },

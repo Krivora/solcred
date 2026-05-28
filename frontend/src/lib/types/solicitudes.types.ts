@@ -48,6 +48,7 @@ export interface DatosGenerales {
 // actualizar Solicitud — los campos ahora son opcionales
 export interface Solicitud {
   id: string
+  folio: string
   programaId: string
   programa: Pick<Programa, 'id' | 'nombre'>
   solicitanteId: string
@@ -67,6 +68,7 @@ export interface Solicitud {
 
 export interface SolicitudPromocion {
   id: string
+  folio:string
   estatus: EstatusSolicitud
   tipoPersona?: TipoPersona
   sector?: Sector

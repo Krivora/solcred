@@ -175,18 +175,20 @@ model ProgramaDocumento {
 
 model Solicitud {
   id              String           @id @default(uuid())
+  folio           String           @unique  // ← nuevo
+
   programa        Programa         @relation(fields: [programaId], references: [id])
   programaId      String
   solicitante     Usuario          @relation(fields: [solicitanteId], references: [id])
   solicitanteId   String
 
   estatus         EstatusSolicitud @default(BORRADOR)
-  tipoPersona     TipoPersona?      // ← opcional
-  sector          Sector?           // ← opcional
+  tipoPersona     TipoPersona?
+  sector          Sector?
   tamanoEmpresa   TamanoEmpresa?
 
-  montoSolicitado Float?            // ← opcional
-  plazoSolicitado Int?              // ← opcional
+  montoSolicitado Float?
+  plazoSolicitado Int?
 
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?

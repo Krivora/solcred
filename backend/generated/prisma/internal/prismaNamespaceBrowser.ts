@@ -145,6 +145,7 @@ export type ProgramaDocumentoScalarFieldEnum = (typeof ProgramaDocumentoScalarFi
 
 export const SolicitudScalarFieldEnum = {
   id: 'id',
+  folio: 'folio',
   programaId: 'programaId',
   solicitanteId: 'solicitanteId',
   estatus: 'estatus',

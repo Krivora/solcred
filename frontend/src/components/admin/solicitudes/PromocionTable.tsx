@@ -141,7 +141,8 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide w-[220px]">Solicitante</TableHead>
+              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Folio</TableHead>
+              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide w-55">Solicitante</TableHead>
               <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Programa</TableHead>
               <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tipo / Sector</TableHead>
               <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tamaño</TableHead>
@@ -163,10 +164,13 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   className="cursor-pointer hover:bg-muted/30 transition-colors"
                   onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}`)}
                 >
+                  <TableCell className='py-3'>
+                    {sol.folio}
+                  </TableCell>
                   {/* Solicitante */}
                   <TableCell className="py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+                      <div className="shrink-0 w-7 h-7 rounded-full bg-muted flex items-center justify-center">
                         {sol.tipoPersona === 'MORAL'
                           ? <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
                           : <User className="h-3.5 w-3.5 text-muted-foreground" />

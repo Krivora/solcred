@@ -38,6 +38,7 @@ export type SolicitudSumAggregateOutputType = {
 
 export type SolicitudMinAggregateOutputType = {
   id: string | null
+  folio: string | null
   programaId: string | null
   solicitanteId: string | null
   estatus: $Enums.EstatusSolicitud | null
@@ -52,6 +53,7 @@ export type SolicitudMinAggregateOutputType = {
 
 export type SolicitudMaxAggregateOutputType = {
   id: string | null
+  folio: string | null
   programaId: string | null
   solicitanteId: string | null
   estatus: $Enums.EstatusSolicitud | null
@@ -66,6 +68,7 @@ export type SolicitudMaxAggregateOutputType = {
 
 export type SolicitudCountAggregateOutputType = {
   id: number
+  folio: number
   programaId: number
   solicitanteId: number
   estatus: number
@@ -92,6 +95,7 @@ export type SolicitudSumAggregateInputType = {
 
 export type SolicitudMinAggregateInputType = {
   id?: true
+  folio?: true
   programaId?: true
   solicitanteId?: true
   estatus?: true
@@ -106,6 +110,7 @@ export type SolicitudMinAggregateInputType = {
 
 export type SolicitudMaxAggregateInputType = {
   id?: true
+  folio?: true
   programaId?: true
   solicitanteId?: true
   estatus?: true
@@ -120,6 +125,7 @@ export type SolicitudMaxAggregateInputType = {
 
 export type SolicitudCountAggregateInputType = {
   id?: true
+  folio?: true
   programaId?: true
   solicitanteId?: true
   estatus?: true
@@ -221,6 +227,7 @@ export type SolicitudGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type SolicitudGroupByOutputType = {
   id: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus: $Enums.EstatusSolicitud
@@ -258,6 +265,7 @@ export type SolicitudWhereInput = {
   OR?: Prisma.SolicitudWhereInput[]
   NOT?: Prisma.SolicitudWhereInput | Prisma.SolicitudWhereInput[]
   id?: Prisma.StringFilter<"Solicitud"> | string
+  folio?: Prisma.StringFilter<"Solicitud"> | string
   programaId?: Prisma.StringFilter<"Solicitud"> | string
   solicitanteId?: Prisma.StringFilter<"Solicitud"> | string
   estatus?: Prisma.EnumEstatusSolicitudFilter<"Solicitud"> | $Enums.EstatusSolicitud
@@ -277,6 +285,7 @@ export type SolicitudWhereInput = {
 
 export type SolicitudOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  folio?: Prisma.SortOrder
   programaId?: Prisma.SortOrder
   solicitanteId?: Prisma.SortOrder
   estatus?: Prisma.SortOrder
@@ -296,6 +305,7 @@ export type SolicitudOrderByWithRelationInput = {
 
 export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  folio?: string
   AND?: Prisma.SolicitudWhereInput | Prisma.SolicitudWhereInput[]
   OR?: Prisma.SolicitudWhereInput[]
   NOT?: Prisma.SolicitudWhereInput | Prisma.SolicitudWhereInput[]
@@ -314,10 +324,11 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
-}, "id">
+}, "id" | "folio">
 
 export type SolicitudOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  folio?: Prisma.SortOrder
   programaId?: Prisma.SortOrder
   solicitanteId?: Prisma.SortOrder
   estatus?: Prisma.SortOrder
@@ -340,6 +351,7 @@ export type SolicitudScalarWhereWithAggregatesInput = {
   OR?: Prisma.SolicitudScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SolicitudScalarWhereWithAggregatesInput | Prisma.SolicitudScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Solicitud"> | string
+  folio?: Prisma.StringWithAggregatesFilter<"Solicitud"> | string
   programaId?: Prisma.StringWithAggregatesFilter<"Solicitud"> | string
   solicitanteId?: Prisma.StringWithAggregatesFilter<"Solicitud"> | string
   estatus?: Prisma.EnumEstatusSolicitudWithAggregatesFilter<"Solicitud"> | $Enums.EstatusSolicitud
@@ -354,6 +366,7 @@ export type SolicitudScalarWhereWithAggregatesInput = {
 
 export type SolicitudCreateInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -371,6 +384,7 @@ export type SolicitudCreateInput = {
 
 export type SolicitudUncheckedCreateInput = {
   id?: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
@@ -388,6 +402,7 @@ export type SolicitudUncheckedCreateInput = {
 
 export type SolicitudUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -405,6 +420,7 @@ export type SolicitudUpdateInput = {
 
 export type SolicitudUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
@@ -422,6 +438,7 @@ export type SolicitudUncheckedUpdateInput = {
 
 export type SolicitudCreateManyInput = {
   id?: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
@@ -436,6 +453,7 @@ export type SolicitudCreateManyInput = {
 
 export type SolicitudUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -448,6 +466,7 @@ export type SolicitudUpdateManyMutationInput = {
 
 export type SolicitudUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
@@ -472,6 +491,7 @@ export type SolicitudOrderByRelationAggregateInput = {
 
 export type SolicitudCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  folio?: Prisma.SortOrder
   programaId?: Prisma.SortOrder
   solicitanteId?: Prisma.SortOrder
   estatus?: Prisma.SortOrder
@@ -491,6 +511,7 @@ export type SolicitudAvgOrderByAggregateInput = {
 
 export type SolicitudMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  folio?: Prisma.SortOrder
   programaId?: Prisma.SortOrder
   solicitanteId?: Prisma.SortOrder
   estatus?: Prisma.SortOrder
@@ -505,6 +526,7 @@ export type SolicitudMaxOrderByAggregateInput = {
 
 export type SolicitudMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  folio?: Prisma.SortOrder
   programaId?: Prisma.SortOrder
   solicitanteId?: Prisma.SortOrder
   estatus?: Prisma.SortOrder
@@ -687,6 +709,7 @@ export type SolicitudUpdateOneRequiredWithoutDocumentosNestedInput = {
 
 export type SolicitudCreateWithoutSolicitanteInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -703,6 +726,7 @@ export type SolicitudCreateWithoutSolicitanteInput = {
 
 export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   id?: string
+  folio: string
   programaId: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
@@ -748,6 +772,7 @@ export type SolicitudScalarWhereInput = {
   OR?: Prisma.SolicitudScalarWhereInput[]
   NOT?: Prisma.SolicitudScalarWhereInput | Prisma.SolicitudScalarWhereInput[]
   id?: Prisma.StringFilter<"Solicitud"> | string
+  folio?: Prisma.StringFilter<"Solicitud"> | string
   programaId?: Prisma.StringFilter<"Solicitud"> | string
   solicitanteId?: Prisma.StringFilter<"Solicitud"> | string
   estatus?: Prisma.EnumEstatusSolicitudFilter<"Solicitud"> | $Enums.EstatusSolicitud
@@ -762,6 +787,7 @@ export type SolicitudScalarWhereInput = {
 
 export type SolicitudCreateWithoutProgramaInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -778,6 +804,7 @@ export type SolicitudCreateWithoutProgramaInput = {
 
 export type SolicitudUncheckedCreateWithoutProgramaInput = {
   id?: string
+  folio: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
@@ -820,6 +847,7 @@ export type SolicitudUpdateManyWithWhereWithoutProgramaInput = {
 
 export type SolicitudCreateWithoutDatosSolicitanteInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -836,6 +864,7 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
 
 export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   id?: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
@@ -868,6 +897,7 @@ export type SolicitudUpdateToOneWithWhereWithoutDatosSolicitanteInput = {
 
 export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -884,6 +914,7 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
 
 export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
@@ -900,6 +931,7 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
 
 export type SolicitudCreateWithoutDatosAvalInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -916,6 +948,7 @@ export type SolicitudCreateWithoutDatosAvalInput = {
 
 export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   id?: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
@@ -948,6 +981,7 @@ export type SolicitudUpdateToOneWithWhereWithoutDatosAvalInput = {
 
 export type SolicitudUpdateWithoutDatosAvalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -964,6 +998,7 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
 
 export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
@@ -980,6 +1015,7 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
 
 export type SolicitudCreateWithoutDocumentosInput = {
   id?: string
+  folio: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
@@ -996,6 +1032,7 @@ export type SolicitudCreateWithoutDocumentosInput = {
 
 export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   id?: string
+  folio: string
   programaId: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
@@ -1028,6 +1065,7 @@ export type SolicitudUpdateToOneWithWhereWithoutDocumentosInput = {
 
 export type SolicitudUpdateWithoutDocumentosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -1044,6 +1082,7 @@ export type SolicitudUpdateWithoutDocumentosInput = {
 
 export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
@@ -1060,6 +1099,7 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
 
 export type SolicitudCreateManySolicitanteInput = {
   id?: string
+  folio: string
   programaId: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
@@ -1073,6 +1113,7 @@ export type SolicitudCreateManySolicitanteInput = {
 
 export type SolicitudUpdateWithoutSolicitanteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -1089,6 +1130,7 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
 
 export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
@@ -1105,6 +1147,7 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
 
 export type SolicitudUncheckedUpdateManyWithoutSolicitanteInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   programaId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
@@ -1118,6 +1161,7 @@ export type SolicitudUncheckedUpdateManyWithoutSolicitanteInput = {
 
 export type SolicitudCreateManyProgramaInput = {
   id?: string
+  folio: string
   solicitanteId: string
   estatus?: $Enums.EstatusSolicitud
   tipoPersona?: $Enums.TipoPersona | null
@@ -1131,6 +1175,7 @@ export type SolicitudCreateManyProgramaInput = {
 
 export type SolicitudUpdateWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
@@ -1147,6 +1192,7 @@ export type SolicitudUpdateWithoutProgramaInput = {
 
 export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
@@ -1163,6 +1209,7 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
 
 export type SolicitudUncheckedUpdateManyWithoutProgramaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
   solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
   estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
@@ -1207,6 +1254,7 @@ export type SolicitudCountOutputTypeCountDocumentosArgs<ExtArgs extends runtime.
 
 export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  folio?: boolean
   programaId?: boolean
   solicitanteId?: boolean
   estatus?: boolean
@@ -1227,6 +1275,7 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type SolicitudSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  folio?: boolean
   programaId?: boolean
   solicitanteId?: boolean
   estatus?: boolean
@@ -1243,6 +1292,7 @@ export type SolicitudSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type SolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  folio?: boolean
   programaId?: boolean
   solicitanteId?: boolean
   estatus?: boolean
@@ -1259,6 +1309,7 @@ export type SolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type SolicitudSelectScalar = {
   id?: boolean
+  folio?: boolean
   programaId?: boolean
   solicitanteId?: boolean
   estatus?: boolean
@@ -1271,7 +1322,7 @@ export type SolicitudSelectScalar = {
   actualizadoEn?: boolean
 }
 
-export type SolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "programaId" | "solicitanteId" | "estatus" | "tipoPersona" | "sector" | "tamanoEmpresa" | "montoSolicitado" | "plazoSolicitado" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["solicitud"]>
+export type SolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folio" | "programaId" | "solicitanteId" | "estatus" | "tipoPersona" | "sector" | "tamanoEmpresa" | "montoSolicitado" | "plazoSolicitado" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["solicitud"]>
 export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   programa?: boolean | Prisma.ProgramaDefaultArgs<ExtArgs>
   solicitante?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -1300,6 +1351,7 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    folio: string
     programaId: string
     solicitanteId: string
     estatus: $Enums.EstatusSolicitud
@@ -1739,6 +1791,7 @@ export interface Prisma__SolicitudClient<T, Null = never, ExtArgs extends runtim
  */
 export interface SolicitudFieldRefs {
   readonly id: Prisma.FieldRef<"Solicitud", 'String'>
+  readonly folio: Prisma.FieldRef<"Solicitud", 'String'>
   readonly programaId: Prisma.FieldRef<"Solicitud", 'String'>
   readonly solicitanteId: Prisma.FieldRef<"Solicitud", 'String'>
   readonly estatus: Prisma.FieldRef<"Solicitud", 'EstatusSolicitud'>
