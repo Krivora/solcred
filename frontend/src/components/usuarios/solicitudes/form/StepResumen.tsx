@@ -64,7 +64,11 @@ export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Pro
           <InfoRow label="Sector" value={SECTOR_LABELS[solicitud.sector]} />
           <InfoRow label="Tamaño de empresa" value={solicitud.tamanoEmpresa ?? undefined} />
           <Separator className="my-1" />
-          <InfoRow label="Monto solicitado" value={`$${solicitud.montoSolicitado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`} />
+          <InfoRow label="Monto solicitado" value={solicitud.montoSolicitado != null
+              ? `$${solicitud.montoSolicitado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`
+              : undefined
+            }
+          />          
           <InfoRow label="Plazo" value={`${solicitud.plazoSolicitado} meses`} />
         </Section>
 

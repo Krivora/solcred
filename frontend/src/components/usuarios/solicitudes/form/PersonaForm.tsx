@@ -234,9 +234,9 @@ export function PersonaForm({
       {/* ── DOMICILIO ─────────────────────────────────────────── */}
       <section>
         <SectionHeader icon={MapPin} label="Domicilio" />
-        <div className="grid grid-cols-6 gap-6">
+        <div className="grid grid-cols-12 gap-6">
           {/* IZQUIERDA */}
-          <div className="col-span-4 space-y-4">
+          <div className="col-span-7 space-y-4">
             <Field label="Calle" optional>
               <Input
                 {...register('calle')}
@@ -255,7 +255,7 @@ export function PersonaForm({
               <Field
                 label="Ciudad / Municipio"
                 optional
-                className="col-span-4"
+                className="col-span-3"
               >
                 <Input
                   {...register('ciudad')}
@@ -266,7 +266,7 @@ export function PersonaForm({
               <Field
                 label="Estado"
                 optional
-                className="col-span-2"
+                className="col-span-3"
               >
                 <Select
                   value={watch('estado') ?? ''}
@@ -289,7 +289,7 @@ export function PersonaForm({
           </div>
 
           {/* DERECHA */}
-          <div className="col-span-2 space-y-4">
+          <div className="col-span-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Field label="Núm. ext." optional>
                 <Input

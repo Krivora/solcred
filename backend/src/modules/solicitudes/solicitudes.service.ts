@@ -8,6 +8,19 @@ import {
   GuardarDatosSolicitanteDto,
 } from "./solicitudes.schema";
 
+interface FiltrosPromocion {
+  page: number
+  limit: number
+  estatus?: string
+  tipoPersona?: string
+  sector?: string
+  tamanoEmpresa?: string
+  programaId?: string
+  fechaDesde?: string
+  fechaHasta?: string
+  busqueda?: string
+}
+
 const incluyeTodo = {
   programa: {
     include: {
@@ -22,7 +35,97 @@ const incluyeTodo = {
     include: { tipoDocumento: true },
   },
 };
+export const listarPromocion = async (filtros: FiltrosPromocion) => {
+  const {
+    page,
+    limit,
+    estatus,
+    tipoPersona,
+    sector,
+    tamanoEmpresa,
+    programaId,
+    fechaDesde,
+    fechaHasta,
+    busqueda,
+  } = filtros;
 
+  const skip = (page - 1) * limit;
+  const where: any = {};
+
+  if (estatus) where.estatus = estatus;
+  if (tipoPersona) where.tipoPersona = tipoPersona;
+  if (sector) where.sector = sector;
+  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
+  if (programaId) where.programaId = programaId;
+
+  if (fechaDesde || fechaHasta) {
+    where.creadoEn = {};
+    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
+    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
+  }
+
+  if (busqueda) {
+    where.OR = [
+      {
+        datosSolicitante: {
+          OR: [
+            { nombre: { contains: busqueda, mode: "insensitive" } },
+            { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
+            { rfc: { contains: busqueda, mode: "insensitive" } },
+          ],
+        },
+      },
+    ];
+  }
+
+  const [solicitudes, total] = await Promise.all([
+    prisma.solicitud.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { creadoEn: "desc" },
+      include: {
+        programa: { select: { id: true, nombre: true } },
+        datosSolicitante: {
+          select: {
+            id: true,
+            nombre: true,
+            apellidoPaterno: true,
+            apellidoMaterno: true,
+            rfc: true,
+            correo: true,
+            celular: true,
+          },
+        },
+      },
+    }),
+    prisma.solicitud.count({ where }),
+  ]);
+
+  return {
+    data: solicitudes,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+export const statsPromocion = async () => {
+  const [total, borrador, pendiente, enRevision, aprobado, rechazado] =
+    await Promise.all([
+      prisma.solicitud.count(),
+      prisma.solicitud.count({ where: { estatus: "BORRADOR" } }),
+      prisma.solicitud.count({ where: { estatus: "PENDIENTE" } }),
+      prisma.solicitud.count({ where: { estatus: "EN_REVISION" } }),
+      prisma.solicitud.count({ where: { estatus: "APROBADO" } }),
+      prisma.solicitud.count({ where: { estatus: "RECHAZADO" } }),
+    ]);
+
+  return { total, borrador, pendiente, enRevision, aprobado, rechazado };
+};
 export const listarSolicitudes = async (
   usuarioId: string,
   rol: string

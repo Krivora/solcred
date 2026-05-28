@@ -80,6 +80,9 @@ export function useSolicitudForm() {
       setLoading(false)
     }
   }
+  function skipAval() {
+    goTo('resumen')
+  }
 
   async function enviarSolicitud() {
     if (!solicitud) return
@@ -110,5 +113,6 @@ export function useSolicitudForm() {
     guardarSolicitante,
     guardarAval,
     enviarSolicitud,
+    skipAval,
   }
 }

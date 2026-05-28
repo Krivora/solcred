@@ -29,6 +29,66 @@ export const listar = async (
     next(error);
   }
 };
+export const listarPromocion = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const {
+      page = "1",
+      limit = "20",
+      estatus,
+      tipoPersona,
+      sector,
+      tamanoEmpresa,
+      programaId,
+      fechaDesde,
+      fechaHasta,
+      busqueda,
+    } = req.query;
+
+    const filtros = {
+      page: parseInt(page as string),
+      limit: Math.min(parseInt(limit as string), 100), // tope de seguridad
+      estatus: estatus as string | undefined,
+      tipoPersona: tipoPersona as string | undefined,
+      sector: sector as string | undefined,
+      tamanoEmpresa: tamanoEmpresa as string | undefined,
+      programaId: programaId as string | undefined,
+      fechaDesde: fechaDesde as string | undefined,
+      fechaHasta: fechaHasta as string | undefined,
+      busqueda: busqueda as string | undefined,
+    };
+
+    const resultado = await solicitudesService.listarPromocion(filtros);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: "Módulo de promoción consultado",
+      usuarioId: req.usuario!.id,
+      req,
+    });
+
+    res.status(200).json(ok("Solicitudes de promoción obtenidas", resultado));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const statsPromocion = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const stats = await solicitudesService.statsPromocion();
+    res.status(200).json(ok("Estadísticas obtenidas", stats));
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const obtenerPorId = async (
   req: RequestAutenticado,

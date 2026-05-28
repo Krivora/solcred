@@ -34,7 +34,7 @@ export const navConfig: NavItem[] = [
     label: "Inicio",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+    roles: ["ADMIN", "ANALISTA"],
     exact: true, // 👈
   },
   {
@@ -42,11 +42,11 @@ export const navConfig: NavItem[] = [
     href: "/dashboard/usuarios/solicitudes",
     icon: FileText,
     roles: ["CLIENTE"],
-    exact: true, // 👈 para que /nueva no lo active
+    exact: true,
   },
   {
-    label: "Nueva Solicitud",
-    href: "/dashboard/usuarios/solicitudes/nueva",
+    label: "Expediente Digital",
+    href: "/dashboard/usuarios/documentos",
     icon: FilePlus2,
     roles: ["CLIENTE"],
   },
@@ -57,7 +57,7 @@ export const navConfig: NavItem[] = [
     children: [
       {
         label: "Solicitudes",
-        href: "/dashboard/promocion/solicitudes",
+        href: "/dashboard/admin/promocion/solicitudes",
         icon: FileText,
         roles: ["ADMIN"],
       },

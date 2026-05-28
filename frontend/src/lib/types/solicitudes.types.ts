@@ -62,3 +62,61 @@ export interface Solicitud {
   creadoEn: string
   actualizadoEn: string
 }
+
+// AGREGAR al final de solicitudes.types.ts
+
+export interface SolicitudPromocion {
+  id: string
+  estatus: EstatusSolicitud
+  tipoPersona?: TipoPersona
+  sector?: Sector
+  tamanoEmpresa?: TamanoEmpresa
+  montoSolicitado?: number
+  plazoSolicitado?: number
+  programa: Pick<{ id: string; nombre: string }, 'id' | 'nombre'>
+  datosSolicitante?: {
+    id: string
+    nombre: string
+    apellidoPaterno: string
+    apellidoMaterno: string
+    rfc?: string
+    correo?: string
+    celular?: string
+  }
+  creadoEn: string
+  actualizadoEn: string
+}
+
+export interface PaginacionMeta {
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface SolicitudesPromocionResponse {
+  data: SolicitudPromocion[]
+  meta: PaginacionMeta
+}
+
+export interface StatsPromocion {
+  total: number
+  borrador: number
+  pendiente: number
+  enRevision: number
+  aprobado: number
+  rechazado: number
+}
+
+export interface FiltrosPromocion {
+  page: number
+  limit: number
+  estatus?: EstatusSolicitud | ''
+  tipoPersona?: TipoPersona | ''
+  sector?: Sector | ''
+  tamanoEmpresa?: TamanoEmpresa | ''
+  programaId?: string
+  fechaDesde?: string
+  fechaHasta?: string
+  busqueda?: string
+}

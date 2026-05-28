@@ -4,9 +4,27 @@ import type {
   DatosGenerales,
   DatosPersona,
   Solicitud,
+  SolicitudesPromocionResponse,
+  StatsPromocion,
+  FiltrosPromocion,
 } from '../types/solicitudes.types'
 
 export const solicitudesApi = {
+  listarPromocion: (filtros: Partial<FiltrosPromocion> = {}) => {
+  const params = new URLSearchParams()
+  Object.entries(filtros).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') {
+      params.set(key, String(value))
+    }
+  })
+  const query = params.toString()
+  return apiAuth<SolicitudesPromocionResponse>(
+    `/solicitudes/promocion${query ? `?${query}` : ''}`
+  )
+},
+
+statsPromocion: () =>
+  apiAuth<StatsPromocion>('/solicitudes/promocion/stats'),
   listar: () =>
     apiAuth<Solicitud[]>('/solicitudes'),
 

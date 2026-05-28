@@ -22,6 +22,7 @@ export function NuevaSolicitudForm() {
     guardarSolicitante,
     guardarAval,
     enviarSolicitud,
+    skipAval
   } = useSolicitudForm()
 
   async function handleEnviar() {
@@ -74,7 +75,7 @@ export function NuevaSolicitudForm() {
             loading={loading}
             error={error}
             skipLabel="Omitir aval"
-            onSkip={goBack}
+            onSkip={skipAval}
           />
         )}
 
