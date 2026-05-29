@@ -1,3 +1,4 @@
+// components/admin/solicitudes/PromocionTable.tsx
 import { useRouter } from 'next/navigation'
 import {
   Table,
@@ -32,12 +33,32 @@ import {
 } from 'lucide-react'
 import type { SolicitudPromocion, PaginacionMeta } from '@/lib/types/solicitudes.types'
 
-const ESTATUS_STYLES: Record<string, { label: string; variant: string; className: string }> = {
-  BORRADOR: { label: 'Borrador', variant: 'outline', className: 'border-border text-muted-foreground' },
-  PENDIENTE: { label: 'Pendiente', variant: 'outline', className: 'border-amber-400 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30' },
-  EN_REVISION: { label: 'En revisión', variant: 'outline', className: 'border-blue-400 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30' },
-  APROBADO: { label: 'Aprobado', variant: 'outline', className: 'border-emerald-400 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30' },
-  RECHAZADO: { label: 'Rechazado', variant: 'destructive', className: '' },
+const ESTATUS_STYLES: Record<string, { label: string; className: string; dotClass: string }> = {
+  BORRADOR: {
+    label: 'Borrador',
+    className: 'border-border/60 text-muted-foreground bg-muted/40',
+    dotClass: 'bg-muted-foreground/50',
+  },
+  PENDIENTE: {
+    label: 'Pendiente',
+    className: 'border-amber-300/70 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30',
+    dotClass: 'bg-amber-500',
+  },
+  EN_REVISION: {
+    label: 'En revisión',
+    className: 'border-primary/30 text-primary bg-primary/5',
+    dotClass: 'bg-primary',
+  },
+  APROBADO: {
+    label: 'Aprobado',
+    className: 'border-emerald-300/70 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30',
+    dotClass: 'bg-emerald-500',
+  },
+  RECHAZADO: {
+    label: 'Rechazado',
+    className: 'border-destructive/30 text-destructive bg-destructive/5',
+    dotClass: 'bg-destructive',
+  },
 }
 
 const SECTOR_LABELS: Record<string, string> = {
@@ -80,8 +101,12 @@ function NombreSolicitante({ s }: { s: SolicitudPromocion }) {
   const nombre = [d.nombre, d.apellidoPaterno, d.apellidoMaterno].filter(Boolean).join(' ')
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="font-medium text-sm leading-tight">{nombre}</span>
-      {d.rfc && <span className="text-xs text-muted-foreground font-mono">{d.rfc}</span>}
+      <span className="font-medium text-sm leading-tight text-foreground">{nombre}</span>
+      {d.rfc && (
+        <span className="text-[11px] text-muted-foreground font-mono tracking-wide">
+          {d.rfc}
+        </span>
+      )}
     </div>
   )
 }
@@ -98,12 +123,12 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
 
   if (cargando) {
     return (
-      <div className="rounded-lg border border-border/60 overflow-hidden">
+      <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/40">
-              {['Solicitante', 'Programa', 'Tipo / Sector', 'Tamaño', 'Fecha', 'Estatus', ''].map(h => (
-                <TableHead key={h} className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+              {['Folio', 'Solicitante', 'Programa', 'Tipo / Sector', 'Tamaño', 'Fecha', 'Estatus', '', '', ''].map((h, i) => (
+                <TableHead key={i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
                   {h}
                 </TableHead>
               ))}
@@ -111,9 +136,11 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
           </TableHeader>
           <TableBody>
             {Array.from({ length: 8 }).map((_, i) => (
-              <TableRow key={i}>
-                {Array.from({ length: 7 }).map((_, j) => (
-                  <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>
+              <TableRow key={i} className="border-b border-border/40">
+                {Array.from({ length: 10 }).map((_, j) => (
+                  <TableCell key={j} className="py-3">
+                    <Skeleton className="h-4 w-full rounded-md" />
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -125,55 +152,74 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
 
   if (solicitudes.length === 0) {
     return (
-      <div className="rounded-lg border border-border/60 bg-muted/20 flex flex-col items-center justify-center py-16 gap-3">
-        <div className="p-4 bg-muted rounded-full">
-          <Eye className="h-7 w-7 text-muted-foreground" />
+      <div className="rounded-xl border border-border/60 bg-card flex flex-col items-center justify-center py-20 gap-4">
+        <div className="p-4 bg-primary/5 border border-primary/10 rounded-2xl">
+          <Eye className="h-7 w-7 text-primary/50" />
         </div>
-        <p className="text-sm font-medium text-muted-foreground">No se encontraron solicitudes</p>
-        <p className="text-xs text-muted-foreground/70">Intenta ajustar los filtros</p>
+        <div className="text-center">
+          <p className="text-sm font-medium text-foreground">No se encontraron solicitudes</p>
+          <p className="text-xs text-muted-foreground mt-1">Intenta ajustar los filtros de búsqueda</p>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="rounded-lg border border-border/60 overflow-hidden">
+      <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Folio</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide w-55">Solicitante</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Programa</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tipo / Sector</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Tamaño</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Fecha</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Estatus</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide text-center w-10">Exp.</TableHead>
-              <TableHead className="text-xs font-semibold text-muted-foreground uppercase tracking-wide text-center w-10">PDF</TableHead>
-              <TableHead className="w-10" />
+            <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+              {[
+                { label: 'Folio', extra: '' },
+                { label: 'Solicitante', extra: 'w-56' },
+                { label: 'Programa', extra: '' },
+                { label: 'Tipo / Sector', extra: '' },
+                { label: 'Tamaño', extra: '' },
+                { label: 'Fecha', extra: '' },
+                { label: 'Estatus', extra: '' },
+                { label: 'Exp.', extra: 'text-center w-10' },
+                { label: 'PDF', extra: 'text-center w-10' },
+                { label: '', extra: 'w-10' },
+              ].map(({ label, extra }) => (
+                <TableHead
+                  key={label}
+                  className={`text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 ${extra}`}
+                >
+                  {label}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {solicitudes.map(sol => {
+            {solicitudes.map((sol, idx) => {
               const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
               const monto = formatMonto(sol.montoSolicitado)
 
               return (
                 <TableRow
                   key={sol.id}
-                  className="cursor-pointer hover:bg-muted/30 transition-colors"
+                  className="cursor-pointer hover:bg-accent/40 transition-colors duration-100 border-b border-border/40 last:border-0 group"
                   onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}`)}
                 >
-                  <TableCell className='py-3'>
-                    {sol.folio}
+                  {/* Folio */}
+                  <TableCell className="py-3">
+                    <span className="text-xs font-mono font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
+                      {sol.folio}
+                    </span>
                   </TableCell>
+
                   {/* Solicitante */}
                   <TableCell className="py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="shrink-0 w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+                      <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
+                        sol.tipoPersona === 'MORAL'
+                          ? 'bg-primary/10 border border-primary/15'
+                          : 'bg-accent border border-accent-foreground/10'
+                      }`}>
                         {sol.tipoPersona === 'MORAL'
-                          ? <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-                          : <User className="h-3.5 w-3.5 text-muted-foreground" />
+                          ? <Building2 className="h-3.5 w-3.5 text-primary" />
+                          : <User className="h-3.5 w-3.5 text-accent-foreground" />
                         }
                       </div>
                       <NombreSolicitante s={sol} />
@@ -183,10 +229,10 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   {/* Programa + Monto */}
                   <TableCell className="py-3">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-sm text-foreground">{sol.programa.nombre}</span>
+                      <span className="text-sm text-foreground font-medium leading-tight">{sol.programa.nombre}</span>
                       {monto
                         ? <span className="text-xs text-muted-foreground tabular-nums">{monto}</span>
-                        : <span className="text-xs text-muted-foreground/50">Sin monto</span>
+                        : <span className="text-xs text-muted-foreground/40">Sin monto</span>
                       }
                     </div>
                   </TableCell>
@@ -194,7 +240,7 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   {/* Tipo / Sector */}
                   <TableCell className="py-3">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-medium">
+                      <span className="text-xs font-medium text-foreground">
                         {sol.tipoPersona === 'FISICA'
                           ? 'Persona Física'
                           : sol.tipoPersona === 'MORAL'
@@ -213,34 +259,36 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   {/* Tamaño */}
                   <TableCell className="py-3">
                     {sol.tamanoEmpresa
-                      ? <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md">{TAMANO_LABELS[sol.tamanoEmpresa]}</span>
+                      ? (
+                        <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md border border-border/40 font-medium">
+                          {TAMANO_LABELS[sol.tamanoEmpresa]}
+                        </span>
+                      )
                       : <span className="text-muted-foreground text-xs">—</span>
                     }
                   </TableCell>
 
                   {/* Fecha */}
                   <TableCell className="py-3">
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                       {formatFecha(sol.creadoEn)}
                     </span>
                   </TableCell>
 
                   {/* Estatus */}
                   <TableCell className="py-3">
-                    <Badge
-                      variant={estatus.variant as any}
-                      className={`text-xs font-medium ${estatus.className}`}
-                    >
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${estatus.className}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${estatus.dotClass}`} />
                       {estatus.label}
-                    </Badge>
+                    </span>
                   </TableCell>
 
-                  {/* Acción */}
+                  {/* Expediente */}
                   <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-primary"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                       title="Ver expediente digital"
                       onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}/expediente`)}
                     >
@@ -248,12 +296,12 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                     </Button>
                   </TableCell>
 
-                  {/* Generar PDF */}
+                  {/* PDF */}
                   <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-primary"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                       title="Generar PDF de solicitud"
                       onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}/pdf`)}
                     >
@@ -261,25 +309,25 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                     </Button>
                   </TableCell>
 
-                  {/* Acciones dropdown */}
+                  {/* Dropdown acciones */}
                   <TableCell className="py-3" onClick={e => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-muted-foreground"
+                          className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <MoreHorizontal className="h-3.5 w-3.5" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-64 p-1.5">
+                      <DropdownMenuContent align="end" className="w-64 p-1.5 shadow-lg border-border/60">
 
                         <DropdownMenuItem
-                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group"
+                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
                           onClick={() => console.log('Enviar a financiamiento', sol.id)}
                         >
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover:bg-primary/15">
+                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover/item:bg-primary/15">
                             <SendHorizonal className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex flex-col gap-0">
@@ -289,10 +337,10 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                         </DropdownMenuItem>
 
                         <DropdownMenuItem
-                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group"
+                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
                           onClick={() => console.log('Devolver al solicitante', sol.id)}
                         >
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-500/15">
+                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover/item:bg-amber-500/15">
                             <RotateCcw className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex flex-col gap-0">
@@ -301,13 +349,13 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                           </div>
                         </DropdownMenuItem>
 
-                        <DropdownMenuSeparator className="my-1" />
+                        <DropdownMenuSeparator className="my-1 bg-border/60" />
 
                         <DropdownMenuItem
-                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-destructive/10 group"
+                          className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-destructive/10 group/item"
                           onClick={() => console.log('Rechazar solicitud', sol.id)}
                         >
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-destructive/10 text-destructive group-hover:bg-destructive/15">
+                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-destructive/10 text-destructive group-hover/item:bg-destructive/15">
                             <XCircle className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex flex-col gap-0">
@@ -330,17 +378,19 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
       <div className="flex items-center justify-between px-1">
         <p className="text-xs text-muted-foreground">
           Mostrando{' '}
-          <span className="font-medium text-foreground">
+          <span className="font-semibold text-foreground">
             {Math.min((meta.page - 1) * meta.limit + 1, meta.total)}–{Math.min(meta.page * meta.limit, meta.total)}
           </span>{' '}
-          de <span className="font-medium text-foreground">{meta.total.toLocaleString('es-MX')}</span> solicitudes
+          de{' '}
+          <span className="font-semibold text-foreground">{meta.total.toLocaleString('es-MX')}</span>{' '}
+          solicitudes
         </p>
 
         <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7"
+            className="h-7 w-7 border-border/60 hover:bg-accent hover:text-accent-foreground"
             disabled={meta.page <= 1}
             onClick={() => onPaginar(meta.page - 1)}
           >
@@ -355,7 +405,11 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                 key={p}
                 variant={p === meta.page ? 'default' : 'outline'}
                 size="icon"
-                className="h-7 w-7 text-xs"
+                className={`h-7 w-7 text-xs border-border/60 ${
+                  p === meta.page
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
+                    : 'hover:bg-accent hover:text-accent-foreground'
+                }`}
                 onClick={() => onPaginar(p)}
               >
                 {p}
@@ -366,7 +420,7 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7"
+            className="h-7 w-7 border-border/60 hover:bg-accent hover:text-accent-foreground"
             disabled={meta.page >= meta.totalPages}
             onClick={() => onPaginar(meta.page + 1)}
           >

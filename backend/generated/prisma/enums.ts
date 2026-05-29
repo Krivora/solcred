@@ -12,6 +12,7 @@
 export const Rol = {
   ADMIN: 'ADMIN',
   ANALISTA: 'ANALISTA',
+  GESTOR: 'GESTOR',
   CLIENTE: 'CLIENTE'
 } as const
 
@@ -108,6 +109,30 @@ export const TipoVivienda = {
 } as const
 
 export type TipoVivienda = (typeof TipoVivienda)[keyof typeof TipoVivienda]
+
+
+export const OperadorRegla = {
+  IGUAL: 'IGUAL',
+  DIFERENTE: 'DIFERENTE',
+  EN_LISTA: 'EN_LISTA',
+  MAYOR_QUE: 'MAYOR_QUE',
+  MENOR_QUE: 'MENOR_QUE',
+  MAYOR_IGUAL: 'MAYOR_IGUAL',
+  MENOR_IGUAL: 'MENOR_IGUAL'
+} as const
+
+export type OperadorRegla = (typeof OperadorRegla)[keyof typeof OperadorRegla]
+
+
+export const CampoRegla = {
+  TIPO_PERSONA: 'TIPO_PERSONA',
+  SECTOR: 'SECTOR',
+  TAMANO_EMPRESA: 'TAMANO_EMPRESA',
+  PROGRAMA_ID: 'PROGRAMA_ID',
+  MONTO_SOLICITADO: 'MONTO_SOLICITADO'
+} as const
+
+export type CampoRegla = (typeof CampoRegla)[keyof typeof CampoRegla]
 
 
 export const AccionLog = {

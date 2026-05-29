@@ -281,6 +281,7 @@ export type SolicitudWhereInput = {
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
+  asignacion?: Prisma.XOR<Prisma.AsignacionSolicitudNullableScalarRelationFilter, Prisma.AsignacionSolicitudWhereInput> | null
 }
 
 export type SolicitudOrderByWithRelationInput = {
@@ -301,6 +302,7 @@ export type SolicitudOrderByWithRelationInput = {
   datosSolicitante?: Prisma.DatosSolicitanteOrderByWithRelationInput
   datosAval?: Prisma.DatosAvalOrderByWithRelationInput
   documentos?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
+  asignacion?: Prisma.AsignacionSolicitudOrderByWithRelationInput
 }
 
 export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
@@ -324,6 +326,7 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
+  asignacion?: Prisma.XOR<Prisma.AsignacionSolicitudNullableScalarRelationFilter, Prisma.AsignacionSolicitudWhereInput> | null
 }, "id" | "folio">
 
 export type SolicitudOrderByWithAggregationInput = {
@@ -380,6 +383,7 @@ export type SolicitudCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateInput = {
@@ -398,6 +402,7 @@ export type SolicitudUncheckedCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUpdateInput = {
@@ -416,6 +421,7 @@ export type SolicitudUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateInput = {
@@ -434,6 +440,7 @@ export type SolicitudUncheckedUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateManyInput = {
@@ -477,6 +484,11 @@ export type SolicitudUncheckedUpdateManyInput = {
   plazoSolicitado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SolicitudScalarRelationFilter = {
+  is?: Prisma.SolicitudWhereInput
+  isNot?: Prisma.SolicitudWhereInput
 }
 
 export type SolicitudListRelationFilter = {
@@ -544,9 +556,18 @@ export type SolicitudSumOrderByAggregateInput = {
   plazoSolicitado?: Prisma.SortOrder
 }
 
-export type SolicitudScalarRelationFilter = {
-  is?: Prisma.SolicitudWhereInput
-  isNot?: Prisma.SolicitudWhereInput
+export type SolicitudCreateNestedOneWithoutAsignacionInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutAsignacionInput, Prisma.SolicitudUncheckedCreateWithoutAsignacionInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutAsignacionInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutAsignacionNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutAsignacionInput, Prisma.SolicitudUncheckedCreateWithoutAsignacionInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutAsignacionInput
+  upsert?: Prisma.SolicitudUpsertWithoutAsignacionInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutAsignacionInput, Prisma.SolicitudUpdateWithoutAsignacionInput>, Prisma.SolicitudUncheckedUpdateWithoutAsignacionInput>
 }
 
 export type SolicitudCreateNestedManyWithoutSolicitanteInput = {
@@ -707,6 +728,94 @@ export type SolicitudUpdateOneRequiredWithoutDocumentosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDocumentosInput, Prisma.SolicitudUpdateWithoutDocumentosInput>, Prisma.SolicitudUncheckedUpdateWithoutDocumentosInput>
 }
 
+export type SolicitudCreateWithoutAsignacionInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  montoSolicitado?: number | null
+  plazoSolicitado?: number | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutAsignacionInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  montoSolicitado?: number | null
+  plazoSolicitado?: number | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutAsignacionInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutAsignacionInput, Prisma.SolicitudUncheckedCreateWithoutAsignacionInput>
+}
+
+export type SolicitudUpsertWithoutAsignacionInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutAsignacionInput, Prisma.SolicitudUncheckedUpdateWithoutAsignacionInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutAsignacionInput, Prisma.SolicitudUncheckedCreateWithoutAsignacionInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutAsignacionInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutAsignacionInput, Prisma.SolicitudUncheckedUpdateWithoutAsignacionInput>
+}
+
+export type SolicitudUpdateWithoutAsignacionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  montoSolicitado?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  plazoSolicitado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutAsignacionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  montoSolicitado?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  plazoSolicitado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
 export type SolicitudCreateWithoutSolicitanteInput = {
   id?: string
   folio: string
@@ -722,6 +831,7 @@ export type SolicitudCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
@@ -739,6 +849,7 @@ export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutSolicitanteInput = {
@@ -800,6 +911,7 @@ export type SolicitudCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutProgramaInput = {
@@ -817,6 +929,7 @@ export type SolicitudUncheckedCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutProgramaInput = {
@@ -860,6 +973,7 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
@@ -877,6 +991,7 @@ export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Date | string
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosSolicitanteInput = {
@@ -910,6 +1025,7 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
@@ -927,6 +1043,7 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosAvalInput = {
@@ -944,6 +1061,7 @@ export type SolicitudCreateWithoutDatosAvalInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
@@ -961,6 +1079,7 @@ export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosAvalInput = {
@@ -994,6 +1113,7 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
@@ -1011,6 +1131,7 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDocumentosInput = {
@@ -1028,6 +1149,7 @@ export type SolicitudCreateWithoutDocumentosInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDocumentosInput = {
@@ -1045,6 +1167,7 @@ export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDocumentosInput = {
@@ -1078,6 +1201,7 @@ export type SolicitudUpdateWithoutDocumentosInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
@@ -1095,6 +1219,7 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateManySolicitanteInput = {
@@ -1126,6 +1251,7 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
@@ -1143,6 +1269,7 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateManyWithoutSolicitanteInput = {
@@ -1188,6 +1315,7 @@ export type SolicitudUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutProgramaInput = {
@@ -1205,6 +1333,7 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateManyWithoutProgramaInput = {
@@ -1270,6 +1399,7 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
+  asignacion?: boolean | Prisma.Solicitud$asignacionArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["solicitud"]>
 
@@ -1329,6 +1459,7 @@ export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
+  asignacion?: boolean | Prisma.Solicitud$asignacionArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SolicitudIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1348,6 +1479,7 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     datosSolicitante: Prisma.$DatosSolicitantePayload<ExtArgs> | null
     datosAval: Prisma.$DatosAvalPayload<ExtArgs> | null
     documentos: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
+    asignacion: Prisma.$AsignacionSolicitudPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1761,6 +1893,7 @@ export interface Prisma__SolicitudClient<T, Null = never, ExtArgs extends runtim
   datosSolicitante<T extends Prisma.Solicitud$datosSolicitanteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>>): Prisma.Prisma__DatosSolicitanteClient<runtime.Types.Result.GetResult<Prisma.$DatosSolicitantePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   datosAval<T extends Prisma.Solicitud$datosAvalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosAvalArgs<ExtArgs>>): Prisma.Prisma__DatosAvalClient<runtime.Types.Result.GetResult<Prisma.$DatosAvalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   documentos<T extends Prisma.Solicitud$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  asignacion<T extends Prisma.Solicitud$asignacionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$asignacionArgs<ExtArgs>>): Prisma.Prisma__AsignacionSolicitudClient<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2262,6 +2395,25 @@ export type Solicitud$documentosArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.DocumentoSolicitudScalarFieldEnum | Prisma.DocumentoSolicitudScalarFieldEnum[]
+}
+
+/**
+ * Solicitud.asignacion
+ */
+export type Solicitud$asignacionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AsignacionSolicitud
+   */
+  select?: Prisma.AsignacionSolicitudSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AsignacionSolicitud
+   */
+  omit?: Prisma.AsignacionSolicitudOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AsignacionSolicitudInclude<ExtArgs> | null
+  where?: Prisma.AsignacionSolicitudWhereInput
 }
 
 /**

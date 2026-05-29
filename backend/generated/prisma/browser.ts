@@ -18,6 +18,26 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model GrupoGestion
+ * 
+ */
+export type GrupoGestion = Prisma.GrupoGestionModel
+/**
+ * Model ReglaGrupo
+ * 
+ */
+export type ReglaGrupo = Prisma.ReglaGrupoModel
+/**
+ * Model GrupoGestor
+ * 
+ */
+export type GrupoGestor = Prisma.GrupoGestorModel
+/**
+ * Model AsignacionSolicitud
+ * 
+ */
+export type AsignacionSolicitud = Prisma.AsignacionSolicitudModel
+/**
  * Model Usuario
  * 
  */

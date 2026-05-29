@@ -51,6 +51,10 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  GrupoGestion: 'GrupoGestion',
+  ReglaGrupo: 'ReglaGrupo',
+  GrupoGestor: 'GrupoGestor',
+  AsignacionSolicitud: 'AsignacionSolicitud',
   Usuario: 'Usuario',
   Programa: 'Programa',
   TipoDocumento: 'TipoDocumento',
@@ -76,6 +80,56 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const GrupoGestionScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  activo: 'activo',
+  prioridad: 'prioridad',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type GrupoGestionScalarFieldEnum = (typeof GrupoGestionScalarFieldEnum)[keyof typeof GrupoGestionScalarFieldEnum]
+
+
+export const ReglaGrupoScalarFieldEnum = {
+  id: 'id',
+  grupoId: 'grupoId',
+  campo: 'campo',
+  operador: 'operador',
+  valor: 'valor',
+  creadoEn: 'creadoEn'
+} as const
+
+export type ReglaGrupoScalarFieldEnum = (typeof ReglaGrupoScalarFieldEnum)[keyof typeof ReglaGrupoScalarFieldEnum]
+
+
+export const GrupoGestorScalarFieldEnum = {
+  grupoId: 'grupoId',
+  gestorId: 'gestorId',
+  activo: 'activo',
+  asignadoEn: 'asignadoEn'
+} as const
+
+export type GrupoGestorScalarFieldEnum = (typeof GrupoGestorScalarFieldEnum)[keyof typeof GrupoGestorScalarFieldEnum]
+
+
+export const AsignacionSolicitudScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  gestorId: 'gestorId',
+  grupoId: 'grupoId',
+  asignadoPorId: 'asignadoPorId',
+  activa: 'activa',
+  fechaAsignacion: 'fechaAsignacion',
+  fechaReasignacion: 'fechaReasignacion',
+  motivoReasignacion: 'motivoReasignacion'
+} as const
+
+export type AsignacionSolicitudScalarFieldEnum = (typeof AsignacionSolicitudScalarFieldEnum)[keyof typeof AsignacionSolicitudScalarFieldEnum]
 
 
 export const UsuarioScalarFieldEnum = {

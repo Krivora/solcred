@@ -14,6 +14,7 @@ datasource db {
 enum Rol {
   ADMIN
   ANALISTA
+  GESTOR  
   CLIENTE
 }
 
@@ -79,6 +80,85 @@ enum TipoVivienda {
   RENTADA
   PAGANDO
 }
+enum OperadorRegla {
+  IGUAL
+  DIFERENTE
+  EN_LISTA      // valor es JSON array: ["FISICA","MORAL"]
+  MAYOR_QUE
+  MENOR_QUE
+  MAYOR_IGUAL
+  MENOR_IGUAL
+}
+
+enum CampoRegla {
+  TIPO_PERSONA
+  SECTOR
+  TAMANO_EMPRESA
+  PROGRAMA_ID
+  MONTO_SOLICITADO
+}
+
+// ─── Modelos nuevos ──────────────────────────────────────────────────────────
+
+model GrupoGestion {
+  id          String   @id @default(uuid())
+  nombre      String
+  descripcion String?
+  activo      Boolean  @default(true)
+  prioridad   Int      @default(0) // mayor número = mayor prioridad al evaluar
+
+  reglas      ReglaGrupo[]
+  gestores    GrupoGestor[]
+  asignaciones AsignacionSolicitud[]
+
+  creadoEn    DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+}
+
+model ReglaGrupo {
+  id       String        @id @default(uuid())
+  grupo    GrupoGestion  @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  grupoId  String
+
+  campo    CampoRegla
+  operador OperadorRegla
+  valor    String        // siempre string, el motor lo castea según el campo
+
+  creadoEn DateTime @default(now())
+}
+
+model GrupoGestor {
+  grupo    GrupoGestion @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  grupoId  String
+  gestor   Usuario      @relation(fields: [gestorId], references: [id])
+  gestorId String
+  activo   Boolean      @default(true)
+
+  asignadoEn DateTime @default(now())
+
+  @@id([grupoId, gestorId])
+}
+
+model AsignacionSolicitud {
+  id          String       @id @default(uuid())
+  solicitud   Solicitud    @relation(fields: [solicitudId], references: [id])
+  solicitudId String       @unique   // una solicitud tiene una asignación activa
+  gestor      Usuario      @relation("AsignacionesComoGestor", fields: [gestorId], references: [id])
+  gestorId    String
+  grupo       GrupoGestion @relation(fields: [grupoId], references: [id])
+  grupoId     String
+
+  asignadoPor   Usuario?  @relation("AsignacionesComoSupervisor", fields: [asignadoPorId], references: [id])
+  asignadoPorId String?   // null = asignación automática, populated = asignación manual
+
+  activa        Boolean   @default(true)
+  fechaAsignacion DateTime @default(now())
+  fechaReasignacion DateTime?
+  motivoReasignacion String?
+
+  @@index([gestorId])
+  @@index([grupoId])
+}
 
 // ─────────────────────────────────────────
 // USUARIOS DEL SISTEMA
@@ -103,6 +183,9 @@ model Usuario {
 
   solicitudes  Solicitud[]
   logs        LogAuditoria[]
+  gruposGestion       GrupoGestor[]
+  asignacionesGestor  AsignacionSolicitud[] @relation("AsignacionesComoGestor")
+  asignacionesDadas   AsignacionSolicitud[] @relation("AsignacionesComoSupervisor")
 }
 
 // ─────────────────────────────────────────
@@ -193,6 +276,7 @@ model Solicitud {
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?
   documentos       DocumentoSolicitud[]
+  asignacion    AsignacionSolicitud?
 
   creadoEn        DateTime         @default(now())
   actualizadoEn   DateTime         @updatedAt

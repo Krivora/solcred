@@ -9,6 +9,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import usuariosRoutes from "./modules/usuarios/usuarios.routes";
 import programasRoutes from "./modules/programas/programas.routes";
 import solicitudesRoutes from "./modules/solicitudes/solicitudes.routes";
+import asignacionRoutes from "./modules/asignacion/asignacion.routes"
 import logsRoutes from "./modules/logs/logs.routes";
 
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/programas", programasRoutes);
 app.use("/api/solicitudes", solicitudesRoutes);
+app.use("/api/asignacion", asignacionRoutes);
 app.use("/api/logs", logsRoutes);
 
 // ── 404 ────────────────────────────────────
@@ -54,6 +56,7 @@ app.use((_req, res) => {
 
 // ── Errores ────────────────────────────────
 app.use(errorMiddleware);
+
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);

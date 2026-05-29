@@ -112,7 +112,6 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     },
   };
 };
-
 export const statsPromocion = async () => {
   const [total, borrador, pendiente, enRevision, aprobado, rechazado] =
     await Promise.all([
@@ -144,7 +143,6 @@ export const listarSolicitudes = async (
     orderBy: { creadoEn: "desc" },
   });
 };
-
 export const obtenerSolicitudPorId = async (
   id: string,
   usuarioId: string,
@@ -164,14 +162,12 @@ export const obtenerSolicitudPorId = async (
 
   return solicitud;
 };
-
 const generarFolio = async (): Promise<string> => {
   const result = await prisma.$queryRaw<[{ nextval: bigint }]>`
     SELECT nextval('solicitud_folio_seq')
   `;
   return String(Number(result[0].nextval)).padStart(5, '0');
 };
-
 export const crearSolicitud = async (
   dto: CrearSolicitudDto,
   solicitanteId: string
@@ -193,7 +189,6 @@ export const crearSolicitud = async (
     },
   });
 };
-
 export const guardarDatosGenerales = async (
   solicitudId: string,
   dto: GuardarDatosGeneralesDto,
@@ -218,8 +213,7 @@ export const guardarDatosGenerales = async (
     where: { id: solicitudId },
     data: dto,
   });
-};
-
+}
 export const guardarDatosSolicitante = async (
   solicitudId: string,
   dto: GuardarDatosSolicitanteDto,
@@ -246,7 +240,6 @@ export const guardarDatosSolicitante = async (
     update: dto,
   });
 };
-
 export const guardarDatosAval = async (
   solicitudId: string,
   dto: GuardarDatosAvalDto,
@@ -278,7 +271,6 @@ export const guardarDatosAval = async (
     update: dto,
   });
 };
-
 export const enviarSolicitud = async (
   solicitudId: string,
   usuarioId: string,
@@ -338,7 +330,6 @@ export const enviarSolicitud = async (
     include: incluyeTodo,
   });
 };
-
 export const cambiarEstatus = async (
   solicitudId: string,
   dto: CambiarEstatusDto

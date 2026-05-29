@@ -8,6 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/GrupoGestion'
+export type * from './models/ReglaGrupo'
+export type * from './models/GrupoGestor'
+export type * from './models/AsignacionSolicitud'
 export type * from './models/Usuario'
 export type * from './models/Programa'
 export type * from './models/TipoDocumento'

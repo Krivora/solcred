@@ -8,6 +8,7 @@ import {
     Users,
     ClipboardList,
     ChevronRight,
+    Boxes,
 } from "lucide-react";
 
 interface ConfigCard {
@@ -46,6 +47,15 @@ const configItems: ConfigCard[] = [
             "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
     },
     {
+        icon: Boxes,
+        title: "Grupos",
+        description:
+            "Define los tipos de documentos requeridos y su asignación por programa.",
+        href: "/dashboard/admin/configuracion/grupos",
+        accent:
+            "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400",
+    },
+    {
         icon: ClipboardList,
         title: "Auditoría",
         description:
@@ -70,7 +80,7 @@ export default function AdminPage() {
             </div>
 
             {/* ── Cards ── */}
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-4">
                 {configItems.map((item) => {
                     const Icon = item.icon;
                     return (

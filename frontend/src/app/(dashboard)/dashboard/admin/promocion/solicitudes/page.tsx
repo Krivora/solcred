@@ -25,12 +25,14 @@ export default function SolicitudesPromocionPage() {
   } = useSolicitudesPromocion()
 
   return (
-    <div className="mx-auto max-w-8xl space-y-8">
+    <div className="mx-auto max-w-8xl space-y-6">
 
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Solicitudes de Promoción</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            Solicitudes de Promoción
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             Gestión y revisión del primer filtro de solicitudes de crédito
           </p>
@@ -40,9 +42,9 @@ export default function SolicitudesPromocionPage() {
           size="sm"
           onClick={recargar}
           disabled={cargando}
-          className="gap-1.5 h-8 shrink-0"
+          className="gap-1.5 h-8 shrink-0 border-border/60 hover:bg-accent hover:text-accent-foreground hover:border-primary/20 transition-colors"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${cargando ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${cargando ? 'animate-spin text-primary' : ''}`} />
           Actualizar
         </Button>
       </div>
@@ -51,7 +53,7 @@ export default function SolicitudesPromocionPage() {
       <PromocionStats stats={stats} cargando={cargandoStats} />
 
       {/* Filtros */}
-      <div className="rounded-lg border border-border/60 bg-card p-4">
+      <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
         <PromocionFiltros
           filtros={filtros}
           onFiltrar={actualizarFiltros}
@@ -62,10 +64,17 @@ export default function SolicitudesPromocionPage() {
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{error}</span>
-          <Button variant="ghost" size="sm" onClick={recargar} className="ml-auto h-7 text-destructive hover:text-destructive">
+        <div className="flex items-center gap-3 rounded-xl border border-destructive/25 bg-destructive/8 px-4 py-3 text-sm text-destructive">
+          <div className="shrink-0 p-1.5 bg-destructive/10 rounded-lg">
+            <AlertCircle className="h-4 w-4" />
+          </div>
+          <span className="flex-1">{error}</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={recargar}
+            className="h-7 text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
+          >
             Reintentar
           </Button>
         </div>

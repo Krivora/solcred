@@ -62,6 +62,12 @@ export const navConfig: NavItem[] = [
         roles: ["ADMIN"],
       },
       {
+        label: "Asignacion",
+        href: "/dashboard/admin/asignacion",
+        icon: Clock,
+        roles: ["ADMIN"],
+      },
+      {
         label: "Aprobación",
         href: "/dashboard/promocion/aprobacion",
         icon: Clock,
