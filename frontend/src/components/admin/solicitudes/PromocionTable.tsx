@@ -1,115 +1,68 @@
 // components/admin/solicitudes/PromocionTable.tsx
+'use client'
+
 import { useRouter } from 'next/navigation'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Eye, FolderOpen, FileText, MoreHorizontal, SendHorizonal, RotateCcw, XCircle} from 'lucide-react'
+import { Paginacion } from '@/components/ui/Paginacion'
 import {
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  User,
-  Building2,
-  FolderOpen,
-  FileText,
-  MoreHorizontal,
-  SendHorizonal,
-  RotateCcw,
-  XCircle,
-} from 'lucide-react'
+  ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
+} from '@/lib/config/solicitudes.config'
 import type { SolicitudPromocion, PaginacionMeta } from '@/lib/types/solicitudes.types'
+import { SolicitanteCell } from '@/components/ui/SolicitanteCell'
 
-const ESTATUS_STYLES: Record<string, { label: string; className: string; dotClass: string }> = {
-  BORRADOR: {
-    label: 'Borrador',
-    className: 'border-border/60 text-muted-foreground bg-muted/40',
-    dotClass: 'bg-muted-foreground/50',
-  },
-  PENDIENTE: {
-    label: 'Pendiente',
-    className: 'border-amber-300/70 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30',
-    dotClass: 'bg-amber-500',
-  },
-  EN_REVISION: {
-    label: 'En revisión',
-    className: 'border-primary/30 text-primary bg-primary/5',
-    dotClass: 'bg-primary',
-  },
-  APROBADO: {
-    label: 'Aprobado',
-    className: 'border-emerald-300/70 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30',
-    dotClass: 'bg-emerald-500',
-  },
-  RECHAZADO: {
-    label: 'Rechazado',
-    className: 'border-destructive/30 text-destructive bg-destructive/5',
-    dotClass: 'bg-destructive',
-  },
-}
 
-const SECTOR_LABELS: Record<string, string> = {
-  AGROPECUARIO: 'Agropecuario',
-  INDUSTRIAL: 'Industrial',
-  COMERCIAL: 'Comercial',
-  SERVICIOS: 'Servicios',
-  TECNOLOGIA: 'Tecnología',
-  OTRO: 'Otro',
-}
-
-const TAMANO_LABELS: Record<string, string> = {
-  MICRO: 'Micro',
-  PEQUENA: 'Pequeña',
-  MEDIANA: 'Mediana',
-  GRANDE: 'Grande',
-}
-
-function formatFecha(iso: string) {
-  return new Date(iso).toLocaleDateString('es-MX', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
-function formatMonto(monto?: number) {
-  if (!monto) return null
-  return new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
-    maximumFractionDigits: 0,
-  }).format(monto)
-}
-
-function NombreSolicitante({ s }: { s: SolicitudPromocion }) {
-  const d = s.datosSolicitante
-  if (!d) return <span className="text-muted-foreground text-xs italic">Sin datos</span>
-
-  const nombre = [d.nombre, d.apellidoPaterno, d.apellidoMaterno].filter(Boolean).join(' ')
+function TableSkeleton() {
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="font-medium text-sm leading-tight text-foreground">{nombre}</span>
-      {d.rfc && (
-        <span className="text-[11px] text-muted-foreground font-mono tracking-wide">
-          {d.rfc}
-        </span>
-      )}
+    <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+            {['Folio', 'Solicitante', 'Programa', 'Tamaño / Sector', 'Fecha', 'Estatus', '', '', ''].map((h, i) => (
+              <TableHead key={i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
+                {h}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <TableRow key={i} className="border-b border-border/40">
+              {Array.from({ length: 9 }).map((_, j) => (
+                <TableCell key={j} className="py-3">
+                  <Skeleton className="h-4 w-full rounded-md" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }
+
+function TableVacio() {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card flex flex-col items-center justify-center py-20 gap-4">
+      <div className="p-4 bg-primary/5 border border-primary/10 rounded-2xl">
+        <Eye className="h-7 w-7 text-primary/50" />
+      </div>
+      <div className="text-center">
+        <p className="text-sm font-medium text-foreground">No se encontraron solicitudes</p>
+        <p className="text-xs text-muted-foreground mt-1">Intenta ajustar los filtros de búsqueda</p>
+      </div>
+    </div>
+  )
+}
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface Props {
   solicitudes: SolicitudPromocion[]
@@ -118,51 +71,13 @@ interface Props {
   onPaginar: (page: number) => void
 }
 
+// ─── Componente principal ─────────────────────────────────────────────────────
+
 export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props) {
   const router = useRouter()
 
-  if (cargando) {
-    return (
-      <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-              {['Folio', 'Solicitante', 'Programa', 'Tipo / Sector', 'Tamaño', 'Fecha', 'Estatus', '', '', ''].map((h, i) => (
-                <TableHead key={i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
-                  {h}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <TableRow key={i} className="border-b border-border/40">
-                {Array.from({ length: 10 }).map((_, j) => (
-                  <TableCell key={j} className="py-3">
-                    <Skeleton className="h-4 w-full rounded-md" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    )
-  }
-
-  if (solicitudes.length === 0) {
-    return (
-      <div className="rounded-xl border border-border/60 bg-card flex flex-col items-center justify-center py-20 gap-4">
-        <div className="p-4 bg-primary/5 border border-primary/10 rounded-2xl">
-          <Eye className="h-7 w-7 text-primary/50" />
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-foreground">No se encontraron solicitudes</p>
-          <p className="text-xs text-muted-foreground mt-1">Intenta ajustar los filtros de búsqueda</p>
-        </div>
-      </div>
-    )
-  }
+  if (cargando) return <TableSkeleton />
+  if (solicitudes.length === 0) return <TableVacio />
 
   return (
     <div className="flex flex-col gap-3">
@@ -171,19 +86,18 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
               {[
-                { label: 'Folio', extra: '' },
-                { label: 'Solicitante', extra: 'w-56' },
-                { label: 'Programa', extra: '' },
-                { label: 'Tipo / Sector', extra: '' },
-                { label: 'Tamaño', extra: '' },
-                { label: 'Fecha', extra: '' },
-                { label: 'Estatus', extra: '' },
-                { label: 'Exp.', extra: 'text-center w-10' },
-                { label: 'PDF', extra: 'text-center w-10' },
-                { label: '', extra: 'w-10' },
+                { label: 'Folio',           extra: '' },
+                { label: 'Solicitante',     extra: 'w-56' },
+                { label: 'Programa',        extra: '' },
+                { label: 'Tamaño / Sector', extra: '' },
+                { label: 'Fecha',           extra: '' },
+                { label: 'Estatus',         extra: '' },
+                { label: 'Exp.',            extra: 'text-center w-10' },
+                { label: 'PDF',             extra: 'text-center w-10' },
+                { label: '',               extra: 'w-10' },
               ].map(({ label, extra }) => (
                 <TableHead
-                  key={label}
+                  key={label || 'acciones'}
                   className={`text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 ${extra}`}
                 >
                   {label}
@@ -191,10 +105,11 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
               ))}
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {solicitudes.map((sol, idx) => {
+            {solicitudes.map((sol) => {
               const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
-              const monto = formatMonto(sol.montoSolicitado)
+              const monto = formatMonto(sol.montoSolicitado ?? null)
 
               return (
                 <TableRow
@@ -210,26 +125,16 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   </TableCell>
 
                   {/* Solicitante */}
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
-                        sol.tipoPersona === 'MORAL'
-                          ? 'bg-primary/10 border border-primary/15'
-                          : 'bg-accent border border-accent-foreground/10'
-                      }`}>
-                        {sol.tipoPersona === 'MORAL'
-                          ? <Building2 className="h-3.5 w-3.5 text-primary" />
-                          : <User className="h-3.5 w-3.5 text-accent-foreground" />
-                        }
-                      </div>
-                      <NombreSolicitante s={sol} />
-                    </div>
+                  <TableCell className="py-3">                   
+                      <SolicitanteCell datos={sol.datosSolicitante} tipoPersona={sol.tipoPersona} />
                   </TableCell>
 
                   {/* Programa + Monto */}
                   <TableCell className="py-3">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-sm text-foreground font-medium leading-tight">{sol.programa.nombre}</span>
+                      <span className="text-sm text-foreground font-medium leading-tight">
+                        {sol.programa.nombre}
+                      </span>
                       {monto
                         ? <span className="text-xs text-muted-foreground tabular-nums">{monto}</span>
                         : <span className="text-xs text-muted-foreground/40">Sin monto</span>
@@ -237,35 +142,18 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                     </div>
                   </TableCell>
 
-                  {/* Tipo / Sector */}
+                  {/* Tamaño / Sector */}
                   <TableCell className="py-3">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-medium text-foreground">
-                        {sol.tipoPersona === 'FISICA'
-                          ? 'Persona Física'
-                          : sol.tipoPersona === 'MORAL'
-                            ? 'Persona Moral'
-                            : <span className="text-muted-foreground">—</span>
-                        }
-                      </span>
-                      {sol.sector && (
-                        <span className="text-xs text-muted-foreground">
-                          {SECTOR_LABELS[sol.sector] ?? sol.sector}
-                        </span>
-                      )}
+                      {sol.sector
+                        ? <span className="text-xs font-medium text-foreground">{SECTOR_LABELS[sol.sector] ?? sol.sector}</span>
+                        : <span className="text-xs text-muted-foreground/40">—</span>
+                      }
+                      {sol.tamanoEmpresa
+                        ? <span className="text-xs text-muted-foreground">{TAMANO_LABELS[sol.tamanoEmpresa]}</span>
+                        : <span className="text-xs text-muted-foreground/40">—</span>
+                      }
                     </div>
-                  </TableCell>
-
-                  {/* Tamaño */}
-                  <TableCell className="py-3">
-                    {sol.tamanoEmpresa
-                      ? (
-                        <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-md border border-border/40 font-medium">
-                          {TAMANO_LABELS[sol.tamanoEmpresa]}
-                        </span>
-                      )
-                      : <span className="text-muted-foreground text-xs">—</span>
-                    }
                   </TableCell>
 
                   {/* Fecha */}
@@ -286,9 +174,8 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   {/* Expediente */}
                   <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                       title="Ver expediente digital"
                       onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}/expediente`)}
                     >
@@ -299,9 +186,8 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                   {/* PDF */}
                   <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                       title="Generar PDF de solicitud"
                       onClick={() => router.push(`/dashboard/admin/solicitudes/${sol.id}/pdf`)}
                     >
@@ -309,13 +195,12 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
                     </Button>
                   </TableCell>
 
-                  {/* Dropdown acciones */}
+                  {/* Acciones */}
                   <TableCell className="py-3" onClick={e => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
-                          variant="ghost"
-                          size="icon"
+                          variant="ghost" size="icon"
                           className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <MoreHorizontal className="h-3.5 w-3.5" />
@@ -374,60 +259,7 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar }: Props
         </Table>
       </div>
 
-      {/* Paginación */}
-      <div className="flex items-center justify-between px-1">
-        <p className="text-xs text-muted-foreground">
-          Mostrando{' '}
-          <span className="font-semibold text-foreground">
-            {Math.min((meta.page - 1) * meta.limit + 1, meta.total)}–{Math.min(meta.page * meta.limit, meta.total)}
-          </span>{' '}
-          de{' '}
-          <span className="font-semibold text-foreground">{meta.total.toLocaleString('es-MX')}</span>{' '}
-          solicitudes
-        </p>
-
-        <div className="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-7 w-7 border-border/60 hover:bg-accent hover:text-accent-foreground"
-            disabled={meta.page <= 1}
-            onClick={() => onPaginar(meta.page - 1)}
-          >
-            <ChevronLeft className="h-3.5 w-3.5" />
-          </Button>
-
-          {Array.from({ length: Math.min(meta.totalPages, 5) }, (_, i) => {
-            const p = Math.max(1, meta.page - 2) + i
-            if (p > meta.totalPages) return null
-            return (
-              <Button
-                key={p}
-                variant={p === meta.page ? 'default' : 'outline'}
-                size="icon"
-                className={`h-7 w-7 text-xs border-border/60 ${
-                  p === meta.page
-                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
-                    : 'hover:bg-accent hover:text-accent-foreground'
-                }`}
-                onClick={() => onPaginar(p)}
-              >
-                {p}
-              </Button>
-            )
-          })}
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-7 w-7 border-border/60 hover:bg-accent hover:text-accent-foreground"
-            disabled={meta.page >= meta.totalPages}
-            onClick={() => onPaginar(meta.page + 1)}
-          >
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </div>
+      <Paginacion meta={meta} onPaginar={onPaginar} />
     </div>
   )
 }

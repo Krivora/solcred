@@ -110,6 +110,18 @@ export interface AsignarManualDto {
     gestorId: string
     motivo?: string
 }
+export interface SolicitudPendiente {
+    id: string
+    folio: string
+    programa: { nombre: string }
+    datosSolicitante: { nombre: string; apellidoPaterno: string }
+    estatus: string
+    tipoPersona: 'FISICA' | 'MORAL' | null
+    sector: string | null
+    tamanoEmpresa: string | null
+    montoSolicitado: number | null
+    creadoEn: string
+}
 
 // ─── Labels para UI ───────────────────────────────────────────────────────────
 

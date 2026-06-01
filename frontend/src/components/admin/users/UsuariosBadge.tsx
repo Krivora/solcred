@@ -31,6 +31,14 @@ const rolConfig: Record<Rol, { label: string; className: string }> = {
       "hover:bg-secondary",
     ].join(" "),
   },
+   GESTOR: {
+    label: "Gestor",
+    // secondary con foreground de secondary — zona media de jerarquía
+    className: [
+      "bg-secondary text-secondary-foreground border-border",
+      "hover:bg-secondary",
+    ].join(" "),
+  },
   CLIENTE: {
     label: "Cliente",
     // muted: rol base, visualmente discreto

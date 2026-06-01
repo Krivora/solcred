@@ -28,6 +28,8 @@ import { useGrupos } from '@/lib/hooks/useGrupos'
 import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/lib/types/asignacion.types'
 import { CAMPO_LABELS, OPERADOR_LABELS } from '@/lib/types/asignacion.types'
 import { cn } from '@/lib/utils/cn'
+import { useUsuarios } from '@/lib/hooks/useUsuarios'
+
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -221,17 +223,27 @@ function EliminarDialog({
 // ─── Página principal ─────────────────────────────────────────────────────────
 
 // En producción este dato vendría de useUsuarios filtrado por rol GESTOR
-const GESTORES_MOCK: GestorResumen[] = []
+
 
 export default function GruposPage() {
     const { grupos, cargando, error, recargar, crear, actualizar, eliminar } = useGrupos()
-
+    const { usuarios } = useUsuarios()
     const [sheetAbierto, setSheetAbierto] = useState(false)
     const [grupoEditando, setGrupoEditando] = useState<GrupoGestion | null>(null)
     const [grupoEliminando, setGrupoEliminando] = useState<GrupoGestion | null>(null)
     const [guardando, setGuardando] = useState(false)
     const [eliminando, setEliminando] = useState(false)
 
+    const gestoresDisponibles: GestorResumen[] = usuarios
+    .filter(u => u.rol === 'GESTOR' && u.activo)
+    .map(u => ({
+        id: u.id,
+        nombre: u.nombre,
+        apellidoPaterno: u.apellidoPaterno,
+        apellidoMaterno: u.apellidoMaterno,
+        correo: u.correo,
+        activo: u.activo,
+    }))
     const abrirNuevo = () => {
         setGrupoEditando(null)
         setSheetAbierto(true)
@@ -271,7 +283,7 @@ export default function GruposPage() {
     const gruposInactivos = grupos.filter(g => !g.activo)
 
     return (
-        <div className="flex flex-col gap-8 p-6 max-w-5xl mx-auto">
+        <div className="flex flex-col gap-8 p-6 max-w-8xl mx-auto">
 
             {/* Header */}
             <div className="flex items-start justify-between">
@@ -307,7 +319,7 @@ export default function GruposPage() {
                             icon: Users,
                             color: 'text-foreground'
                         },
-                        { label: 'Solicitudes asignadas', value: grupos.reduce((acc, g) => acc + g._count.asignaciones, 0), icon: Layers, color: 'text-foreground' },
+                        { label: 'Solicitudes asignadas', value: grupos.reduce((acc, g) => acc + (g._count?.asignaciones ?? 0), 0), icon: Layers, color: 'text-foreground' },
                     ].map(stat => (
                         <div key={stat.label} className="flex items-center gap-3 p-4 rounded-xl border border-border/60 bg-card">
                             <div className="p-2 bg-muted rounded-lg">
@@ -414,7 +426,7 @@ export default function GruposPage() {
                     <div className="px-6 py-5">
                         <GrupoForm
                             grupo={grupoEditando ?? undefined}
-                            gestoresDisponibles={GESTORES_MOCK}
+                            gestoresDisponibles={gestoresDisponibles}
                             onSubmit={handleSubmit}
                             onCancel={() => setSheetAbierto(false)}
                             cargando={guardando}
