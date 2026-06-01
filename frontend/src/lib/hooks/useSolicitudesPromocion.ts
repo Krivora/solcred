@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { solicitudesApi } from '../api/solicitudes'
+import { solicitudesApi } from '../api/admin/solicitudes'
 import type {
   SolicitudPromocion,
   PaginacionMeta,
@@ -21,6 +21,7 @@ const FILTROS_INICIALES: FiltrosPromocion = {
   fechaDesde: '',
   fechaHasta: '',
   busqueda: '',
+  asignacion: '',
 }
 
 export function useSolicitudesPromocion() {

@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/shared/components/ui/button";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import { ProgramaForm } from "@/components/admin/programas/ProgramaForm";
-import { getPrograma } from "@/lib/api/programas";
+import { getPrograma } from "@/lib/api/admin/programas";
 import type { Programa } from "@/lib/types/programa.types";
 import { DocumentosPrograma } from "@/components/admin/programas/DocumentosPrograma";
 

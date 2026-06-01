@@ -8,6 +8,13 @@ export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'
 export type TipoVivienda =| "PROPIA"| "RENTADA"| "PAGANDO"
 
+export interface GestorAsignado {
+  id: string
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+}
+
 export interface DatosPersona {
   nombre: string
   apellidoPaterno: string
@@ -85,6 +92,10 @@ export interface SolicitudPromocion {
     correo?: string
     celular?: string
   }
+  asignacion?: {
+    gestor: GestorAsignado
+    fechaAsignacion: string
+  }
   creadoEn: string
   actualizadoEn: string
 }
@@ -117,6 +128,7 @@ export interface FiltrosPromocion {
   tipoPersona?: TipoPersona | ''
   sector?: Sector | ''
   tamanoEmpresa?: TamanoEmpresa | ''
+  asignacion?: 'todos' | 'asignados' | 'sin_asignar' | ''
   programaId?: string
   fechaDesde?: string
   fechaHasta?: string

@@ -1,11 +1,11 @@
 'use client';
 
 import { ShieldCheck, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { LogsStats } from '@/components/admin/logs/LogsStats';
-import { LogsFilters } from '@/components/admin/logs/LogsFilters';
-import { LogsTable } from '@/components/admin/logs/LogsTable';
-import { LogDetailModal } from '@/components/admin/logs/LogDetailModal';
+import { Button } from '@/shared/components/ui/button';
+import { LogsStats } from '@/features/logs/components/LogsStats';
+import { LogsFilters } from '@/features/logs/components/LogsFilters';
+import { LogsTable } from '@/features/logs/components/LogsTable';
+import { LogDetailModal } from '@/features/logs/components/LogDetailModal';
 import { useLogs } from '@/lib/hooks/useLogs';
 
 export default function LogsPage() {

@@ -6,23 +6,23 @@ import {
     Plus, Settings2, Trash2, Pencil, Users, ChevronRight,
     ShieldCheck, AlertCircle, Layers, Zap
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/shared/components/ui/button'
+import { Badge } from '@/shared/components/ui/badge'
+import { Skeleton } from '@/shared/components/ui/skeleton'
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogDescription,
-} from '@/components/ui/dialog'
+} from '@/shared/components/ui/dialog'
 import {
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetDescription,
-} from '@/components/ui/sheet'
+} from '@/shared/components/ui/sheet'
 import { GrupoForm } from '@/components/admin/asignacion/GrupoForm'
 import { useGrupos } from '@/lib/hooks/useGrupos'
 import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/lib/types/asignacion.types'

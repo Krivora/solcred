@@ -1,7 +1,7 @@
 // lib/hooks/useAsignacion.ts
 
 import { useState, useCallback } from 'react'
-import * as asignacionApi from '@/lib/api/asignacion'
+import * as asignacionApi from '@/lib/api/admin/asignacion'
 import type { GestorConCarga, AsignarManualDto } from '@/lib/types/asignacion.types'
 import { toast } from "@/lib/utils/toast";
 

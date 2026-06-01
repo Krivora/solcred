@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { solicitudesApi } from '../api/solicitudes'
+import { solicitudesApi } from '../api/admin/solicitudes'
 import type { CrearSolicitudDto, DatosGenerales, DatosPersona, Solicitud } from '../types/solicitudes.types'
 
 export type Step = 'programa' | 'general' | 'solicitante' | 'aval' | 'resumen'

@@ -4,18 +4,18 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Plus, Building2, Search, SlidersHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/shared/components/ui/select";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
-import { getProgramas, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
+import { getProgramas, activarPrograma, desactivarPrograma } from "@/lib/api/admin/programas";
 import { ProgramaCard } from "@/components/admin/programas/ProgramaCard";
 import type { Programa } from "@/lib/types/programa.types";
 

@@ -1,7 +1,7 @@
 // lib/hooks/useGrupos.ts
 
 import { useState, useEffect, useCallback } from 'react'
-import * as asignacionApi from '@/lib/api/asignacion'
+import * as asignacionApi from '@/lib/api/admin/asignacion'
 import type {
     GrupoGestion,
     CrearGrupoDto,

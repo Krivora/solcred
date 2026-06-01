@@ -12,17 +12,17 @@ import {
     ShieldCheck,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/shared/components/ui/button";
+import { Skeleton } from "@/shared/components/ui/skeleton";
+import { Separator } from "@/shared/components/ui/separator";
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/shared/components/ui/card";
 
-import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/programas";
+import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/admin/programas";
 import { ProgramaBadge, TipoPersonaBadge } from "@/components/admin/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/components/admin/programas/DocumentosPrograma";
 import { Requerimiento, type Programa } from "@/lib/types/programa.types";

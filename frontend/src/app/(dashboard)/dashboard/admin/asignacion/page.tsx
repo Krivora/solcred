@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { RefreshCw, ChevronRight, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/shared/components/ui/button'
+import { Skeleton } from '@/shared/components/ui/skeleton'
 import { GestorCard } from '@/components/admin/asignacion/GestorCard'
 import { AsignacionSheet } from '@/components/admin/asignacion/AsignacionSheet'
 import { useAsignacion } from '@/lib/hooks/useAsignacion'
@@ -33,7 +33,7 @@ function useSolicitudesPendientes() {
             setCargando(true)
             setError(null)
             const data = await apiAuth<SolicitudPendiente[]>(
-                '/solicitudes?estatus=PENDIENTE,EN_REVISION&sinAsignar=true'
+                '/admin/solicitudes?estatus=PENDIENTE,EN_REVISION&sinAsignar=true'
             )
             setSolicitudes(data)
         } catch (err: any) {

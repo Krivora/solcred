@@ -5,6 +5,14 @@
     "target": "ES2022",
     "outDir": "dist",
     "rootDir": ".",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@config/*": ["config/*"],
+      "@modules/*": ["modules/*"],
+      "@utils/*": ["utils/*"],
+      "@middlewares/*": ["middlewares/*"]
+    },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true

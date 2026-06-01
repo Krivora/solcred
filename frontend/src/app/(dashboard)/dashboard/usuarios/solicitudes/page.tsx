@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 import { SolicitudesTable } from '@/components/usuarios/solicitudes/Solicitudestable'
 import { useMisSolicitudes } from '@/lib/hooks/Usemissolicitudes'
 import { Plus, RefreshCw, AlertCircle } from 'lucide-react'

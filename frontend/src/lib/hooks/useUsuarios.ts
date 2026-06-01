@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "@/lib/utils/toast";
-import { usuariosApi } from "@/lib/api/usuarios";
+import { usuariosApi } from "@/lib/api/admin/usuarios";
 import type {
   Usuario,
   UsuarioFiltros,

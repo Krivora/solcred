@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { solicitudesApi } from '@/lib/api/solicitudes'
+import { solicitudesApi } from '@/lib/api/admin/solicitudes'
 import type { Solicitud } from '@/lib/types/solicitudes.types'
 
 interface UseMisSolicitudesReturn {

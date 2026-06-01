@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { Users } from "lucide-react";
 
-import { UsuariosStats } from "@/components/admin/users/UsuariosStats";
-import { UsuariosTable } from "@/components/admin/users/UsuariosTable";
-import { UsuarioDetalleSheet } from "@/components/admin/users/UsuarioDetalleSheet";
-import { UsuarioRolDialog } from "@/components/admin/users/UsuarioRolDialog";
-import { UsuarioDesactivarDialog } from "@/components/admin/users/UsuarioDesactivarDialog";
+import { UsuariosStats } from "@/features/usuarios/components/UsuariosStats";
+import { UsuariosTable } from "@/features/usuarios/components/UsuariosTable";
+import { UsuarioDetalleSheet } from "@/features/usuarios/components/UsuarioDetalleSheet";
+import { UsuarioRolDialog } from "@/features/usuarios/components/UsuarioRolDialog";
+import { UsuarioDesactivarDialog } from "@/features/usuarios/components/UsuarioDesactivarDialog";
 import { useUsuarios } from "@/lib/hooks/useUsuarios";
 import type { Usuario } from "@/lib/types/usuario.types";
 import type { ActualizarUsuarioForm, CambiarRolForm } from "@/lib/schemas/usuario.schemas";

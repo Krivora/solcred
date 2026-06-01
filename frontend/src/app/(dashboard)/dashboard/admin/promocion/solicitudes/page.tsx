@@ -2,7 +2,7 @@
 'use client'
 
 import { RefreshCw, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 import { PromocionStats } from '@/components/admin/solicitudes/PromocionStats'
 import { PromocionFiltros } from '@/components/admin/solicitudes/PromocionFiltros'
 import { PromocionTable } from '@/components/admin/solicitudes/PromocionTable'

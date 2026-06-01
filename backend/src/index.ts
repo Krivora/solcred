@@ -6,11 +6,11 @@ import rateLimit from "express-rate-limit";
 import { httpLogger } from "./utils/logger";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import authRoutes from "./modules/auth/auth.routes";
-import usuariosRoutes from "./modules/usuarios/usuarios.routes";
-import programasRoutes from "./modules/programas/programas.routes";
-import solicitudesRoutes from "./modules/solicitudes/solicitudes.routes";
-import asignacionRoutes from "./modules/asignacion/asignacion.routes"
-import logsRoutes from "./modules/logs/logs.routes";
+import usuariosRoutes from "./modules/admin/usuarios/usuarios.routes";
+import programasRoutes from "./modules/admin/programas/programas.routes";
+import solicitudesRoutes from "./modules/admin/solicitudes/solicitudes.routes";
+import asignacionRoutes from "./modules/admin/asignacion/asignacion.routes"
+import logsRoutes from "./modules/admin/logs/logs.routes";
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
@@ -41,13 +41,20 @@ app.use(express.urlencoded({ extended: true }));
 // ── Logger ─────────────────────────────────
 app.use(httpLogger);
 
-// ── Rutas ──────────────────────────────────
+// ── Rutas Compartidas ──────────────────────────────────
 app.use("/api/auth", authRoutes);
-app.use("/api/usuarios", usuariosRoutes);
-app.use("/api/programas", programasRoutes);
-app.use("/api/solicitudes", solicitudesRoutes);
-app.use("/api/asignacion", asignacionRoutes);
-app.use("/api/logs", logsRoutes);
+
+// ── Rutas Adminstracion ──────────────────────────────────
+app.use("/api/admin/asignacion", asignacionRoutes);
+app.use("/api/admin/logs", logsRoutes);
+app.use("/api/admin/programas", programasRoutes);
+app.use("/api/admin/solicitudes", solicitudesRoutes);
+app.use("/api/admin/usuarios", usuariosRoutes);
+
+
+// ── Rutas Solicitantes ──────────────────────────────────
+app.use("/api/solicitantes/solicitudes", solicitudesRoutes);
+
 
 // ── 404 ────────────────────────────────────
 app.use((_req, res) => {

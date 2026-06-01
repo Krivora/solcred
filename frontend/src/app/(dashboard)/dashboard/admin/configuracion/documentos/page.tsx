@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FileBadge2, Plus, Search, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import {
     Table, TableBody, TableCell,
     TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
-import { TipoDocumentoDialog } from "@/components/admin/documentos/TipoDocumentoDialog";
-import { getTiposDocumento } from "@/lib/api/programas";
+} from "@/shared/components/ui/table";
+import { TipoDocumentoDialog } from "@/features/documentos/components/TipoDocumentoDialog";
+import { getTiposDocumento } from "@/lib/api/admin/programas";
 import { toast } from "@/lib/utils/toast";
 import type { TipoDocumento } from "@/lib/types/programa.types";
 
