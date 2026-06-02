@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import type { Solicitud, TipoPersona, Sector, TamanoEmpresa, DatosGenerales } from '@/shared/lib/types/solicitudes.types'
 import { Button } from '@/shared/components/ui/button'
-import { Label } from '@/shared/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 import { FormError } from '@/shared/components/ui/FormError'
 import {
   ChevronLeft, ChevronRight,

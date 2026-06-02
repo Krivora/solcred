@@ -33,7 +33,7 @@ function useSolicitudesPendientes() {
             setCargando(true)
             setError(null)
             const data = await apiAuth<SolicitudPendiente[]>(
-                '/admin/solicitudes?estatus=PENDIENTE,EN_REVISION&sinAsignar=true'
+                '/admin/promocion?estatus=PENDIENTE,EN_REVISION&sinAsignar=true'
             )
             setSolicitudes(data)
         } catch (err: any) {
@@ -202,7 +202,6 @@ export default function AsignacionPage() {
 
                 {/* ── Columna derecha: gestores ──────────────────────────────── */}
                 <div className="w-72 shrink-0 flex flex-col">
-
                     <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Users className="h-3.5 w-3.5 text-muted-foreground" />

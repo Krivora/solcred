@@ -1,6 +1,6 @@
 'use client'
 
-import { useSolicitudForm } from '@/shared/lib/hooks/useSolicitudForm'
+import { useSolicitudForm } from '../hooks/useSolicitudForm'
 import { StepIndicator } from './form/StepIndicator'
 import { StepPrograma } from './form/StepPrograma'
 import { StepGeneral } from './form/StepGeneral'

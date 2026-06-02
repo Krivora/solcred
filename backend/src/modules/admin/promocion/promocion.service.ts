@@ -2,7 +2,7 @@ import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import {
   CambiarEstatusDto,
-} from "./solicitudes.schema";
+} from "./promocion.schema";
 
 interface FiltrosPromocion {
   page: number

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { solicitudesApi } from '@/shared/lib/api/admin/solicitudes'
+import { solicitudesApi } from '../api/solicitudes.api'
 import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
 
 interface UseMisSolicitudesReturn {
@@ -19,6 +19,7 @@ export function useMisSolicitudes(): UseMisSolicitudesReturn {
     setError(null)
     try {
       const data = await solicitudesApi.listar()
+      console.log('Solicitudes obtenidas:', data) // Debug log
       setSolicitudes(data)
     } catch {
       setError('No se pudo cargar tus solicitudes. Intenta de nuevo.')

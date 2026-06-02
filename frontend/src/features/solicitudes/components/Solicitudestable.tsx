@@ -12,10 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/components/ui/table'
-import { EstatusBadge } from '@/components/usuarios/solicitudes/Estatusbadge'
-import { SolicitudesEmptyState } from '@/components/usuarios/solicitudes/SolicitudesEmptyState'
-import { SolicitudEnviarDialog } from '@/components/usuarios/solicitudes/Solicitudenviardialog'
-import { solicitudesApi } from '@/shared/lib/api/admin/solicitudes'
+import { EstatusBadge } from './Estatusbadge'
+import { SolicitudesEmptyState } from './SolicitudesEmptyState'
+import { SolicitudEnviarDialog } from './Solicitudenviardialog'
+import { solicitudesApi } from '../api/solicitudes.api'
 import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
 import { Pencil, Send, Printer, Building2, User } from 'lucide-react'
 import { format } from 'date-fns'

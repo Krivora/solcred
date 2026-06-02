@@ -8,9 +8,13 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import authRoutes from "./modules/auth/auth.routes";
 import usuariosRoutes from "./modules/admin/usuarios/usuarios.routes";
 import programasRoutes from "./modules/admin/programas/programas.routes";
-import solicitudesRoutes from "./modules/admin/solicitudes/solicitudes.routes";
+import promocionRoutes from "./modules/admin/promocion/promocion.routes";
 import asignacionRoutes from "./modules/admin/asignacion/asignacion.routes"
+import grupoRoutes from "./modules/admin/grupos/grupos.routes"
 import logsRoutes from "./modules/admin/logs/logs.routes";
+
+
+import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
@@ -46,14 +50,15 @@ app.use("/api/auth", authRoutes);
 
 // ── Rutas Adminstracion ──────────────────────────────────
 app.use("/api/admin/asignacion", asignacionRoutes);
+app.use("/api/admin/grupos", grupoRoutes);
 app.use("/api/admin/logs", logsRoutes);
 app.use("/api/admin/programas", programasRoutes);
-app.use("/api/admin/solicitudes", solicitudesRoutes);
+app.use("/api/admin/promocion", promocionRoutes);
 app.use("/api/admin/usuarios", usuariosRoutes);
 
 
 // ── Rutas Solicitantes ──────────────────────────────────
-app.use("/api/solicitantes/solicitudes", solicitudesRoutes);
+app.use("/api/clientes/solicitudes", solicitudesRoutes);
 
 
 // ── 404 ────────────────────────────────────
@@ -67,6 +72,7 @@ app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  console.log("🔥 SERVIDOR INICIADO - VERSION CON LOGS");
 });
 
 export default app;

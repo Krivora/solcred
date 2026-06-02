@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import { RequestAutenticado } from "@middlewares/auth.middleware";
 import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
-import * as solicitudesService from "./solicitudes.service";
+import * as solicitudesService from "./promocion.service";
 import { ok } from "@utils/response";
 
 export const listar = async (

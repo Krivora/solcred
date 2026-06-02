@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/shared/components/ui/button'
-import { SolicitudesTable } from '@/components/usuarios/solicitudes/Solicitudestable'
-import { useMisSolicitudes } from '@/shared/lib/hooks/Usemissolicitudes'
+import { SolicitudesTable } from '@/features/solicitudes/components/Solicitudestable'
+import { useMisSolicitudes } from '@/features/solicitudes/hooks/Usemissolicitudes'
 import { Plus, RefreshCw, AlertCircle } from 'lucide-react'
 import { cn } from '@/shared/lib/utils/cn'
 

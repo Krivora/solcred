@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { solicitudesApi } from '../api/solicitudes'
+import { solicitudesApi } from '../api/promocion'
 import type {
   SolicitudPromocion,
   PaginacionMeta,
@@ -32,7 +32,7 @@ export function useSolicitudesPromocion() {
   const [cargando, setCargando] = useState(true)
   const [cargandoStats, setCargandoStats] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
+  console.log(solicitudesApi)
   const cargarStats = useCallback(async () => {
     setCargandoStats(true)
     try {

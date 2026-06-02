@@ -1,4 +1,4 @@
-import type { Programa } from '../../programas/types/programa.types'
+import type { Programa } from '@/features/programas/types/programa.types'
 
 export type TipoPersona = 'FISICA' | 'MORAL'
 export type Sector = 'AGROPECUARIO' | 'INDUSTRIAL' | 'COMERCIAL' | 'SERVICIOS' | 'TECNOLOGIA' | 'OTRO'

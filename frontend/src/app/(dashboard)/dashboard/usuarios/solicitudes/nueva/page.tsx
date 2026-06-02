@@ -1,4 +1,4 @@
-import { NuevaSolicitudForm } from '@/components/usuarios/solicitudes/NuevaSolicitudForm'
+import { NuevaSolicitudForm } from '@/features/solicitudes/components/NuevaSolicitudForm'
 
 export default function NuevaSolicitudPage() {
   return (

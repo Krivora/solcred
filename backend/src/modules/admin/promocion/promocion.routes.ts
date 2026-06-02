@@ -4,8 +4,8 @@ import { autorizar } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import {
   cambiarEstatusSchema,
-} from "./solicitudes.schema";
-import * as solicitudesController from "./solicitudes.controller";
+} from "./promocion.schema";
+import * as solicitudesController from "./promocion.controller";
 
 const router = Router();
 
