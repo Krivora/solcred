@@ -1,18 +1,18 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { RefreshCw, ChevronRight, Users } from 'lucide-react'
+import { RefreshCw, Users } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { GestorCard } from '@/features/asignacion/components/GestorCard'
 import { AsignacionSheet } from '@/features/asignacion//components/AsignacionSheet'
 import { useAsignacion } from '@/features/asignacion/hooks/useAsignacion'
-import { useGrupos } from '@/features/asignacion/hooks/useGrupos'
-import { apiAuth } from '@/shared/lib/client'
+import { useGrupos } from '@/features/grupos/hooks/useGrupos'
 import { cn } from '@/shared/lib/utils/cn'
-import type { SolicitudPendiente, GestorConCarga } from '@/features/asignacion/types/asignacion.types'
+import type {GestorConCarga } from '@/features/asignacion/types/asignacion.types'
 import { SolicitudesPanel } from '@/features/asignacion/components/SolicitudesPanel'
 import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
 // ─── Tipos locales ────────────────────────────────────────────────────────────
 
 interface SheetData {
@@ -20,36 +20,6 @@ interface SheetData {
     folio: string
     gestorActualId?: string
 }
-
-// ─── Hooks de datos ───────────────────────────────────────────────────────────
-
-function useSolicitudesPendientes() {
-    const [solicitudes, setSolicitudes] = useState<SolicitudPendiente[]>([])
-    const [cargando, setCargando] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-
-    const cargar = useCallback(async () => {
-        try {
-            setCargando(true)
-            setError(null)
-            const data = await apiAuth<SolicitudPendiente[]>(
-                '/admin/promocion?estatus=PENDIENTE,EN_REVISION&sinAsignar=true'
-            )
-            setSolicitudes(data)
-        } catch (err: any) {
-            setError(err.message ?? 'Error al cargar solicitudes')
-        } finally {
-            setCargando(false)
-        }
-    }, [])
-
-    const remover = useCallback((id: string) => {
-        setSolicitudes(prev => prev.filter(s => s.id !== id))
-    }, [])
-
-    return { solicitudes, cargando, error, cargar, remover }
-}
-
 
 function ListaGestoresSkeleton() {
     return (
@@ -94,7 +64,8 @@ function CargaDistribucion({ gestores }: { gestores: GestorConCarga[] }) {
 export default function AsignacionPage() {
     const { gestores, cargandoGestores, asignarAutomaticamente, cargarGestores } = useAsignacion()
     const { grupos } = useGrupos()
-    const { solicitudes, cargando, error, cargar, remover } = useSolicitudesPendientes()
+    const { solicitudes, cargando, error, recargar: cargar, actualizarFiltros } = useSolicitudesPromocion()
+
 
     const [seleccionadas, setSeleccionadas] = useState<Set<string>>(new Set())
     const [grupoFiltro, setGrupoFiltro] = useState('todos')
@@ -105,7 +76,11 @@ export default function AsignacionPage() {
     useEffect(() => {
         cargar()
         cargarGestores()
-    }, [cargar, cargarGestores])
+        actualizarFiltros({
+            estatus: 'PENDIENTE,EN_REVISION',
+            asignacion: 'sin_asignar',
+        })
+    }, [cargar, cargarGestores, actualizarFiltros])
 
     // ── Selección ──────────────────────────────────────────────────────────────
 
@@ -130,7 +105,7 @@ export default function AsignacionPage() {
     const handleAsignarRapido = async (solicitudId: string) => {
         setAsignandoId(solicitudId)
         await asignarAutomaticamente(solicitudId, () => {
-            remover(solicitudId)
+            cargar()                          // ← reemplaza remover(solicitudId)
             setSeleccionadas(prev => {
                 const next = new Set(prev)
                 next.delete(solicitudId)
@@ -144,9 +119,10 @@ export default function AsignacionPage() {
         if (!seleccionadas.size) return
         setAsignandoLote(true)
         for (const id of [...seleccionadas]) {
-            await asignarAutomaticamente(id, () => remover(id))
+            await asignarAutomaticamente(id, () => { }) // sin remover individual
         }
         setSeleccionadas(new Set())
+        cargar()                              // ← recarga todo al final del lote
         setAsignandoLote(false)
     }
 
@@ -263,11 +239,11 @@ export default function AsignacionPage() {
                     folio={sheetData.folio}
                     gestorActualId={sheetData.gestorActualId}
                     onAsignado={() => {
-                        cargar()
-                        cargarGestores()
-                        setSeleccionadas(new Set())
-                        setSheetData(null)
-                    }}
+                    cargar()
+                    cargarGestores()
+                    setSeleccionadas(new Set())
+                    setSheetData(null)
+                }}
                 />
             )}
         </div>

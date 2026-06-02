@@ -1,44 +1,15 @@
-// lib/api/asignacion.ts
-
 import { apiAuth } from '@/shared/lib/client'
 import type {
-    GrupoGestion,
     GestorConCarga,
-    CrearGrupoDto,
-    ActualizarGrupoDto,
     AsignarManualDto,
 } from '@/features/asignacion/types/asignacion.types'
 
-const BASE = '/admin/asignacion'
-
-// ─── Grupos ───────────────────────────────────────────────────────────────────
-
-export const listarGrupos = (): Promise<GrupoGestion[]> =>
-    apiAuth(`${BASE}/grupos`)
-
-export const obtenerGrupo = (id: string): Promise<GrupoGestion> =>
-    apiAuth(`${BASE}/grupos/${id}`)
-
-export const crearGrupo = (dto: CrearGrupoDto): Promise<GrupoGestion> =>
-    apiAuth(`${BASE}/grupos`, { method: 'POST', body: dto })
-
-export const actualizarGrupo = (
-    id: string,
-    dto: ActualizarGrupoDto
-): Promise<GrupoGestion> =>
-    apiAuth(`${BASE}/grupos/${id}`, { method: 'PUT', body: dto })
-
-export const eliminarGrupo = (id: string): Promise<void> =>
-    apiAuth(`${BASE}/grupos/${id}`, { method: 'DELETE' })
-
-// ─── Gestores ─────────────────────────────────────────────────────────────────
+const BASE = '/asignacion'
 
 export const obtenerCargaGestores = (grupoId?: string): Promise<GestorConCarga[]> => {
     const params = grupoId ? `?grupoId=${grupoId}` : ''
     return apiAuth(`${BASE}/gestores/carga${params}`)
 }
-
-// ─── Asignación ───────────────────────────────────────────────────────────────
 
 export const asignarAutomaticamente = (solicitudId: string): Promise<void> =>
     apiAuth(`${BASE}/solicitudes/${solicitudId}/automatica`, { method: 'POST' })

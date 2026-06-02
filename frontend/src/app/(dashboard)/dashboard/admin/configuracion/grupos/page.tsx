@@ -24,7 +24,7 @@ import {
     SheetDescription,
 } from '@/shared/components/ui/sheet'
 import { GrupoForm } from '@/features/asignacion/components/GrupoForm'
-import { useGrupos } from '@/features/asignacion/hooks/useGrupos'
+import { useGrupos } from '@/features/grupos/hooks/useGrupos'
 import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/features/asignacion/types/asignacion.types'
 import { CAMPO_LABELS, OPERADOR_LABELS } from '@/features/asignacion/types/asignacion.types'
 import { cn } from '@/shared/lib/utils/cn'

@@ -1,13 +1,11 @@
-// lib/hooks/useGrupos.ts
-
 import { useState, useEffect, useCallback } from 'react'
-import * as asignacionApi from '../api/asignacion'
+import * as gruposApi from '../api/grupos.api'
 import type {
     GrupoGestion,
     CrearGrupoDto,
     ActualizarGrupoDto,
-} from '../types/asignacion.types'
-import { toast } from "@/shared/lib/utils/toast";
+} from '../types/grupos.types'
+import { toast } from "@/shared/lib/utils/toast"
 
 export function useGrupos() {
     const [grupos, setGrupos] = useState<GrupoGestion[]>([])
@@ -18,7 +16,7 @@ export function useGrupos() {
         try {
             setCargando(true)
             setError(null)
-            const data = await asignacionApi.listarGrupos()
+            const data = await gruposApi.listarGrupos()
             setGrupos(data)
         } catch (err: any) {
             setError(err.message ?? 'Error al cargar grupos')
@@ -31,7 +29,7 @@ export function useGrupos() {
 
     const crear = async (dto: CrearGrupoDto): Promise<boolean> => {
         try {
-            const nuevo = await asignacionApi.crearGrupo(dto)
+            const nuevo = await gruposApi.crearGrupo(dto)
             setGrupos(prev => [nuevo, ...prev])
             toast.success('Grupo creado correctamente')
             return true
@@ -46,7 +44,7 @@ export function useGrupos() {
         dto: ActualizarGrupoDto
     ): Promise<boolean> => {
         try {
-            const actualizado = await asignacionApi.actualizarGrupo(id, dto)
+            const actualizado = await gruposApi.actualizarGrupo(id, dto)
             setGrupos(prev =>
                 prev.map(g => (g.id === id ? actualizado : g))
             )
@@ -60,7 +58,7 @@ export function useGrupos() {
 
     const eliminar = async (id: string): Promise<boolean> => {
         try {
-            await asignacionApi.eliminarGrupo(id)
+            await gruposApi.eliminarGrupo(id)
             setGrupos(prev =>
                 prev.map(g => (g.id === id ? { ...g, activo: false } : g))
             )
