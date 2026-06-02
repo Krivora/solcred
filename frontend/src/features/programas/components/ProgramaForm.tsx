@@ -12,8 +12,8 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Badge } from "@/shared/components/ui/badge";
-import { cn } from "@/lib/utils/cn";
-import { toast } from "@/lib/utils/toast";
+import { cn } from "@/shared/lib/utils/cn";
+import { toast } from "@/shared/lib/utils/toast";
 
 import { Card } from "./form/Card";
 import { Divider } from "./form/Divider";
@@ -23,8 +23,8 @@ import { RequerimientoSelector } from "./form/RequerimientoSelector";
 import { SectionHeading } from "./form/SectionHeading";
 import { ToggleCard } from "./form/ToggleCard";
 
-import { crearPrograma, actualizarPrograma } from "@/lib/api/admin/programas";
-import { Requerimiento, type Programa, type ProgramaFormData } from "@/lib/types/programa.types";
+import { crearPrograma, actualizarPrograma } from "../api/programas";
+import { Requerimiento, type Programa, type ProgramaFormData } from "../types/programa.types";
 
 interface ProgramaFormProps { programa?: Programa; }
 

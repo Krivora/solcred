@@ -2,8 +2,8 @@
 
 import { Activity, AlertTriangle, Plus, Pencil, Users } from 'lucide-react';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import type { ResumenLogs } from '@/lib/types/logs.types';
-import { getConteoAccion } from '@/lib/types/logs.types';
+import type { ResumenLogs } from '../types/logs.types';
+import { getConteoAccion } from '../types/logs.types';
 
 interface LogsStatsProps {
   resumen: ResumenLogs | null;

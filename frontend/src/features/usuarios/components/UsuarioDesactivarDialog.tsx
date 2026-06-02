@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
-import type { Usuario } from "@/lib/types/usuario.types";
+import type { Usuario } from "../types/usuario.types";
 
 interface UsuarioDesactivarDialogProps {
   usuario: Usuario | null;

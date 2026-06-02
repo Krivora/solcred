@@ -3,11 +3,11 @@
 
 import { RefreshCw, AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import { PromocionStats } from '@/components/admin/solicitudes/PromocionStats'
-import { PromocionFiltros } from '@/components/admin/solicitudes/PromocionFiltros'
-import { PromocionTable } from '@/components/admin/solicitudes/PromocionTable'
-import { useSolicitudesPromocion } from '@/lib/hooks/useSolicitudesPromocion'
-
+import { PromocionStats } from '@/features/promocion/components/PromocionStats'
+import { PromocionFiltros } from '@/features/promocion/components/PromocionFiltros'
+import { PromocionTable } from '@/features/promocion/components/PromocionTable'
+import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
+import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
 export default function SolicitudesPromocionPage() {
   const {
     solicitudes,
@@ -28,26 +28,11 @@ export default function SolicitudesPromocionPage() {
     <div className="mx-auto max-w-8xl space-y-6">
 
       {/* Encabezado */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">
-            Solicitudes de Promoción
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Gestión y revisión del primer filtro de solicitudes de crédito
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={recargar}
-          disabled={cargando}
-          className="gap-1.5 h-8 shrink-0 border-border/60 hover:bg-accent hover:text-accent-foreground hover:border-primary/20 transition-colors"
-        >
-          <RefreshCw className={`h-3.5 w-3.5 ${cargando ? 'animate-spin text-primary' : ''}`} />
-          Actualizar
-        </Button>
-      </div>
+      <PageHeader
+        title="Solicitudes de Promoción"
+        description="Gestión y revisión del primer filtro de solicitudes de crédito"
+        action={RefreshAction(recargar, cargando)}
+      />
 
       {/* Stats */}
       <PromocionStats stats={stats} cargando={cargandoStats} />

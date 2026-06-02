@@ -15,8 +15,8 @@ import { Textarea } from '@/shared/components/ui/textarea'
 import { Label } from '@/shared/components/ui/label'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { CargaBadge } from './CargaBadge'
-import { useAsignacion } from '@/lib/hooks/useAsignacion'
-import type { GestorConCarga } from '@/lib/types/asignacion.types'
+import { useAsignacion } from '../hooks/useAsignacion'
+import type { GestorConCarga } from '../types/asignacion.types'
 
 interface Props {
     open: boolean

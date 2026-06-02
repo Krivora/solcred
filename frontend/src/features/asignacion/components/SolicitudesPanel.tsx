@@ -5,7 +5,7 @@ import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { SolicitudesToolbar } from './SolicitudesToolbar'
 import { SolicitudRow } from './SolicitudRow'
-import type { SolicitudPendiente, GrupoGestion } from '@/lib/types/asignacion.types'
+import type { SolicitudPendiente, GrupoGestion } from '../types/asignacion.types'
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

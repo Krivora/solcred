@@ -4,18 +4,18 @@
 import { usePathname } from "next/navigation";
 import { Bell, Search } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { useAuthStore } from "@/lib/store/auth.store";
-import { cn } from "@/lib/utils/cn";
+import { useAuthStore } from "@/shared/lib/store/auth.store";
+import { cn } from "@/shared/lib/utils/cn";
 
 const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Inicio",
   promocion: "Promoción",
-  solicitudes: "Solicitudes",
+  solicitudes: "Lista de Solicitudes",
   pendientes: "Pendientes de Aprobación",
   "mis-casos": "Mis Casos",
   financiamiento: "Financiamiento",
   "mesa-control": "Mesa de Control",
-  asignacion: "Asignación a Analistas",
+  asignacion: "Asignación a Promotores",
   comite: "Comité de Crédito",
   admin: "Gestión del Sistema",
   programas: "Programas de Crédito",
@@ -24,7 +24,6 @@ const BREADCRUMB_MAP: Record<string, string> = {
   logs: "Logs de Auditoría",
   nueva: "Nueva Solicitud",
 };
-
 function getBreadcrumbs(pathname: string): { label: string; href: string }[] {
   const parts = pathname.split("/").filter(Boolean);
   return parts.map((part, i) => ({

@@ -1,5 +1,5 @@
 import { Badge } from "@/shared/components/ui/badge";
-import type { Rol, TipoPersona } from "@/lib/types/usuario.types";
+import type { Rol, TipoPersona } from "../types/usuario.types";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Todos los estilos usan exclusivamente tokens del CSS global (via Tailwind).

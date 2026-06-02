@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { ProgramaForm } from "@/components/admin/programas/ProgramaForm";
+import { ProgramaForm } from "@/features/programas/components/ProgramaForm";
 
 export default function NuevoProgramaPage() {
     return (

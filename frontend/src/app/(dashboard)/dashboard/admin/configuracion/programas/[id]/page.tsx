@@ -22,11 +22,11 @@ import {
     CardTitle,
 } from "@/shared/components/ui/card";
 
-import { getPrograma, activarPrograma, desactivarPrograma } from "@/lib/api/admin/programas";
-import { ProgramaBadge, TipoPersonaBadge } from "@/components/admin/programas/ProgramaBadge";
-import { DocumentosPrograma } from "@/components/admin/programas/DocumentosPrograma";
-import { Requerimiento, type Programa } from "@/lib/types/programa.types";
-import { cn } from "@/lib/utils/cn";
+import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/programas/api/programas";
+import { ProgramaBadge, TipoPersonaBadge } from "@/features/programas/components/ProgramaBadge";
+import { DocumentosPrograma } from "@/features/programas/components/DocumentosPrograma";
+import { Requerimiento, type Programa } from "@/features/programas/types/programa.types";
+import { cn } from "@/shared/lib/utils/cn";
 
 const fmt = (n: number) =>
     new Intl.NumberFormat("es-MX", {

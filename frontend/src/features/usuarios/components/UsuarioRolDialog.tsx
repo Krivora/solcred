@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Shield, ChevronDown, Check } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/shared/lib/utils/cn";
 
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
@@ -22,8 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
-import { cambiarRolSchema, type CambiarRolForm } from "@/lib/schemas/usuario.schemas";
-import type { Usuario } from "@/lib/types/usuario.types";
+import { cambiarRolSchema, type CambiarRolForm } from "../schema/usuario.schemas";
+import type { Usuario } from "../types/usuario.types";
 
 // ─── Config de roles ──────────────────────────────────────────────────────────
 // Para agregar más roles: solo añade objetos a este array.

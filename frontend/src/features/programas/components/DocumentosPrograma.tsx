@@ -13,13 +13,13 @@ import {
     SelectTrigger, SelectValue,
 } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
-import { TipoDocumentoDialog } from "@/features/documentos/components/TipoDocumentoDialog";
+import { TipoDocumentoDialog } from "@/features/programas/components/TipoDocumentoDialog";
 import {
     getTiposDocumento, agregarDocumento,
     quitarDocumento, crearTipoDocumento,
-} from "@/lib/api/admin/programas";
-import type { ProgramaDocumento, TipoDocumento, AplicaA } from "@/lib/types/programa.types";
-import { cn } from "@/lib/utils/cn";
+} from "../api/programas";
+import type { ProgramaDocumento, TipoDocumento, AplicaA } from "../types/programa.types";
+import { cn } from "@/shared/lib/utils/cn";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers

@@ -3,14 +3,14 @@
 import { Loader2, Zap, Clock } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/ui/tooltip'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/shared/lib/utils/cn'
 import {
     ESTATUS_STYLES,
     SECTOR_LABELS,
     TAMANO_LABELS,
     formatMonto,
-} from '@/lib/config/solicitudes.config'
-import type { SolicitudPendiente } from '@/lib/types/asignacion.types'
+} from '@/shared/config/solicitudes.config'
+import type { SolicitudPendiente } from '../types/asignacion.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 
 // ─── Helpers locales ──────────────────────────────────────────────────────────

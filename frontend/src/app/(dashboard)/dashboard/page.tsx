@@ -1,7 +1,7 @@
 "use client";
 
 // src/app/(dashboard)/dashboard/page.tsx
-import { useAuthStore } from "@/lib/store/auth.store";
+import { useAuthStore } from "@/shared/lib/store/auth.store";
 import {
   FileText,
   Clock,

@@ -12,9 +12,9 @@ import {
   SelectValue,
 } from '@/shared/components/ui/select';
 import { Badge } from '@/shared/components/ui/badge';
-import type { LogFilters } from '@/lib/types/logs.types';
-import { ACCIONES_LOG, MODULOS_LOG } from '@/lib/types/logs.types';
-import { ACCION_CONFIG, MODULO_CONFIG } from '@/lib/config/logs.config';
+import type { LogFilters } from '../types/logs.types';
+import { ACCIONES_LOG, MODULOS_LOG } from '../types/logs.types';
+import { ACCION_CONFIG, MODULO_CONFIG } from '@/shared/config/logs.config';
 
 interface LogsFiltersProps {
   filters: LogFilters;

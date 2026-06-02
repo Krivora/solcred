@@ -23,13 +23,13 @@ import type {
     CampoRegla,
     OperadorRegla,
     GestorResumen,
-} from '@/lib/types/asignacion.types'
+} from '../types/asignacion.types'
 import {
     CAMPO_LABELS,
     OPERADOR_LABELS,
     CAMPOS_NUMERICOS,
     CAMPOS_LISTA,
-} from '@/lib/types/asignacion.types'
+} from '../types/asignacion.types'
 
 // Opciones de valor según el campo
 const VALORES_POR_CAMPO: Partial<Record<CampoRegla, { label: string; value: string }[]>> = {

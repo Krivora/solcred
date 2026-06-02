@@ -1,9 +1,7 @@
 "use client";
-
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Building2, Search, SlidersHorizontal } from "lucide-react";
-
+import { Plus, Building2, Search, SlidersHorizontal, Users } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -14,10 +12,10 @@ import {
     SelectValue,
 } from "@/shared/components/ui/select";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-
-import { getProgramas, activarPrograma, desactivarPrograma } from "@/lib/api/admin/programas";
-import { ProgramaCard } from "@/components/admin/programas/ProgramaCard";
-import type { Programa } from "@/lib/types/programa.types";
+import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/programas/api/programas";
+import { ProgramaCard } from "@/features/programas/components/ProgramaCard";
+import type { Programa } from "@/features/programas/types/programa.types";
+import { PageHeader, RefreshAction } from "@/shared/components/ui/PageHeader";
 
 export default function ProgramasPage() {
     const [programas, setProgramas] = useState<Programa[]>([]);
@@ -72,23 +70,11 @@ export default function ProgramasPage() {
 
     return (
         <div className="mx-auto max-w-8xl space-y-6">
-            {/* ── Header ───────────────────────────────────────── */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Programas</h1>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                        Gestiona los programas de financiamiento disponibles.
-                    </p>
-                </div>
-                <Button asChild>
-                    <Link href="/dashboard/admin/configuracion/programas/nuevo">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nuevo Programa
-                    </Link>
-                </Button>
-            </div>
-
-            {/* ── Filtros ───────────────────────────────────────── */}
+            <PageHeader
+                title="Gestión de Programas"
+                description="Administra los programas registrados en el sistema"
+                backHref="/dashboard/admin/configuracion"
+            />
             <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -114,8 +100,6 @@ export default function ProgramasPage() {
                     </SelectContent>
                 </Select>
             </div>
-
-            {/* ── Contenido ────────────────────────────────────── */}
             {loading ? (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     {Array.from({ length: 6 }).map((_, i) => (

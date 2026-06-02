@@ -33,11 +33,10 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { Badge } from "@/shared/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/tooltip";
 
 import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
-import type { Usuario, UsuarioFiltros, Rol, TipoPersona } from "@/lib/types/usuario.types";
+import type { Usuario, UsuarioFiltros, Rol, TipoPersona } from "../types/usuario.types";
 
 type SortKey = "nombre" | "correo" | "rol" | "creadoEn";
 type SortDir = "asc" | "desc";

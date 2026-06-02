@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
-import { Requerimiento } from "@/lib/types/programa.types";
+import { cn } from "@/shared/lib/utils/cn";
+import { Requerimiento } from "../../types/programa.types";
 import type { ElementType } from "react";
 
 const options = [

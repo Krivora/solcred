@@ -8,9 +8,10 @@ import { UsuariosTable } from "@/features/usuarios/components/UsuariosTable";
 import { UsuarioDetalleSheet } from "@/features/usuarios/components/UsuarioDetalleSheet";
 import { UsuarioRolDialog } from "@/features/usuarios/components/UsuarioRolDialog";
 import { UsuarioDesactivarDialog } from "@/features/usuarios/components/UsuarioDesactivarDialog";
-import { useUsuarios } from "@/lib/hooks/useUsuarios";
-import type { Usuario } from "@/lib/types/usuario.types";
-import type { ActualizarUsuarioForm, CambiarRolForm } from "@/lib/schemas/usuario.schemas";
+import { useUsuarios } from "@/features/usuarios/hooks/useUsuarios";
+import type { Usuario } from "@/features/usuarios/types/usuario.types";
+import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/usuarios/schema/usuario.schemas";
+import { PageHeader, RefreshAction } from "@/shared/components/ui/PageHeader";
 
 export default function UsuariosPage() {
   const { usuarios, isLoading, recargar, actualizar, cambiarRol, desactivar } =
@@ -35,21 +36,11 @@ export default function UsuariosPage() {
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-            <Users className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
-              Gestión de Usuarios
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Administra los usuarios registrados en el sistema
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Gestión de Usuarios"
+        description="Administra los usuarios registrados en el sistema"
+        backHref="/dashboard/admin/configuracion"
+      />
 
       {/* Stats */}
       <UsuariosStats usuarios={usuarios} isLoading={isLoading} />

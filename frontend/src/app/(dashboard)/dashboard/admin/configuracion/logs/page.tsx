@@ -6,7 +6,8 @@ import { LogsStats } from '@/features/logs/components/LogsStats';
 import { LogsFilters } from '@/features/logs/components/LogsFilters';
 import { LogsTable } from '@/features/logs/components/LogsTable';
 import { LogDetailModal } from '@/features/logs/components/LogDetailModal';
-import { useLogs } from '@/lib/hooks/useLogs';
+import { useLogs } from '@/features/logs/hooks/useLogs';
+import { PageHeader } from '@/shared/components/ui/PageHeader';
 
 export default function LogsPage() {
   const {
@@ -65,34 +66,19 @@ export default function LogsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-screen-2xl space-y-5 p-4 md:p-6">
-        {/* ── Page header ─────────────────────────── */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <ShieldCheck className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                Auditoría del sistema
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Registro completo de acciones y eventos
-              </p>
-            </div>
-          </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportCSV}
-            disabled={loading || !logs.length}
-            className="gap-2 self-start"
-          >
-            <Download className="h-4 w-4" />
-            Exportar CSV
-          </Button>
-        </div>
+      <div className="mx-auto max-w-screen-8xl space-y-5 p-4 md:p-6">
+        <PageHeader
+          title="Auditoría del sistema"
+          description="Registro completo de acciones y eventos"
+          backHref="/dashboard/admin/configuracion"
+          action={{
+            label: 'Exportar CSV',
+            onClick: handleExportCSV,
+            loading: loading || !logs.length,
+            icon: <Download className="h-4 w-4" />,
+            variant: 'outline',
+          }}
+        />
 
         {/* ── Error global ─────────────────────────── */}
         {error && (

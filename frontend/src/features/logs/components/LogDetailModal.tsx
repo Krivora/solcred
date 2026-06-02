@@ -19,13 +19,13 @@ import { useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
 import { Separator } from '@/shared/components/ui/separator';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import type { LogAuditoria } from '@/lib/types/logs.types';
+import type { LogAuditoria } from '../types/logs.types';
 import {
   ACCION_CONFIG,
   MODULO_CONFIG,
   formatFullDate,
   formatRelativeTime,
-} from '@/lib/config/logs.config';
+} from '@/shared/config/logs.config';
 
 interface LogDetailModalProps {
   log: LogAuditoria | null;

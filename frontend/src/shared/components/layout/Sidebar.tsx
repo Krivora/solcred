@@ -3,9 +3,9 @@
 // src/components/layout/Sidebar.tsx
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils/cn";
-import { useAuthStore } from "@/lib/store/auth.store";
-import { getNavForRole, settingsNavItem, type NavItem } from "@/lib/config/nav.config";
+import { cn } from "@/shared/lib/utils/cn";
+import { useAuthStore } from "@/shared/lib/store/auth.store";
+import { getNavForRole, settingsNavItem, type NavItem } from "@/shared/config/nav.config";
 import {
   LogOut,
   PanelLeftClose,
@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
 import { Separator } from "@/shared/components/ui/separator";
-import { Rol } from "@/lib/types/auth.types";
+import { Rol } from "@/shared/lib/types/auth.types";
 import { useState } from "react";
 
 interface SidebarProps {

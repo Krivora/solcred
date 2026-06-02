@@ -13,7 +13,7 @@ import {
     DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
-import type { Programa } from "@/lib/types/programa.types";
+import type { Programa } from "../types/programa.types";
 
 interface ProgramaCardProps {
     programa: Programa;

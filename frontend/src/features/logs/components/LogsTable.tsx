@@ -18,13 +18,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/shared/components/ui/tooltip';
-import type { LogAuditoria } from '@/lib/types/logs.types';
+import type { LogAuditoria } from '../types/logs.types';
 import {
   ACCION_CONFIG,
   MODULO_CONFIG,
   formatRelativeTime,
   formatFullDate,
-} from '@/lib/config/logs.config';
+} from '@/shared/config/logs.config';
 
 interface LogsTableProps {
   logs: LogAuditoria[];

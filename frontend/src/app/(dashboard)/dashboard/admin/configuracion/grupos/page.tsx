@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import {
-    Plus, Settings2, Trash2, Pencil, Users, ChevronRight,
+    Plus, Trash2, Pencil, Users,
     ShieldCheck, AlertCircle, Layers, Zap
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
@@ -23,12 +23,13 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/shared/components/ui/sheet'
-import { GrupoForm } from '@/components/admin/asignacion/GrupoForm'
-import { useGrupos } from '@/lib/hooks/useGrupos'
-import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/lib/types/asignacion.types'
-import { CAMPO_LABELS, OPERADOR_LABELS } from '@/lib/types/asignacion.types'
-import { cn } from '@/lib/utils/cn'
-import { useUsuarios } from '@/lib/hooks/useUsuarios'
+import { GrupoForm } from '@/features/asignacion/components/GrupoForm'
+import { useGrupos } from '@/features/asignacion/hooks/useGrupos'
+import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/features/asignacion/types/asignacion.types'
+import { CAMPO_LABELS, OPERADOR_LABELS } from '@/features/asignacion/types/asignacion.types'
+import { cn } from '@/shared/lib/utils/cn'
+import { useUsuarios } from '@/features/usuarios/hooks/useUsuarios'
+import { PageHeader } from '@/shared/components/ui/PageHeader'
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -220,11 +221,6 @@ function EliminarDialog({
     )
 }
 
-// ─── Página principal ─────────────────────────────────────────────────────────
-
-// En producción este dato vendría de useUsuarios filtrado por rol GESTOR
-
-
 export default function GruposPage() {
     const { grupos, cargando, error, recargar, crear, actualizar, eliminar } = useGrupos()
     const { usuarios } = useUsuarios()
@@ -235,15 +231,15 @@ export default function GruposPage() {
     const [eliminando, setEliminando] = useState(false)
 
     const gestoresDisponibles: GestorResumen[] = usuarios
-    .filter(u => u.rol === 'GESTOR' && u.activo)
-    .map(u => ({
-        id: u.id,
-        nombre: u.nombre,
-        apellidoPaterno: u.apellidoPaterno,
-        apellidoMaterno: u.apellidoMaterno,
-        correo: u.correo,
-        activo: u.activo,
-    }))
+        .filter(u => u.rol === 'GESTOR' && u.activo)
+        .map(u => ({
+            id: u.id,
+            nombre: u.nombre,
+            apellidoPaterno: u.apellidoPaterno,
+            apellidoMaterno: u.apellidoMaterno,
+            correo: u.correo,
+            activo: u.activo,
+        }))
     const abrirNuevo = () => {
         setGrupoEditando(null)
         setSheetAbierto(true)
@@ -286,27 +282,17 @@ export default function GruposPage() {
         <div className="flex flex-col gap-8 p-6 max-w-8xl mx-auto">
 
             {/* Header */}
-            <div className="flex items-start justify-between">
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Settings2 className="h-3.5 w-3.5" />
-                        <span>Configuración</span>
-                        <ChevronRight className="h-3 w-3" />
-                        <span className="text-foreground font-medium">Grupos de gestión</span>
-                    </div>
-                    <h1 className="text-xl font-semibold text-foreground mt-1">Grupos de gestión</h1>
-                    <p className="text-sm text-muted-foreground max-w-xl">
-                        Define grupos con reglas para enrutar solicitudes automáticamente al equipo correcto.
-                    </p>
-                </div>
-                <Button
-                    onClick={abrirNuevo}
-                    className="gap-2 bg-primary hover:bg-primary/90 shrink-0"
-                >
-                    <Plus className="h-4 w-4" />
-                    Nuevo grupo
-                </Button>
-            </div>
+            <PageHeader
+                title="Grupos de gestión"
+                description="Define grupos con reglas para enrutar solicitudes automáticamente al equipo correcto."
+                backHref="/dashboard/admin/configuracion"
+                action={{
+                    label: 'Nuevo grupo',
+                    onClick: abrirNuevo,
+                    icon: <Plus className="h-4 w-4" />,
+                    variant: 'default',
+                }}
+            />
 
             {/* Stats rápidas */}
             {!cargando && grupos.length > 0 && (

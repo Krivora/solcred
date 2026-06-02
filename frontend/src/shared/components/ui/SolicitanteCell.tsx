@@ -1,8 +1,8 @@
 // components/ui/SolicitanteCell.tsx
 
 import { User, Building2 } from 'lucide-react'
-import { TIPO_PERSONA_LABELS } from '@/lib/config/solicitudes.config'
-import type { TipoPersona } from '@/lib/types/solicitudes.types'
+import { TIPO_PERSONA_LABELS } from '@/shared/config/solicitudes.config'
+import type { TipoPersona } from '@/shared/lib/types/solicitudes.types'
 
 interface DatosNombre {
     nombre: string

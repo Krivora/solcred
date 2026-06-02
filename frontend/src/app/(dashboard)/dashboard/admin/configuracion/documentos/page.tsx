@@ -9,10 +9,11 @@ import {
     Table, TableBody, TableCell,
     TableHead, TableHeader, TableRow,
 } from "@/shared/components/ui/table";
-import { TipoDocumentoDialog } from "@/features/documentos/components/TipoDocumentoDialog";
-import { getTiposDocumento } from "@/lib/api/admin/programas";
-import { toast } from "@/lib/utils/toast";
-import type { TipoDocumento } from "@/lib/types/programa.types";
+import { TipoDocumentoDialog } from "@/features/programas/components/TipoDocumentoDialog";
+import { getTiposDocumento } from "@/features/programas/api/programas";
+import { toast } from "@/shared/lib/utils/toast";
+import type { TipoDocumento } from "@/features/programas/types/programa.types";
+import { PageHeader } from "@/shared/components/ui/PageHeader";
 
 export default function DocumentosPage() {
     const [tipos, setTipos] = useState<TipoDocumento[]>([]);
@@ -39,24 +40,17 @@ export default function DocumentosPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <FileBadge2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight">Tipos de documento</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Catálogo global de documentos requeridos por los programas
-                        </p>
-                    </div>
-                </div>
-                <Button onClick={() => setDialogOpen(true)} size="sm" className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Nuevo tipo
-                </Button>
-            </div>
-
+            <PageHeader
+                title="Tipos de documento"
+                description="Catálogo global de documentos requeridos por los programas"
+                backHref="/dashboard/admin/configuracion"
+                action={{
+                    label: 'Nuevo tipo',
+                    onClick: () => setDialogOpen(true),
+                    icon: <Plus className="h-4 w-4" />,
+                    variant: 'default',
+                }}
+            />
             <div className="relative max-w-sm">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input

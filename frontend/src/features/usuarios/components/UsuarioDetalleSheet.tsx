@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/shared/lib/utils/cn";
 
 import {
   Sheet,
@@ -40,8 +40,8 @@ import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
 import {
   actualizarUsuarioSchema,
   type ActualizarUsuarioForm,
-} from "@/lib/schemas/usuario.schemas";
-import type { Usuario } from "@/lib/types/usuario.types";
+} from "../schema/usuario.schemas";
+import type { Usuario } from "../types/usuario.types";
 
 // ─── Utilidades ───────────────────────────────────────────────────────────────
 
