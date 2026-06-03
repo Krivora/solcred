@@ -3,9 +3,9 @@ import type {
     GrupoGestion,
     CrearGrupoDto,
     ActualizarGrupoDto,
-} from '@/features/asignacion/types/asignacion.types'
+} from '@/features/grupos/types/grupos.types'
 
-const BASE = '/grupos'
+const BASE = '/admin/grupos'
 
 export const listarGrupos = (): Promise<GrupoGestion[]> =>
     apiAuth(BASE)

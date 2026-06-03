@@ -1,4 +1,4 @@
-export type Rol = 'ADMIN' | 'ANALISTA' | 'CLIENTE';
+export type Rol = 'ADMIN' | 'ANALISTA' | 'CLIENTE' | 'GESTOR';
 export type TipoPersona = 'FISICA' | 'MORAL';
 
 export interface Usuario {

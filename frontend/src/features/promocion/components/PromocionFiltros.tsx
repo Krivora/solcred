@@ -179,23 +179,6 @@ export function PromocionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosActi
             </SelectItem>
           </SelectContent>
         </Select>
-
-        {/* Limpiar */}
-        {hayFiltrosActivos && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onLimpiar}
-            className="h-8 gap-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 ml-auto text-xs"
-          >
-            <X className="h-3.5 w-3.5" />
-            Limpiar filtros
-          </Button>
-        )}
-      </div>
-
-      {/* Row 2: rango de fechas */}
-      <div className="flex items-center gap-2 pt-0.5">
         <span className="text-xs font-medium text-muted-foreground shrink-0">Período:</span>
         <Input
           type="date"
@@ -219,6 +202,19 @@ export function PromocionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosActi
           >
             <X className="h-3.5 w-3.5" />
           </button>
+        )}
+
+        {/* Limpiar */}
+        {hayFiltrosActivos && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onLimpiar}
+            className="h-8 gap-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 ml-auto text-xs"
+          >
+            <X className="h-3.5 w-3.5" />
+            Limpiar filtros
+          </Button>
         )}
       </div>
 

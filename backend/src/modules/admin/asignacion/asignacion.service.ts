@@ -1,6 +1,6 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
-import { CampoRegla, OperadorRegla } from "../../../../generated/prisma/client";
+import { CampoRegla, EstatusSolicitud, OperadorRegla } from "../../../../generated/prisma/client";
 import { AsignarManualDto } from "./asignacion.schema";
 
 // ─── Tipos internos ──────────────────────────────────────────────────────────
@@ -14,20 +14,159 @@ interface SolicitudParaEvaluar {
     montoSolicitado: number | null;
 }
 
-// ─── Motor de reglas ─────────────────────────────────────────────────────────
+interface FiltrosAsignacion {
+    page: number;
+    limit: number;
+    estatus?: string;
+    tipoPersona?: string;
+    sector?: string;
+    tamanoEmpresa?: string;
+    programaId?: string;
+    fechaDesde?: string;
+    fechaHasta?: string;
+    busqueda?: string;
+    asignacion?: string;
+    gestorId?: string;   // filtrar por gestor específico
+    grupoId?: string;    // filtrar por grupo específico
+}
+export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
+    const {
+        page,
+        limit,
+        estatus,
+        tipoPersona,
+        sector,
+        tamanoEmpresa,
+        programaId,
+        fechaDesde,
+        fechaHasta,
+        busqueda,
+        asignacion,
+        gestorId,
+        grupoId,
+    } = filtros;
 
+    const skip = (page - 1) * limit;
+    const where: any = {};
+
+    if (estatus) {
+        const estatusArray = estatus.split(",").map((s) => s.trim()) as EstatusSolicitud[];
+        where.estatus =
+            estatusArray.length === 1 ? estatusArray[0] : { in: estatusArray };
+    }
+    if (tipoPersona) where.tipoPersona = tipoPersona;
+    if (sector) where.sector = sector;
+    if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
+    if (programaId) where.programaId = programaId;
+
+    if (fechaDesde || fechaHasta) {
+        where.creadoEn = {};
+        if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
+        if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
+    }
+
+    if (busqueda) {
+        where.OR = [
+            {
+                datosSolicitante: {
+                    OR: [
+                        { nombre: { contains: busqueda, mode: "insensitive" } },
+                        { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
+                        { rfc: { contains: busqueda, mode: "insensitive" } },
+                    ],
+                },
+            },
+            { folio: { contains: busqueda, mode: "insensitive" } },
+        ];
+    }
+
+    // ── Filtro de asignación ──────────────────────────────────────────────────
+    if (asignacion === "asignados") {
+        where.asignacion = { activa: true };
+    } else if (asignacion === "sin_asignar") {
+        where.asignacion = { is: null };
+    }
+
+    // ── Filtro por gestor ─────────────────────────────────────────────────────
+    if (gestorId) {
+        where.asignacion = {
+            ...(where.asignacion ?? {}),
+            gestorId,
+            activa: true,
+        };
+    }
+
+    // ── Filtro por grupo ──────────────────────────────────────────────────────
+    if (grupoId) {
+        where.asignacion = {
+            ...(where.asignacion ?? {}),
+            grupoId,
+            activa: true,
+        };
+    }
+
+    const [solicitudes, total] = await Promise.all([
+        prisma.solicitud.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { creadoEn: "desc" },
+            include: {
+                programa: { select: { id: true, nombre: true } },
+                datosSolicitante: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        apellidoPaterno: true,
+                        apellidoMaterno: true,
+                        rfc: true,
+                        correo: true,
+                        celular: true,
+                    },
+                },
+                asignacion: {
+                    where: { activa: true },
+                    select: {
+                        fechaAsignacion: true,
+                        grupoId: true,
+                        grupo: { select: { id: true, nombre: true } },
+                        gestor: {
+                            select: {
+                                id: true,
+                                nombre: true,
+                                apellidoPaterno: true,
+                                apellidoMaterno: true,
+                            },
+                        },
+                    },
+                },
+            },
+        }),
+        prisma.solicitud.count({ where }),
+    ]);
+
+    return {
+        data: solicitudes,
+        meta: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};
 const evaluarRegla = (
     regla: { campo: CampoRegla; operador: OperadorRegla; valor: string },
     solicitud: SolicitudParaEvaluar
 ): boolean => {
     const valorSolicitud: string | number | null = (() => {
         switch (regla.campo) {
-            case CampoRegla.TIPO_PERSONA:      return solicitud.tipoPersona;
-            case CampoRegla.SECTOR:            return solicitud.sector;
-            case CampoRegla.TAMANO_EMPRESA:    return solicitud.tamanoEmpresa;
-            case CampoRegla.PROGRAMA_ID:       return solicitud.programaId;
-            case CampoRegla.MONTO_SOLICITADO:  return solicitud.montoSolicitado;
-            default:                           return null;
+            case CampoRegla.TIPO_PERSONA: return solicitud.tipoPersona;
+            case CampoRegla.SECTOR: return solicitud.sector;
+            case CampoRegla.TAMANO_EMPRESA: return solicitud.tamanoEmpresa;
+            case CampoRegla.PROGRAMA_ID: return solicitud.programaId;
+            case CampoRegla.MONTO_SOLICITADO: return solicitud.montoSolicitado;
+            default: return null;
         }
     })();
 
@@ -42,11 +181,11 @@ const evaluarRegla = (
             const lista: string[] = JSON.parse(regla.valor);
             return lista.includes(String(valorSolicitud));
         }
-        case OperadorRegla.MAYOR_QUE:    return Number(valorSolicitud) > Number(regla.valor);
-        case OperadorRegla.MENOR_QUE:    return Number(valorSolicitud) < Number(regla.valor);
-        case OperadorRegla.MAYOR_IGUAL:  return Number(valorSolicitud) >= Number(regla.valor);
-        case OperadorRegla.MENOR_IGUAL:  return Number(valorSolicitud) <= Number(regla.valor);
-        default:                          return false;
+        case OperadorRegla.MAYOR_QUE: return Number(valorSolicitud) > Number(regla.valor);
+        case OperadorRegla.MENOR_QUE: return Number(valorSolicitud) < Number(regla.valor);
+        case OperadorRegla.MAYOR_IGUAL: return Number(valorSolicitud) >= Number(regla.valor);
+        case OperadorRegla.MENOR_IGUAL: return Number(valorSolicitud) <= Number(regla.valor);
+        default: return false;
     }
 };
 

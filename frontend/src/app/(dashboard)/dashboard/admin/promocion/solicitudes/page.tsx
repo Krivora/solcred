@@ -1,7 +1,7 @@
 // app/(dashboard)/dashboard/admin/solicitudes/page.tsx
 'use client'
 
-import { RefreshCw, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { PromocionStats } from '@/features/promocion/components/PromocionStats'
 import { PromocionFiltros } from '@/features/promocion/components/PromocionFiltros'

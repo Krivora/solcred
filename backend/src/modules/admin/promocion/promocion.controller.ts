@@ -146,3 +146,51 @@ export const cambiarEstatus = async (
     next(error);
   }
 };
+export const listarMisCasos = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const {
+      page = "1",
+      limit = "20",
+      estatus,
+      tipoPersona,
+      sector,
+      tamanoEmpresa,
+      programaId,
+      fechaDesde,
+      fechaHasta,
+      busqueda,
+    } = req.query;
+
+    const filtros = {
+      gestorId: req.usuario!.id,
+      page: parseInt(page as string),
+      limit: Math.min(parseInt(limit as string), 100),
+      estatus: estatus as string | undefined,
+      tipoPersona: tipoPersona as string | undefined,
+      sector: sector as string | undefined,
+      tamanoEmpresa: tamanoEmpresa as string | undefined,
+      programaId: programaId as string | undefined,
+      fechaDesde: fechaDesde as string | undefined,
+      fechaHasta: fechaHasta as string | undefined,
+      busqueda: busqueda as string | undefined,
+    };
+
+    const resultado = await solicitudesService.listarMisCasos(filtros);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: "Gestor consultó sus casos asignados",
+      usuarioId: req.usuario!.id,
+      req,
+    });
+
+    res.status(200).json(ok("Casos obtenidos", resultado));
+  } catch (error) {
+    next(error);
+  }
+};

@@ -134,3 +134,15 @@ export interface FiltrosPromocion {
   fechaHasta?: string
   busqueda?: string
 }
+export interface FiltrosMisCasos {
+  page?: number
+  limit?: number
+  estatus?: string
+  tipoPersona?: string
+  sector?: string
+  tamanoEmpresa?: string
+  programaId?: string
+  fechaDesde?: string
+  fechaHasta?: string
+  busqueda?: string
+}

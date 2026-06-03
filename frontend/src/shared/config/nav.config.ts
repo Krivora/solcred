@@ -34,7 +34,7 @@ export const navConfig: NavItem[] = [
     label: "Inicio",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["ADMIN", "ANALISTA"],
+    roles: ["ADMIN"],
     exact: true,
   },
   {
@@ -53,7 +53,7 @@ export const navConfig: NavItem[] = [
   {
     label: "Promoción",
     icon: Briefcase,
-    roles: ["ADMIN", "ANALISTA"],
+    roles: ["ADMIN", "GESTOR"],
     children: [
       {
         label: "Solicitudes",
@@ -77,7 +77,7 @@ export const navConfig: NavItem[] = [
         label: "Mis Casos",
         href: "/dashboard/admin/promocion/mis-casos",
         icon: FolderKanban,
-        roles: ["ADMIN", "ANALISTA"],
+        roles: ["ADMIN", "GESTOR"],
       },
     ],
   },

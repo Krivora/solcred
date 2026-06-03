@@ -1,4 +1,3 @@
-// lib/hooks/useSolicitudesPromocion.ts
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
@@ -24,15 +23,18 @@ const FILTROS_INICIALES: FiltrosPromocion = {
   asignacion: '',
 }
 
-export function useSolicitudesPromocion() {
+export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromocion>) {
   const [solicitudes, setSolicitudes] = useState<SolicitudPromocion[]>([])
   const [meta, setMeta] = useState<PaginacionMeta>({ total: 0, page: 1, limit: 20, totalPages: 0 })
   const [stats, setStats] = useState<StatsPromocion | null>(null)
-  const [filtros, setFiltros] = useState<FiltrosPromocion>(FILTROS_INICIALES)
+  const [filtros, setFiltros] = useState<FiltrosPromocion>({
+    ...FILTROS_INICIALES,
+    ...filtrosIniciales,
+  })
   const [cargando, setCargando] = useState(true)
   const [cargandoStats, setCargandoStats] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  console.log(solicitudesApi)
+
   const cargarStats = useCallback(async () => {
     setCargandoStats(true)
     try {
@@ -76,8 +78,8 @@ export function useSolicitudesPromocion() {
   }, [])
 
   const limpiarFiltros = useCallback(() => {
-    setFiltros(FILTROS_INICIALES)
-  }, [])
+    setFiltros({ ...FILTROS_INICIALES, ...filtrosIniciales })
+  }, [filtrosIniciales])
 
   const recargar = useCallback(() => {
     cargarStats()

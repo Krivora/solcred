@@ -3,6 +3,7 @@ import { AppError } from "@middlewares/error.middleware";
 import {
   CambiarEstatusDto,
 } from "./promocion.schema";
+import { EstatusSolicitud } from "../../../../generated/prisma/client";
 
 interface FiltrosPromocion {
   page: number
@@ -15,9 +16,21 @@ interface FiltrosPromocion {
   fechaDesde?: string
   fechaHasta?: string
   busqueda?: string
-  asignacion?:string
+  asignacion?: string
 }
-
+interface FiltrosMisCasos {
+  gestorId: string
+  page: number
+  limit: number
+  estatus?: string
+  tipoPersona?: string
+  sector?: string
+  tamanoEmpresa?: string
+  programaId?: string
+  fechaDesde?: string
+  fechaHasta?: string
+  busqueda?: string
+}
 const incluyeTodo = {
   programa: {
     include: {
@@ -50,9 +63,14 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
 
   const skip = (page - 1) * limit;
   const where: any = {};
-  
-  
-  if (estatus) where.estatus = estatus;
+
+
+  if (estatus) {
+    const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
+    where.estatus = estatusArray.length === 1
+      ? estatusArray[0]
+      : { in: estatusArray };
+  }
   if (tipoPersona) where.tipoPersona = tipoPersona;
   if (sector) where.sector = sector;
   if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
@@ -185,6 +203,113 @@ export const obtenerSolicitudPorId = async (
 
   return solicitud;
 };
+
+export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
+  const {
+    gestorId,
+    page,
+    limit,
+    estatus,
+    tipoPersona,
+    sector,
+    tamanoEmpresa,
+    programaId,
+    fechaDesde,
+    fechaHasta,
+    busqueda,
+  } = filtros;
+
+  const skip = (page - 1) * limit;
+
+  // Siempre filtra por el gestor autenticado con asignación activa
+  const where: any = {
+    asignacion: {
+      gestorId,
+      activa: true,
+    },
+  };
+
+  if (estatus) {
+    const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
+    where.estatus = estatusArray.length === 1
+      ? estatusArray[0]
+      : { in: estatusArray };
+  }
+
+  if (tipoPersona) where.tipoPersona = tipoPersona;
+  if (sector) where.sector = sector;
+  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
+  if (programaId) where.programaId = programaId;
+
+  if (fechaDesde || fechaHasta) {
+    where.creadoEn = {};
+    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
+    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
+  }
+
+  if (busqueda) {
+    where.OR = [
+      {
+        datosSolicitante: {
+          OR: [
+            { nombre: { contains: busqueda, mode: "insensitive" } },
+            { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
+            { rfc: { contains: busqueda, mode: "insensitive" } },
+          ],
+        },
+      },
+    ];
+  }
+
+  const [solicitudes, total] = await Promise.all([
+    prisma.solicitud.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { creadoEn: "desc" },
+      include: {
+        programa: { select: { id: true, nombre: true } },
+        datosSolicitante: {
+          select: {
+            id: true,
+            nombre: true,
+            apellidoPaterno: true,
+            apellidoMaterno: true,
+            rfc: true,
+            correo: true,
+            celular: true,
+          },
+        },
+        asignacion: {
+          where: { activa: true },
+          select: {
+            fechaAsignacion: true,
+            gestor: {
+              select: {
+                id: true,
+                nombre: true,
+                apellidoPaterno: true,
+                apellidoMaterno: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.solicitud.count({ where }),
+  ]);
+
+  return {
+    data: solicitudes,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
 
 export const cambiarEstatus = async (
   solicitudId: string,

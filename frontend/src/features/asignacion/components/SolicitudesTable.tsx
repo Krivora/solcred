@@ -1,4 +1,4 @@
-// ─── solicitudes-table.tsx ────────────────────────────────────────────────────
+
 'use client'
 
 import { Loader2, Zap, Clock, Inbox, AlertCircle } from 'lucide-react'
@@ -15,7 +15,7 @@ import {
     TAMANO_LABELS,
     formatMonto,
 } from '@/shared/config/solicitudes.config'
-import type { SolicitudPendiente } from '../types/asignacion.types'
+import type { SolicitudAsignacion } from '../types/asignacion.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -27,6 +27,13 @@ function tiempoRelativo(fecha: string): string {
     const hrs = Math.floor(min / 60)
     if (hrs < 24) return `hace ${hrs}h`
     return `hace ${Math.floor(hrs / 24)}d`
+}
+function formatFecha(fecha: string): string {
+    return new Date(fecha).toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    })
 }
 
 function EstatusBadge({ estatus }: { estatus: string }) {
@@ -41,8 +48,6 @@ function EstatusBadge({ estatus }: { estatus: string }) {
         </span>
     )
 }
-
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function ListaSkeleton() {
     return (
@@ -72,9 +77,6 @@ function ListaSkeleton() {
         </div>
     )
 }
-
-// ─── Estados ─────────────────────────────────────────────────────────────────
-
 function EstadoError({ mensaje, onReintentar }: { mensaje: string; onReintentar?: () => void }) {
     return (
         <div className="flex flex-col items-center gap-3 py-12 text-center px-6">
@@ -108,7 +110,7 @@ function EstadoVacio() {
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SolicitudesTableProps {
-    solicitudes: SolicitudPendiente[]
+    solicitudes: SolicitudAsignacion[]
     seleccionadas: Set<string>
     asignandoId: string | null
     cargando?: boolean
@@ -141,13 +143,13 @@ export function SolicitudesTable({
                     <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
                         {[
                             { label: '', extra: 'w-8' },
-                            { label: 'Folio', extra: 'w-32' },
+                            { label: 'Folio', extra: 'w-20' },
                             { label: 'Solicitante', extra: 'w-44' },
-                            { label: 'Programa / Monto', extra: 'w-44' },
-                            { label: 'Sector / Tamaño', extra: 'w-36 hidden lg:table-cell' },
-                            { label: 'Estatus', extra: 'w-28 hidden sm:table-cell' },
+                            { label: 'Programa / Monto', extra: 'w-20' },
+                            { label: 'Sector / Tamaño', extra: 'w-20 hidden lg:table-cell' },
+                            { label: 'Estatus', extra: 'w-20 hidden sm:table-cell' },
                             { label: 'Antigüedad', extra: 'w-20 text-right' },
-                            { label: 'Gestor', extra: 'w-40' },
+                            { label: 'Gestor', extra: 'w-10' },
                             { label: '', extra: 'w-8' },
                         ].map(({ label, extra }) => (
                             <TableHead
@@ -183,7 +185,7 @@ export function SolicitudesTable({
 // ─── Row ─────────────────────────────────────────────────────────────────────
 
 interface SolicitudRowProps {
-    solicitud: SolicitudPendiente
+    solicitud: SolicitudAsignacion
     seleccionada: boolean
     asignandoId: string | null
     onSeleccionar: (id: string) => void

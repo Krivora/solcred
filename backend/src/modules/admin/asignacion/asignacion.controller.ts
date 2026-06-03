@@ -4,7 +4,30 @@ import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import * as asignacionService from "./asignacion.service";
 import { ok } from "@utils/response";
+import { AsignarManualDto, ListarAsignacionQuerySchema } from "./asignacion.schema";
 
+export const listarSolicitudesAsignacion = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const query = ListarAsignacionQuerySchema.parse(req.query);
+        const resultado = await asignacionService.listarAsignacion(query);
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: "Listado de solicitudes de asignación consultado",
+            usuarioId: req.usuario!.id,
+            req,
+        });
+
+        res.status(200).json(ok("Solicitudes obtenidas", resultado));
+    } catch (error) {
+        next(error);
+    }
+};
 export const asignarAutomaticamente = async (
     req: RequestAutenticado,
     res: Response,

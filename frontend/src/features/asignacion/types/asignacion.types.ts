@@ -59,7 +59,6 @@ export interface GrupoGestor {
     gestor: GestorResumen
 }
 
-// ─── Grupos ───────────────────────────────────────────────────────────────────
 
 export interface GrupoGestion {
     id: string
@@ -72,23 +71,6 @@ export interface GrupoGestion {
     _count: { asignaciones: number }
     creadoEn: string
     actualizadoEn: string
-}
-
-export interface CrearGrupoDto {
-    nombre: string
-    descripcion?: string
-    prioridad?: number
-    reglas: ReglaDto[]
-    gestorIds: string[]
-}
-
-export interface ActualizarGrupoDto {
-    nombre?: string
-    descripcion?: string
-    prioridad?: number
-    activo?: boolean
-    reglas?: ReglaDto[]
-    gestorIds?: string[]
 }
 
 // ─── Asignación ───────────────────────────────────────────────────────────────
@@ -149,3 +131,61 @@ export const CAMPOS_LISTA: CampoRegla[] = [
     'SECTOR',
     'TAMANO_EMPRESA',
 ]
+export interface FiltrosAsignacion {
+    page: number
+    limit: number
+    estatus?: string
+    tipoPersona?: string
+    sector?: string
+    tamanoEmpresa?: string
+    programaId?: string
+    fechaDesde?: string
+    fechaHasta?: string
+    busqueda?: string
+    asignacion?: 'asignados' | 'sin_asignar'
+    gestorId?: string
+    grupoId?: string
+}
+
+export interface SolicitudAsignacion {
+    id: string
+    folio: string
+    estatus: string
+    tipoPersona: string | null
+    sector: string | null
+    tamanoEmpresa: string | null
+    montoSolicitado: number | null
+    plazoSolicitado: number | null
+    creadoEn: string
+    programa: { id: string; nombre: string }
+    datosSolicitante: {
+        id: string
+        nombre: string
+        apellidoPaterno: string
+        apellidoMaterno: string
+        rfc: string | null
+        correo: string | null
+        celular: string | null
+    } | null
+    asignacion: {
+        fechaAsignacion: string
+        grupoId: string
+        grupo: { id: string; nombre: string }
+        gestor: {
+            id: string
+            nombre: string
+            apellidoPaterno: string
+            apellidoMaterno: string
+        }
+    } | null
+}
+
+export interface PaginatedResponse<T> {
+    data: T[]
+    meta: {
+        total: number
+        page: number
+        limit: number
+        totalPages: number
+    }
+}

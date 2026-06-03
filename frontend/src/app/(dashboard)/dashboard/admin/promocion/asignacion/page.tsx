@@ -5,15 +5,14 @@ import { RefreshCw, Users } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { GestorCard } from '@/features/asignacion/components/GestorCard'
-import { AsignacionSheet } from '@/features/asignacion//components/AsignacionSheet'
+import { AsignacionSheet } from '@/features/asignacion/components/AsignacionSheet'
 import { useAsignacion } from '@/features/asignacion/hooks/useAsignacion'
 import { useGrupos } from '@/features/grupos/hooks/useGrupos'
 import { cn } from '@/shared/lib/utils/cn'
-import type {GestorConCarga } from '@/features/asignacion/types/asignacion.types'
+import type { FiltrosAsignacion, GestorConCarga } from '@/features/asignacion/types/asignacion.types'
 import { SolicitudesPanel } from '@/features/asignacion/components/SolicitudesPanel'
 import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
-import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
-// ─── Tipos locales ────────────────────────────────────────────────────────────
+
 
 interface SheetData {
     solicitudId: string
@@ -59,28 +58,40 @@ function CargaDistribucion({ gestores }: { gestores: GestorConCarga[] }) {
     )
 }
 
-// ─── Página ───────────────────────────────────────────────────────────────────
-
+const FILTROS_INICIALES: FiltrosAsignacion = {
+        page: 1,
+        limit: 50,
+        estatus: 'PENDIENTE,EN_REVISION',
+    }
 export default function AsignacionPage() {
-    const { gestores, cargandoGestores, asignarAutomaticamente, cargarGestores } = useAsignacion()
-    const { grupos } = useGrupos()
-    const { solicitudes, cargando, error, recargar: cargar, actualizarFiltros } = useSolicitudesPromocion()
+    const {
+        solicitudes,
+        cargandoSolicitudes: cargando,
+        cargarSolicitudes,
+        gestores,
+        cargandoGestores,
+        asignarAutomaticamente,
+        cargarGestores,
+    } = useAsignacion()
 
+    const { grupos } = useGrupos()
 
     const [seleccionadas, setSeleccionadas] = useState<Set<string>>(new Set())
     const [grupoFiltro, setGrupoFiltro] = useState('todos')
     const [asignandoId, setAsignandoId] = useState<string | null>(null)
     const [asignandoLote, setAsignandoLote] = useState(false)
     const [sheetData, setSheetData] = useState<SheetData | null>(null)
+    const [error] = useState<string | null>(null)
+
+    const [filtros, setFiltros] = useState<FiltrosAsignacion>(FILTROS_INICIALES)
+    const cargar = useCallback(() => {
+    cargarSolicitudes(filtros)
+    }, [cargarSolicitudes, filtros])
 
     useEffect(() => {
         cargar()
         cargarGestores()
-        actualizarFiltros({
-            estatus: 'PENDIENTE,EN_REVISION',
-            asignacion: 'sin_asignar',
-        })
-    }, [cargar, cargarGestores, actualizarFiltros])
+    }, [cargar, cargarGestores])
 
     // ── Selección ──────────────────────────────────────────────────────────────
 
@@ -100,12 +111,30 @@ export default function AsignacionPage() {
         )
     }
 
-    // ── Asignación ─────────────────────────────────────────────────────────────
+    const handleFiltrar = (parcial: Partial<FiltrosAsignacion>) => {
+        const nuevos = { ...filtros, ...parcial, page: 1 }
+        setFiltros(nuevos)
+        cargarSolicitudes(nuevos)  // ← directo con los nuevos filtros, no cargar()
+    }
+
+    const handleLimpiarFiltros = () => {
+        setFiltros(FILTROS_INICIALES)
+        cargarSolicitudes(FILTROS_INICIALES)  // ← igual
+    }
+
+    const hayFiltrosActivos =
+        !!filtros.busqueda ||
+        !!filtros.estatus?.split(',').some(e => !['PENDIENTE', 'EN_REVISION'].includes(e)) ||
+        !!filtros.tipoPersona ||
+        !!filtros.sector ||
+        !!filtros.tamanoEmpresa ||
+        !!filtros.fechaDesde ||
+        !!filtros.fechaHasta
 
     const handleAsignarRapido = async (solicitudId: string) => {
         setAsignandoId(solicitudId)
         await asignarAutomaticamente(solicitudId, () => {
-            cargar()                          // ← reemplaza remover(solicitudId)
+            cargar()
             setSeleccionadas(prev => {
                 const next = new Set(prev)
                 next.delete(solicitudId)
@@ -119,10 +148,10 @@ export default function AsignacionPage() {
         if (!seleccionadas.size) return
         setAsignandoLote(true)
         for (const id of [...seleccionadas]) {
-            await asignarAutomaticamente(id, () => { }) // sin remover individual
+            await asignarAutomaticamente(id, () => { })
         }
         setSeleccionadas(new Set())
-        cargar()                              // ← recarga todo al final del lote
+        cargar()
         setAsignandoLote(false)
     }
 
@@ -134,8 +163,6 @@ export default function AsignacionPage() {
 
     // ── Filtrado ───────────────────────────────────────────────────────────────
 
-    // El filtrado por grupo se delega al backend en producción;
-    // aquí se mantiene como pass-through listo para extenderse.
     const solicitudesFiltradas = solicitudes
 
     const todoSeleccionado =
@@ -151,6 +178,7 @@ export default function AsignacionPage() {
                 description="Gestión y asignación de solicitudes pendientes"
                 action={RefreshAction(() => { cargar(); cargarGestores() }, cargando)}
             />
+
             {/* Layout dos columnas */}
             <div className="flex flex-1 overflow-hidden">
 
@@ -173,6 +201,10 @@ export default function AsignacionPage() {
                         onAsignarLote={handleAsignarLote}
                         onAsignarManual={handleAsignarManual}
                         onCambiarGrupo={setGrupoFiltro}
+                        filtros={filtros}
+                        onFiltrar={handleFiltrar}
+                        onLimpiarFiltros={handleLimpiarFiltros}
+                        hayFiltrosActivos={hayFiltrosActivos}
                     />
                 </div>
 
@@ -239,11 +271,11 @@ export default function AsignacionPage() {
                     folio={sheetData.folio}
                     gestorActualId={sheetData.gestorActualId}
                     onAsignado={() => {
-                    cargar()
-                    cargarGestores()
-                    setSeleccionadas(new Set())
-                    setSheetData(null)
-                }}
+                        cargar()
+                        cargarGestores()
+                        setSeleccionadas(new Set())
+                        setSheetData(null)
+                    }}
                 />
             )}
         </div>

@@ -2,12 +2,14 @@
 
 import { SolicitudesToolbar } from './SolicitudesToolbar'
 import { SolicitudesTable } from './SolicitudesTable'
-import type { SolicitudPendiente, GrupoGestion } from '../types/asignacion.types'
-
+import type { SolicitudAsignacion } from '../types/asignacion.types'
+import type { GrupoGestion } from '@/features/grupos/types/grupos.types'
+import { AsignacionFiltros } from './AsignacionFiltros'
+import type { FiltrosAsignacion } from '../types/asignacion.types'
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SolicitudesPanelProps {
-    solicitudes: SolicitudPendiente[]
+    solicitudes: SolicitudAsignacion[]
     cargando: boolean
     error: string | null
     grupos: GrupoGestion[]
@@ -23,6 +25,10 @@ interface SolicitudesPanelProps {
     onAsignarLote: () => void
     onAsignarManual: () => void
     onCambiarGrupo: (valor: string) => void
+    filtros: FiltrosAsignacion
+    onFiltrar: (f: Partial<FiltrosAsignacion>) => void
+    onLimpiarFiltros: () => void
+    hayFiltrosActivos: boolean
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -44,13 +50,24 @@ export function SolicitudesPanel({
     onAsignarLote,
     onAsignarManual,
     onCambiarGrupo,
+    filtros,
+    onFiltrar,
+    onLimpiarFiltros,
+    hayFiltrosActivos
 }: SolicitudesPanelProps) {
-    console.log('render de solicitudesd', solicitudes)
+    const total = solicitudes.filter(s => s.estatus === 'PENDIENTE').length
     return (
-        <div className="flex-1 flex flex-col min-w-0 border-r border-border/60">
-
+        <div className="flex-1 flex flex-col min-w-0">
+            <div className="px-4 py-3 border-b border-border/40">
+                <AsignacionFiltros
+                    filtros={filtros}
+                    onFiltrar={onFiltrar}
+                    onLimpiar={onLimpiarFiltros}
+                    hayFiltrosActivos={hayFiltrosActivos}
+                />
+            </div>
             <SolicitudesToolbar
-                total={solicitudes.length}
+                total={total}
                 cargando={cargando}
                 seleccionadas={seleccionadas}
                 todoSeleccionado={todoSeleccionado}
@@ -73,7 +90,6 @@ export function SolicitudesPanel({
                 onAsignarRapido={onAsignarRapido}
                 onReintentar={onReintentar}
             />
-
         </div>
     )
 }

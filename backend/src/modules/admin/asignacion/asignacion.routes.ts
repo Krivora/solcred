@@ -10,6 +10,7 @@ const router = Router();
 router.use(autenticar);
 router.use(autorizar("ADMIN", "ANALISTA"));
 
+router.get("/solicitudes", asignacionController.listarSolicitudesAsignacion);
 router.get("/gestores/carga", asignacionController.obtenerCargaGestores);
 
 router.post(
