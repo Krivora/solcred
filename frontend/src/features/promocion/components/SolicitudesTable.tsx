@@ -1,0 +1,314 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '@/shared/components/ui/table'
+import { Button } from '@/shared/components/ui/button'
+import { Skeleton } from '@/shared/components/ui/skeleton'
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,
+} from '@/shared/components/ui/dropdown-menu'
+import { FolderOpen, FileText, MoreHorizontal } from 'lucide-react'
+import { Paginacion } from '@/shared/components/ui/Paginacion'
+import {
+  ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
+} from '@/shared/config/solicitudes.config'
+import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
+import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
+import type { ReactNode } from 'react'
+
+// ─── Tipos ────────────────────────────────────────────────────────────────────
+
+export interface SolicitudesTableConfig {
+  /** Ruta base para el router.push al hacer click en una fila. Recibe el id. */
+  getDetalleUrl: (id: string) => string
+  getExpedienteUrl: (id: string) => string
+  getPdfUrl: (id: string) => string
+
+  /** Columnas opcionales */
+  mostrarColumnaGestor?: boolean
+  mostrarColumnaEstatus?: boolean
+
+  /** Label de la columna de fecha */
+  labelFecha?: string
+
+  /** Estado vacío personalizable */
+  vacioCopy?: { icon: ReactNode; titulo: string; descripcion: string }
+
+  /** Acciones del dropdown por fila. Recibe el id de la solicitud. */
+  renderAcciones: (solicitudId: string) => ReactNode
+}
+
+interface Props {
+  solicitudes: SolicitudPromocion[]
+  meta: PaginacionMeta
+  cargando: boolean
+  onPaginar: (page: number) => void
+  config: SolicitudesTableConfig
+}
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+function TableSkeleton({ cols }: { cols: number }) {
+  return (
+    <div className="rounded-xl border border-border/60 overflow-hidden bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+            {Array.from({ length: cols }).map((_, i) => (
+              <TableHead key={i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
+                <Skeleton className="h-3 w-16 rounded" />
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <TableRow key={i} className="border-b border-border/40">
+              {Array.from({ length: cols }).map((_, j) => (
+                <TableCell key={j} className="py-3">
+                  <Skeleton className="h-4 w-full rounded-md" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+// ─── Vacío ────────────────────────────────────────────────────────────────────
+
+function TableVacio({ icon, titulo, descripcion }: { icon: ReactNode; titulo: string; descripcion: string }) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card flex flex-col items-center justify-center py-20 gap-4">
+      <div className="p-4 bg-primary/5 border border-primary/10 rounded-2xl text-primary/50">
+        {icon}
+      </div>
+      <div className="text-center">
+        <p className="text-sm font-medium text-foreground">{titulo}</p>
+        <p className="text-xs text-muted-foreground mt-1">{descripcion}</p>
+      </div>
+    </div>
+  )
+}
+
+// ─── Componente ───────────────────────────────────────────────────────────────
+
+export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, config }: Props) {
+  const router = useRouter()
+
+  const {
+    getDetalleUrl,
+    getExpedienteUrl,
+    getPdfUrl,
+    mostrarColumnaGestor = false,
+    mostrarColumnaEstatus = true,
+    labelFecha = 'Recibida',
+    vacioCopy,
+    renderAcciones,
+  } = config
+
+  // Calculamos cuántas columnas hay para el skeleton
+  const colCount = 6
+    + (mostrarColumnaGestor ? 1 : 0)
+    + (mostrarColumnaEstatus ? 1 : 0)
+    + 3 // Exp, PDF, acciones
+
+  if (cargando) return <TableSkeleton cols={colCount} />
+
+  if (solicitudes.length === 0 && vacioCopy) {
+    return (
+      <TableVacio
+        icon={vacioCopy.icon}
+        titulo={vacioCopy.titulo}
+        descripcion={vacioCopy.descripcion}
+      />
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                Folio
+              </TableHead>
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-56">
+                Solicitante
+              </TableHead>
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                Programa
+              </TableHead>
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                Tamaño / Sector
+              </TableHead>
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                {labelFecha}
+              </TableHead>
+              {mostrarColumnaEstatus && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                  Estatus
+                </TableHead>
+              )}
+              {mostrarColumnaGestor && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
+                  Gestor
+                </TableHead>
+              )}
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                Exp.
+              </TableHead>
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                PDF
+              </TableHead>
+              <TableHead className="w-10" />
+
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {solicitudes.map((sol) => {
+              const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
+              const monto = formatMonto(sol.montoSolicitado ?? null)
+
+              return (
+                <TableRow
+                  key={sol.id}
+                  className="cursor-pointer hover:bg-accent/40 transition-colors duration-100 border-b border-border/40 last:border-0 group"
+                  onClick={() => router.push(getDetalleUrl(sol.id))}
+                >
+
+                  {/* Folio */}
+                  <TableCell className="py-3">
+                    <span className="text-xs font-mono font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
+                      {sol.folio}
+                    </span>
+                  </TableCell>
+
+                  {/* Solicitante */}
+                  <TableCell className="py-3">
+                    <SolicitanteCell datos={sol.datosSolicitante} tipoPersona={sol.tipoPersona} />
+                  </TableCell>
+
+                  {/* Programa + Monto */}
+                  <TableCell className="py-3">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-foreground font-medium leading-tight">
+                        {sol.programa.nombre}
+                      </span>
+                      {monto
+                        ? <span className="text-xs text-muted-foreground tabular-nums">{monto}</span>
+                        : <span className="text-xs text-muted-foreground/40">Sin monto</span>
+                      }
+                    </div>
+                  </TableCell>
+
+                  {/* Tamaño / Sector */}
+                  <TableCell className="py-3">
+                    <div className="flex flex-col gap-0.5">
+                      {sol.sector
+                        ? <span className="text-xs font-medium text-foreground">{SECTOR_LABELS[sol.sector] ?? sol.sector}</span>
+                        : <span className="text-xs text-muted-foreground/40">—</span>
+                      }
+                      {sol.tamanoEmpresa
+                        ? <span className="text-xs text-muted-foreground">{TAMANO_LABELS[sol.tamanoEmpresa]}</span>
+                        : <span className="text-xs text-muted-foreground/40">—</span>
+                      }
+                    </div>
+                  </TableCell>
+
+                  {/* Fecha */}
+                  <TableCell className="py-3">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
+                      {formatFecha(sol.creadoEn)}
+                    </span>
+                  </TableCell>
+
+                  {/* Estatus (opcional) */}
+                  {mostrarColumnaEstatus && (
+                    <TableCell className="py-3">
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${estatus.className}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${estatus.dotClass}`} />
+                        {estatus.label}
+                      </span>
+                    </TableCell>
+                  )}
+
+                  {/* Gestor (opcional) */}
+                  {mostrarColumnaGestor && (
+                    <TableCell className="py-3">
+                      {sol.asignacion ? (
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-xs font-medium text-foreground leading-tight">
+                            {sol.asignacion.gestor.nombre} {sol.asignacion.gestor.apellidoPaterno}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            {formatFecha(sol.asignacion.fechaAsignacion)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
+                          Sin asignar
+                        </span>
+                      )}
+                    </TableCell>
+                  )}
+
+                  {/* Expediente */}
+                  <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <Button
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      title="Ver expediente digital"
+                      onClick={() => router.push(getExpedienteUrl(sol.id))}
+                    >
+                      <FolderOpen className="h-3.5 w-3.5" />
+                    </Button>
+                  </TableCell>
+
+                  {/* PDF */}
+                  <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <Button
+                      variant="ghost" size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      title="Generar PDF"
+                      onClick={() => router.push(getPdfUrl(sol.id))}
+                    >
+                      <FileText className="h-3.5 w-3.5" />
+                    </Button>
+                  </TableCell>
+
+                  {/* Acciones dropdown */}
+                  <TableCell className="py-3" onClick={e => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost" size="icon"
+                          className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
+                        >
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-64 p-1.5 shadow-lg border-border/60">
+                        {renderAcciones(sol.id)}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Paginacion meta={meta} onPaginar={onPaginar} />
+    </div>
+  )
+}

@@ -5,7 +5,6 @@ export interface EstatusStyle {
     className: string
     dotClass: string
 }
-
 export const ESTATUS_STYLES: Record<string, EstatusStyle> = {
     BORRADOR: {
         label: 'Borrador',
@@ -22,13 +21,28 @@ export const ESTATUS_STYLES: Record<string, EstatusStyle> = {
         className: 'border-primary/30 text-primary bg-primary/5',
         dotClass: 'bg-primary',
     },
+    EN_CORRECION: {
+        label: 'En corrección',
+        className: 'border-orange-300/70 text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30',
+        dotClass: 'bg-orange-500',
+    },
+    EN_APROBACION: {
+        label: 'En aprobación',
+        className: 'border-violet-300/70 text-violet-700 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30',
+        dotClass: 'bg-violet-500',
+    },
+    EN_FINANCIAMIENTO: {
+        label: 'En financiamiento',
+        className: 'border-sky-300/70 text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30',
+        dotClass: 'bg-sky-500',
+    },
     APROBADO: {
         label: 'Aprobado',
         className: 'border-emerald-300/70 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30',
         dotClass: 'bg-emerald-500',
     },
-    RECHAZADO: {
-        label: 'Rechazado',
+    CANCELADO: {
+        label: 'Cancelado',
         className: 'border-destructive/30 text-destructive bg-destructive/5',
         dotClass: 'bg-destructive',
     },

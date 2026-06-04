@@ -3,7 +3,16 @@ import type { Programa } from '@/features/programas/types/programa.types'
 export type TipoPersona = 'FISICA' | 'MORAL'
 export type Sector = 'AGROPECUARIO' | 'INDUSTRIAL' | 'COMERCIAL' | 'SERVICIOS' | 'TECNOLOGIA' | 'OTRO'
 export type TamanoEmpresa = 'MICRO' | 'PEQUENA' | 'MEDIANA' | 'GRANDE'
-export type EstatusSolicitud = 'BORRADOR' | 'PENDIENTE' | 'EN_REVISION' | 'APROBADO' | 'RECHAZADO'
+export type EstatusSolicitud =
+  | 'BORRADOR'
+  | 'PENDIENTE'
+  | 'EN_REVISION'
+  | 'EN_CORRECION'
+  | 'EN_FINANCIAMIENTO'
+  | 'EN_APROBACION'
+  | 'APROBADO'
+  | 'RECHAZADO'
+  | 'CANCELADO'
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'
 export type TipoVivienda =| "PROPIA"| "RENTADA"| "PAGANDO"
@@ -138,6 +147,17 @@ export interface FiltrosMisCasos {
   page?: number
   limit?: number
   estatus?: string
+  tipoPersona?: string
+  sector?: string
+  tamanoEmpresa?: string
+  programaId?: string
+  fechaDesde?: string
+  fechaHasta?: string
+  busqueda?: string
+}
+export interface FiltrosAprobacion {
+  page: number
+  limit: number
   tipoPersona?: string
   sector?: string
   tamanoEmpresa?: string

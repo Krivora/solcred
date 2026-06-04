@@ -1,43 +1,30 @@
-// app/(dashboard)/dashboard/admin/solicitudes/page.tsx
 'use client'
 
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import { PromocionStats } from '@/features/promocion/components/solicitudes/PromocionStats'
-import { PromocionFiltros } from '@/features/promocion/components/solicitudes/PromocionFiltros'
-import { PromocionTable } from '@/features/promocion/components/solicitudes/PromocionTable'
-import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
+import { AprobacionFiltros } from '@/features/promocion/components/aprobacion/AprobacionFiltros'
+import { AprobacionTable } from '@/features/promocion/components/aprobacion/AprobacionTable'
+import { useAprobacion } from '@/features/promocion/hooks/useAprobacion'
 import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
 
-export default function SolicitudesPromocionPage() {
+export default function AprobacionPage() {
   const {
-    solicitudes,
-    meta,
-    stats,
-    filtros,
-    cargando,
-    cargandoStats,
-    error,
-    hayFiltrosActivos,
-    actualizarFiltros,
-    cambiarPagina,
-    limpiarFiltros,
-    recargar,
-  } = useSolicitudesPromocion()
+    solicitudes, meta, filtros, cargando, error,
+    hayFiltrosActivos, actualizarFiltros, cambiarPagina,
+    limpiarFiltros, recargar,
+  } = useAprobacion()
 
   return (
     <div className="mx-auto max-w-8xl space-y-6">
 
       <PageHeader
-        title="Solicitudes de Promoción"
-        description="Gestión y revisión del primer filtro de solicitudes de crédito"
+        title="Comité de Aprobación"
+        description="Solicitudes en espera de resolución final"
         action={RefreshAction(recargar, cargando)}
       />
 
-      <PromocionStats stats={stats} cargando={cargandoStats} />
-
       <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
-        <PromocionFiltros
+        <AprobacionFiltros
           filtros={filtros}
           onFiltrar={actualizarFiltros}
           onLimpiar={limpiarFiltros}
@@ -52,8 +39,7 @@ export default function SolicitudesPromocionPage() {
           </div>
           <span className="flex-1">{error}</span>
           <Button
-            variant="ghost"
-            size="sm"
+            variant="ghost" size="sm"
             onClick={recargar}
             className="h-7 text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
           >
@@ -62,11 +48,12 @@ export default function SolicitudesPromocionPage() {
         </div>
       )}
 
-      <PromocionTable
+      <AprobacionTable
         solicitudes={solicitudes}
         meta={meta}
         cargando={cargando}
         onPaginar={cambiarPagina}
+        onRefresh={recargar}
       />
     </div>
   )

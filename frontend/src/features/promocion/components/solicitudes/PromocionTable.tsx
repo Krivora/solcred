@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { ClipboardList, SendHorizonal, RotateCcw, Ban } from 'lucide-react'
+import { Eye, SendHorizonal, RotateCcw, Ban } from 'lucide-react'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/dropdown-menu'
 import { SolicitudesTable } from '../SolicitudesTable'
-import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/AccionSolicitudDialog'
-import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
+import { AccionSolicitudDialog, type AccionTipo } from '../AccionSolicitudDialog'
+import { useAccionesSolicitud } from '../../hooks/useAccionesSolicitud'
 import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
 
 interface Props {
@@ -16,12 +16,12 @@ interface Props {
   onRefresh: () => void
 }
 
-export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefresh }: Props) {
-  const [dialogOpen, setDialogOpen]           = useState(false)
-  const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
+export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefresh }: Props) {
+  const [dialogOpen, setDialogOpen]       = useState(false)
+  const [accionActiva, setAccionActiva]   = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
 
-  const { loading, devolverAlSolicitante, enviarAAprobacion, cancelar } =
+  const { loading, devolverAlSolicitante, enviarAFinanciamiento, cancelar } =
     useAccionesSolicitud({ onSuccess: () => { setDialogOpen(false); onRefresh() } })
 
   const abrirAccion = (accion: AccionTipo, solicitudId: string) => {
@@ -32,9 +32,9 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
 
   const handleConfirmar = async (motivo: string) => {
     if (!solicitudActiva || !accionActiva) return
-    if (accionActiva === 'aprobacion') await enviarAAprobacion(solicitudActiva, { motivo })
-    if (accionActiva === 'devolver')   await devolverAlSolicitante(solicitudActiva, { motivo })
-    if (accionActiva === 'cancelar')   await cancelar(solicitudActiva, { motivo })
+    if (accionActiva === 'devolver')       await devolverAlSolicitante(solicitudActiva, { motivo })
+    if (accionActiva === 'financiamiento') await enviarAFinanciamiento(solicitudActiva, { motivo })
+    if (accionActiva === 'cancelar')       await cancelar(solicitudActiva, { motivo })
   }
 
   return (
@@ -53,29 +53,29 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
         cargando={cargando}
         onPaginar={onPaginar}
         config={{
-          getDetalleUrl:    (id) => `/dashboard/gestor/mis-casos/${id}`,
-          getExpedienteUrl: (id) => `/dashboard/gestor/mis-casos/${id}/expediente`,
-          getPdfUrl:        (id) => `/dashboard/gestor/mis-casos/${id}/pdf`,
-          mostrarColumnaGestor:  false,
+          getDetalleUrl:    (id) => `/dashboard/admin/solicitudes/${id}`,
+          getExpedienteUrl: (id) => `/dashboard/admin/solicitudes/${id}/expediente`,
+          getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
+          mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: true,
-          labelFecha: 'Asignada',
+          labelFecha: 'Recibida',
           vacioCopy: {
-            icon: <ClipboardList className="h-7 w-7" />,
-            titulo: 'Sin casos asignados',
-            descripcion: 'No tienes casos asignados actualmente',
+            icon: <Eye className="h-7 w-7" />,
+            titulo: 'No se encontraron solicitudes',
+            descripcion: 'Intenta ajustar los filtros de búsqueda',
           },
           renderAcciones: (solicitudId) => (
             <>
               <DropdownMenuItem
                 className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
-                onClick={() => abrirAccion('aprobacion', solicitudId)}
+                onClick={() => abrirAccion('financiamiento', solicitudId)}
               >
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover/item:bg-primary/15">
                   <SendHorizonal className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col gap-0">
-                  <span className="text-xs font-medium text-foreground leading-tight">Enviar para su Aprobación</span>
-                  <span className="text-[11px] text-muted-foreground leading-tight">Pasar al responsable de promoción</span>
+                  <span className="text-xs font-medium text-foreground leading-tight">Enviar a Financiamiento</span>
+                  <span className="text-[11px] text-muted-foreground leading-tight">Pasar al equipo de análisis financiero</span>
                 </div>
               </DropdownMenuItem>
 
@@ -103,7 +103,7 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
                 </div>
                 <div className="flex flex-col gap-0">
                   <span className="text-xs font-medium text-destructive leading-tight">Cancelar Solicitud</span>
-                  <span className="text-[11px] text-muted-foreground leading-tight">Cancelar definitivamente esta solicitud</span>
+                  <span className="text-[11px] text-muted-foreground leading-tight">Cancelar esta solicitud</span>
                 </div>
               </DropdownMenuItem>
             </>

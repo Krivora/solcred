@@ -10,22 +10,12 @@ import {
 } from '../../types/Filterbar.constants'
 import { FilterBar } from '../Filterbar'
 import type { FilterField as FilterFieldConfig } from '../../types/Filterbar.types'
-import type { FiltrosMisCasos } from '@/shared/lib/types/solicitudes.types'
+import type { FiltrosAprobacion } from '@/shared/lib/types/solicitudes.types'
 
 // ── Config de campos ──────────────────────────────────────────────────────────
 
 const FIELDS: FilterFieldConfig[] = [
   SEARCH_SOLICITANTE_FIELD,
-  {
-    type: 'select',
-    key: 'estatus',
-    placeholder: 'Estatus',
-    allLabel: 'Todos los estatus',
-    options: [
-      { value: 'EN_REVISION',  label: 'En revisión',  dotColor: 'bg-primary'    },
-      { value: 'EN_CORRECION', label: 'En corrección', dotColor: 'bg-orange-500' },
-    ],
-  },
   TIPO_PERSONA_FIELD,
   SECTOR_FIELD,
   TAMANO_EMPRESA_FIELD,
@@ -35,15 +25,15 @@ const FIELDS: FilterFieldConfig[] = [
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface Props {
-  filtros: FiltrosMisCasos
-  onFiltrar: (f: Partial<FiltrosMisCasos>) => void
+  filtros: FiltrosAprobacion
+  onFiltrar: (f: Partial<FiltrosAprobacion>) => void
   onLimpiar: () => void
   hayFiltrosActivos: boolean
 }
 
 // ── Componente ────────────────────────────────────────────────────────────────
 
-export function MisCasosFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosActivos }: Props) {
+export function AprobacionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosActivos }: Props) {
   const values = useMemo(
     () => Object.fromEntries(
       Object.entries(filtros).map(([k, v]) => [k, v ?? ''])
@@ -52,7 +42,7 @@ export function MisCasosFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosActiv
   )
 
   const handleChange = useCallback(
-    (patch: Record<string, string>) => onFiltrar(patch as Partial<FiltrosMisCasos>),
+    (patch: Record<string, string>) => onFiltrar(patch as Partial<FiltrosAprobacion>),
     [onFiltrar],
   )
 
