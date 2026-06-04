@@ -8,6 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/HistorialEstatus'
 export type * from './models/GrupoGestion'
 export type * from './models/ReglaGrupo'
 export type * from './models/GrupoGestor'

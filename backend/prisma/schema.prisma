@@ -31,8 +31,12 @@ enum EstatusSolicitud {
   BORRADOR
   PENDIENTE
   EN_REVISION
+  EN_CORRECION
+  EN_FINANCIAMIENTO
+  EN_APROBACION
   APROBADO
   RECHAZADO
+  CANCELADO
 }
 
 enum EstadoCivil {
@@ -98,8 +102,22 @@ enum CampoRegla {
   MONTO_SOLICITADO
 }
 
-// ─── Modelos nuevos ──────────────────────────────────────────────────────────
+model HistorialEstatus {
+  id          String           @id @default(uuid())
+  solicitud   Solicitud        @relation(fields: [solicitudId], references: [id])
+  solicitudId String
 
+  estatusAnterior EstatusSolicitud
+  estatusNuevo    EstatusSolicitud
+  motivo          String?
+
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId   String
+
+  creadoEn    DateTime @default(now())
+
+  @@index([solicitudId])
+}
 model GrupoGestion {
   id          String   @id @default(uuid())
   nombre      String
@@ -184,6 +202,7 @@ model Usuario {
   solicitudes  Solicitud[]
   logs        LogAuditoria[]
   gruposGestion       GrupoGestor[]
+  historialEstatus  HistorialEstatus[]
   asignacionesGestor  AsignacionSolicitud[] @relation("AsignacionesComoGestor")
   asignacionesDadas   AsignacionSolicitud[] @relation("AsignacionesComoSupervisor")
 }
@@ -276,6 +295,7 @@ model Solicitud {
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?
   documentos       DocumentoSolicitud[]
+  historialEstatus  HistorialEstatus[]
   asignacion    AsignacionSolicitud?
 
   creadoEn        DateTime         @default(now())

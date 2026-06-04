@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  HistorialEstatus: 'HistorialEstatus',
   GrupoGestion: 'GrupoGestion',
   ReglaGrupo: 'ReglaGrupo',
   GrupoGestor: 'GrupoGestor',
@@ -80,6 +81,19 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const HistorialEstatusScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  estatusAnterior: 'estatusAnterior',
+  estatusNuevo: 'estatusNuevo',
+  motivo: 'motivo',
+  usuarioId: 'usuarioId',
+  creadoEn: 'creadoEn'
+} as const
+
+export type HistorialEstatusScalarFieldEnum = (typeof HistorialEstatusScalarFieldEnum)[keyof typeof HistorialEstatusScalarFieldEnum]
 
 
 export const GrupoGestionScalarFieldEnum = {

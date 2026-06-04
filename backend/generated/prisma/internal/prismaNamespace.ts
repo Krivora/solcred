@@ -384,6 +384,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  HistorialEstatus: 'HistorialEstatus',
   GrupoGestion: 'GrupoGestion',
   ReglaGrupo: 'ReglaGrupo',
   GrupoGestor: 'GrupoGestor',
@@ -412,10 +413,84 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    HistorialEstatus: {
+      payload: Prisma.$HistorialEstatusPayload<ExtArgs>
+      fields: Prisma.HistorialEstatusFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HistorialEstatusFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HistorialEstatusFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        findFirst: {
+          args: Prisma.HistorialEstatusFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HistorialEstatusFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        findMany: {
+          args: Prisma.HistorialEstatusFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>[]
+        }
+        create: {
+          args: Prisma.HistorialEstatusCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        createMany: {
+          args: Prisma.HistorialEstatusCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HistorialEstatusCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>[]
+        }
+        delete: {
+          args: Prisma.HistorialEstatusDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        update: {
+          args: Prisma.HistorialEstatusUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        deleteMany: {
+          args: Prisma.HistorialEstatusDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HistorialEstatusUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HistorialEstatusUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>[]
+        }
+        upsert: {
+          args: Prisma.HistorialEstatusUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HistorialEstatusPayload>
+        }
+        aggregate: {
+          args: Prisma.HistorialEstatusAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHistorialEstatus>
+        }
+        groupBy: {
+          args: Prisma.HistorialEstatusGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HistorialEstatusGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HistorialEstatusCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HistorialEstatusCountAggregateOutputType> | number
+        }
+      }
+    }
     GrupoGestion: {
       payload: Prisma.$GrupoGestionPayload<ExtArgs>
       fields: Prisma.GrupoGestionFieldRefs
@@ -1417,6 +1492,19 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const HistorialEstatusScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  estatusAnterior: 'estatusAnterior',
+  estatusNuevo: 'estatusNuevo',
+  motivo: 'motivo',
+  usuarioId: 'usuarioId',
+  creadoEn: 'creadoEn'
+} as const
+
+export type HistorialEstatusScalarFieldEnum = (typeof HistorialEstatusScalarFieldEnum)[keyof typeof HistorialEstatusScalarFieldEnum]
+
+
 export const GrupoGestionScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
@@ -1706,6 +1794,34 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'EstatusSolicitud'
+ */
+export type EnumEstatusSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusSolicitud'>
+    
+
+
+/**
+ * Reference to a field of type 'EstatusSolicitud[]'
+ */
+export type ListEnumEstatusSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusSolicitud[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime'
+ */
+export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'DateTime[]'
+ */
+export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -1723,20 +1839,6 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime'
- */
-export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -1835,20 +1937,6 @@ export type EnumTipoPersonaDocumentoFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'TipoPersonaDocumento[]'
  */
 export type ListEnumTipoPersonaDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoPersonaDocumento[]'>
-    
-
-
-/**
- * Reference to a field of type 'EstatusSolicitud'
- */
-export type EnumEstatusSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusSolicitud'>
-    
-
-
-/**
- * Reference to a field of type 'EstatusSolicitud[]'
- */
-export type ListEnumEstatusSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusSolicitud[]'>
     
 
 
@@ -2073,6 +2161,7 @@ export type PrismaClientOptions = ({
   queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
+  historialEstatus?: Prisma.HistorialEstatusOmit
   grupoGestion?: Prisma.GrupoGestionOmit
   reglaGrupo?: Prisma.ReglaGrupoOmit
   grupoGestor?: Prisma.GrupoGestorOmit

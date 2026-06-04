@@ -281,6 +281,7 @@ export type SolicitudWhereInput = {
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
+  historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignacion?: Prisma.XOR<Prisma.AsignacionSolicitudNullableScalarRelationFilter, Prisma.AsignacionSolicitudWhereInput> | null
 }
 
@@ -302,6 +303,7 @@ export type SolicitudOrderByWithRelationInput = {
   datosSolicitante?: Prisma.DatosSolicitanteOrderByWithRelationInput
   datosAval?: Prisma.DatosAvalOrderByWithRelationInput
   documentos?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
+  historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
   asignacion?: Prisma.AsignacionSolicitudOrderByWithRelationInput
 }
 
@@ -326,6 +328,7 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
+  historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignacion?: Prisma.XOR<Prisma.AsignacionSolicitudNullableScalarRelationFilter, Prisma.AsignacionSolicitudWhereInput> | null
 }, "id" | "folio">
 
@@ -383,6 +386,7 @@ export type SolicitudCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -402,6 +406,7 @@ export type SolicitudUncheckedCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -421,6 +426,7 @@ export type SolicitudUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -440,6 +446,7 @@ export type SolicitudUncheckedUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -556,6 +563,20 @@ export type SolicitudSumOrderByAggregateInput = {
   plazoSolicitado?: Prisma.SortOrder
 }
 
+export type SolicitudCreateNestedOneWithoutHistorialEstatusInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedCreateWithoutHistorialEstatusInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutHistorialEstatusInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutHistorialEstatusNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedCreateWithoutHistorialEstatusInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutHistorialEstatusInput
+  upsert?: Prisma.SolicitudUpsertWithoutHistorialEstatusInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutHistorialEstatusInput, Prisma.SolicitudUpdateWithoutHistorialEstatusInput>, Prisma.SolicitudUncheckedUpdateWithoutHistorialEstatusInput>
+}
+
 export type SolicitudCreateNestedOneWithoutAsignacionInput = {
   create?: Prisma.XOR<Prisma.SolicitudCreateWithoutAsignacionInput, Prisma.SolicitudUncheckedCreateWithoutAsignacionInput>
   connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutAsignacionInput
@@ -654,10 +675,6 @@ export type SolicitudUncheckedUpdateManyWithoutProgramaNestedInput = {
   deleteMany?: Prisma.SolicitudScalarWhereInput | Prisma.SolicitudScalarWhereInput[]
 }
 
-export type EnumEstatusSolicitudFieldUpdateOperationsInput = {
-  set?: $Enums.EstatusSolicitud
-}
-
 export type NullableEnumTipoPersonaFieldUpdateOperationsInput = {
   set?: $Enums.TipoPersona | null
 }
@@ -728,6 +745,98 @@ export type SolicitudUpdateOneRequiredWithoutDocumentosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDocumentosInput, Prisma.SolicitudUpdateWithoutDocumentosInput>, Prisma.SolicitudUncheckedUpdateWithoutDocumentosInput>
 }
 
+export type SolicitudCreateWithoutHistorialEstatusInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  montoSolicitado?: number | null
+  plazoSolicitado?: number | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutHistorialEstatusInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  montoSolicitado?: number | null
+  plazoSolicitado?: number | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutHistorialEstatusInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedCreateWithoutHistorialEstatusInput>
+}
+
+export type SolicitudUpsertWithoutHistorialEstatusInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedUpdateWithoutHistorialEstatusInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedCreateWithoutHistorialEstatusInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutHistorialEstatusInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutHistorialEstatusInput, Prisma.SolicitudUncheckedUpdateWithoutHistorialEstatusInput>
+}
+
+export type SolicitudUpdateWithoutHistorialEstatusInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  montoSolicitado?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  plazoSolicitado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutHistorialEstatusInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  montoSolicitado?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  plazoSolicitado?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
+}
+
 export type SolicitudCreateWithoutAsignacionInput = {
   id?: string
   folio: string
@@ -744,6 +853,7 @@ export type SolicitudCreateWithoutAsignacionInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutAsignacionInput = {
@@ -762,6 +872,7 @@ export type SolicitudUncheckedCreateWithoutAsignacionInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutAsignacionInput = {
@@ -796,6 +907,7 @@ export type SolicitudUpdateWithoutAsignacionInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutAsignacionInput = {
@@ -814,6 +926,7 @@ export type SolicitudUncheckedUpdateWithoutAsignacionInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutSolicitanteInput = {
@@ -831,6 +944,7 @@ export type SolicitudCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -849,6 +963,7 @@ export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -911,6 +1026,7 @@ export type SolicitudCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -929,6 +1045,7 @@ export type SolicitudUncheckedCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -973,6 +1090,7 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -991,6 +1109,7 @@ export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Date | string
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -1025,6 +1144,7 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1043,6 +1163,7 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1061,6 +1182,7 @@ export type SolicitudCreateWithoutDatosAvalInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -1079,6 +1201,7 @@ export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -1113,6 +1236,7 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1131,6 +1255,7 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1149,6 +1274,7 @@ export type SolicitudCreateWithoutDocumentosInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudCreateNestedOneWithoutSolicitudInput
 }
 
@@ -1167,6 +1293,7 @@ export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput
 }
 
@@ -1201,6 +1328,7 @@ export type SolicitudUpdateWithoutDocumentosInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1219,6 +1347,7 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1251,6 +1380,7 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1269,6 +1399,7 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1315,6 +1446,7 @@ export type SolicitudUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1333,6 +1465,7 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacion?: Prisma.AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput
 }
 
@@ -1357,10 +1490,12 @@ export type SolicitudUncheckedUpdateManyWithoutProgramaInput = {
 
 export type SolicitudCountOutputType = {
   documentos: number
+  historialEstatus: number
 }
 
 export type SolicitudCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documentos?: boolean | SolicitudCountOutputTypeCountDocumentosArgs
+  historialEstatus?: boolean | SolicitudCountOutputTypeCountHistorialEstatusArgs
 }
 
 /**
@@ -1378,6 +1513,13 @@ export type SolicitudCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ex
  */
 export type SolicitudCountOutputTypeCountDocumentosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DocumentoSolicitudWhereInput
+}
+
+/**
+ * SolicitudCountOutputType without action
+ */
+export type SolicitudCountOutputTypeCountHistorialEstatusArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HistorialEstatusWhereInput
 }
 
 
@@ -1399,6 +1541,7 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
+  historialEstatus?: boolean | Prisma.Solicitud$historialEstatusArgs<ExtArgs>
   asignacion?: boolean | Prisma.Solicitud$asignacionArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["solicitud"]>
@@ -1459,6 +1602,7 @@ export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
+  historialEstatus?: boolean | Prisma.Solicitud$historialEstatusArgs<ExtArgs>
   asignacion?: boolean | Prisma.Solicitud$asignacionArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1479,6 +1623,7 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     datosSolicitante: Prisma.$DatosSolicitantePayload<ExtArgs> | null
     datosAval: Prisma.$DatosAvalPayload<ExtArgs> | null
     documentos: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
+    historialEstatus: Prisma.$HistorialEstatusPayload<ExtArgs>[]
     asignacion: Prisma.$AsignacionSolicitudPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1893,6 +2038,7 @@ export interface Prisma__SolicitudClient<T, Null = never, ExtArgs extends runtim
   datosSolicitante<T extends Prisma.Solicitud$datosSolicitanteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>>): Prisma.Prisma__DatosSolicitanteClient<runtime.Types.Result.GetResult<Prisma.$DatosSolicitantePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   datosAval<T extends Prisma.Solicitud$datosAvalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosAvalArgs<ExtArgs>>): Prisma.Prisma__DatosAvalClient<runtime.Types.Result.GetResult<Prisma.$DatosAvalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   documentos<T extends Prisma.Solicitud$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  historialEstatus<T extends Prisma.Solicitud$historialEstatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$historialEstatusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HistorialEstatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacion<T extends Prisma.Solicitud$asignacionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$asignacionArgs<ExtArgs>>): Prisma.Prisma__AsignacionSolicitudClient<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2395,6 +2541,30 @@ export type Solicitud$documentosArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.DocumentoSolicitudScalarFieldEnum | Prisma.DocumentoSolicitudScalarFieldEnum[]
+}
+
+/**
+ * Solicitud.historialEstatus
+ */
+export type Solicitud$historialEstatusArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HistorialEstatus
+   */
+  select?: Prisma.HistorialEstatusSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HistorialEstatus
+   */
+  omit?: Prisma.HistorialEstatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HistorialEstatusInclude<ExtArgs> | null
+  where?: Prisma.HistorialEstatusWhereInput
+  orderBy?: Prisma.HistorialEstatusOrderByWithRelationInput | Prisma.HistorialEstatusOrderByWithRelationInput[]
+  cursor?: Prisma.HistorialEstatusWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HistorialEstatusScalarFieldEnum | Prisma.HistorialEstatusScalarFieldEnum[]
 }
 
 /**

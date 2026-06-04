@@ -40,8 +40,12 @@ export const EstatusSolicitud = {
   BORRADOR: 'BORRADOR',
   PENDIENTE: 'PENDIENTE',
   EN_REVISION: 'EN_REVISION',
+  EN_CORRECION: 'EN_CORRECION',
+  EN_FINANCIAMIENTO: 'EN_FINANCIAMIENTO',
+  EN_APROBACION: 'EN_APROBACION',
   APROBADO: 'APROBADO',
-  RECHAZADO: 'RECHAZADO'
+  RECHAZADO: 'RECHAZADO',
+  CANCELADO: 'CANCELADO'
 } as const
 
 export type EstatusSolicitud = (typeof EstatusSolicitud)[keyof typeof EstatusSolicitud]

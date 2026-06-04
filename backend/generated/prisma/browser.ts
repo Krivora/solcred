@@ -18,6 +18,11 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model HistorialEstatus
+ * 
+ */
+export type HistorialEstatus = Prisma.HistorialEstatusModel
+/**
  * Model GrupoGestion
  * 
  */
