@@ -139,6 +139,15 @@ export const CampoRegla = {
 export type CampoRegla = (typeof CampoRegla)[keyof typeof CampoRegla]
 
 
+export const EstatusDocumento = {
+  PENDIENTE: 'PENDIENTE',
+  APROBADO: 'APROBADO',
+  RECHAZADO: 'RECHAZADO'
+} as const
+
+export type EstatusDocumento = (typeof EstatusDocumento)[keyof typeof EstatusDocumento]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',

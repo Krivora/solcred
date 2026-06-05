@@ -40,14 +40,20 @@ const CONFIG: Record<
     className:
       'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
   },
+  EN_APROBACION: {
+    label: 'En aprobación',
+    icon: Search,
+    className:
+      'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+  },
   APROBADO: {
     label: 'Aprobado',
     icon: CheckCircle2,
     className:
       'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
   },
-  RECHAZADO: {
-    label: 'Rechazado',
+  CANCELADO: {
+    label: 'Cancelado',
     icon: XCircle,
     className:
       'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',

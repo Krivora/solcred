@@ -13,7 +13,7 @@ import asignacionRoutes from "./modules/admin/asignacion/asignacion.routes"
 import grupoRoutes from "./modules/admin/grupos/grupos.routes"
 import logsRoutes from "./modules/admin/logs/logs.routes";
 
-
+import expedienteRoutes from "./modules/expediente/expediente.routes";
 import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
 
 const app = express();
@@ -55,6 +55,8 @@ app.use("/api/admin/logs", logsRoutes);
 app.use("/api/admin/programas", programasRoutes);
 app.use("/api/admin/promocion", promocionRoutes);
 app.use("/api/admin/usuarios", usuariosRoutes);
+
+app.use("/api/expediente", expedienteRoutes);
 
 
 // ── Rutas Solicitantes ──────────────────────────────────

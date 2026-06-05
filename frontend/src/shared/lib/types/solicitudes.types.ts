@@ -13,6 +13,7 @@ export type EstatusSolicitud =
   | 'APROBADO'
   | 'RECHAZADO'
   | 'CANCELADO'
+export type EstatusDocumento = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO'
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'
 export type TipoVivienda =| "PROPIA"| "RENTADA"| "PAGANDO"

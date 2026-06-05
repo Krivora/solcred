@@ -4,10 +4,10 @@ import { autenticar } from "@middlewares/auth.middleware";
 import { autorizar } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import {
-  crearSolicitudSchema,
-  guardarDatosGeneralesSchema,
-  guardarDatosSolicitanteSchema,
-  guardarDatosAvalSchema,
+    crearSolicitudSchema,
+    guardarDatosGeneralesSchema,
+    guardarDatosSolicitanteSchema,
+    guardarDatosAvalSchema,
 } from "./solicitudes.schema";
 import * as solicitudesController from "./solicitudes.controller";
 const router = Router();

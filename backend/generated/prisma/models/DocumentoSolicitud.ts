@@ -20,8 +20,18 @@ export type DocumentoSolicitudModel = runtime.Types.Result.DefaultSelection<Pris
 
 export type AggregateDocumentoSolicitud = {
   _count: DocumentoSolicitudCountAggregateOutputType | null
+  _avg: DocumentoSolicitudAvgAggregateOutputType | null
+  _sum: DocumentoSolicitudSumAggregateOutputType | null
   _min: DocumentoSolicitudMinAggregateOutputType | null
   _max: DocumentoSolicitudMaxAggregateOutputType | null
+}
+
+export type DocumentoSolicitudAvgAggregateOutputType = {
+  version: number | null
+}
+
+export type DocumentoSolicitudSumAggregateOutputType = {
+  version: number | null
 }
 
 export type DocumentoSolicitudMinAggregateOutputType = {
@@ -30,6 +40,12 @@ export type DocumentoSolicitudMinAggregateOutputType = {
   tipoDocumentoId: string | null
   urlArchivo: string | null
   nombreArchivo: string | null
+  version: number | null
+  activo: boolean | null
+  estatus: $Enums.EstatusDocumento | null
+  validadoPorId: string | null
+  fechaValidacion: Date | null
+  motivoRechazo: string | null
   subidoEn: Date | null
 }
 
@@ -39,6 +55,12 @@ export type DocumentoSolicitudMaxAggregateOutputType = {
   tipoDocumentoId: string | null
   urlArchivo: string | null
   nombreArchivo: string | null
+  version: number | null
+  activo: boolean | null
+  estatus: $Enums.EstatusDocumento | null
+  validadoPorId: string | null
+  fechaValidacion: Date | null
+  motivoRechazo: string | null
   subidoEn: Date | null
 }
 
@@ -48,10 +70,24 @@ export type DocumentoSolicitudCountAggregateOutputType = {
   tipoDocumentoId: number
   urlArchivo: number
   nombreArchivo: number
+  version: number
+  activo: number
+  estatus: number
+  validadoPorId: number
+  fechaValidacion: number
+  motivoRechazo: number
   subidoEn: number
   _all: number
 }
 
+
+export type DocumentoSolicitudAvgAggregateInputType = {
+  version?: true
+}
+
+export type DocumentoSolicitudSumAggregateInputType = {
+  version?: true
+}
 
 export type DocumentoSolicitudMinAggregateInputType = {
   id?: true
@@ -59,6 +95,12 @@ export type DocumentoSolicitudMinAggregateInputType = {
   tipoDocumentoId?: true
   urlArchivo?: true
   nombreArchivo?: true
+  version?: true
+  activo?: true
+  estatus?: true
+  validadoPorId?: true
+  fechaValidacion?: true
+  motivoRechazo?: true
   subidoEn?: true
 }
 
@@ -68,6 +110,12 @@ export type DocumentoSolicitudMaxAggregateInputType = {
   tipoDocumentoId?: true
   urlArchivo?: true
   nombreArchivo?: true
+  version?: true
+  activo?: true
+  estatus?: true
+  validadoPorId?: true
+  fechaValidacion?: true
+  motivoRechazo?: true
   subidoEn?: true
 }
 
@@ -77,6 +125,12 @@ export type DocumentoSolicitudCountAggregateInputType = {
   tipoDocumentoId?: true
   urlArchivo?: true
   nombreArchivo?: true
+  version?: true
+  activo?: true
+  estatus?: true
+  validadoPorId?: true
+  fechaValidacion?: true
+  motivoRechazo?: true
   subidoEn?: true
   _all?: true
 }
@@ -119,6 +173,18 @@ export type DocumentoSolicitudAggregateArgs<ExtArgs extends runtime.Types.Extens
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DocumentoSolicitudAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DocumentoSolicitudSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DocumentoSolicitudMinAggregateInputType
@@ -149,6 +215,8 @@ export type DocumentoSolicitudGroupByArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   _count?: DocumentoSolicitudCountAggregateInputType | true
+  _avg?: DocumentoSolicitudAvgAggregateInputType
+  _sum?: DocumentoSolicitudSumAggregateInputType
   _min?: DocumentoSolicitudMinAggregateInputType
   _max?: DocumentoSolicitudMaxAggregateInputType
 }
@@ -159,8 +227,16 @@ export type DocumentoSolicitudGroupByOutputType = {
   tipoDocumentoId: string
   urlArchivo: string
   nombreArchivo: string
+  version: number
+  activo: boolean
+  estatus: $Enums.EstatusDocumento
+  validadoPorId: string | null
+  fechaValidacion: Date | null
+  motivoRechazo: string | null
   subidoEn: Date
   _count: DocumentoSolicitudCountAggregateOutputType | null
+  _avg: DocumentoSolicitudAvgAggregateOutputType | null
+  _sum: DocumentoSolicitudSumAggregateOutputType | null
   _min: DocumentoSolicitudMinAggregateOutputType | null
   _max: DocumentoSolicitudMaxAggregateOutputType | null
 }
@@ -189,9 +265,16 @@ export type DocumentoSolicitudWhereInput = {
   tipoDocumentoId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
   urlArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
   nombreArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  version?: Prisma.IntFilter<"DocumentoSolicitud"> | number
+  activo?: Prisma.BoolFilter<"DocumentoSolicitud"> | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFilter<"DocumentoSolicitud"> | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
+  fechaValidacion?: Prisma.DateTimeNullableFilter<"DocumentoSolicitud"> | Date | string | null
+  motivoRechazo?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
   subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
+  validadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
 }
 
 export type DocumentoSolicitudOrderByWithRelationInput = {
@@ -200,9 +283,16 @@ export type DocumentoSolicitudOrderByWithRelationInput = {
   tipoDocumentoId?: Prisma.SortOrder
   urlArchivo?: Prisma.SortOrder
   nombreArchivo?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  activo?: Prisma.SortOrder
+  estatus?: Prisma.SortOrder
+  validadoPorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fechaValidacion?: Prisma.SortOrderInput | Prisma.SortOrder
+  motivoRechazo?: Prisma.SortOrderInput | Prisma.SortOrder
   subidoEn?: Prisma.SortOrder
   solicitud?: Prisma.SolicitudOrderByWithRelationInput
   tipoDocumento?: Prisma.TipoDocumentoOrderByWithRelationInput
+  validadoPor?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
@@ -215,9 +305,16 @@ export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
   tipoDocumentoId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
   urlArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
   nombreArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  version?: Prisma.IntFilter<"DocumentoSolicitud"> | number
+  activo?: Prisma.BoolFilter<"DocumentoSolicitud"> | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFilter<"DocumentoSolicitud"> | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
+  fechaValidacion?: Prisma.DateTimeNullableFilter<"DocumentoSolicitud"> | Date | string | null
+  motivoRechazo?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
   subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
+  validadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
 }, "id" | "solicitudId_tipoDocumentoId">
 
 export type DocumentoSolicitudOrderByWithAggregationInput = {
@@ -226,10 +323,18 @@ export type DocumentoSolicitudOrderByWithAggregationInput = {
   tipoDocumentoId?: Prisma.SortOrder
   urlArchivo?: Prisma.SortOrder
   nombreArchivo?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  activo?: Prisma.SortOrder
+  estatus?: Prisma.SortOrder
+  validadoPorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fechaValidacion?: Prisma.SortOrderInput | Prisma.SortOrder
+  motivoRechazo?: Prisma.SortOrderInput | Prisma.SortOrder
   subidoEn?: Prisma.SortOrder
   _count?: Prisma.DocumentoSolicitudCountOrderByAggregateInput
+  _avg?: Prisma.DocumentoSolicitudAvgOrderByAggregateInput
   _max?: Prisma.DocumentoSolicitudMaxOrderByAggregateInput
   _min?: Prisma.DocumentoSolicitudMinOrderByAggregateInput
+  _sum?: Prisma.DocumentoSolicitudSumOrderByAggregateInput
 }
 
 export type DocumentoSolicitudScalarWhereWithAggregatesInput = {
@@ -241,6 +346,12 @@ export type DocumentoSolicitudScalarWhereWithAggregatesInput = {
   tipoDocumentoId?: Prisma.StringWithAggregatesFilter<"DocumentoSolicitud"> | string
   urlArchivo?: Prisma.StringWithAggregatesFilter<"DocumentoSolicitud"> | string
   nombreArchivo?: Prisma.StringWithAggregatesFilter<"DocumentoSolicitud"> | string
+  version?: Prisma.IntWithAggregatesFilter<"DocumentoSolicitud"> | number
+  activo?: Prisma.BoolWithAggregatesFilter<"DocumentoSolicitud"> | boolean
+  estatus?: Prisma.EnumEstatusDocumentoWithAggregatesFilter<"DocumentoSolicitud"> | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.StringNullableWithAggregatesFilter<"DocumentoSolicitud"> | string | null
+  fechaValidacion?: Prisma.DateTimeNullableWithAggregatesFilter<"DocumentoSolicitud"> | Date | string | null
+  motivoRechazo?: Prisma.StringNullableWithAggregatesFilter<"DocumentoSolicitud"> | string | null
   subidoEn?: Prisma.DateTimeWithAggregatesFilter<"DocumentoSolicitud"> | Date | string
 }
 
@@ -248,9 +359,15 @@ export type DocumentoSolicitudCreateInput = {
   id?: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDocumentosInput
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutDocumentosInput
+  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateInput = {
@@ -259,6 +376,12 @@ export type DocumentoSolicitudUncheckedCreateInput = {
   tipoDocumentoId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -266,9 +389,15 @@ export type DocumentoSolicitudUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDocumentosNestedInput
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutDocumentosNestedInput
+  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateInput = {
@@ -277,6 +406,12 @@ export type DocumentoSolicitudUncheckedUpdateInput = {
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -286,6 +421,12 @@ export type DocumentoSolicitudCreateManyInput = {
   tipoDocumentoId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -293,6 +434,11 @@ export type DocumentoSolicitudUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -302,6 +448,12 @@ export type DocumentoSolicitudUncheckedUpdateManyInput = {
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -326,7 +478,17 @@ export type DocumentoSolicitudCountOrderByAggregateInput = {
   tipoDocumentoId?: Prisma.SortOrder
   urlArchivo?: Prisma.SortOrder
   nombreArchivo?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  activo?: Prisma.SortOrder
+  estatus?: Prisma.SortOrder
+  validadoPorId?: Prisma.SortOrder
+  fechaValidacion?: Prisma.SortOrder
+  motivoRechazo?: Prisma.SortOrder
   subidoEn?: Prisma.SortOrder
+}
+
+export type DocumentoSolicitudAvgOrderByAggregateInput = {
+  version?: Prisma.SortOrder
 }
 
 export type DocumentoSolicitudMaxOrderByAggregateInput = {
@@ -335,6 +497,12 @@ export type DocumentoSolicitudMaxOrderByAggregateInput = {
   tipoDocumentoId?: Prisma.SortOrder
   urlArchivo?: Prisma.SortOrder
   nombreArchivo?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  activo?: Prisma.SortOrder
+  estatus?: Prisma.SortOrder
+  validadoPorId?: Prisma.SortOrder
+  fechaValidacion?: Prisma.SortOrder
+  motivoRechazo?: Prisma.SortOrder
   subidoEn?: Prisma.SortOrder
 }
 
@@ -344,7 +512,59 @@ export type DocumentoSolicitudMinOrderByAggregateInput = {
   tipoDocumentoId?: Prisma.SortOrder
   urlArchivo?: Prisma.SortOrder
   nombreArchivo?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  activo?: Prisma.SortOrder
+  estatus?: Prisma.SortOrder
+  validadoPorId?: Prisma.SortOrder
+  fechaValidacion?: Prisma.SortOrder
+  motivoRechazo?: Prisma.SortOrder
   subidoEn?: Prisma.SortOrder
+}
+
+export type DocumentoSolicitudSumOrderByAggregateInput = {
+  version?: Prisma.SortOrder
+}
+
+export type DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput = {
+  create?: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput> | Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput[] | Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput[]
+  connectOrCreate?: Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput | Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput[]
+  createMany?: Prisma.DocumentoSolicitudCreateManyValidadoPorInputEnvelope
+  connect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+}
+
+export type DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput = {
+  create?: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput> | Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput[] | Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput[]
+  connectOrCreate?: Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput | Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput[]
+  createMany?: Prisma.DocumentoSolicitudCreateManyValidadoPorInputEnvelope
+  connect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+}
+
+export type DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput> | Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput[] | Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput[]
+  connectOrCreate?: Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput | Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput[]
+  upsert?: Prisma.DocumentoSolicitudUpsertWithWhereUniqueWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpsertWithWhereUniqueWithoutValidadoPorInput[]
+  createMany?: Prisma.DocumentoSolicitudCreateManyValidadoPorInputEnvelope
+  set?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  disconnect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  delete?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  connect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  update?: Prisma.DocumentoSolicitudUpdateWithWhereUniqueWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpdateWithWhereUniqueWithoutValidadoPorInput[]
+  updateMany?: Prisma.DocumentoSolicitudUpdateManyWithWhereWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpdateManyWithWhereWithoutValidadoPorInput[]
+  deleteMany?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
+}
+
+export type DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput> | Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput[] | Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput[]
+  connectOrCreate?: Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput | Prisma.DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput[]
+  upsert?: Prisma.DocumentoSolicitudUpsertWithWhereUniqueWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpsertWithWhereUniqueWithoutValidadoPorInput[]
+  createMany?: Prisma.DocumentoSolicitudCreateManyValidadoPorInputEnvelope
+  set?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  disconnect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  delete?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  connect?: Prisma.DocumentoSolicitudWhereUniqueInput | Prisma.DocumentoSolicitudWhereUniqueInput[]
+  update?: Prisma.DocumentoSolicitudUpdateWithWhereUniqueWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpdateWithWhereUniqueWithoutValidadoPorInput[]
+  updateMany?: Prisma.DocumentoSolicitudUpdateManyWithWhereWithoutValidadoPorInput | Prisma.DocumentoSolicitudUpdateManyWithWhereWithoutValidadoPorInput[]
+  deleteMany?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
 }
 
 export type DocumentoSolicitudCreateNestedManyWithoutTipoDocumentoInput = {
@@ -431,12 +651,94 @@ export type DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput = {
   deleteMany?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
 }
 
+export type EnumEstatusDocumentoFieldUpdateOperationsInput = {
+  set?: $Enums.EstatusDocumento
+}
+
+export type DocumentoSolicitudCreateWithoutValidadoPorInput = {
+  id?: string
+  urlArchivo: string
+  nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
+  subidoEn?: Date | string
+  solicitud: Prisma.SolicitudCreateNestedOneWithoutDocumentosInput
+  tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutDocumentosInput
+}
+
+export type DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput = {
+  id?: string
+  solicitudId: string
+  tipoDocumentoId: string
+  urlArchivo: string
+  nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
+  subidoEn?: Date | string
+}
+
+export type DocumentoSolicitudCreateOrConnectWithoutValidadoPorInput = {
+  where: Prisma.DocumentoSolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput>
+}
+
+export type DocumentoSolicitudCreateManyValidadoPorInputEnvelope = {
+  data: Prisma.DocumentoSolicitudCreateManyValidadoPorInput | Prisma.DocumentoSolicitudCreateManyValidadoPorInput[]
+  skipDuplicates?: boolean
+}
+
+export type DocumentoSolicitudUpsertWithWhereUniqueWithoutValidadoPorInput = {
+  where: Prisma.DocumentoSolicitudWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentoSolicitudUpdateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedUpdateWithoutValidadoPorInput>
+  create: Prisma.XOR<Prisma.DocumentoSolicitudCreateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedCreateWithoutValidadoPorInput>
+}
+
+export type DocumentoSolicitudUpdateWithWhereUniqueWithoutValidadoPorInput = {
+  where: Prisma.DocumentoSolicitudWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentoSolicitudUpdateWithoutValidadoPorInput, Prisma.DocumentoSolicitudUncheckedUpdateWithoutValidadoPorInput>
+}
+
+export type DocumentoSolicitudUpdateManyWithWhereWithoutValidadoPorInput = {
+  where: Prisma.DocumentoSolicitudScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentoSolicitudUpdateManyMutationInput, Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorInput>
+}
+
+export type DocumentoSolicitudScalarWhereInput = {
+  AND?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
+  OR?: Prisma.DocumentoSolicitudScalarWhereInput[]
+  NOT?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
+  id?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  solicitudId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  tipoDocumentoId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  urlArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  nombreArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
+  version?: Prisma.IntFilter<"DocumentoSolicitud"> | number
+  activo?: Prisma.BoolFilter<"DocumentoSolicitud"> | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFilter<"DocumentoSolicitud"> | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
+  fechaValidacion?: Prisma.DateTimeNullableFilter<"DocumentoSolicitud"> | Date | string | null
+  motivoRechazo?: Prisma.StringNullableFilter<"DocumentoSolicitud"> | string | null
+  subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
+}
+
 export type DocumentoSolicitudCreateWithoutTipoDocumentoInput = {
   id?: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDocumentosInput
+  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateWithoutTipoDocumentoInput = {
@@ -444,6 +746,12 @@ export type DocumentoSolicitudUncheckedCreateWithoutTipoDocumentoInput = {
   solicitudId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -473,24 +781,18 @@ export type DocumentoSolicitudUpdateManyWithWhereWithoutTipoDocumentoInput = {
   data: Prisma.XOR<Prisma.DocumentoSolicitudUpdateManyMutationInput, Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutTipoDocumentoInput>
 }
 
-export type DocumentoSolicitudScalarWhereInput = {
-  AND?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
-  OR?: Prisma.DocumentoSolicitudScalarWhereInput[]
-  NOT?: Prisma.DocumentoSolicitudScalarWhereInput | Prisma.DocumentoSolicitudScalarWhereInput[]
-  id?: Prisma.StringFilter<"DocumentoSolicitud"> | string
-  solicitudId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
-  tipoDocumentoId?: Prisma.StringFilter<"DocumentoSolicitud"> | string
-  urlArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
-  nombreArchivo?: Prisma.StringFilter<"DocumentoSolicitud"> | string
-  subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
-}
-
 export type DocumentoSolicitudCreateWithoutSolicitudInput = {
   id?: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutDocumentosInput
+  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateWithoutSolicitudInput = {
@@ -498,6 +800,12 @@ export type DocumentoSolicitudUncheckedCreateWithoutSolicitudInput = {
   tipoDocumentoId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -527,11 +835,73 @@ export type DocumentoSolicitudUpdateManyWithWhereWithoutSolicitudInput = {
   data: Prisma.XOR<Prisma.DocumentoSolicitudUpdateManyMutationInput, Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudInput>
 }
 
+export type DocumentoSolicitudCreateManyValidadoPorInput = {
+  id?: string
+  solicitudId: string
+  tipoDocumentoId: string
+  urlArchivo: string
+  nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
+  subidoEn?: Date | string
+}
+
+export type DocumentoSolicitudUpdateWithoutValidadoPorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDocumentosNestedInput
+  tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutDocumentosNestedInput
+}
+
+export type DocumentoSolicitudUncheckedUpdateWithoutValidadoPorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitudId?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
+  urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitudId?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
+  urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type DocumentoSolicitudCreateManyTipoDocumentoInput = {
   id?: string
   solicitudId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -539,8 +909,14 @@ export type DocumentoSolicitudUpdateWithoutTipoDocumentoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDocumentosNestedInput
+  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateWithoutTipoDocumentoInput = {
@@ -548,6 +924,12 @@ export type DocumentoSolicitudUncheckedUpdateWithoutTipoDocumentoInput = {
   solicitudId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -556,6 +938,12 @@ export type DocumentoSolicitudUncheckedUpdateManyWithoutTipoDocumentoInput = {
   solicitudId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -564,6 +952,12 @@ export type DocumentoSolicitudCreateManySolicitudInput = {
   tipoDocumentoId: string
   urlArchivo: string
   nombreArchivo: string
+  version?: number
+  activo?: boolean
+  estatus?: $Enums.EstatusDocumento
+  validadoPorId?: string | null
+  fechaValidacion?: Date | string | null
+  motivoRechazo?: string | null
   subidoEn?: Date | string
 }
 
@@ -571,8 +965,14 @@ export type DocumentoSolicitudUpdateWithoutSolicitudInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutDocumentosNestedInput
+  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateWithoutSolicitudInput = {
@@ -580,6 +980,12 @@ export type DocumentoSolicitudUncheckedUpdateWithoutSolicitudInput = {
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -588,6 +994,12 @@ export type DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudInput = {
   tipoDocumentoId?: Prisma.StringFieldUpdateOperationsInput | string
   urlArchivo?: Prisma.StringFieldUpdateOperationsInput | string
   nombreArchivo?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  estatus?: Prisma.EnumEstatusDocumentoFieldUpdateOperationsInput | $Enums.EstatusDocumento
+  validadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaValidacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -599,9 +1011,16 @@ export type DocumentoSolicitudSelect<ExtArgs extends runtime.Types.Extensions.In
   tipoDocumentoId?: boolean
   urlArchivo?: boolean
   nombreArchivo?: boolean
+  version?: boolean
+  activo?: boolean
+  estatus?: boolean
+  validadoPorId?: boolean
+  fechaValidacion?: boolean
+  motivoRechazo?: boolean
   subidoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["documentoSolicitud"]>
 
 export type DocumentoSolicitudSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -610,9 +1029,16 @@ export type DocumentoSolicitudSelectCreateManyAndReturn<ExtArgs extends runtime.
   tipoDocumentoId?: boolean
   urlArchivo?: boolean
   nombreArchivo?: boolean
+  version?: boolean
+  activo?: boolean
+  estatus?: boolean
+  validadoPorId?: boolean
+  fechaValidacion?: boolean
+  motivoRechazo?: boolean
   subidoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["documentoSolicitud"]>
 
 export type DocumentoSolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -621,9 +1047,16 @@ export type DocumentoSolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime.
   tipoDocumentoId?: boolean
   urlArchivo?: boolean
   nombreArchivo?: boolean
+  version?: boolean
+  activo?: boolean
+  estatus?: boolean
+  validadoPorId?: boolean
+  fechaValidacion?: boolean
+  motivoRechazo?: boolean
   subidoEn?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["documentoSolicitud"]>
 
 export type DocumentoSolicitudSelectScalar = {
@@ -632,21 +1065,30 @@ export type DocumentoSolicitudSelectScalar = {
   tipoDocumentoId?: boolean
   urlArchivo?: boolean
   nombreArchivo?: boolean
+  version?: boolean
+  activo?: boolean
+  estatus?: boolean
+  validadoPorId?: boolean
+  fechaValidacion?: boolean
+  motivoRechazo?: boolean
   subidoEn?: boolean
 }
 
-export type DocumentoSolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "tipoDocumentoId" | "urlArchivo" | "nombreArchivo" | "subidoEn", ExtArgs["result"]["documentoSolicitud"]>
+export type DocumentoSolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "tipoDocumentoId" | "urlArchivo" | "nombreArchivo" | "version" | "activo" | "estatus" | "validadoPorId" | "fechaValidacion" | "motivoRechazo" | "subidoEn", ExtArgs["result"]["documentoSolicitud"]>
 export type DocumentoSolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }
 export type DocumentoSolicitudIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }
 export type DocumentoSolicitudIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
   tipoDocumento?: boolean | Prisma.TipoDocumentoDefaultArgs<ExtArgs>
+  validadoPor?: boolean | Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>
 }
 
 export type $DocumentoSolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -654,6 +1096,7 @@ export type $DocumentoSolicitudPayload<ExtArgs extends runtime.Types.Extensions.
   objects: {
     solicitud: Prisma.$SolicitudPayload<ExtArgs>
     tipoDocumento: Prisma.$TipoDocumentoPayload<ExtArgs>
+    validadoPor: Prisma.$UsuarioPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -661,6 +1104,12 @@ export type $DocumentoSolicitudPayload<ExtArgs extends runtime.Types.Extensions.
     tipoDocumentoId: string
     urlArchivo: string
     nombreArchivo: string
+    version: number
+    activo: boolean
+    estatus: $Enums.EstatusDocumento
+    validadoPorId: string | null
+    fechaValidacion: Date | null
+    motivoRechazo: string | null
     subidoEn: Date
   }, ExtArgs["result"]["documentoSolicitud"]>
   composites: {}
@@ -1058,6 +1507,7 @@ export interface Prisma__DocumentoSolicitudClient<T, Null = never, ExtArgs exten
   readonly [Symbol.toStringTag]: "PrismaPromise"
   solicitud<T extends Prisma.SolicitudDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SolicitudDefaultArgs<ExtArgs>>): Prisma.Prisma__SolicitudClient<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tipoDocumento<T extends Prisma.TipoDocumentoDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TipoDocumentoDefaultArgs<ExtArgs>>): Prisma.Prisma__TipoDocumentoClient<runtime.Types.Result.GetResult<Prisma.$TipoDocumentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  validadoPor<T extends Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1092,6 +1542,12 @@ export interface DocumentoSolicitudFieldRefs {
   readonly tipoDocumentoId: Prisma.FieldRef<"DocumentoSolicitud", 'String'>
   readonly urlArchivo: Prisma.FieldRef<"DocumentoSolicitud", 'String'>
   readonly nombreArchivo: Prisma.FieldRef<"DocumentoSolicitud", 'String'>
+  readonly version: Prisma.FieldRef<"DocumentoSolicitud", 'Int'>
+  readonly activo: Prisma.FieldRef<"DocumentoSolicitud", 'Boolean'>
+  readonly estatus: Prisma.FieldRef<"DocumentoSolicitud", 'EstatusDocumento'>
+  readonly validadoPorId: Prisma.FieldRef<"DocumentoSolicitud", 'String'>
+  readonly fechaValidacion: Prisma.FieldRef<"DocumentoSolicitud", 'DateTime'>
+  readonly motivoRechazo: Prisma.FieldRef<"DocumentoSolicitud", 'String'>
   readonly subidoEn: Prisma.FieldRef<"DocumentoSolicitud", 'DateTime'>
 }
     
@@ -1491,6 +1947,25 @@ export type DocumentoSolicitudDeleteManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many DocumentoSolicituds to delete.
    */
   limit?: number
+}
+
+/**
+ * DocumentoSolicitud.validadoPor
+ */
+export type DocumentoSolicitud$validadoPorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Usuario
+   */
+  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Usuario
+   */
+  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UsuarioInclude<ExtArgs> | null
+  where?: Prisma.UsuarioWhereInput
 }
 
 /**

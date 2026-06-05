@@ -252,6 +252,7 @@ export type UsuarioWhereInput = {
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
   asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
+  documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
 }
 
 export type UsuarioOrderByWithRelationInput = {
@@ -274,6 +275,7 @@ export type UsuarioOrderByWithRelationInput = {
   historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
   asignacionesGestor?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
   asignacionesDadas?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
+  documentosValidados?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
 }
 
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -299,6 +301,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
   asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
+  documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
 }, "id" | "correo" | "curp" | "rfc">
 
 export type UsuarioOrderByWithAggregationInput = {
@@ -359,6 +362,7 @@ export type UsuarioCreateInput = {
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateInput = {
@@ -381,6 +385,7 @@ export type UsuarioUncheckedCreateInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUpdateInput = {
@@ -403,6 +408,7 @@ export type UsuarioUpdateInput = {
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
@@ -425,6 +431,7 @@ export type UsuarioUncheckedUpdateInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioCreateManyInput = {
@@ -613,6 +620,22 @@ export type UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutSolicitudesInput, Prisma.UsuarioUpdateWithoutSolicitudesInput>, Prisma.UsuarioUncheckedUpdateWithoutSolicitudesInput>
 }
 
+export type UsuarioCreateNestedOneWithoutDocumentosValidadosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDocumentosValidadosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneWithoutDocumentosValidadosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDocumentosValidadosInput
+  upsert?: Prisma.UsuarioUpsertWithoutDocumentosValidadosInput
+  disconnect?: Prisma.UsuarioWhereInput | boolean
+  delete?: Prisma.UsuarioWhereInput | boolean
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutDocumentosValidadosInput, Prisma.UsuarioUpdateWithoutDocumentosValidadosInput>, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
+}
+
 export type UsuarioCreateNestedOneWithoutLogsInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutLogsInput, Prisma.UsuarioUncheckedCreateWithoutLogsInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutLogsInput
@@ -648,6 +671,7 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
@@ -669,6 +693,7 @@ export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutHistorialEstatusInput = {
@@ -706,6 +731,7 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
@@ -727,6 +753,7 @@ export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioCreateWithoutGruposGestionInput = {
@@ -748,6 +775,7 @@ export type UsuarioCreateWithoutGruposGestionInput = {
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutGruposGestionInput = {
@@ -769,6 +797,7 @@ export type UsuarioUncheckedCreateWithoutGruposGestionInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutGruposGestionInput = {
@@ -806,6 +835,7 @@ export type UsuarioUpdateWithoutGruposGestionInput = {
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutGruposGestionInput = {
@@ -827,6 +857,7 @@ export type UsuarioUncheckedUpdateWithoutGruposGestionInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioCreateWithoutAsignacionesGestorInput = {
@@ -848,6 +879,7 @@ export type UsuarioCreateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesGestorInput = {
@@ -869,6 +901,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesGestorInput = {
@@ -895,6 +928,7 @@ export type UsuarioCreateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesDadasInput = {
@@ -916,6 +950,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesDadasInput = {
@@ -953,6 +988,7 @@ export type UsuarioUpdateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesGestorInput = {
@@ -974,6 +1010,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUpsertWithoutAsignacionesDadasInput = {
@@ -1006,6 +1043,7 @@ export type UsuarioUpdateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesDadasInput = {
@@ -1027,6 +1065,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioCreateWithoutSolicitudesInput = {
@@ -1048,6 +1087,7 @@ export type UsuarioCreateWithoutSolicitudesInput = {
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
@@ -1069,6 +1109,7 @@ export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutSolicitudesInput = {
@@ -1106,6 +1147,7 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
@@ -1122,6 +1164,111 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+}
+
+export type UsuarioCreateWithoutDocumentosValidadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  rol?: $Enums.Rol
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type UsuarioUncheckedCreateWithoutDocumentosValidadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  rol?: $Enums.Rol
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type UsuarioCreateOrConnectWithoutDocumentosValidadosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
+}
+
+export type UsuarioUpsertWithoutDocumentosValidadosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutDocumentosValidadosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
+}
+
+export type UsuarioUpdateWithoutDocumentosValidadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutDocumentosValidadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1148,6 +1295,7 @@ export type UsuarioCreateWithoutLogsInput = {
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutLogsInput = {
@@ -1169,6 +1317,7 @@ export type UsuarioUncheckedCreateWithoutLogsInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutLogsInput = {
@@ -1206,6 +1355,7 @@ export type UsuarioUpdateWithoutLogsInput = {
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutLogsInput = {
@@ -1227,6 +1377,7 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 
@@ -1241,6 +1392,7 @@ export type UsuarioCountOutputType = {
   historialEstatus: number
   asignacionesGestor: number
   asignacionesDadas: number
+  documentosValidados: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1250,6 +1402,7 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   historialEstatus?: boolean | UsuarioCountOutputTypeCountHistorialEstatusArgs
   asignacionesGestor?: boolean | UsuarioCountOutputTypeCountAsignacionesGestorArgs
   asignacionesDadas?: boolean | UsuarioCountOutputTypeCountAsignacionesDadasArgs
+  documentosValidados?: boolean | UsuarioCountOutputTypeCountDocumentosValidadosArgs
 }
 
 /**
@@ -1304,6 +1457,13 @@ export type UsuarioCountOutputTypeCountAsignacionesDadasArgs<ExtArgs extends run
   where?: Prisma.AsignacionSolicitudWhereInput
 }
 
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountDocumentosValidadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentoSolicitudWhereInput
+}
+
 
 export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1325,6 +1485,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
   asignacionesGestor?: boolean | Prisma.Usuario$asignacionesGestorArgs<ExtArgs>
   asignacionesDadas?: boolean | Prisma.Usuario$asignacionesDadasArgs<ExtArgs>
+  documentosValidados?: boolean | Prisma.Usuario$documentosValidadosArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -1384,6 +1545,7 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
   asignacionesGestor?: boolean | Prisma.Usuario$asignacionesGestorArgs<ExtArgs>
   asignacionesDadas?: boolean | Prisma.Usuario$asignacionesDadasArgs<ExtArgs>
+  documentosValidados?: boolean | Prisma.Usuario$documentosValidadosArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1398,6 +1560,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     historialEstatus: Prisma.$HistorialEstatusPayload<ExtArgs>[]
     asignacionesGestor: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
     asignacionesDadas: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
+    documentosValidados: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1813,6 +1976,7 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   historialEstatus<T extends Prisma.Usuario$historialEstatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$historialEstatusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HistorialEstatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacionesGestor<T extends Prisma.Usuario$asignacionesGestorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesGestorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacionesDadas<T extends Prisma.Usuario$asignacionesDadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesDadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documentosValidados<T extends Prisma.Usuario$documentosValidadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$documentosValidadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2389,6 +2553,30 @@ export type Usuario$asignacionesDadasArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.AsignacionSolicitudScalarFieldEnum | Prisma.AsignacionSolicitudScalarFieldEnum[]
+}
+
+/**
+ * Usuario.documentosValidados
+ */
+export type Usuario$documentosValidadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DocumentoSolicitud
+   */
+  select?: Prisma.DocumentoSolicitudSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DocumentoSolicitud
+   */
+  omit?: Prisma.DocumentoSolicitudOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentoSolicitudInclude<ExtArgs> | null
+  where?: Prisma.DocumentoSolicitudWhereInput
+  orderBy?: Prisma.DocumentoSolicitudOrderByWithRelationInput | Prisma.DocumentoSolicitudOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentoSolicitudWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentoSolicitudScalarFieldEnum | Prisma.DocumentoSolicitudScalarFieldEnum[]
 }
 
 /**

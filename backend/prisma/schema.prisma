@@ -101,6 +101,11 @@ enum CampoRegla {
   PROGRAMA_ID
   MONTO_SOLICITADO
 }
+enum EstatusDocumento {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
 
 model HistorialEstatus {
   id          String           @id @default(uuid())
@@ -205,6 +210,7 @@ model Usuario {
   historialEstatus  HistorialEstatus[]
   asignacionesGestor  AsignacionSolicitud[] @relation("AsignacionesComoGestor")
   asignacionesDadas   AsignacionSolicitud[] @relation("AsignacionesComoSupervisor")
+  documentosValidados DocumentoSolicitud[] @relation("DocumentosValidados")
 }
 
 // ─────────────────────────────────────────
@@ -392,7 +398,16 @@ model DocumentoSolicitud {
   tipoDocumentoId String
   urlArchivo      String
   nombreArchivo   String
+
+  version         Int              @default(1)
+  activo          Boolean          @default(true)
+  estatus         EstatusDocumento @default(PENDIENTE)
+  validadoPor     Usuario?         @relation("DocumentosValidados", fields: [validadoPorId], references: [id])
+  validadoPorId   String?
+  fechaValidacion DateTime?
+  motivoRechazo   String?
   subidoEn        DateTime      @default(now())
+  @@index([solicitudId, tipoDocumentoId])
 
   @@unique([solicitudId, tipoDocumentoId])
 }

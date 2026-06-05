@@ -301,6 +301,12 @@ export const DocumentoSolicitudScalarFieldEnum = {
   tipoDocumentoId: 'tipoDocumentoId',
   urlArchivo: 'urlArchivo',
   nombreArchivo: 'nombreArchivo',
+  version: 'version',
+  activo: 'activo',
+  estatus: 'estatus',
+  validadoPorId: 'validadoPorId',
+  fechaValidacion: 'fechaValidacion',
+  motivoRechazo: 'motivoRechazo',
   subidoEn: 'subidoEn'
 } as const
 

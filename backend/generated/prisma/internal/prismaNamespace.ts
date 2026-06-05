@@ -1710,6 +1710,12 @@ export const DocumentoSolicitudScalarFieldEnum = {
   tipoDocumentoId: 'tipoDocumentoId',
   urlArchivo: 'urlArchivo',
   nombreArchivo: 'nombreArchivo',
+  version: 'version',
+  activo: 'activo',
+  estatus: 'estatus',
+  validadoPorId: 'validadoPorId',
+  fechaValidacion: 'fechaValidacion',
+  motivoRechazo: 'motivoRechazo',
   subidoEn: 'subidoEn'
 } as const
 
@@ -2007,6 +2013,20 @@ export type EnumTipoViviendaFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'TipoVivienda[]'
  */
 export type ListEnumTipoViviendaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoVivienda[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EstatusDocumento'
+ */
+export type EnumEstatusDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusDocumento'>
+    
+
+
+/**
+ * Reference to a field of type 'EstatusDocumento[]'
+ */
+export type ListEnumEstatusDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusDocumento[]'>
     
 
 

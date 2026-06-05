@@ -140,7 +140,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
 
   const skip = (page - 1) * limit;
   const where: any = {};
-    const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE'];
+    const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE','BORRADOR'];
   if (estatus) {
     const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
     // Solo permite estatus válidos para mis casos
