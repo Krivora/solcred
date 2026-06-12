@@ -100,6 +100,7 @@ export interface SubirDocumentoDto {
     tipoDocumentoId: string
     urlArchivo: string
     nombreArchivo: string
+    archivo:File
 }
 
 export interface ValidarDocumentoDto {

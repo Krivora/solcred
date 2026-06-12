@@ -11,7 +11,6 @@ export const expedienteApi = {
     obtener: (solicitudId: string) =>
         apiAuth<Expediente>(`/expediente/${solicitudId}`),
 
-    // ─── Cliente sube documento ─────────────────────────────────────────────────
     subirDocumento: (solicitudId: string, dto: SubirDocumentoDto) =>
         apiAuth<DocumentoActivo>(`/expediente/${solicitudId}/documentos`, {
             method: 'POST',
