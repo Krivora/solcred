@@ -1,23 +1,33 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
-import { SubirDocumentoDto, ValidarDocumentoDto } from "./expediente.schema";
+import { ValidarDocumentoDto } from "./expediente.schema";
 import { EstatusDocumento } from "../../../generated/prisma/client";
+import fs from "fs";
+import path from "path";
+import { UPLOADS_BASE_DIR } from "@config/multer.config";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTES
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ROLES_PERMITIDOS = ["CLIENTE", "GESTOR", "ADMIN", "ANALISTA"] as const;
+type RolPermitido = typeof ROLES_PERMITIDOS[number];
+
+const ESTATUS_PERMITIDOS_PARA_SUBIR = ["BORRADOR", "PENDIENTE", "EN_CORRECION", "NO_SUBIDO","EN_REVISION"] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Verifica que la solicitud exista y que el usuario tenga acceso a ella.
- * - Cliente: solo sus propias solicitudes
- * - Gestor: solo las solicitudes que tiene asignadas
- * - Admin / Analista: cualquier solicitud
- */
 const verificarAcceso = async (
     solicitudId: string,
     usuarioId: string,
     rol: string
 ) => {
+    if (!ROLES_PERMITIDOS.includes(rol as RolPermitido)) {
+        throw new AppError("Rol no reconocido", 403);
+    }
+
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
@@ -31,17 +41,10 @@ const verificarAcceso = async (
         throw new AppError("No tienes permisos para acceder a este expediente", 403);
     }
 
-    if (rol === "GESTOR" && solicitud.asignacion?.gestorId !== usuarioId) {
-        throw new AppError("Este expediente no está asignado a ti", 403);
-    }
-
+    // GESTOR, ANALISTA, ADMIN: acceso general permitido (confirmado por negocio).
     return solicitud;
 };
 
-/**
- * Verifica que el gestor sea exactamente el asignado a la solicitud.
- * Se usa antes de validar documentos.
- */
 const verificarGestorAsignado = async (
     solicitudId: string,
     gestorId: string
@@ -61,15 +64,9 @@ const verificarGestorAsignado = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EXPEDIENTE — VISTA GENERAL
+// EXPEDIENTE — VISTA GENERAL (sin cambios respecto a la versión anterior)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Retorna toda la información del expediente:
- * - Datos generales de la solicitud
- * - Documentos requeridos por el programa (con su estatus actual)
- * - Historial de validaciones
- */
 export const obtenerExpediente = async (
     solicitudId: string,
     usuarioId: string,
@@ -80,7 +77,6 @@ export const obtenerExpediente = async (
     const expediente = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
-            // Datos generales
             programa: {
                 select: {
                     id: true,
@@ -112,7 +108,6 @@ export const obtenerExpediente = async (
                     telefono: true,
                 },
             },
-            // Solo documentos activos (la versión más reciente de cada tipo)
             documentos: {
                 where: { activo: true },
                 include: {
@@ -146,13 +141,11 @@ export const obtenerExpediente = async (
 
     if (!expediente) throw new AppError("Expediente no encontrado", 404);
 
-    // ── Construimos el resumen de documentos (requeridos vs subidos) ──────────
     const docsRequeridos = expediente.programa.documentosRequeridos;
     const docsSubidos = expediente.documentos;
 
     const resumenDocumentos = docsRequeridos
         .filter((dr) => {
-            // Filtramos por tipo de persona si aplica
             if (!dr.aplicaA) return true;
             if (!expediente.tipoPersona) return true;
             return dr.aplicaA === expediente.tipoPersona || dr.aplicaA === "AMBOS";
@@ -177,7 +170,6 @@ export const obtenerExpediente = async (
     const totalNoSubidos = resumenDocumentos.filter((d) => d.estatus === "NO_SUBIDO").length;
 
     return {
-        // Datos generales
         id: expediente.id,
         folio: expediente.folio,
         estatus: expediente.estatus,
@@ -189,17 +181,14 @@ export const obtenerExpediente = async (
         creadoEn: expediente.creadoEn,
         actualizadoEn: expediente.actualizadoEn,
 
-        // Partes involucradas
         programa: { id: expediente.programa.id, nombre: expediente.programa.nombre },
         solicitante: expediente.solicitante,
         datosSolicitante: expediente.datosSolicitante,
         gestor: expediente.asignacion?.gestor ?? null,
         fechaAsignacion: expediente.asignacion?.fechaAsignacion ?? null,
 
-        // Documentos
         documentos: resumenDocumentos,
 
-        // Métricas rápidas
         metricas: {
             totalRequeridos,
             totalAprobados,
@@ -215,22 +204,35 @@ export const obtenerExpediente = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DOCUMENTOS — CLIENTE SUBE
+// CREAR VERSIÓN DE DOCUMENTO — usado internamente por uploads.controller
+// NO se expone como ruta propia. `urlArchivo` y `nombreArchivo` los genera
+// el propio servidor (uploads.controller), nunca vienen directo del cliente.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const subirDocumento = async (
-    solicitudId: string,
-    clienteId: string,
-    dto: SubirDocumentoDto
-) => {
-    // 1. Verificar que la solicitud pertenece al cliente
+interface CrearVersionDocumentoInput {
+    solicitudId: string;
+    usuarioId: string;
+    rol: string;
+    tipoDocumentoId: string;
+    urlArchivo: string;      // ruta relativa, generada por el servidor
+    nombreArchivo: string;   // nombre original, solo para mostrar
+}
+
+export const crearVersionDocumento = async ({
+    solicitudId,
+    usuarioId,
+    rol,
+    tipoDocumentoId,
+    urlArchivo,
+    nombreArchivo,
+}: CrearVersionDocumentoInput) => {
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
             programa: {
                 include: {
                     documentosRequeridos: {
-                        where: { tipoDocumentoId: dto.tipoDocumentoId },
+                        where: { tipoDocumentoId },
                     },
                 },
             },
@@ -239,20 +241,19 @@ export const subirDocumento = async (
 
     if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
 
-    if (solicitud.solicitanteId !== clienteId) {
+    // Permisos: CLIENTE solo en la suya. GESTOR/ANALISTA/ADMIN sin restricción,
+    // confirmado por negocio (pueden subir por cualquier cambio que necesiten).
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
         throw new AppError("No puedes subir documentos a esta solicitud", 403);
     }
 
-    // 2. Verificar que el estatus permite subir documentos
-    const estatusPermitidos = ["BORRADOR", "PENDIENTE", "EN_CORRECION"];
-    if (!estatusPermitidos.includes(solicitud.estatus)) {
+    if (!ESTATUS_PERMITIDOS_PARA_SUBIR.includes(solicitud.estatus as typeof ESTATUS_PERMITIDOS_PARA_SUBIR[number])) {
         throw new AppError(
             `No se pueden subir documentos con estatus: ${solicitud.estatus}`,
             422
         );
     }
 
-    // 3. Verificar que el tipo de documento es válido para este programa
     const docRequerido = solicitud.programa.documentosRequeridos[0];
     if (!docRequerido) {
         throw new AppError(
@@ -261,33 +262,26 @@ export const subirDocumento = async (
         );
     }
 
-    return await prisma.$transaction(async (tx) => {
-        // 4. Obtener versión actual activa (si existe) para calcular nueva versión
+    const resultado = await prisma.$transaction(async (tx) => {
         const docActual = await tx.documentoSolicitud.findFirst({
-            where: {
-                solicitudId,
-                tipoDocumentoId: dto.tipoDocumentoId,
-                activo: true,
-            },
-            select: { id: true, version: true, estatus: true },
+            where: { solicitudId, tipoDocumentoId, activo: true },
+            select: { id: true, version: true, estatus: true, urlArchivo: true },
         });
 
-        // 5. Si hay un doc activo que no fue rechazado, no permitir resubida
-        if (docActual && docActual.estatus === "APROBADO") {
+        if (docActual?.estatus === "APROBADO") {
             throw new AppError(
                 "Este documento ya fue aprobado y no puede ser reemplazado",
                 422
             );
         }
 
-        if (docActual && docActual.estatus === "PENDIENTE") {
+        if (docActual?.estatus === "PENDIENTE") {
             throw new AppError(
                 "Este documento ya está en revisión. Espera la respuesta del gestor",
                 422
             );
         }
 
-        // 6. Desactivar el documento anterior (si existe)
         if (docActual) {
             await tx.documentoSolicitud.update({
                 where: { id: docActual.id },
@@ -295,15 +289,14 @@ export const subirDocumento = async (
             });
         }
 
-        // 7. Crear nueva versión
         const nuevaVersion = (docActual?.version ?? 0) + 1;
 
         const nuevoDocumento = await tx.documentoSolicitud.create({
             data: {
                 solicitudId,
-                tipoDocumentoId: dto.tipoDocumentoId,
-                urlArchivo: dto.urlArchivo,
-                nombreArchivo: dto.nombreArchivo,
+                tipoDocumentoId,
+                urlArchivo,
+                nombreArchivo,
                 version: nuevaVersion,
                 activo: true,
                 estatus: "PENDIENTE",
@@ -313,12 +306,21 @@ export const subirDocumento = async (
             },
         });
 
-        return nuevoDocumento;
+        return { nuevoDocumento, urlArchivoAnterior: docActual?.urlArchivo ?? null };
     });
+
+    // Limpieza del archivo físico anterior — urlArchivo es SIEMPRE ruta relativa
+    // ("solicitudId/nombre.pdf"), nunca una URL absoluta. No bloqueante.
+    if (resultado.urlArchivoAnterior) {
+        const rutaAnterior = path.join(UPLOADS_BASE_DIR, resultado.urlArchivoAnterior);
+        fs.unlink(rutaAnterior, () => {});
+    }
+
+    return resultado.nuevoDocumento;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DOCUMENTOS — GESTOR VALIDA
+// DOCUMENTOS — GESTOR VALIDA (sin cambios)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const validarDocumento = async (
@@ -327,16 +329,10 @@ export const validarDocumento = async (
     gestorId: string,
     dto: ValidarDocumentoDto
 ) => {
-    // 1. Verificar que el gestor es el asignado
     await verificarGestorAsignado(solicitudId, gestorId);
 
-    // 2. Obtener el documento
     const documento = await prisma.documentoSolicitud.findFirst({
-        where: {
-            id: documentoId,
-            solicitudId,
-            activo: true,
-        },
+        where: { id: documentoId, solicitudId, activo: true },
     });
 
     if (!documento) {
@@ -350,7 +346,6 @@ export const validarDocumento = async (
         );
     }
 
-    // 3. Actualizar estatus del documento
     const documentoActualizado = await prisma.documentoSolicitud.update({
         where: { id: documentoId },
         data: {
@@ -376,7 +371,7 @@ export const validarDocumento = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HISTORIAL DE VERSIONES — GESTOR / ADMIN
+// HISTORIAL DE VERSIONES (sin cambios)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const obtenerHistorialDocumento = async (
@@ -385,7 +380,11 @@ export const obtenerHistorialDocumento = async (
     usuarioId: string,
     rol: string
 ) => {
-    // Verificar acceso general al expediente
+    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA"];
+    if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol)) {
+        throw new AppError("No tienes permisos para ver el historial de versiones", 403);
+    }
+
     await verificarAcceso(solicitudId, usuarioId, rol);
 
     const historial = await prisma.documentoSolicitud.findMany({

@@ -14,6 +14,7 @@ import grupoRoutes from "./modules/admin/grupos/grupos.routes"
 import logsRoutes from "./modules/admin/logs/logs.routes";
 
 import expedienteRoutes from "./modules/expediente/expediente.routes";
+import uploadsRouter from "./modules/uploads/uploads.routes";
 import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
 
 const app = express();
@@ -57,8 +58,7 @@ app.use("/api/admin/promocion", promocionRoutes);
 app.use("/api/admin/usuarios", usuariosRoutes);
 
 app.use("/api/expediente", expedienteRoutes);
-
-
+app.use("/api/uploads", uploadsRouter);
 // ── Rutas Solicitantes ──────────────────────────────────
 app.use("/api/clientes/solicitudes", solicitudesRoutes);
 
@@ -74,7 +74,6 @@ app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-  console.log("🔥 SERVIDOR INICIADO - VERSION CON LOGS");
 });
 
 export default app;

@@ -1,52 +1,51 @@
 import { Router } from "express";
+import { z } from "zod";
 import { autenticar } from "@middlewares/auth.middleware";
 import { autorizar } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
-import { subirDocumentoSchema, validarDocumentoSchema } from "./expediente.schema";
 import * as expedienteController from "./expediente.controller";
 
 const router = Router();
 
+const paramsSolicitud = z.object({
+    solicitudId: z.string().uuid("solicitudId inválido"),
+});
+
+const paramsDocumento = z.object({
+    solicitudId: z.string().uuid("solicitudId inválido"),
+    documentoId: z.string().uuid("documentoId inválido"),
+});
+
+const paramsHistorial = z.object({
+    solicitudId: z.string().uuid("solicitudId inválido"),
+    tipoDocumentoId: z.string().uuid("tipoDocumentoId inválido"),
+});
+
 router.use(autenticar);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EXPEDIENTE — Vista general
-// Acceso: todos los roles internos + el cliente dueño de la solicitud
-// ─────────────────────────────────────────────────────────────────────────────
 router.get(
     "/:solicitudId",
     autorizar("ADMIN", "ANALISTA", "GESTOR", "CLIENTE"),
+    validate(paramsSolicitud, "params"),
     expedienteController.obtenerExpediente
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DOCUMENTOS — Cliente sube documentos
-// ─────────────────────────────────────────────────────────────────────────────
-router.post(
-    "/:solicitudId/documentos",
-    autorizar("CLIENTE"),
-    validate(subirDocumentoSchema),
-    expedienteController.subirDocumento
-);
+// La subida de documentos ahora vive exclusivamente en /api/uploads/:solicitudId
+// (ver uploads.routes.ts), para garantizar que todo archivo pase por la
+// validación de magic bytes antes de tocar disco o crear un registro en BD.
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DOCUMENTOS — Gestor valida (aprueba o rechaza)
-// La verificación de "gestor asignado" se hace dentro del service
-// ─────────────────────────────────────────────────────────────────────────────
 router.patch(
     "/:solicitudId/documentos/:documentoId/validar",
     autorizar("GESTOR"),
-    validate(validarDocumentoSchema),
+    validate(paramsDocumento, "params"),
+    validate(require("./expediente.schema").validarDocumentoSchema),
     expedienteController.validarDocumento
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HISTORIAL — Versiones anteriores de un tipo de documento
-// Acceso: roles internos (no cliente)
-// ─────────────────────────────────────────────────────────────────────────────
 router.get(
     "/:solicitudId/documentos/:tipoDocumentoId/historial",
     autorizar("ADMIN", "ANALISTA", "GESTOR"),
+    validate(paramsHistorial, "params"),
     expedienteController.obtenerHistorialDocumento
 );
 

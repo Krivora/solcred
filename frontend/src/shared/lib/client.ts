@@ -19,16 +19,34 @@ export class ApiError extends Error {
   }
 }
 
+async function parseErrorResponse(response: Response): Promise<never> {
+  let json: any = null;
+  try {
+    json = await response.json();
+  } catch {
+    // el backend puede responder sin body (ej. 413 de un proxy) — no truena
+  }
+  throw new ApiError(
+    response.status,
+    json?.message ?? 'Error inesperado',
+    json?.errors,
+  );
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<T> {
   const { method = 'GET', body, token } = options;
 
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
+  const isFormData = body instanceof FormData;
 
+  const headers: HeadersInit = {};
+  // Content-Type NO se fija manualmente para FormData: el navegador debe
+  // generar el boundary del multipart automáticamente.
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -36,30 +54,34 @@ export async function apiRequest<T>(
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: isFormData ? (body as FormData) : body ? JSON.stringify(body) : undefined,
   });
+
+  if (!response.ok) {
+    return parseErrorResponse(response);
+  }
+
+  const contentType = response.headers.get('content-type') ?? '';
+
+  // Descarga de archivos (PDF): no es JSON, regresamos el blob crudo.
+  if (!contentType.includes('application/json')) {
+    return (await response.blob()) as unknown as T;
+  }
 
   const json = await response.json();
 
-  if (!response.ok || !json.success) {
-    throw new ApiError(
-      response.status,
-      json.message ?? 'Error inesperado',
-      json.errors,
-    );
+  if (!json.success) {
+    throw new ApiError(response.status, json.message ?? 'Error inesperado', json.errors);
   }
 
   return json.data as T;
 }
 
 // ── Helper autenticado ─────────────────────────────────────
-// Lee el token del store de Zustand fuera de React y lo inyecta automáticamente
 export async function apiAuth<T>(
   endpoint: string,
   options: Omit<RequestOptions, 'token'> = {},
 ): Promise<T> {
-  // Zustand guarda el estado en localStorage con persist
-  // getState() funciona fuera de componentes
   const { useAuthStore } = await import('@/shared/lib/store/auth.store');
   const token = useAuthStore.getState().token;
 

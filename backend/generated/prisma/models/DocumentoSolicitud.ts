@@ -297,7 +297,7 @@ export type DocumentoSolicitudOrderByWithRelationInput = {
 
 export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  solicitudId_tipoDocumentoId?: Prisma.DocumentoSolicitudSolicitudIdTipoDocumentoIdCompoundUniqueInput
+  solicitudId_tipoDocumentoId_version?: Prisma.DocumentoSolicitudSolicitudIdTipoDocumentoIdVersionCompoundUniqueInput
   AND?: Prisma.DocumentoSolicitudWhereInput | Prisma.DocumentoSolicitudWhereInput[]
   OR?: Prisma.DocumentoSolicitudWhereInput[]
   NOT?: Prisma.DocumentoSolicitudWhereInput | Prisma.DocumentoSolicitudWhereInput[]
@@ -315,7 +315,7 @@ export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
   validadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
-}, "id" | "solicitudId_tipoDocumentoId">
+}, "id" | "solicitudId_tipoDocumentoId_version">
 
 export type DocumentoSolicitudOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -467,9 +467,10 @@ export type DocumentoSolicitudOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DocumentoSolicitudSolicitudIdTipoDocumentoIdCompoundUniqueInput = {
+export type DocumentoSolicitudSolicitudIdTipoDocumentoIdVersionCompoundUniqueInput = {
   solicitudId: string
   tipoDocumentoId: string
+  version: number
 }
 
 export type DocumentoSolicitudCountOrderByAggregateInput = {

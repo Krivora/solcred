@@ -50,6 +50,8 @@ export const obtenerExpediente = async (
 /**
  * POST /expediente/:solicitudId/documentos
  * Rol: CLIENTE — sube un documento nuevo o reemplaza uno rechazado
+ *
+ * req.body ya viene validado y limpiado por el middleware validate(subirDocumentoSchema)
  */
 export const subirDocumento = async (
     req: RequestAutenticado,
@@ -88,6 +90,8 @@ export const subirDocumento = async (
 /**
  * PATCH /expediente/:solicitudId/documentos/:documentoId/validar
  * Rol: GESTOR — solo el gestor asignado a la solicitud
+ *
+ * req.body ya viene validado y limpiado por el middleware validate(validarDocumentoSchema)
  */
 export const validarDocumento = async (
     req: RequestAutenticado,
@@ -153,6 +157,16 @@ export const obtenerHistorialDocumento = async (
             usuarioId,
             rol
         );
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.DOCUMENTOS,
+            descripcion: `Historial de documento consultado: ${tipoDocumentoId}`,
+            entidadId: solicitudId as string,
+            usuarioId,
+            req,
+            metadata: { tipoDocumentoId },
+        });
 
         res.status(200).json(ok("Historial obtenido", historial));
     } catch (error) {

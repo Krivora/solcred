@@ -26,19 +26,22 @@ import {
     Upload,
     Loader2,
 } from 'lucide-react'
-import type { ResumenDocumento, ValidarDocumentoDto, SubirDocumentoDto } from '@/shared/lib/types/expediente.types'
+import type {
+    ResumenDocumento,
+    ValidarDocumentoDto,
+} from '@/shared/lib/types/expediente.types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface TablaDocumentosProps {
     solicitudId: string
     documentos: ResumenDocumento[]
     validando: string | null
-    subiendo: string | null
+    subiendo: boolean
     rolUsuario: string
     gestorAsignadoId: string | null
     usuarioId: string
     onValidar: (documentoId: string, dto: ValidarDocumentoDto) => Promise<void>
-    onSubir: (dto: SubirDocumentoDto) => Promise<void>
+    onSubir: (tipoDocumentoId: string,archivo: File) => Promise<any> // ← SubirDocumentoForm
     onVerHistorial: (tipoDocumentoId: string, nombre: string) => void
 }
 
@@ -164,7 +167,7 @@ const BotonSubir = ({
             <input
                 ref={inputRef}
                 type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept=".pdf"
                 className="hidden"
                 onChange={handleChange}
                 aria-hidden
@@ -219,15 +222,14 @@ export const TablaDocumentos = ({
     ) => setDialog({ open: true, documentoId, nombreDocumento, accion })
 
     // Cuando el usuario selecciona un archivo construimos el DTO y llamamos onSubir
-    const handleArchivo = (tipoDocumentoId: string, file: File) => {
-        // Nota: ajusta este DTO según tu SubirDocumentoDto real.
-        // Si el backend espera FormData en lugar de JSON, cambia apiAuth
-        // para detectar FormData y omitir el Content-Type / stringify.
-        const dto: SubirDocumentoDto = {
+    const handleArchivo = async (
+        tipoDocumentoId: string,
+        file: File
+    ) => {
+        await onSubir(
             tipoDocumentoId,
-            archivo: file,          // el campo que espere tu backend
-        }
-        onSubir(dto)
+            file
+        )
     }
 
     const totalDocs = documentos.length
@@ -290,7 +292,7 @@ export const TablaDocumentos = ({
                                 // Cliente puede subir si el doc no existe o fue rechazado
                                 const puedeSubirEstaFila =
                                     puedeSubir && estatus !== 'APROBADO'
-                                const estaSubiendo = subiendo === tipoDocumento.id
+                                const estaSubiendo = subiendo
 
                                 return (
                                     <TableRow
@@ -370,7 +372,7 @@ export const TablaDocumentos = ({
                                             {documentoActivo?.motivoRechazo ? (
                                                 <MotivoRechazo motivo={documentoActivo.motivoRechazo} />
                                             ) : (
-                                                <span className="text-muted-foreground/40 text-xs">—</span>
+                                                <span className="text-muted-foreground/40 text-xs">Sin observación</span>
                                             )}
                                         </TableCell>
 

@@ -100,10 +100,19 @@ export interface SubirDocumentoDto {
     tipoDocumentoId: string
     urlArchivo: string
     nombreArchivo: string
-    archivo:File
 }
 
 export interface ValidarDocumentoDto {
     estatus: 'APROBADO' | 'RECHAZADO'
     motivoRechazo?: string
+}
+// Solo para el formulario interno del componente
+export interface SubirDocumentoForm {
+    tipoDocumentoId: string
+    archivo: File
+}
+
+export interface UploadArchivoResponse {
+    urlArchivo: string
+    nombreArchivo: string
 }

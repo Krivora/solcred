@@ -2,7 +2,6 @@ import { apiAuth } from '@/shared/lib/client'
 import type {
     Expediente,
     DocumentoActivo,
-    SubirDocumentoDto,
     ValidarDocumentoDto,
 } from '../types/expediente.types'
 
@@ -11,11 +10,9 @@ export const expedienteApi = {
     obtener: (solicitudId: string) =>
         apiAuth<Expediente>(`/expediente/${solicitudId}`),
 
-    subirDocumento: (solicitudId: string, dto: SubirDocumentoDto) =>
-        apiAuth<DocumentoActivo>(`/expediente/${solicitudId}/documentos`, {
-            method: 'POST',
-            body: dto,
-        }),
+    // La subida de documentos vive ahora en uploads.api.ts (uploadsApi.subirArchivo),
+    // porque requiere multipart/form-data y validación de contenido real del
+    // archivo antes de crear el registro — ya no es un simple POST de JSON.
 
     // ─── Gestor valida documento ────────────────────────────────────────────────
     validarDocumento: (

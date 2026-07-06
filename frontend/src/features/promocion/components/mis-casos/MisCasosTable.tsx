@@ -54,7 +54,7 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
         onPaginar={onPaginar}
         config={{
           getDetalleUrl:    (id) => `/dashboard/gestor/mis-casos/${id}`,
-          getExpedienteUrl: (id) => `/dashboard/gestor/mis-casos/${id}/expediente`,
+          getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
           getPdfUrl:        (id) => `/dashboard/gestor/mis-casos/${id}/pdf`,
           mostrarColumnaGestor:  false,
           mostrarColumnaEstatus: true,

@@ -406,10 +406,10 @@ model DocumentoSolicitud {
   validadoPorId   String?
   fechaValidacion DateTime?
   motivoRechazo   String?
-  subidoEn        DateTime      @default(now())
-  @@index([solicitudId, tipoDocumentoId])
+  subidoEn        DateTime         @default(now())
 
-  @@unique([solicitudId, tipoDocumentoId])
+  @@unique([solicitudId, tipoDocumentoId, version])
+  @@index([solicitudId, tipoDocumentoId])
 }
 
 enum AccionLog {

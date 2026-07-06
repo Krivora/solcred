@@ -45,6 +45,13 @@ const ROLES: RolConfig[] = [
     colorClass: "text-amber-500",
     pillClass: "bg-amber-50 text-amber-700 border-amber-200",
   },
+    {
+    value: "GESTOR",
+    label: "Gestor",
+    descripcion: "Revisión, dictamen y gestión de solicitudes.",
+    colorClass: "text-blue-500",
+    pillClass: "bg-blue-50 text-blue-400 border-blue-200",
+  },
   {
     value: "ANALISTA",
     label: "Analista",
