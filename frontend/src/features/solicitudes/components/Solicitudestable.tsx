@@ -17,7 +17,7 @@ import { SolicitudesEmptyState } from './SolicitudesEmptyState'
 import { SolicitudEnviarDialog } from './Solicitudenviardialog'
 import { solicitudesApi } from '../api/solicitudes.api'
 import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
-import { Pencil, Send, Printer, Building2, User } from 'lucide-react'
+import { Pencil, Send, Printer, Building2, User, FolderOpen } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
@@ -174,6 +174,15 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     {s.estatus === 'BORRADOR' ? (
                       <div className="flex items-center justify-end gap-1.5">
                         <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                          title="Ver expediente digital"
+                          onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+                        >
+                          <FolderOpen className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
                           variant="outline"
                           size="sm"
                           className="h-8 gap-1.5 text-xs rounded-full"
@@ -192,7 +201,16 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         </Button>
                       </div>
                     ) : (
-                      <div className="flex justify-end">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                          title="Ver expediente digital"
+                          onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+                        >
+                          <FolderOpen className="h-3.5 w-3.5" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"

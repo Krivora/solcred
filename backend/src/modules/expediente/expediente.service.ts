@@ -380,7 +380,7 @@ export const obtenerHistorialDocumento = async (
     usuarioId: string,
     rol: string
 ) => {
-    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA"];
+    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "CLIENTE"] ;
     if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol)) {
         throw new AppError("No tienes permisos para ver el historial de versiones", 403);
     }

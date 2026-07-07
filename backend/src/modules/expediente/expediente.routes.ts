@@ -44,7 +44,7 @@ router.patch(
 
 router.get(
     "/:solicitudId/documentos/:tipoDocumentoId/historial",
-    autorizar("ADMIN", "ANALISTA", "GESTOR"),
+    autorizar("ADMIN", "ANALISTA", "GESTOR", "CLIENTE"),
     validate(paramsHistorial, "params"),
     expedienteController.obtenerHistorialDocumento
 );

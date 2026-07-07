@@ -45,12 +45,6 @@ export const navConfig: NavItem[] = [
     exact: true,
   },
   {
-    label: "Expediente Digital",
-    href: "/dashboard/usuarios/documentos",
-    icon: FilePlus2,
-    roles: ["CLIENTE"],
-  },
-  {
     label: "Promoción",
     icon: Briefcase,
     roles: ["ADMIN", "GESTOR"],

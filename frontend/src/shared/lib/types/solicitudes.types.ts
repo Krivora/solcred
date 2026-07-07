@@ -13,6 +13,8 @@ export type EstatusSolicitud =
   | 'APROBADO'
   | 'RECHAZADO'
   | 'CANCELADO'
+
+export const ESTATUS_FINALES: EstatusSolicitud[] = ['CANCELADO', 'RECHAZADO', 'APROBADO']
 export type EstatusDocumento = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO'
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'

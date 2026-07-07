@@ -9,6 +9,8 @@ import { ok } from "@utils/response";
 import prisma from "@config/db";
 import { UPLOADS_BASE_DIR } from "@config/multer.config";
 import { crearVersionDocumento } from "../expediente/expediente.service";
+import { registrarLog } from "@/utils/audit";
+import { AccionLog, ModuloLog } from "../../../generated/prisma/client";
 
 const PDF_MAGIC_BYTES = Buffer.from("%PDF-");
 
@@ -166,11 +168,28 @@ export const descargarArchivo = async (
             throw new AppError("Documento no encontrado", 404);
         }
 
-        const rutaAbsoluta = path.join(UPLOADS_BASE_DIR, documento.urlArchivo);
+        const rutaAbsoluta = path.normalize(path.join(UPLOADS_BASE_DIR, documento.urlArchivo));
+        const baseNormalizada = path.normalize(UPLOADS_BASE_DIR);
 
-        if (!rutaAbsoluta.startsWith(UPLOADS_BASE_DIR)) {
+        if (!rutaAbsoluta.startsWith(baseNormalizada)) {
             throw new AppError("Ruta de archivo inválida", 400);
         }
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Documento visualizado: ${documentoId}`,
+            usuarioId: req.usuario!.id,
+            entidadId: documentoId,
+            req,
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader(
+            'Content-Disposition',
+            `inline; filename="${encodeURIComponent(documento.nombreArchivo)}"`
+        );
+        res.setHeader('Cache-Control', 'no-store, must-revalidate');
 
         res.sendFile(rutaAbsoluta, (err) => {
             if (err) next(err);

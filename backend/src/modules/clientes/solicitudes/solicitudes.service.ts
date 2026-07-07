@@ -7,6 +7,7 @@ import {
     GuardarDatosAvalDto,
     GuardarDatosSolicitanteDto,
 } from "./solicitudes.schema";
+import { EstatusSolicitud } from "../../../../generated/prisma/client";
 
 
 const incluyeTodo = {
@@ -23,7 +24,7 @@ const incluyeTodo = {
         include: { tipoDocumento: true },
     },
 };
-
+const ESTATUS_FINALES: EstatusSolicitud[] = ["CANCELADO", "RECHAZADO", "APROBADO"];
 export const listarSolicitudes = async (
     usuarioId: string,
     rol: string
@@ -74,6 +75,20 @@ export const crearSolicitud = async (
     dto: CrearSolicitudDto,
     solicitanteId: string
 ) => {
+
+    const solicitudActiva = await prisma.solicitud.findFirst({
+        where: {
+            solicitanteId,
+            estatus: { notIn: ESTATUS_FINALES },
+        },
+    });
+
+    if (solicitudActiva) {
+        throw new AppError(
+            `Ya tienes una solicitud activa (folio ${solicitudActiva.folio}). Debe estar cancelada, rechazada, caducada o aprobada para crear una nueva.`,
+            409
+        );
+    }
     const programa = await prisma.programa.findUnique({
         where: { id: dto.programaId },
     });

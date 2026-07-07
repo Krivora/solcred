@@ -6,9 +6,13 @@ import { validate } from "@middlewares/validate.middleware";
 import { uploadPdf } from "@config/multer.config";
 import { subirArchivo, descargarArchivo } from "./uploads.controller";
 import { verificarPropietarioSolicitud } from "@/middlewares/uploads.middleware";
-
+import rateLimit from "express-rate-limit";
 const router = Router();
-
+const descargaLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 30, // 30 descargas/vistas por IP cada 5 min
+    message: { success: false, message: "Demasiadas solicitudes de documentos, intenta más tarde" },
+});
 const paramsSolicitud = z.object({
     solicitudId: z.string().uuid("solicitudId inválido"),
 });
@@ -39,6 +43,7 @@ router.post(
 // ─────────────────────────────────────────────────────────────────────────────
 router.get(
     "/:solicitudId/:documentoId",
+    descargaLimiter,
     autorizar("CLIENTE", "GESTOR", "ANALISTA", "ADMIN"),
     validate(paramsDocumento, "params"),
     verificarPropietarioSolicitud,

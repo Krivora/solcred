@@ -3,7 +3,7 @@
 // src/app/(dashboard)/layout.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "@/shared/components/layout/Sidebar";
+import { Sidebar } from "@/shared/components/layout/sidebar/Sidebar";
 import { Header } from "@/shared/components/layout/Header";
 import { useAuthStore } from "@/shared/lib/store/auth.store";
 

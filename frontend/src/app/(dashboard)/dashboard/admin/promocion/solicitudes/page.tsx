@@ -67,6 +67,7 @@ export default function SolicitudesPromocionPage() {
         meta={meta}
         cargando={cargando}
         onPaginar={cambiarPagina}
+        onRefresh={recargar}
       />
     </div>
   )

@@ -1,5 +1,4 @@
 // components/admin/asignacion/CargaBadge.tsx
-
 interface Props {
     carga: number
     max?: number
@@ -40,7 +39,7 @@ export function CargaBadge({ carga, max = 20 }: Props) {
     const porcentaje = Math.min((carga / max) * 100, 100)
 
     return (
-        <div className={`inline-flex flex-col gap-1 px-2.5 py-1.5 rounded-lg border ${styles.bg} ${styles.border} min-w-[80px]`}>
+        <div className={`inline-flex flex-col gap-1 px-3.5 py-1.5 rounded-lg border ${styles.bg} ${styles.border} min-w-20`}>
             <div className="flex items-center justify-between gap-2">
                 <span className={`text-xs font-semibold tabular-nums ${styles.text}`}>
                     {carga}

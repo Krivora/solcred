@@ -2,6 +2,7 @@ import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { CampoRegla, EstatusSolicitud, OperadorRegla } from "../../../../generated/prisma/client";
 import { AsignarManualDto } from "./asignacion.schema";
+const ESTATUS_REVISION: EstatusSolicitud[] = ["EN_REVISION"];
 
 // ─── Tipos internos ──────────────────────────────────────────────────────────
 
@@ -372,7 +373,13 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
 
     const cargas = await prisma.asignacionSolicitud.groupBy({
         by: ["gestorId"],
-        where: { gestorId: { in: gestorIds }, activa: true },
+        where: { 
+            gestorId: { in: gestorIds },
+            activa: true,
+            solicitud: {
+            estatus: { in: ESTATUS_REVISION },
+        },
+        },
         _count: { gestorId: true },
     });
 

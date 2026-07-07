@@ -63,11 +63,9 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
 
   useEffect(() => {
     cargarStats()
-  }, [cargarStats])
-
-  useEffect(() => {
     cargarSolicitudes(filtros)
-  }, [filtros, cargarSolicitudes])
+  }, [cargarStats,filtros, cargarSolicitudes])
+
 
   const actualizarFiltros = useCallback((nuevos: Partial<FiltrosPromocion>) => {
     setFiltros(prev => ({ ...prev, ...nuevos, page: 1 }))
