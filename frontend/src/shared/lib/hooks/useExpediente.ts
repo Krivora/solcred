@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { expedienteApi } from '../api/expediente.api'
 import { expedienteToast } from '@/shared/lib/utils/toaster'
 import type {
@@ -18,52 +18,52 @@ export const useExpediente = (solicitudId: string) => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [validando, setValidando] = useState<string | null>(null)
-    const cargar = useCallback(async () => {
-        if (!solicitudId) return
-        try {
-            setLoading(true)
-            setError(null)
-            const data = await expedienteApi.obtener(solicitudId)
-            setExpediente(data)
-        } catch (err: unknown) {
-            const message = getErrorMessage(err)
-            setError(message)
-            expedienteToast.cargaError(message)
-        } finally {
-            setLoading(false)
-        }
-    }, [solicitudId])
-    useEffect(() => {
-        if (!solicitudId) return
-        let ignore = false
-        const fetchData = async () => {
+
+    // Evita condiciones de carrera si el componente se desmonta o cambia el id
+    const ignoreRef = useRef(false)
+
+    const cargar = useCallback(
+        async (esRecarga = false) => {
+            if (!solicitudId) return
             try {
-                setLoading(true)
+                // Solo mostramos el skeleton de página completa en la carga inicial
+                if (!esRecarga) setLoading(true)
                 setError(null)
 
                 const data = await expedienteApi.obtener(solicitudId)
 
-                if (!ignore) {
+                if (!ignoreRef.current) {
                     setExpediente(data)
                 }
             } catch (err: unknown) {
                 const message = getErrorMessage(err)
-
-                if (!ignore) {
+                if (!ignoreRef.current) {
                     setError(message)
                     expedienteToast.cargaError(message)
                 }
             } finally {
-                if (!ignore) {
+                if (!ignoreRef.current && !esRecarga) {
                     setLoading(false)
                 }
             }
-        }
-        fetchData()
+        },
+        [solicitudId]
+    )
+
+    useEffect(() => {
+        ignoreRef.current = false
+        const timeoutId = setTimeout(() => {
+            cargar(false)
+        }, 0)
+
         return () => {
-            ignore = true
+            ignoreRef.current = true
+            clearTimeout(timeoutId)
         }
-    }, [solicitudId])
+    }, [cargar])
+
+    const refetch = useCallback(() => cargar(true), [cargar])
+
     const validarDocumento = useCallback(
         async (
             documentoId: string,
@@ -81,7 +81,7 @@ export const useExpediente = (solicitudId: string) => {
                 } else {
                     expedienteToast.documentoRechazado()
                 }
-                await cargar()
+                await refetch()
             } catch (err: unknown) {
                 const message = getErrorMessage(err)
                 expedienteToast.validacionError(message)
@@ -89,14 +89,15 @@ export const useExpediente = (solicitudId: string) => {
                 setValidando(null)
             }
         },
-        [solicitudId, cargar]
+        [solicitudId, refetch]
     )
+
     return {
         expediente,
         loading,
         error,
         validando,
-        refetch: cargar,
+        refetch,
         validarDocumento,
     }
 }

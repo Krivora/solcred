@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sileo";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
+import { ThemeProvider } from "@/shared/components/theme-provider";
+import { AppToaster } from "@/shared/components/app-toaster";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,22 +29,18 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden`}
-      > 
-        <Toaster
-          position="top-right"
-          theme="system"
-          options={{
-              styles: {
-                  title: "text-[--foreground]!",
-                  description: "text-[--muted-foreground]!",
-                  badge: "bg-[--primary]/15!",
-                  button: "bg-[--primary]/10! hover:bg-[--primary]/20!",
-              },
-          }}
-        />
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppToaster />
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

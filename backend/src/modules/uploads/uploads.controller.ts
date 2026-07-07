@@ -16,6 +16,32 @@ const bodySchema = z.object({
     tipoDocumentoId: z.string().uuid("tipoDocumentoId inválido"),
 });
 
+/**
+ * Convierte "Acta de Nacimiento" -> "acta-de-nacimiento"
+ * Quita acentos, espacios y símbolos para un nombre limpio y predecible.
+ */
+const slugificar = (texto: string): string =>
+    texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+/**
+ * Nombre "amigable" y predecible para mostrar/buscar:
+ * ej. "acta-de-nacimiento_v2_20260706.pdf"
+ * Ya no depende de cómo el usuario haya nombrado su archivo original.
+ */
+const generarNombreLegible = (
+    nombreTipoDocumento: string,
+    version: number
+): string => {
+    const slug = slugificar(nombreTipoDocumento);
+    const fecha = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    return `${slug}_v${version}_${fecha}.pdf`;
+};
+
 export const subirArchivo = async (
     req: RequestAutenticado,
     res: Response,
@@ -31,7 +57,7 @@ export const subirArchivo = async (
         const parsedBody = bodySchema.safeParse(req.body);
         if (!parsedBody.success) {
             throw new AppError(
-                parsedBody.error.errors[0]?.message ?? "tipoDocumentoId inválido",
+                parsedBody.error.issues[0]?.message ?? "tipoDocumentoId inválido",
                 400
             );
         }
@@ -50,11 +76,12 @@ export const subirArchivo = async (
             );
         }
 
-        const tipoExiste = await prisma.tipoDocumento.findUnique({
+        // Ahora también traemos el nombre, lo necesitamos para el nombreArchivo legible
+        const tipoDocumento = await prisma.tipoDocumento.findUnique({
             where: { id: tipoDocumentoId },
-            select: { id: true },
+            select: { id: true, nombre: true },
         });
-        if (!tipoExiste) {
+        if (!tipoDocumento) {
             throw new AppError("Tipo de documento no encontrado", 404);
         }
 
@@ -67,30 +94,46 @@ export const subirArchivo = async (
 
         const rutaRelativa = `${solicitudId}/${nombreGenerado}`;
 
-        // Nombre original saneado solo para mostrar (evita XSS si el frontend
-        // lo renderiza sin escapar, y evita basura de control chars).
-        const nombreOriginalSaneado = req.file.originalname
-            .replace(/[\u0000-\u001F\u007F]/g, "")
-            .slice(0, 255);
-
         // Toda la lógica de negocio (permisos, estatus de la solicitud,
         // pertenencia del tipo de documento al programa, versión atómica)
         // vive en expediente.service.ts — un solo lugar de verdad.
+        // Le pasamos un nombreArchivo provisional; lo reescribimos abajo
+        // ya que necesitamos saber la versión asignada (atómica) primero.
         const documento = await crearVersionDocumento({
             solicitudId,
             usuarioId,
             rol,
             tipoDocumentoId,
             urlArchivo: rutaRelativa,
-            nombreArchivo: nombreOriginalSaneado,
+            nombreArchivo: "", // placeholder, se corrige justo abajo
+        });
+
+        // Ahora sí, con la versión real asignada, generamos el nombre legible
+        // y lo persistimos. Es una segunda escritura pequeña, pero nos
+        // garantiza que el número de versión en el nombre sea el correcto
+        // incluso bajo subidas concurrentes.
+        const nombreLegible = generarNombreLegible(
+            tipoDocumento.nombre,
+            documento.version
+        );
+
+        const documentoActualizado = await prisma.documentoSolicitud.update({
+            where: { id: documento.id },
+            data: { nombreArchivo: nombreLegible },
+            select: {
+                id: true,
+                version: true,
+                nombreArchivo: true,
+                tipoDocumento: true,
+            },
         });
 
         res.status(201).json(
             ok("Archivo subido correctamente", {
-                documentoId: documento.id,
-                version: documento.version,
-                nombreArchivo: documento.nombreArchivo,
-                tipoDocumento: documento.tipoDocumento,
+                documentoId: documentoActualizado.id,
+                version: documentoActualizado.version,
+                nombreArchivo: documentoActualizado.nombreArchivo,
+                tipoDocumento: documentoActualizado.tipoDocumento,
             })
         );
     } catch (error) {
