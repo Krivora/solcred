@@ -104,6 +104,16 @@ export interface SolicitudPromocion {
     correo?: string
     celular?: string
   }
+  metricas?: {
+    totalRequeridos: number
+    totalAprobados: number
+    totalPendientes: number
+    totalRechazados: number
+    totalNoSubidos: number
+    totalSubidos: number
+    porcentajeCompletado: number
+  }
+  comentarioPromotor?: string | null
   asignacion?: {
     gestor: GestorAsignado
     fechaAsignacion: string

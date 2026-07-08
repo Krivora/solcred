@@ -29,6 +29,7 @@ export interface SolicitudesTableConfig {
   /** Columnas opcionales */
   mostrarColumnaGestor?: boolean
   mostrarColumnaEstatus?: boolean
+  mostrarColumnaComentario?: boolean
 
   /** Label de la columna de fecha */
   labelFecha?: string
@@ -106,6 +107,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     getPdfUrl,
     mostrarColumnaGestor = false,
     mostrarColumnaEstatus = true,
+    mostrarColumnaComentario = false,
     labelFecha = 'Recibida',
     vacioCopy,
     renderAcciones,
@@ -136,10 +138,10 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
 
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-28">
                 Folio
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-56">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-100">
                 Solicitante
               </TableHead>
               <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
@@ -156,9 +158,17 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                   Estatus
                 </TableHead>
               )}
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                Documentos
+              </TableHead>
               {mostrarColumnaGestor && (
                 <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
                   Gestor
+                </TableHead>
+              )}
+              {mostrarColumnaComentario && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-56">
+                  Comentario
                 </TableHead>
               )}
               <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
@@ -239,7 +249,16 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                       </span>
                     </TableCell>
                   )}
-
+                  {/* Documentos */}
+                  <TableCell className="py-3">
+                    {sol.metricas ? (
+                      <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
+                        {sol.metricas.totalSubidos}/{sol.metricas.totalRequeridos}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/40">—</span>
+                    )}
+                  </TableCell>
                   {/* Gestor (opcional) */}
                   {mostrarColumnaGestor && (
                     <TableCell className="py-3">
@@ -256,6 +275,17 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                         <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
                           Sin asignar
                         </span>
+                      )}
+                    </TableCell>
+                  )}
+                  {mostrarColumnaComentario && (
+                    <TableCell className="py-3">
+                      {sol.comentarioPromotor ? (
+                        <span className="text-xs text-muted-foreground line-clamp-2" title={sol.comentarioPromotor}>
+                          {sol.comentarioPromotor}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/40">—</span>
                       )}
                     </TableCell>
                   )}

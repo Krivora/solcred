@@ -20,7 +20,6 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
   const [dialogOpen, setDialogOpen]       = useState(false)
   const [accionActiva, setAccionActiva]   = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
-
   const { loading, devolverAlSolicitante, enviarAFinanciamiento, cancelar } =
     useAccionesSolicitud({ onSuccess: () => { setDialogOpen(false); onRefresh() } })
 

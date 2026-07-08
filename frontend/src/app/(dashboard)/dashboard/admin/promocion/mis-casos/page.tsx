@@ -61,6 +61,7 @@ export default function MisCasosPage() {
                 meta={meta}
                 cargando={cargando}
                 onPaginar={cambiarPagina}
+                onRefresh={recargar}
             />
         </div>
     )

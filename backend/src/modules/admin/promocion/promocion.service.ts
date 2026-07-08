@@ -52,6 +52,50 @@ const incluyeTodo = {
   },
 };
 
+// helper reutilizable
+function calcularMetricas(solicitud: any) {
+  const requeridos = solicitud.programa?.documentosRequeridos ?? []
+  const documentos = solicitud.documentos ?? []
+
+  const totalRequeridos = requeridos.filter((r: any) => r.esObligatorio).length
+
+  const documentosPorTipo = new Map<string, { estatus: string }>(
+    documentos
+      .filter((d: any) => d.activo)
+      .map((d: any) => [d.tipoDocumentoId as string, d as { estatus: string }])
+  )
+
+  let totalAprobados = 0
+  let totalPendientes = 0
+  let totalRechazados = 0
+  let totalNoSubidos = 0
+
+  for (const req of requeridos) {
+    if (!req.esObligatorio) continue
+    const doc = documentosPorTipo.get(req.tipoDocumentoId)
+    if (!doc) {
+      totalNoSubidos++
+    } else if (doc.estatus === 'APROBADO') {
+      totalAprobados++
+    } else if (doc.estatus === 'RECHAZADO') {
+      totalRechazados++
+    } else {
+      totalPendientes++
+    }
+  }
+
+  return {
+    totalRequeridos,
+    totalAprobados,
+    totalPendientes,
+    totalRechazados,
+    totalNoSubidos,
+    totalSubidos: totalRequeridos - totalNoSubidos,
+    porcentajeCompletado: totalRequeridos > 0
+      ? Math.round((totalAprobados / totalRequeridos) * 100)
+      : 0,
+  }
+}
 const registrarHistorial = async (
   tx: Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>,
   solicitudId: string,
@@ -140,7 +184,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
 
   const skip = (page - 1) * limit;
   const where: any = {};
-    const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE','BORRADOR'];
+  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE', 'BORRADOR'];
   if (estatus) {
     const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
     // Solo permite estatus válidos para mis casos
@@ -191,7 +235,16 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
       take: limit,
       orderBy: { creadoEn: "desc" },
       include: {
-        programa: { select: { id: true, nombre: true } },
+        programa: {
+          select: {
+            id: true,
+            nombre: true,
+            documentosRequeridos: {
+              where: { esObligatorio: true },
+              select: { tipoDocumentoId: true, esObligatorio: true },
+            },
+          },
+        },
         datosSolicitante: {
           select: {
             id: true,
@@ -208,22 +261,26 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
           select: {
             fechaAsignacion: true,
             gestor: {
-              select: {
-                id: true,
-                nombre: true,
-                apellidoPaterno: true,
-                apellidoMaterno: true,
-              }
-            }
-          }
+              select: { id: true, nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+            },
+          },
+        },
+        documentos: {
+          where: { activo: true },
+          select: { tipoDocumentoId: true, estatus: true, activo: true },
         },
       },
     }),
     prisma.solicitud.count({ where }),
   ]);
 
+  const solicitudesConMetricas = solicitudes.map((s) => ({
+    ...s,
+    metricas: calcularMetricas(s),
+  }));
+
   return {
-    data: solicitudes,
+    data: solicitudesConMetricas,
     meta: {
       total,
       page,
@@ -317,7 +374,16 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
       take: limit,
       orderBy: { creadoEn: "desc" },
       include: {
-        programa: { select: { id: true, nombre: true } },
+        programa: {
+          select: {
+            id: true,
+            nombre: true,
+            documentosRequeridos: {
+              where: { esObligatorio: true },
+              select: { tipoDocumentoId: true, esObligatorio: true },
+            },
+          },
+        },
         datosSolicitante: {
           select: {
             id: true,
@@ -343,13 +409,35 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
             },
           },
         },
+        documentos: {
+          where: { activo: true },
+          select: { tipoDocumentoId: true, estatus: true, activo: true },
+        },
+        historialEstatus: {
+          where: { estatusNuevo: 'EN_REVISION' },
+          orderBy: { creadoEn: 'desc' },
+          take: 1,
+          select: {
+            motivo: true,
+            creadoEn: true,
+            usuario: {
+              select: { nombre: true, apellidoPaterno: true },
+            },
+          },
+        },
       },
     }),
     prisma.solicitud.count({ where }),
   ]);
+  const solicitudesConMetricas = solicitudes.map((s) => ({
+    ...s,
+    metricas: calcularMetricas(s),
+    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
+    historialEstatus: undefined, // opcional: no exponer el array crudo al front
+  }));
 
   return {
-    data: solicitudes,
+    data: solicitudesConMetricas,
     meta: {
       total,
       page,
@@ -397,7 +485,16 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
       take: limit,
       orderBy: { creadoEn: "desc" },
       include: {
-        programa: { select: { id: true, nombre: true } },
+        programa: {
+          select: {
+            id: true,
+            nombre: true,
+            documentosRequeridos: {
+              where: { esObligatorio: true },
+              select: { tipoDocumentoId: true, esObligatorio: true },
+            },
+          },
+        },
         datosSolicitante: {
           select: {
             id: true, nombre: true, apellidoPaterno: true,
@@ -413,13 +510,34 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
             },
           },
         },
+        documentos: {
+          where: { activo: true },
+          select: { tipoDocumentoId: true, estatus: true, activo: true },
+        },
+        historialEstatus: {
+          where: { estatusNuevo: 'EN_APROBACION' },
+          orderBy: { creadoEn: 'desc' },
+          take: 1,
+          select: {
+            motivo: true,
+            creadoEn: true,
+            usuario: {
+              select: { nombre: true, apellidoPaterno: true },
+            },
+          },
+        },
       },
     }),
     prisma.solicitud.count({ where }),
   ]);
-
+  const solicitudesConMetricas = solicitudes.map((s) => ({
+    ...s,
+    metricas: calcularMetricas(s),
+    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
+    historialEstatus: undefined, // opcional: no exponer el array crudo al front
+  }));
   return {
-    data: solicitudes,
+    data: solicitudesConMetricas,
     meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 };
@@ -472,16 +590,16 @@ export const regresarAlPromotor = async (
   dto: DevolverAlSolicitanteDto,
   usuarioId: string
 ) => {
-  const solicitud = await validarTransicion(solicitudId, ['EN_REVISION'])
+  const solicitud = await validarTransicion(solicitudId, ['EN_APROBACION'])
 
   return prisma.$transaction(async (tx) => {
     const actualizada = await tx.solicitud.update({
       where: { id: solicitudId },
-      data: { estatus: 'PENDIENTE' },
+      data: { estatus: 'EN_REVISION' },
       include: incluyeTodo,
     })
 
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'PENDIENTE', usuarioId, dto.motivo)
+    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_REVISION', usuarioId, dto.motivo)
 
     return actualizada
   })

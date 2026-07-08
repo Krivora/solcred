@@ -20,7 +20,6 @@ export function AprobacionTable({ solicitudes, meta, cargando, onPaginar, onRefr
   const [dialogOpen, setDialogOpen]           = useState(false)
   const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
-
   const { loading, enviarAFinanciamiento, regresarAlPromotor, cancelar } =
     useAccionesSolicitud({ onSuccess: () => { setDialogOpen(false); onRefresh() } })
 
@@ -58,6 +57,7 @@ export function AprobacionTable({ solicitudes, meta, cargando, onPaginar, onRefr
           getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: false,
+          mostrarColumnaComentario: true,
           labelFecha: 'Recibida',
           vacioCopy: {
             icon: <CheckSquare className="h-7 w-7" />,

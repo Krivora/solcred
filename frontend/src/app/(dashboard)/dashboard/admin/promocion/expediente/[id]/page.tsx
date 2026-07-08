@@ -79,7 +79,7 @@ export default function ExpedientePage({
         refetch,
         validarDocumento,
     } = useExpediente(solicitudId)
-
+    console.log('expediente', expediente)
     // ─── Uploads ──────────────────────────────────────────────
     const {
         subiendo,
