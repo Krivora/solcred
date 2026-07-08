@@ -542,6 +542,98 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
   };
 };
 
+export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' | 'asignacion'>) => {
+  const { page, limit, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
+  const skip = (page - 1) * limit;
+
+  const where: any = {};
+
+  if (tipoPersona) where.tipoPersona = tipoPersona;
+  if (sector) where.sector = sector;
+  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
+  if (programaId) where.programaId = programaId;
+
+  if (fechaDesde || fechaHasta) {
+    where.creadoEn = {};
+    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
+    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
+  }
+
+  if (busqueda) {
+    where.OR = [{
+      datosSolicitante: {
+        OR: [
+          { nombre: { contains: busqueda, mode: "insensitive" } },
+          { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
+          { rfc: { contains: busqueda, mode: "insensitive" } },
+        ],
+      },
+    }];
+  }
+
+  const [solicitudes, total] = await Promise.all([
+    prisma.solicitud.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { creadoEn: "desc" },
+      include: {
+        programa: {
+          select: {
+            id: true,
+            nombre: true,
+            documentosRequeridos: {
+              where: { esObligatorio: true },
+              select: { tipoDocumentoId: true, esObligatorio: true },
+            },
+          },
+        },
+        datosSolicitante: {
+          select: {
+            id: true, nombre: true, apellidoPaterno: true,
+            apellidoMaterno: true, rfc: true, correo: true, celular: true,
+          },
+        },
+        asignacion: {
+          where: { activa: true },
+          select: {
+            fechaAsignacion: true,
+            gestor: {
+              select: { id: true, nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+            },
+          },
+        },
+        documentos: {
+          where: { activo: true },
+          select: { tipoDocumentoId: true, estatus: true, activo: true },
+        },
+        historialEstatus: {
+          orderBy: { creadoEn: 'desc' },
+          take: 1,
+          select: {
+            motivo: true,
+            creadoEn: true,
+            usuario: {
+              select: { nombre: true, apellidoPaterno: true },
+            },
+          },
+        },
+      },
+    }),
+    prisma.solicitud.count({ where }),
+  ]);
+  const solicitudesConMetricas = solicitudes.map((s) => ({
+    ...s,
+    metricas: calcularMetricas(s),
+    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
+    historialEstatus: undefined, // opcional: no exponer el array crudo al front
+  }));
+  return {
+    data: solicitudesConMetricas,
+    meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+  };
+};
+
 export const cambiarEstatus = async (
   solicitudId: string,
   dto: CambiarEstatusDto

@@ -17,10 +17,11 @@ const router = Router();
 router.use(autenticar);
 
 // ─── Estadísticas y listados ──────────────────────────────────────────────────
-router.get("/promocion/stats", autorizar("ADMIN", "ANALISTA"), solicitudesController.statsPromocion);
-router.get("/promocion",       autorizar("ADMIN", "ANALISTA"), solicitudesController.listarPromocion);
+router.get("/promocion/stats", autorizar("ADMIN", "GESTOR"), solicitudesController.statsPromocion);
+router.get("/promocion",       autorizar("ADMIN", "GESTOR"), solicitudesController.listarPromocion);
 router.get("/mis-casos",       autorizar("GESTOR"),            solicitudesController.listarMisCasos);
-router.get("/aprobacion", autorizar("ADMIN", "ANALISTA"), solicitudesController.listarAprobacion);
+router.get("/aprobacion", autorizar("ADMIN"), solicitudesController.listarAprobacion);
+router.get("/historico", autorizar("ADMIN", "GESTOR"), solicitudesController.listarHistorico);
 // ─── Generales ────────────────────────────────────────────────────────────────
 router.get("/",    solicitudesController.listar);
 router.get("/:id", solicitudesController.obtenerPorId);

@@ -168,6 +168,46 @@ export const listarAprobacion = async (
   }
 };
 
+export const listarHistorico = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const {
+      page = "1", limit = "20", tipoPersona, sector,
+      tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda,
+    } = req.query;
+
+    const filtros = {
+      page: parseInt(page as string),
+      limit: Math.min(parseInt(limit as string), 100),
+      tipoPersona: tipoPersona as string | undefined,
+      sector: sector as string | undefined,
+      tamanoEmpresa: tamanoEmpresa as string | undefined,
+      programaId: programaId as string | undefined,
+      fechaDesde: fechaDesde as string | undefined,
+      fechaHasta: fechaHasta as string | undefined,
+      busqueda: busqueda as string | undefined,
+    };
+
+    const resultado = await solicitudesService.listarHistorico(filtros);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: "Módulo de histórico consultado",
+      usuarioId: req.usuario!.id,
+      req,
+    });
+
+    res.status(200).json(ok("Solicitudes de histórico obtenidas", resultado));
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 export const statsPromocion = async (
   req: RequestAutenticado,
   res: Response,
@@ -242,7 +282,7 @@ export const devolverAlSolicitante = async (
 ): Promise<void> => {
   try {
     const solicitud = await solicitudesService.devolverAlSolicitante(
-       req.params.id as string,
+      req.params.id as string,
       req.body,
       req.usuario!.id
     );
@@ -293,7 +333,7 @@ export const enviarAFinanciamiento = async (
 ): Promise<void> => {
   try {
     const solicitud = await solicitudesService.enviarAFinanciamiento(
-       req.params.id as string,
+      req.params.id as string,
       req.body,
       req.usuario!.id
     );
@@ -319,7 +359,7 @@ export const enviarAAprobacion = async (
 ): Promise<void> => {
   try {
     const solicitud = await solicitudesService.enviarAAprobacion(
-       req.params.id as string,
+      req.params.id as string,
       req.body,
       req.usuario!.id
     );
@@ -344,7 +384,7 @@ export const cancelar = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const solicitud = await solicitudesService.cancelar( req.params.id as string, req.body, req.usuario!.id);
+    const solicitud = await solicitudesService.cancelar(req.params.id as string, req.body, req.usuario!.id);
     await registrarLog({
       accion: AccionLog.ACTUALIZAR,
       modulo: ModuloLog.SOLICITUDES,
@@ -366,7 +406,7 @@ export const rechazar = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const solicitud = await solicitudesService.rechazar( req.params.id as string, req.body, req.usuario!.id);
+    const solicitud = await solicitudesService.rechazar(req.params.id as string, req.body, req.usuario!.id);
     await registrarLog({
       accion: AccionLog.ACTUALIZAR,
       modulo: ModuloLog.SOLICITUDES,

@@ -59,6 +59,16 @@ export const solicitudesApi = {
       `/admin/promocion/aprobacion${query ? `?${query}` : ''}`
     )
   },
+  listarHistorico: (filtros: Partial<FiltrosAprobacion> = {}) => {
+    const params = new URLSearchParams()
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') params.set(key, String(value))
+    })
+    const query = params.toString()
+    return apiAuth<SolicitudesPromocionResponse>(
+      `/admin/promocion/historico${query ? `?${query}` : ''}`
+    )
+  },
 
   devolverAlSolicitante: (id: string, dto: AccionConMotivoDto) =>
     apiAuth<Solicitud>(`/admin/promocion/${id}/devolver`, {

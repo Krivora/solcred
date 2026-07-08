@@ -21,24 +21,23 @@ import type { ReactNode } from 'react'
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export interface SolicitudesTableConfig {
-  /** Ruta base para el router.push al hacer click en una fila. Recibe el id. */
   getDetalleUrl: (id: string) => string
   getExpedienteUrl: (id: string) => string
   getPdfUrl: (id: string) => string
 
-  /** Columnas opcionales */
   mostrarColumnaGestor?: boolean
   mostrarColumnaEstatus?: boolean
   mostrarColumnaComentario?: boolean
+  mostrarColumnaPdf?: boolean
 
-  /** Label de la columna de fecha */
   labelFecha?: string
-
-  /** Estado vacío personalizable */
   vacioCopy?: { icon: ReactNode; titulo: string; descripcion: string }
 
-  /** Acciones del dropdown por fila. Recibe el id de la solicitud. */
-  renderAcciones: (solicitudId: string) => ReactNode
+  /** Opcional: si se provee, se agrega columna de acciones (dropdown ...) */
+  renderAcciones?: (solicitudId: string) => ReactNode
+
+  /** Opcional: si se provee, se agrega columna de documentos (ej. Histórico) */
+  renderDocumentos?: (solicitudId: string, estatus: SolicitudPromocion['estatus']) => ReactNode
 }
 
 interface Props {
@@ -108,16 +107,21 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     mostrarColumnaGestor = false,
     mostrarColumnaEstatus = true,
     mostrarColumnaComentario = false,
+    mostrarColumnaPdf = true,
     labelFecha = 'Recibida',
     vacioCopy,
     renderAcciones,
+    renderDocumentos,
   } = config
 
   // Calculamos cuántas columnas hay para el skeleton
   const colCount = 6
     + (mostrarColumnaGestor ? 1 : 0)
     + (mostrarColumnaEstatus ? 1 : 0)
-    + 3 // Exp, PDF, acciones
+    + (mostrarColumnaPdf ? 1 : 0)
+    + (renderDocumentos ? 1 : 0)
+    + (renderAcciones ? 1 : 0)
+    + 2 // Exp, PDF (estas dos siempre están)
 
   if (cargando) return <TableSkeleton cols={colCount} />
 
@@ -174,11 +178,19 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
               <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
                 Exp.
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
-                PDF
-              </TableHead>
-              <TableHead className="w-10" />
-
+              {mostrarColumnaPdf && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                  PDF
+                </TableHead>
+              )}
+              {renderDocumentos && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                  Docs
+                </TableHead>
+              )}
+              {renderAcciones && (
+                <TableHead className="w-10" />
+              )}
             </TableRow>
           </TableHeader>
 
@@ -303,34 +315,41 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                   </TableCell>
 
                   {/* PDF */}
-                  <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
-                    <Button
-                      variant="ghost" size="icon"
-                      className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                      title="Generar PDF"
-                      onClick={() => router.push(getPdfUrl(sol.id))}
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                    </Button>
-                  </TableCell>
-
+                  {mostrarColumnaPdf && (
+                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        title="Generar PDF"
+                        onClick={() => router.push(getPdfUrl(sol.id))}
+                      >
+                        <FileText className="h-3.5 w-3.5" />
+                      </Button>
+                    </TableCell>
+                  )}
+                  {renderDocumentos && (
+                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                      {renderDocumentos(sol.id, sol.estatus)}
+                    </TableCell>
+                  )}
                   {/* Acciones dropdown */}
-                  <TableCell className="py-3" onClick={e => e.stopPropagation()}>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost" size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
-                        >
-                          <MoreHorizontal className="h-3.5 w-3.5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-64 p-1.5 shadow-lg border-border/60">
-                        {renderAcciones(sol.id)}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-
+                  {renderAcciones && (
+                    <TableCell className="py-3" onClick={e => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost" size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
+                          >
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-64 p-1.5 shadow-lg border-border/60">
+                          {renderAcciones(sol.id)}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  )}
                 </TableRow>
               )
             })}

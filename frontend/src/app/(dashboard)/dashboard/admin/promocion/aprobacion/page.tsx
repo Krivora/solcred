@@ -19,7 +19,7 @@ export default function AprobacionPage() {
 
       <PageHeader
         title="Comité de Aprobación"
-        description="Solicitudes en espera de resolución final"
+        description="Solicitudes en espera de aprobación de promoción"
         action={RefreshAction(recargar, cargando)}
       />
 
