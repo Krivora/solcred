@@ -28,7 +28,6 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
     setSolicitudActiva(solicitudId)
     setDialogOpen(true)
   }
-  console.log('solicitudes', solicitudes)
   const handleConfirmar = async (motivo: string) => {
     if (!solicitudActiva || !accionActiva) return
     if (accionActiva === 'devolver')       await devolverAlSolicitante(solicitudActiva, { motivo })
@@ -52,7 +51,6 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
         cargando={cargando}
         onPaginar={onPaginar}
         config={{
-          getDetalleUrl:    (id) => `/dashboard/admin/solicitudes/${id}`,
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
           getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
           mostrarColumnaGestor:  true,

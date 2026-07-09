@@ -12,7 +12,6 @@ export const registro = async (
 ): Promise<void> => {
   try {
     const resultado = await authService.registrarUsuario(req.body);
-    console.log("BODY:", req.body);
     await registrarLog({
       accion: AccionLog.CREAR,
       modulo: ModuloLog.AUTH,

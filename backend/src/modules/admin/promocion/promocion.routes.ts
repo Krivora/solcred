@@ -3,7 +3,6 @@ import { autenticar } from "@middlewares/auth.middleware";
 import { autorizar } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import {
-  cambiarEstatusSchema,
   devolverAlSolicitanteSchema,
   enviarAFinanciamientoSchema,
   enviarAAprobacionSchema,
@@ -22,16 +21,7 @@ router.get("/promocion",       autorizar("ADMIN", "GESTOR"), solicitudesControll
 router.get("/mis-casos",       autorizar("GESTOR"),            solicitudesController.listarMisCasos);
 router.get("/aprobacion", autorizar("ADMIN"), solicitudesController.listarAprobacion);
 router.get("/historico", autorizar("ADMIN", "GESTOR"), solicitudesController.listarHistorico);
-// ─── Generales ────────────────────────────────────────────────────────────────
-router.get("/",    solicitudesController.listar);
-router.get("/:id", solicitudesController.obtenerPorId);
-
-// ─── Cambio de estatus genérico (admin) ──────────────────────────────────────
-router.patch("/:id/estatus",
-  autorizar("ADMIN", "ANALISTA"),
-  validate(cambiarEstatusSchema),
-  solicitudesController.cambiarEstatus
-);
+router.get("/:id", autorizar("ADMIN", "GESTOR"), solicitudesController.obtenerPorId);
 
 // ─── Acciones de promoción ────────────────────────────────────────────────────
 router.patch("/:id/devolver",

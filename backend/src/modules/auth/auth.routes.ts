@@ -6,13 +6,8 @@ import * as authController from "./auth.controller";
 
 const router = Router();
 
-router.post(
-  "/registro",
-  (req, res, next) => {
-    console.log("🔥 Entró a /registro");
-    console.log("BODY RECIBIDO:", req.body);
-    next();
-  },
+router.post("/registro",(req, res, next) => {
+    next();},
   validate(registroSchema),
   authController.registro
 );

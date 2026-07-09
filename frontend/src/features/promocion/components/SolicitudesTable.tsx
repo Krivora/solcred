@@ -21,7 +21,7 @@ import type { ReactNode } from 'react'
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export interface SolicitudesTableConfig {
-  getDetalleUrl: (id: string) => string
+  getDetalleUrl?: (id: string) => string
   getExpedienteUrl: (id: string) => string
   getPdfUrl: (id: string) => string
 
@@ -101,7 +101,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
   const router = useRouter()
 
   const {
-    getDetalleUrl,
+    getDetalleUrl = (id: string) => `/dashboard/admin/promocion/solicitud/${id}`,
     getExpedienteUrl,
     getPdfUrl,
     mostrarColumnaGestor = false,
@@ -274,13 +274,13 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                   {/* Gestor (opcional) */}
                   {mostrarColumnaGestor && (
                     <TableCell className="py-3">
-                      {sol.asignacion ? (
+                      {sol.gestorAsignado ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-medium text-foreground leading-tight">
-                            {sol.asignacion.gestor.nombre} {sol.asignacion.gestor.apellidoPaterno}
+                            {sol.gestorAsignado.gestor.nombre} {sol.gestorAsignado.gestor.apellidoPaterno}
                           </span>
                           <span className="text-[11px] text-muted-foreground">
-                            {formatFecha(sol.asignacion.fechaAsignacion)}
+                            {formatFecha(sol.gestorAsignado.fechaAsignacion)}
                           </span>
                         </div>
                       ) : (

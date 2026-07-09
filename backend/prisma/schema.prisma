@@ -165,14 +165,14 @@ model GrupoGestor {
 model AsignacionSolicitud {
   id          String       @id @default(uuid())
   solicitud   Solicitud    @relation(fields: [solicitudId], references: [id])
-  solicitudId String       @unique   // una solicitud tiene una asignación activa
+  solicitudId String      
   gestor      Usuario      @relation("AsignacionesComoGestor", fields: [gestorId], references: [id])
   gestorId    String
   grupo       GrupoGestion @relation(fields: [grupoId], references: [id])
   grupoId     String
 
   asignadoPor   Usuario?  @relation("AsignacionesComoSupervisor", fields: [asignadoPorId], references: [id])
-  asignadoPorId String?   // null = asignación automática, populated = asignación manual
+  asignadoPorId String?
 
   activa        Boolean   @default(true)
   fechaAsignacion DateTime @default(now())
@@ -181,6 +181,7 @@ model AsignacionSolicitud {
 
   @@index([gestorId])
   @@index([grupoId])
+  @@index([solicitudId])
 }
 
 // ─────────────────────────────────────────
@@ -302,7 +303,7 @@ model Solicitud {
   datosAval        DatosAval?
   documentos       DocumentoSolicitud[]
   historialEstatus  HistorialEstatus[]
-  asignacion    AsignacionSolicitud?
+  asignaciones AsignacionSolicitud[]
 
   creadoEn        DateTime         @default(now())
   actualizadoEn   DateTime         @updatedAt

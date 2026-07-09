@@ -248,32 +248,6 @@ export const obtenerPorId = async (
   }
 };
 
-export const cambiarEstatus = async (
-  req: RequestAutenticado,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const solicitud = await solicitudesService.cambiarEstatus(
-      req.params.id as string,
-      req.body
-    );
-
-    await registrarLog({
-      accion: AccionLog.ACTUALIZAR,
-      modulo: ModuloLog.SOLICITUDES,
-      descripcion: `Estatus de solicitud cambiado a ${req.body.estatus}: ${req.params.id}`,
-      usuarioId: req.usuario!.id,
-      entidadId: solicitud.id,
-      req,
-      metadata: { estatus: req.body.estatus, motivo: req.body.motivo },
-    });
-
-    res.status(200).json(ok("Estatus actualizado", solicitud));
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const devolverAlSolicitante = async (
   req: RequestAutenticado,

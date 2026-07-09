@@ -10,7 +10,7 @@ import type {
     RegisterFormValues,
 } from '../schema/auth.schemas'
 import { authToast } from '@/shared/lib/utils/toaster'
-
+import { getDefaultRouteForRole } from '@/shared/config/route-permissions'
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof ApiError) return err.message
     if (err instanceof Error) return err.message
@@ -29,7 +29,7 @@ export function useAuth() {
             const data = await authApi.login(values)
             setAuth(data.usuario, data.token)
             authToast.loginSuccess()
-            router.push('/dashboard')
+            router.push(getDefaultRouteForRole(data.usuario.rol))
         } catch (err: unknown) {
             const message = getErrorMessage(err)
             setError(message)

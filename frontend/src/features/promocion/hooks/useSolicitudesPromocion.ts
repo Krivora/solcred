@@ -8,7 +8,7 @@ import type {
   StatsPromocion,
   FiltrosPromocion,
 } from '@/shared/lib/types/solicitudes.types'
-
+import type { SolicitudDetalle } from '@/shared/lib/types/solicitudes.types'
 const FILTROS_INICIALES: FiltrosPromocion = {
   page: 1,
   limit: 10,
@@ -101,6 +101,40 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     actualizarFiltros,
     cambiarPagina,
     limpiarFiltros,
+    recargar,
+  }
+}
+
+export function useSolicitudDetalle(id: string) {
+  const [solicitud, setSolicitud] = useState<SolicitudDetalle | null>(null)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const cargarSolicitud = useCallback(async () => {
+    setCargando(true)
+    setError(null)
+    try {
+      const data = await solicitudesApi.obtener(id)
+      setSolicitud(data)
+    } catch {
+      setError('No se pudo cargar la información de la solicitud.')
+    } finally {
+      setCargando(false)
+    }
+  }, [id])
+
+  useEffect(() => {
+    if (id) cargarSolicitud()
+  }, [id, cargarSolicitud])
+
+  const recargar = useCallback(() => {
+    cargarSolicitud()
+  }, [cargarSolicitud])
+
+  return {
+    solicitud,
+    cargando,
+    error,
     recargar,
   }
 }

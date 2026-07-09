@@ -1,7 +1,7 @@
 // components/DocumentosDropdown.tsx
 'use client'
 
-import { FileStack, Download } from 'lucide-react'
+import { FileStack, FileText } from 'lucide-react'
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
@@ -35,7 +35,7 @@ export function DocumentosDropdown({ estatus, onSeleccionar }: Props) {
                         className="gap-2.5 cursor-pointer rounded-md px-2.5 py-2"
                         onClick={() => onSeleccionar(tipo)}
                     >
-                        <Download className="h-3.5 w-3.5 text-muted-foreground" />
+                        <FileText className="h-3.5 w-3.5 text-muted-foreground" />
                         <span className="text-xs font-medium text-foreground">{DOCUMENTO_LABELS[tipo]}</span>
                     </DropdownMenuItem>
                 ))}

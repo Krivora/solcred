@@ -10,7 +10,7 @@ import {
 } from "./promocion.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
 const ESTATUS_FINALES: EstatusSolicitud[] = ["APROBADO", "RECHAZADO", "CANCELADO"];
-
+const ESTATUS_HISTORICO_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "PENDIENTE", "BORRADOR"];
 interface FiltrosPromocion {
   page: number
   limit: number
@@ -154,17 +154,132 @@ export const obtenerSolicitudPorId = async (
 ) => {
   const solicitud = await prisma.solicitud.findUnique({
     where: { id },
-    include: incluyeTodo,
+    include: {
+      programa: {
+        select: {
+          id: true,
+          nombre: true,
+          descripcion: true,
+          montoMinimo: true,
+          montoMaximo: true,
+          tasaOrdinaria: true,
+          tasaMoratoria: true,
+          tasaAnual: true,
+          plazoMinimoMeses: true,
+          plazoMaximoMeses: true,
+          aval: true,
+          garantia: true,
+          documentosRequeridos: {
+            include: { tipoDocumento: true },
+          },
+        },
+      },
+      datosSolicitante: true,
+      datosAval: true,
+      documentos: {
+        where: { activo: true },
+        include: {
+          tipoDocumento: true,
+          validadoPor: {
+            select: {
+              id: true,
+              nombre: true,
+              apellidoPaterno: true,
+              apellidoMaterno: true,
+            },
+          },
+        },
+        orderBy: { subidoEn: "desc" },
+      },
+      // ── Historial completo de asignaciones (quién, cuándo, por quién) ──
+      asignaciones: {
+        orderBy: { fechaAsignacion: "asc" },
+        include: {
+          gestor: {
+            select: {
+              id: true,
+              nombre: true,
+              apellidoPaterno: true,
+              apellidoMaterno: true,
+              correo: true,
+            },
+          },
+          grupo: {
+            select: { id: true, nombre: true },
+          },
+          asignadoPor: {
+            select: {
+              id: true,
+              nombre: true,
+              apellidoPaterno: true,
+              apellidoMaterno: true,
+            },
+          },
+        },
+      },
+      // ── Historial completo de estatus (quién, qué, cuándo, comentarios) ──
+      historialEstatus: {
+        orderBy: { creadoEn: "asc" },
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              nombre: true,
+              apellidoPaterno: true,
+              apellidoMaterno: true,
+              rol: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
 
-  // El cliente solo puede ver sus propias solicitudes
   if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
     throw new AppError("No tienes permisos para ver esta solicitud", 403);
   }
 
-  return solicitud;
+  const { asignaciones, historialEstatus, ...datosGenerales } = solicitud;
+
+  // Asignación actualmente activa (para mostrar destacada arriba)
+  const gestorAsignado = asignaciones.find((a) => a.activa) ?? null;
+
+  // Timeline unificado: combina cambios de estatus y (re)asignaciones en orden cronológico
+  const timeline = [
+    ...historialEstatus.map((h) => ({
+      tipo: "CAMBIO_ESTATUS" as const,
+      fecha: h.creadoEn,
+      estatusAnterior: h.estatusAnterior,
+      estatusNuevo: h.estatusNuevo,
+      comentario: h.motivo,
+      realizadoPor: h.usuario,
+    })),
+    ...asignaciones.map((a) => ({
+      tipo: "ASIGNACION" as const,
+      fecha: a.fechaAsignacion,
+      gestor: a.gestor,
+      grupo: a.grupo,
+      asignadoPor: a.asignadoPor, // null = asignación automática
+      activa: a.activa,
+    })),
+    ...asignaciones
+      .filter((a) => a.fechaReasignacion !== null)
+      .map((a) => ({
+        tipo: "REASIGNACION" as const,
+        fecha: a.fechaReasignacion as Date,
+        gestorAnterior: a.gestor,
+        comentario: a.motivoReasignacion,
+      })),
+  ].sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+
+  return {
+    ...datosGenerales,
+    gestorAsignado,
+    historialAsignaciones: asignaciones,
+    timeline,
+  };
 };
 
 export const listarPromocion = async (filtros: FiltrosPromocion) => {
@@ -187,14 +302,12 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
   const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE', 'BORRADOR'];
   if (estatus) {
     const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
-    // Solo permite estatus válidos para mis casos
     const estatusFiltrados = estatusArray.filter(e => ESTATUS_PRICIPAL_PROMOCION.includes(e));
     const estatusAplicar = estatusFiltrados.length > 0 ? estatusFiltrados : ESTATUS_PRICIPAL_PROMOCION;
     where.estatus = estatusAplicar.length === 1
       ? estatusAplicar[0]
       : { in: estatusAplicar };
   } else {
-    // Sin filtro explícito, siempre aplica el default
     where.estatus = { in: ESTATUS_PRICIPAL_PROMOCION };
   }
   if (tipoPersona) where.tipoPersona = tipoPersona;
@@ -221,11 +334,12 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
       },
     ];
   }
+  // ── FIX: asignacion -> asignaciones, con some/none ──────────────────────
   if (asignacion === 'asignados') {
-    where.asignacion = { activa: true }
+    where.asignaciones = { some: { activa: true } };
   }
   if (asignacion === 'sin_asignar') {
-    where.asignacion = { is: null }
+    where.asignaciones = { none: { activa: true } };
   }
 
   const [solicitudes, total] = await Promise.all([
@@ -256,8 +370,9 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
             celular: true,
           },
         },
-        asignacion: {
+        asignaciones: {
           where: { activa: true },
+          take: 1,
           select: {
             fechaAsignacion: true,
             gestor: {
@@ -274,10 +389,15 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     prisma.solicitud.count({ where }),
   ]);
 
-  const solicitudesConMetricas = solicitudes.map((s) => ({
-    ...s,
-    metricas: calcularMetricas(s),
-  }));
+  // ── FIX: aplanar asignaciones[] -> gestorAsignado ────────────────────────
+  const solicitudesConMetricas = solicitudes.map((s) => {
+    const { asignaciones, ...resto } = s;
+    return {
+      ...resto,
+      metricas: calcularMetricas(s),
+      gestorAsignado: asignaciones[0] ?? null,
+    };
+  });
 
   return {
     data: solicitudesConMetricas,
@@ -321,24 +441,24 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
 
   const skip = (page - 1) * limit;
   const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION'];
-  // Siempre filtra por el gestor autenticado con asignación activa
+  // ── FIX: asignacion -> asignaciones, con some ────────────────────────────
   const where: any = {
-    asignacion: {
-      gestorId,
-      activa: true,
+    asignaciones: {
+      some: {
+        gestorId,
+        activa: true,
+      },
     },
   };
 
   if (estatus) {
     const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
-    // Solo permite estatus válidos para mis casos
     const estatusFiltrados = estatusArray.filter(e => ESTATUS_MIS_CASOS.includes(e));
     const estatusAplicar = estatusFiltrados.length > 0 ? estatusFiltrados : ESTATUS_MIS_CASOS;
     where.estatus = estatusAplicar.length === 1
       ? estatusAplicar[0]
       : { in: estatusAplicar };
   } else {
-    // Sin filtro explícito, siempre aplica el default
     where.estatus = { in: ESTATUS_MIS_CASOS };
   }
 
@@ -395,8 +515,10 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
             celular: true,
           },
         },
-        asignacion: {
-          where: { activa: true },
+        // ── FIX: filtrar también por gestorId+activa aquí para consistencia ─
+        asignaciones: {
+          where: { activa: true, gestorId },
+          take: 1,
           select: {
             fechaAsignacion: true,
             gestor: {
@@ -429,12 +551,16 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
     }),
     prisma.solicitud.count({ where }),
   ]);
-  const solicitudesConMetricas = solicitudes.map((s) => ({
-    ...s,
-    metricas: calcularMetricas(s),
-    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
-    historialEstatus: undefined, // opcional: no exponer el array crudo al front
-  }));
+
+  const solicitudesConMetricas = solicitudes.map((s) => {
+    const { asignaciones, historialEstatus, ...resto } = s;
+    return {
+      ...resto,
+      metricas: calcularMetricas(s),
+      comentarioPromotor: historialEstatus[0]?.motivo ?? null,
+      gestorAsignado: asignaciones[0] ?? null,
+    };
+  });
 
   return {
     data: solicitudesConMetricas,
@@ -501,8 +627,9 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
             apellidoMaterno: true, rfc: true, correo: true, celular: true,
           },
         },
-        asignacion: {
+        asignaciones: {
           where: { activa: true },
+          take: 1,
           select: {
             fechaAsignacion: true,
             gestor: {
@@ -530,12 +657,17 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
     }),
     prisma.solicitud.count({ where }),
   ]);
-  const solicitudesConMetricas = solicitudes.map((s) => ({
-    ...s,
-    metricas: calcularMetricas(s),
-    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
-    historialEstatus: undefined, // opcional: no exponer el array crudo al front
-  }));
+
+  const solicitudesConMetricas = solicitudes.map((s) => {
+    const { asignaciones, historialEstatus, ...resto } = s;
+    return {
+      ...resto,
+      metricas: calcularMetricas(s),
+      comentarioPromotor: historialEstatus[0]?.motivo ?? null,
+      gestorAsignado: asignaciones[0] ?? null,
+    };
+  });
+
   return {
     data: solicitudesConMetricas,
     meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
@@ -546,7 +678,9 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
   const { page, limit, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
   const skip = (page - 1) * limit;
 
-  const where: any = {};
+  const where: any = {
+    estatus: { notIn: ESTATUS_HISTORICO_PROMOCION },
+  };
 
   if (tipoPersona) where.tipoPersona = tipoPersona;
   if (sector) where.sector = sector;
@@ -594,8 +728,9 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
             apellidoMaterno: true, rfc: true, correo: true, celular: true,
           },
         },
-        asignacion: {
+        asignaciones: {
           where: { activa: true },
+          take: 1,
           select: {
             fechaAsignacion: true,
             gestor: {
@@ -622,40 +757,23 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
     }),
     prisma.solicitud.count({ where }),
   ]);
-  const solicitudesConMetricas = solicitudes.map((s) => ({
-    ...s,
-    metricas: calcularMetricas(s),
-    comentarioPromotor: s.historialEstatus[0]?.motivo ?? null,
-    historialEstatus: undefined, // opcional: no exponer el array crudo al front
-  }));
+
+  const solicitudesConMetricas = solicitudes.map((s) => {
+    const { asignaciones, historialEstatus, ...resto } = s;
+    return {
+      ...resto,
+      metricas: calcularMetricas(s),
+      comentarioPromotor: historialEstatus[0]?.motivo ?? null,
+      gestorAsignado: asignaciones[0] ?? null,
+    };
+  });
+
   return {
     data: solicitudesConMetricas,
     meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 };
 
-export const cambiarEstatus = async (
-  solicitudId: string,
-  dto: CambiarEstatusDto
-) => {
-  const solicitud = await prisma.solicitud.findUnique({
-    where: { id: solicitudId },
-  });
-
-  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
-
-  if (solicitud.estatus === "APROBADO" || solicitud.estatus === "RECHAZADO") {
-    throw new AppError("La solicitud ya tiene un estatus final", 400);
-  }
-
-  return prisma.solicitud.update({
-    where: { id: solicitudId },
-    data: {
-      estatus: dto.estatus,
-    },
-    include: incluyeTodo,
-  });
-};
 
 export const devolverAlSolicitante = async (
   solicitudId: string,

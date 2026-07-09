@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Usuario } from '../types/auth.types';
+import { setCookie, deleteCookie } from '../utils/cookies';
 
 type UsuarioBasico = Pick<Usuario, 'id' | 'correo' | 'rol'>;
 
@@ -23,11 +24,18 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       isLoading: true,
 
-      setAuth: (usuario, token) =>
-        set({ usuario, token, isAuthenticated: true }),
+      setAuth: (usuario, token) => {
+        // Cookies para que el middleware (server) pueda validar sesión y rol
+        setCookie('sc_token', token);
+        setCookie('sc_role', usuario.rol);
+        set({ usuario, token, isAuthenticated: true });
+      },
 
-      clearAuth: () =>
-        set({ usuario: null, token: null, isAuthenticated: false }),
+      clearAuth: () => {
+        deleteCookie('sc_token');
+        deleteCookie('sc_role');
+        set({ usuario: null, token: null, isAuthenticated: false });
+      },
     }),
     {
       name: 'solcred-auth',

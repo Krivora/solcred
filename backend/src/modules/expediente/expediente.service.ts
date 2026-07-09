@@ -13,7 +13,7 @@ import { UPLOADS_BASE_DIR } from "@config/multer.config";
 const ROLES_PERMITIDOS = ["CLIENTE", "GESTOR", "ADMIN", "ANALISTA"] as const;
 type RolPermitido = typeof ROLES_PERMITIDOS[number];
 
-const ESTATUS_PERMITIDOS_PARA_SUBIR = ["BORRADOR", "PENDIENTE", "EN_CORRECION", "NO_SUBIDO","EN_REVISION"] as const;
+const ESTATUS_PERMITIDOS_PARA_SUBIR = ["BORRADOR", "PENDIENTE", "EN_CORRECION", "NO_SUBIDO", "EN_REVISION"] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS
@@ -31,7 +31,7 @@ const verificarAcceso = async (
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
-            asignacion: { select: { gestorId: true } },
+            asignaciones: { select: { gestorId: true } },
         },
     });
 
@@ -49,12 +49,12 @@ const verificarGestorAsignado = async (
     solicitudId: string,
     gestorId: string
 ) => {
-    const asignacion = await prisma.asignacionSolicitud.findUnique({
-        where: { solicitudId },
+    const asignacion = await prisma.asignacionSolicitud.findFirst({
+        where: { solicitudId, activa: true },
         select: { gestorId: true, activa: true },
     });
 
-    if (!asignacion || !asignacion.activa) {
+    if (!asignacion) {
         throw new AppError("Esta solicitud no tiene un gestor asignado activo", 400);
     }
 
@@ -123,7 +123,10 @@ export const obtenerExpediente = async (
                 },
                 orderBy: { subidoEn: "desc" },
             },
-            asignacion: {
+            // ── FIX: asignacion -> asignaciones, filtrando solo la activa ──────
+            asignaciones: {
+                where: { activa: true },
+                take: 1,
                 select: {
                     gestor: {
                         select: {
@@ -169,6 +172,9 @@ export const obtenerExpediente = async (
     const totalRechazados = resumenDocumentos.filter((d) => d.estatus === "RECHAZADO").length;
     const totalNoSubidos = resumenDocumentos.filter((d) => d.estatus === "NO_SUBIDO").length;
 
+    // ── FIX: leer de asignaciones[0] en lugar de asignacion ────────────────
+    const asignacionActiva = expediente.asignaciones[0] ?? null;
+
     return {
         id: expediente.id,
         folio: expediente.folio,
@@ -184,8 +190,8 @@ export const obtenerExpediente = async (
         programa: { id: expediente.programa.id, nombre: expediente.programa.nombre },
         solicitante: expediente.solicitante,
         datosSolicitante: expediente.datosSolicitante,
-        gestor: expediente.asignacion?.gestor ?? null,
-        fechaAsignacion: expediente.asignacion?.fechaAsignacion ?? null,
+        gestor: asignacionActiva?.gestor ?? null,
+        fechaAsignacion: asignacionActiva?.fechaAsignacion ?? null,
 
         documentos: resumenDocumentos,
 
@@ -313,7 +319,7 @@ export const crearVersionDocumento = async ({
     // ("solicitudId/nombre.pdf"), nunca una URL absoluta. No bloqueante.
     if (resultado.urlArchivoAnterior) {
         const rutaAnterior = path.join(UPLOADS_BASE_DIR, resultado.urlArchivoAnterior);
-        fs.unlink(rutaAnterior, () => {});
+        fs.unlink(rutaAnterior, () => { });
     }
 
     return resultado.nuevoDocumento;
@@ -380,7 +386,7 @@ export const obtenerHistorialDocumento = async (
     usuarioId: string,
     rol: string
 ) => {
-    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "CLIENTE"] ;
+    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "CLIENTE"];
     if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol)) {
         throw new AppError("No tienes permisos para ver el historial de versiones", 403);
     }

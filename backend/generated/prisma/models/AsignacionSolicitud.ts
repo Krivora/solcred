@@ -238,10 +238,10 @@ export type AsignacionSolicitudOrderByWithRelationInput = {
 
 export type AsignacionSolicitudWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  solicitudId?: string
   AND?: Prisma.AsignacionSolicitudWhereInput | Prisma.AsignacionSolicitudWhereInput[]
   OR?: Prisma.AsignacionSolicitudWhereInput[]
   NOT?: Prisma.AsignacionSolicitudWhereInput | Prisma.AsignacionSolicitudWhereInput[]
+  solicitudId?: Prisma.StringFilter<"AsignacionSolicitud"> | string
   gestorId?: Prisma.StringFilter<"AsignacionSolicitud"> | string
   grupoId?: Prisma.StringFilter<"AsignacionSolicitud"> | string
   asignadoPorId?: Prisma.StringNullableFilter<"AsignacionSolicitud"> | string | null
@@ -253,7 +253,7 @@ export type AsignacionSolicitudWhereUniqueInput = Prisma.AtLeast<{
   gestor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   grupo?: Prisma.XOR<Prisma.GrupoGestionScalarRelationFilter, Prisma.GrupoGestionWhereInput>
   asignadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
-}, "id" | "solicitudId">
+}, "id">
 
 export type AsignacionSolicitudOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -291,7 +291,7 @@ export type AsignacionSolicitudCreateInput = {
   fechaAsignacion?: Date | string
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
-  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionInput
+  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
   gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
   asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
@@ -315,7 +315,7 @@ export type AsignacionSolicitudUpdateInput = {
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionNestedInput
+  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
   gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
@@ -409,11 +409,6 @@ export type AsignacionSolicitudMinOrderByAggregateInput = {
   fechaAsignacion?: Prisma.SortOrder
   fechaReasignacion?: Prisma.SortOrder
   motivoReasignacion?: Prisma.SortOrder
-}
-
-export type AsignacionSolicitudNullableScalarRelationFilter = {
-  is?: Prisma.AsignacionSolicitudWhereInput | null
-  isNot?: Prisma.AsignacionSolicitudWhereInput | null
 }
 
 export type AsignacionSolicitudCreateNestedManyWithoutGrupoInput = {
@@ -546,36 +541,46 @@ export type AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput 
   deleteMany?: Prisma.AsignacionSolicitudScalarWhereInput | Prisma.AsignacionSolicitudScalarWhereInput[]
 }
 
-export type AsignacionSolicitudCreateNestedOneWithoutSolicitudInput = {
-  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
-  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput
-  connect?: Prisma.AsignacionSolicitudWhereUniqueInput
+export type AsignacionSolicitudCreateNestedManyWithoutSolicitudInput = {
+  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput> | Prisma.AsignacionSolicitudCreateWithoutSolicitudInput[] | Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput[]
+  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput | Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput[]
+  createMany?: Prisma.AsignacionSolicitudCreateManySolicitudInputEnvelope
+  connect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
 }
 
-export type AsignacionSolicitudUncheckedCreateNestedOneWithoutSolicitudInput = {
-  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
-  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput
-  connect?: Prisma.AsignacionSolicitudWhereUniqueInput
+export type AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput = {
+  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput> | Prisma.AsignacionSolicitudCreateWithoutSolicitudInput[] | Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput[]
+  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput | Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput[]
+  createMany?: Prisma.AsignacionSolicitudCreateManySolicitudInputEnvelope
+  connect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
 }
 
-export type AsignacionSolicitudUpdateOneWithoutSolicitudNestedInput = {
-  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
-  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput
-  upsert?: Prisma.AsignacionSolicitudUpsertWithoutSolicitudInput
-  disconnect?: Prisma.AsignacionSolicitudWhereInput | boolean
-  delete?: Prisma.AsignacionSolicitudWhereInput | boolean
-  connect?: Prisma.AsignacionSolicitudWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AsignacionSolicitudUpdateToOneWithWhereWithoutSolicitudInput, Prisma.AsignacionSolicitudUpdateWithoutSolicitudInput>, Prisma.AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput>
+export type AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput = {
+  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput> | Prisma.AsignacionSolicitudCreateWithoutSolicitudInput[] | Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput[]
+  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput | Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput[]
+  upsert?: Prisma.AsignacionSolicitudUpsertWithWhereUniqueWithoutSolicitudInput | Prisma.AsignacionSolicitudUpsertWithWhereUniqueWithoutSolicitudInput[]
+  createMany?: Prisma.AsignacionSolicitudCreateManySolicitudInputEnvelope
+  set?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  disconnect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  delete?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  connect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  update?: Prisma.AsignacionSolicitudUpdateWithWhereUniqueWithoutSolicitudInput | Prisma.AsignacionSolicitudUpdateWithWhereUniqueWithoutSolicitudInput[]
+  updateMany?: Prisma.AsignacionSolicitudUpdateManyWithWhereWithoutSolicitudInput | Prisma.AsignacionSolicitudUpdateManyWithWhereWithoutSolicitudInput[]
+  deleteMany?: Prisma.AsignacionSolicitudScalarWhereInput | Prisma.AsignacionSolicitudScalarWhereInput[]
 }
 
-export type AsignacionSolicitudUncheckedUpdateOneWithoutSolicitudNestedInput = {
-  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
-  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput
-  upsert?: Prisma.AsignacionSolicitudUpsertWithoutSolicitudInput
-  disconnect?: Prisma.AsignacionSolicitudWhereInput | boolean
-  delete?: Prisma.AsignacionSolicitudWhereInput | boolean
-  connect?: Prisma.AsignacionSolicitudWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AsignacionSolicitudUpdateToOneWithWhereWithoutSolicitudInput, Prisma.AsignacionSolicitudUpdateWithoutSolicitudInput>, Prisma.AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput>
+export type AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput = {
+  create?: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput> | Prisma.AsignacionSolicitudCreateWithoutSolicitudInput[] | Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput[]
+  connectOrCreate?: Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput | Prisma.AsignacionSolicitudCreateOrConnectWithoutSolicitudInput[]
+  upsert?: Prisma.AsignacionSolicitudUpsertWithWhereUniqueWithoutSolicitudInput | Prisma.AsignacionSolicitudUpsertWithWhereUniqueWithoutSolicitudInput[]
+  createMany?: Prisma.AsignacionSolicitudCreateManySolicitudInputEnvelope
+  set?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  disconnect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  delete?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  connect?: Prisma.AsignacionSolicitudWhereUniqueInput | Prisma.AsignacionSolicitudWhereUniqueInput[]
+  update?: Prisma.AsignacionSolicitudUpdateWithWhereUniqueWithoutSolicitudInput | Prisma.AsignacionSolicitudUpdateWithWhereUniqueWithoutSolicitudInput[]
+  updateMany?: Prisma.AsignacionSolicitudUpdateManyWithWhereWithoutSolicitudInput | Prisma.AsignacionSolicitudUpdateManyWithWhereWithoutSolicitudInput[]
+  deleteMany?: Prisma.AsignacionSolicitudScalarWhereInput | Prisma.AsignacionSolicitudScalarWhereInput[]
 }
 
 export type AsignacionSolicitudCreateWithoutGrupoInput = {
@@ -584,7 +589,7 @@ export type AsignacionSolicitudCreateWithoutGrupoInput = {
   fechaAsignacion?: Date | string
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
-  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionInput
+  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
   gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
   asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
 }
@@ -647,7 +652,7 @@ export type AsignacionSolicitudCreateWithoutGestorInput = {
   fechaAsignacion?: Date | string
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
-  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionInput
+  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
   asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
 }
@@ -679,7 +684,7 @@ export type AsignacionSolicitudCreateWithoutAsignadoPorInput = {
   fechaAsignacion?: Date | string
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
-  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionInput
+  solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
   gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
 }
@@ -764,37 +769,25 @@ export type AsignacionSolicitudCreateOrConnectWithoutSolicitudInput = {
   create: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
 }
 
-export type AsignacionSolicitudUpsertWithoutSolicitudInput = {
-  update: Prisma.XOR<Prisma.AsignacionSolicitudUpdateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput>
-  create: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
-  where?: Prisma.AsignacionSolicitudWhereInput
+export type AsignacionSolicitudCreateManySolicitudInputEnvelope = {
+  data: Prisma.AsignacionSolicitudCreateManySolicitudInput | Prisma.AsignacionSolicitudCreateManySolicitudInput[]
+  skipDuplicates?: boolean
 }
 
-export type AsignacionSolicitudUpdateToOneWithWhereWithoutSolicitudInput = {
-  where?: Prisma.AsignacionSolicitudWhereInput
+export type AsignacionSolicitudUpsertWithWhereUniqueWithoutSolicitudInput = {
+  where: Prisma.AsignacionSolicitudWhereUniqueInput
+  update: Prisma.XOR<Prisma.AsignacionSolicitudUpdateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput>
+  create: Prisma.XOR<Prisma.AsignacionSolicitudCreateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedCreateWithoutSolicitudInput>
+}
+
+export type AsignacionSolicitudUpdateWithWhereUniqueWithoutSolicitudInput = {
+  where: Prisma.AsignacionSolicitudWhereUniqueInput
   data: Prisma.XOR<Prisma.AsignacionSolicitudUpdateWithoutSolicitudInput, Prisma.AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput>
 }
 
-export type AsignacionSolicitudUpdateWithoutSolicitudInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
-  grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
-  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
-}
-
-export type AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  gestorId?: Prisma.StringFieldUpdateOperationsInput | string
-  grupoId?: Prisma.StringFieldUpdateOperationsInput | string
-  asignadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+export type AsignacionSolicitudUpdateManyWithWhereWithoutSolicitudInput = {
+  where: Prisma.AsignacionSolicitudScalarWhereInput
+  data: Prisma.XOR<Prisma.AsignacionSolicitudUpdateManyMutationInput, Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudInput>
 }
 
 export type AsignacionSolicitudCreateManyGrupoInput = {
@@ -814,7 +807,7 @@ export type AsignacionSolicitudUpdateWithoutGrupoInput = {
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionNestedInput
+  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
   gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
 }
@@ -869,7 +862,7 @@ export type AsignacionSolicitudUpdateWithoutGestorInput = {
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionNestedInput
+  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
 }
@@ -902,7 +895,7 @@ export type AsignacionSolicitudUpdateWithoutAsignadoPorInput = {
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionNestedInput
+  solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
   gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
 }
@@ -923,6 +916,50 @@ export type AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorInput = {
   solicitudId?: Prisma.StringFieldUpdateOperationsInput | string
   gestorId?: Prisma.StringFieldUpdateOperationsInput | string
   grupoId?: Prisma.StringFieldUpdateOperationsInput | string
+  activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type AsignacionSolicitudCreateManySolicitudInput = {
+  id?: string
+  gestorId: string
+  grupoId: string
+  asignadoPorId?: string | null
+  activa?: boolean
+  fechaAsignacion?: Date | string
+  fechaReasignacion?: Date | string | null
+  motivoReasignacion?: string | null
+}
+
+export type AsignacionSolicitudUpdateWithoutSolicitudInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
+  grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
+  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
+}
+
+export type AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  gestorId?: Prisma.StringFieldUpdateOperationsInput | string
+  grupoId?: Prisma.StringFieldUpdateOperationsInput | string
+  asignadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  gestorId?: Prisma.StringFieldUpdateOperationsInput | string
+  grupoId?: Prisma.StringFieldUpdateOperationsInput | string
+  asignadoPorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null

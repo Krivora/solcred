@@ -6,6 +6,7 @@ import type {
   FiltrosPromocion,
   FiltrosMisCasos,
   FiltrosAprobacion,
+  SolicitudDetalle,
 } from '@/shared/lib/types/solicitudes.types'
 
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
@@ -22,7 +23,7 @@ export const solicitudesApi = {
     apiAuth<Solicitud[]>('/admin/promocion/solicitudes'),
 
   obtener: (id: string) =>
-    apiAuth<Solicitud>(`/admin/solicitudes/${id}`),
+    apiAuth<SolicitudDetalle>(`/admin/promocion/${id}`),
 
   listarPromocion: (filtros: Partial<FiltrosPromocion> = {}) => {
     const params = new URLSearchParams()

@@ -82,28 +82,26 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
     }
 
     // ── Filtro de asignación ──────────────────────────────────────────────────
+    const condicionesAsignacion: any = {};
+
     if (asignacion === "asignados") {
-        where.asignacion = { activa: true };
+        where.asignaciones = { some: { activa: true } };
     } else if (asignacion === "sin_asignar") {
-        where.asignacion = { is: null };
+        where.asignaciones = { none: { activa: true } };
     }
 
-    // ── Filtro por gestor ─────────────────────────────────────────────────────
     if (gestorId) {
-        where.asignacion = {
-            ...(where.asignacion ?? {}),
-            gestorId,
-            activa: true,
-        };
+        condicionesAsignacion.gestorId = gestorId;
+        condicionesAsignacion.activa = true;
     }
 
-    // ── Filtro por grupo ──────────────────────────────────────────────────────
     if (grupoId) {
-        where.asignacion = {
-            ...(where.asignacion ?? {}),
-            grupoId,
-            activa: true,
-        };
+        condicionesAsignacion.grupoId = grupoId;
+        condicionesAsignacion.activa = true;
+    }
+
+    if (Object.keys(condicionesAsignacion).length > 0) {
+        where.asignaciones = { some: condicionesAsignacion };
     }
 
     const [solicitudes, total] = await Promise.all([
@@ -125,8 +123,9 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
                         celular: true,
                     },
                 },
-                asignacion: {
+                asignaciones: {
                     where: { activa: true },
+                    take: 1, // solo puede haber una activa, pero por si acaso
                     select: {
                         fechaAsignacion: true,
                         grupoId: true,
@@ -146,8 +145,17 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
         prisma.solicitud.count({ where }),
     ]);
 
+    // ── Aplanar: de arreglo "asignaciones" a objeto singular "asignacion" ─────
+    const data = solicitudes.map((sol) => {
+        const { asignaciones, ...resto } = sol;
+        return {
+            ...resto,
+            asignacion: asignaciones[0] ?? null,
+        };
+    });
+
     return {
-        data: solicitudes,
+        data,
         meta: {
             total,
             page,
@@ -156,16 +164,23 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
         },
     };
 };
-const evaluarRegla = (
+const evaluarRegla = async (
     regla: { campo: CampoRegla; operador: OperadorRegla; valor: string },
     solicitud: SolicitudParaEvaluar
-): boolean => {
-    const valorSolicitud: string | number | null = (() => {
+): Promise<boolean> => {
+    const valorSolicitud: string | number | null = await (async () => {
         switch (regla.campo) {
             case CampoRegla.TIPO_PERSONA: return solicitud.tipoPersona;
             case CampoRegla.SECTOR: return solicitud.sector;
             case CampoRegla.TAMANO_EMPRESA: return solicitud.tamanoEmpresa;
-            case CampoRegla.PROGRAMA_ID: return solicitud.programaId;
+            case CampoRegla.PROGRAMA_ID: {
+                // Resuelve el nombre del programa de la solicitud para comparar
+                const programa = await prisma.programa.findUnique({
+                    where: { id: solicitud.programaId },
+                    select: { nombre: true },
+                });
+                return programa?.nombre ?? null;
+            }
             case CampoRegla.MONTO_SOLICITADO: return solicitud.montoSolicitado;
             default: return null;
         }
@@ -204,16 +219,16 @@ const encontrarGrupo = async (
 
     for (const grupo of grupos) {
         if (grupo.gestores.length === 0) continue;
-        if (grupo.reglas.length === 0) continue; // fallback, se evalúa al final
+        if (grupo.reglas.length === 0) continue;
 
-        const cumple = grupo.reglas.every((regla) =>
-            evaluarRegla(regla, solicitud)
+        const resultados = await Promise.all(
+            grupo.reglas.map((regla) => evaluarRegla(regla, solicitud))
         );
+        const cumple = resultados.every(Boolean);
 
         if (cumple) return grupo.id;
     }
 
-    // Fallback: grupo general (sin reglas)
     const grupoGeneral = grupos.find(
         (g) => g.reglas.length === 0 && g.gestores.length > 0
     );
@@ -269,12 +284,12 @@ export const asignarAutomaticamente = async (
             tamanoEmpresa: true,
             programaId: true,
             montoSolicitado: true,
-            asignacion: true,
+            asignaciones: { where: { activa: true } }, // ← cambio aquí
         },
     });
 
     if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
-    if (solicitud.asignacion?.activa) return; // ya tiene asignación activa
+    if (solicitud.asignaciones.length > 0) return; // ya tiene asignación activa
 
     const grupoId = await encontrarGrupo(solicitud as SolicitudParaEvaluar);
     if (!grupoId)
@@ -302,10 +317,14 @@ export const asignarManualmente = async (
 ): Promise<void> => {
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
-        include: { asignacion: true },
+        include: {
+            asignaciones: { where: { activa: true } }, // ← ya no es singular
+        },
     });
 
     if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    const asignacionActiva = solicitud.asignaciones[0]; // 0 o 1 por el constraint parcial
 
     const gestor = await prisma.usuario.findUnique({
         where: { id: dto.gestorId },
@@ -321,9 +340,9 @@ export const asignarManualmente = async (
     const grupoId = gestor.gruposGestion[0].grupoId;
 
     await prisma.$transaction(async (tx) => {
-        if (solicitud.asignacion?.activa) {
+        if (asignacionActiva) {
             await tx.asignacionSolicitud.update({
-                where: { id: solicitud.asignacion.id },
+                where: { id: asignacionActiva.id },
                 data: {
                     activa: false,
                     fechaReasignacion: new Date(),
@@ -373,12 +392,12 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
 
     const cargas = await prisma.asignacionSolicitud.groupBy({
         by: ["gestorId"],
-        where: { 
+        where: {
             gestorId: { in: gestorIds },
             activa: true,
             solicitud: {
-            estatus: { in: ESTATUS_REVISION },
-        },
+                estatus: { in: ESTATUS_REVISION },
+            },
         },
         _count: { gestorId: true },
     });
