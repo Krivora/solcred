@@ -167,6 +167,34 @@ export const guardarDatosAval = async (
     }
 };
 
+export const guardarDatosCredito = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const datos = await solicitudesService.guardarDatosCredito(
+            req.params.id as string,
+            req.body,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        await registrarLog({
+            accion: AccionLog.ACTUALIZAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Datos del crédito guardados en solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.status(200).json(ok("Datos del crédito guardados", datos));
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const enviar = async (
     req: RequestAutenticado,
     res: Response,

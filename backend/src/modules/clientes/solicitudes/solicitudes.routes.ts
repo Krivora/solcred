@@ -8,6 +8,7 @@ import {
     guardarDatosGeneralesSchema,
     guardarDatosSolicitanteSchema,
     guardarDatosAvalSchema,
+    guardarDatosCreditoSchema,
 } from "./solicitudes.schema";
 import * as solicitudesController from "./solicitudes.controller";
 const router = Router();
@@ -20,6 +21,7 @@ router.get("/:id", solicitudesController.obtenerPorId);
 router.put("/:id/generales", autorizar("CLIENTE"), validate(guardarDatosGeneralesSchema), solicitudesController.guardarDatosGenerales);
 router.put("/:id/solicitante", autorizar("CLIENTE"), validate(guardarDatosSolicitanteSchema), solicitudesController.guardarDatosSolicitante);
 router.put("/:id/aval", autorizar("CLIENTE"), validate(guardarDatosAvalSchema), solicitudesController.guardarDatosAval);
+router.put("/:id/credito", autorizar("CLIENTE"), validate(guardarDatosCreditoSchema), solicitudesController.guardarDatosCredito);
 router.patch("/:id/enviar", autorizar("CLIENTE"), solicitudesController.enviar);
 
 export default router;

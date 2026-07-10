@@ -115,6 +115,20 @@ const datosPersonaSchema = z.object({
         .optional(),
 });
 
+const conceptoCreditoSchema = z.object({
+    categoria: z.enum(["CAPITAL", "MAQUINARIA_EQUIPO", "REMODELACION"], {
+        message: "La categoría es requerida",
+    }),
+
+    concepto: z
+        .string({ message: "El concepto es requerido" })
+        .min(2, "El concepto debe tener al menos 2 caracteres")
+        .trim(),
+
+    monto: z
+        .number({ error: "El monto debe ser un número" })
+        .positive("El monto debe ser mayor a 0"),
+});
 export const guardarDatosSolicitanteSchema = datosPersonaSchema;
 export const guardarDatosAvalSchema = datosPersonaSchema;
 
@@ -125,8 +139,31 @@ export const cambiarEstatusSchema = z.object({
     motivo: z.string().trim().optional(),
 });
 
+export const guardarDatosCreditoSchema = z
+    .object({
+        plazoMeses: z
+            .number({ error: "El plazo debe ser un número" })
+            .int("El plazo debe ser un número entero")
+            .positive("El plazo debe ser mayor a 0"),
+
+        mesesGracia: z
+            .number({ error: "Los meses de gracia deben ser un número" })
+            .int("Los meses de gracia deben ser un número entero")
+            .min(0, "No puede ser negativo")
+            .default(0),
+
+        conceptos: z
+            .array(conceptoCreditoSchema)
+            .min(1, "Debe agregar al menos un concepto"),
+    })
+    .refine((data) => data.mesesGracia <= data.plazoMeses, {
+        message: "El periodo de gracia no puede ser mayor al plazo total",
+        path: ["mesesGracia"],
+    });
+
 export type CrearSolicitudDto = z.infer<typeof crearSolicitudSchema>;
 export type GuardarDatosGeneralesDto = z.infer<typeof guardarDatosGeneralesSchema>;
 export type GuardarDatosSolicitanteDto = z.infer<typeof guardarDatosSolicitanteSchema>;
 export type GuardarDatosAvalDto = z.infer<typeof guardarDatosAvalSchema>;
 export type CambiarEstatusDto = z.infer<typeof cambiarEstatusSchema>;
+export type GuardarDatosCreditoDto = z.infer<typeof guardarDatosCreditoSchema>;

@@ -107,6 +107,12 @@ enum EstatusDocumento {
   RECHAZADO
 }
 
+enum CategoriaCredito {
+  CAPITAL
+  MAQUINARIA_EQUIPO
+  REMODELACION
+}
+
 model HistorialEstatus {
   id          String           @id @default(uuid())
   solicitud   Solicitud        @relation(fields: [solicitudId], references: [id])
@@ -296,11 +302,9 @@ model Solicitud {
   sector          Sector?
   tamanoEmpresa   TamanoEmpresa?
 
-  montoSolicitado Float?
-  plazoSolicitado Int?
-
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?
+  datosCredito DatosCredito?
   documentos       DocumentoSolicitud[]
   historialEstatus  HistorialEstatus[]
   asignaciones AsignacionSolicitud[]
@@ -391,6 +395,35 @@ model DatosAval {
   actualizadoEn     DateTime      @updatedAt
 }
 
+model DatosCredito {
+  id            String    @id @default(uuid())
+  solicitud     Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId   String    @unique
+
+  plazoMeses    Int
+  mesesGracia   Int       @default(0)
+
+  conceptos     ConceptoCredito[]
+
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+}
+
+model ConceptoCredito {
+  id             String           @id @default(uuid())
+  datosCredito   DatosCredito     @relation(fields: [datosCreditoId], references: [id], onDelete: Cascade)
+  datosCreditoId String
+
+  categoria      CategoriaCredito
+  concepto       String           // el "para qué" (ej. "Compra de torno CNC")
+  monto          Float
+
+  creadoEn       DateTime         @default(now())
+  actualizadoEn  DateTime         @updatedAt
+
+  @@index([datosCreditoId])
+  @@index([datosCreditoId, categoria])
+}
 model DocumentoSolicitud {
   id              String        @id @default(uuid())
   solicitud       Solicitud     @relation(fields: [solicitudId], references: [id])

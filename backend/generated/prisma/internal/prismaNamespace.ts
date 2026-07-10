@@ -396,6 +396,8 @@ export const ModelName = {
   Solicitud: 'Solicitud',
   DatosSolicitante: 'DatosSolicitante',
   DatosAval: 'DatosAval',
+  DatosCredito: 'DatosCredito',
+  ConceptoCredito: 'ConceptoCredito',
   DocumentoSolicitud: 'DocumentoSolicitud',
   LogAuditoria: 'LogAuditoria'
 } as const
@@ -413,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1305,6 +1307,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DatosCredito: {
+      payload: Prisma.$DatosCreditoPayload<ExtArgs>
+      fields: Prisma.DatosCreditoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DatosCreditoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DatosCreditoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        findFirst: {
+          args: Prisma.DatosCreditoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DatosCreditoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        findMany: {
+          args: Prisma.DatosCreditoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>[]
+        }
+        create: {
+          args: Prisma.DatosCreditoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        createMany: {
+          args: Prisma.DatosCreditoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DatosCreditoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>[]
+        }
+        delete: {
+          args: Prisma.DatosCreditoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        update: {
+          args: Prisma.DatosCreditoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        deleteMany: {
+          args: Prisma.DatosCreditoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DatosCreditoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DatosCreditoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>[]
+        }
+        upsert: {
+          args: Prisma.DatosCreditoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatosCreditoPayload>
+        }
+        aggregate: {
+          args: Prisma.DatosCreditoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDatosCredito>
+        }
+        groupBy: {
+          args: Prisma.DatosCreditoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatosCreditoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DatosCreditoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatosCreditoCountAggregateOutputType> | number
+        }
+      }
+    }
+    ConceptoCredito: {
+      payload: Prisma.$ConceptoCreditoPayload<ExtArgs>
+      fields: Prisma.ConceptoCreditoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ConceptoCreditoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ConceptoCreditoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        findFirst: {
+          args: Prisma.ConceptoCreditoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ConceptoCreditoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        findMany: {
+          args: Prisma.ConceptoCreditoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>[]
+        }
+        create: {
+          args: Prisma.ConceptoCreditoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        createMany: {
+          args: Prisma.ConceptoCreditoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ConceptoCreditoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>[]
+        }
+        delete: {
+          args: Prisma.ConceptoCreditoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        update: {
+          args: Prisma.ConceptoCreditoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        deleteMany: {
+          args: Prisma.ConceptoCreditoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ConceptoCreditoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ConceptoCreditoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>[]
+        }
+        upsert: {
+          args: Prisma.ConceptoCreditoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConceptoCreditoPayload>
+        }
+        aggregate: {
+          args: Prisma.ConceptoCreditoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateConceptoCredito>
+        }
+        groupBy: {
+          args: Prisma.ConceptoCreditoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConceptoCreditoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ConceptoCreditoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConceptoCreditoCountAggregateOutputType> | number
+        }
+      }
+    }
     DocumentoSolicitud: {
       payload: Prisma.$DocumentoSolicitudPayload<ExtArgs>
       fields: Prisma.DocumentoSolicitudFieldRefs
@@ -1629,8 +1779,6 @@ export const SolicitudScalarFieldEnum = {
   tipoPersona: 'tipoPersona',
   sector: 'sector',
   tamanoEmpresa: 'tamanoEmpresa',
-  montoSolicitado: 'montoSolicitado',
-  plazoSolicitado: 'plazoSolicitado',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -1702,6 +1850,31 @@ export const DatosAvalScalarFieldEnum = {
 } as const
 
 export type DatosAvalScalarFieldEnum = (typeof DatosAvalScalarFieldEnum)[keyof typeof DatosAvalScalarFieldEnum]
+
+
+export const DatosCreditoScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  plazoMeses: 'plazoMeses',
+  mesesGracia: 'mesesGracia',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosCreditoScalarFieldEnum = (typeof DatosCreditoScalarFieldEnum)[keyof typeof DatosCreditoScalarFieldEnum]
+
+
+export const ConceptoCreditoScalarFieldEnum = {
+  id: 'id',
+  datosCreditoId: 'datosCreditoId',
+  categoria: 'categoria',
+  concepto: 'concepto',
+  monto: 'monto',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type ConceptoCreditoScalarFieldEnum = (typeof ConceptoCreditoScalarFieldEnum)[keyof typeof ConceptoCreditoScalarFieldEnum]
 
 
 export const DocumentoSolicitudScalarFieldEnum = {
@@ -2017,6 +2190,20 @@ export type ListEnumTipoViviendaFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'CategoriaCredito'
+ */
+export type EnumCategoriaCreditoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoriaCredito'>
+    
+
+
+/**
+ * Reference to a field of type 'CategoriaCredito[]'
+ */
+export type ListEnumCategoriaCreditoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoriaCredito[]'>
+    
+
+
+/**
  * Reference to a field of type 'EstatusDocumento'
  */
 export type EnumEstatusDocumentoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstatusDocumento'>
@@ -2193,6 +2380,8 @@ export type GlobalOmitConfig = {
   solicitud?: Prisma.SolicitudOmit
   datosSolicitante?: Prisma.DatosSolicitanteOmit
   datosAval?: Prisma.DatosAvalOmit
+  datosCredito?: Prisma.DatosCreditoOmit
+  conceptoCredito?: Prisma.ConceptoCreditoOmit
   documentoSolicitud?: Prisma.DocumentoSolicitudOmit
   logAuditoria?: Prisma.LogAuditoriaOmit
 }

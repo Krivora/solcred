@@ -67,7 +67,7 @@ export const obtenerSolicitudPorId = async (
 const generarFolio = async (): Promise<string> => {
     const result = await prisma.$queryRaw<[{ nextval: bigint }]>`
     SELECT nextval('solicitud_folio_seq')
-  `;
+    `;
     return String(Number(result[0].nextval)).padStart(5, '0');
 };
 
@@ -188,6 +188,86 @@ export const guardarDatosAval = async (
         where: { solicitudId },
         create: { ...dto, solicitudId },
         update: dto,
+    });
+};
+
+export const guardarDatosCredito = async (
+    solicitudId: string,
+    dto: GuardarDatosCreditoDto,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+        include: { programa: true },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+    }
+
+    if (solicitud.estatus !== "BORRADOR") {
+        throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+    }
+
+    // Validar plazo contra el programa
+    if (
+        dto.plazoMeses < solicitud.programa.plazoMinimoMeses ||
+        dto.plazoMeses > solicitud.programa.plazoMaximoMeses
+    ) {
+        throw new AppError(
+            `El plazo debe estar entre ${solicitud.programa.plazoMinimoMeses} y ${solicitud.programa.plazoMaximoMeses} meses`,
+            400
+        );
+    }
+
+    // Validar monto total contra el programa
+    const montoTotal = dto.conceptos.reduce((sum, c) => sum + c.monto, 0);
+
+    if (
+        montoTotal < solicitud.programa.montoMinimo ||
+        montoTotal > solicitud.programa.montoMaximo
+    ) {
+        throw new AppError(
+            `El monto total debe estar entre ${solicitud.programa.montoMinimo} y ${solicitud.programa.montoMaximo}`,
+            400
+        );
+    }
+
+    return prisma.$transaction(async (tx) => {
+        const datosCredito = await tx.datosCredito.upsert({
+            where: { solicitudId },
+            create: {
+                solicitudId,
+                plazoMeses: dto.plazoMeses,
+                mesesGracia: dto.mesesGracia,
+            },
+            update: {
+                plazoMeses: dto.plazoMeses,
+                mesesGracia: dto.mesesGracia,
+            },
+        });
+
+        // Reemplaza los conceptos por completo: borra los anteriores y crea los nuevos
+        await tx.conceptoCredito.deleteMany({
+            where: { datosCreditoId: datosCredito.id },
+        });
+
+        await tx.conceptoCredito.createMany({
+            data: dto.conceptos.map((c) => ({
+                datosCreditoId: datosCredito.id,
+                categoria: c.categoria,
+                concepto: c.concepto,
+                monto: c.monto,
+            })),
+        });
+
+        return tx.datosCredito.findUnique({
+            where: { id: datosCredito.id },
+            include: { conceptos: true },
+        });
     });
 };
 

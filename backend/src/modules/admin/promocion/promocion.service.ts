@@ -1,7 +1,6 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import {
-  CambiarEstatusDto,
   DevolverAlSolicitanteDto,
   EnviarAFinanciamientoDto,
   EnviarAAprobacionDto,
@@ -159,23 +158,21 @@ export const obtenerSolicitudPorId = async (
         select: {
           id: true,
           nombre: true,
-          descripcion: true,
-          montoMinimo: true,
-          montoMaximo: true,
-          tasaOrdinaria: true,
-          tasaMoratoria: true,
-          tasaAnual: true,
-          plazoMinimoMeses: true,
-          plazoMaximoMeses: true,
-          aval: true,
-          garantia: true,
           documentosRequeridos: {
             include: { tipoDocumento: true },
           },
         },
       },
-      datosSolicitante: true,
-      datosAval: true,
+      datosSolicitante: {
+        select: {
+          id: true,
+          nombre: true,
+          apellidoPaterno: true,
+          apellidoMaterno: true,
+          correo: true,
+          celular: true,
+        },
+      },
       documentos: {
         where: { activo: true },
         include: {

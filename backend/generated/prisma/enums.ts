@@ -148,6 +148,15 @@ export const EstatusDocumento = {
 export type EstatusDocumento = (typeof EstatusDocumento)[keyof typeof EstatusDocumento]
 
 
+export const CategoriaCredito = {
+  CAPITAL: 'CAPITAL',
+  MAQUINARIA_EQUIPO: 'MAQUINARIA_EQUIPO',
+  REMODELACION: 'REMODELACION'
+} as const
+
+export type CategoriaCredito = (typeof CategoriaCredito)[keyof typeof CategoriaCredito]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',

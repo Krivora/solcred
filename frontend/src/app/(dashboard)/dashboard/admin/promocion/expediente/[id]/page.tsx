@@ -1,6 +1,7 @@
 'use client'
 
 import { use } from 'react'
+import { useRouter } from 'next/navigation'
 import { useExpediente } from '@/shared/lib/hooks/useExpediente'
 import { useHistorialDocumento } from '@/shared/lib/hooks/useExpediente'
 import { useSubirDocumento } from '@/shared/lib/hooks/useSubirDocumento'
@@ -14,7 +15,7 @@ import { HistorialDocumentoSheet } from '@/shared/components/expediente/Historia
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 
-import { ArrowLeft, FolderOpen, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, FolderOpen, AlertTriangle, FileText } from 'lucide-react'
 import Link from 'next/link'
 
 interface ExpedientePageProps {
@@ -67,7 +68,7 @@ export default function ExpedientePage({
     params,
 }: ExpedientePageProps) {
     const { id: solicitudId } = use(params)
-
+    const router = useRouter()
     const { usuario } = useAuthStore()
 
     // ─── Expediente ───────────────────────────────────────────
@@ -122,6 +123,15 @@ export default function ExpedientePage({
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 mt-0.5"
+                        onClick={() => router.back()}
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+
                     <div className="rounded-xl bg-primary/10 p-2.5 ring-1 ring-primary/20">
                         <FolderOpen className="h-5 w-5 text-primary" />
                     </div>
@@ -141,17 +151,17 @@ export default function ExpedientePage({
                     </div>
                 </div>
 
-                <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                    className="shrink-0 mt-0.5"
-                >
-                    <Link href={backHref}>
-                        <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-                        Regresar
-                    </Link>
-                </Button>
+                <div className="flex items-center gap-2 mt-0.5">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)}
+                    >
+                        <FileText className="h-3.5 w-3.5" />
+                        Detalle de la solicitud
+                    </Button>
+                </div>
             </div>
 
             {/* Loading */}

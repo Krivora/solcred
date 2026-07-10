@@ -890,6 +890,14 @@ export type NullableEnumTipoViviendaFieldUpdateOperationsInput = {
   set?: $Enums.TipoVivienda | null
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type DatosSolicitanteCreateWithoutSolicitudInput = {
   id?: string
   nombre: string

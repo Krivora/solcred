@@ -63,6 +63,8 @@ export const ModelName = {
   Solicitud: 'Solicitud',
   DatosSolicitante: 'DatosSolicitante',
   DatosAval: 'DatosAval',
+  DatosCredito: 'DatosCredito',
+  ConceptoCredito: 'ConceptoCredito',
   DocumentoSolicitud: 'DocumentoSolicitud',
   LogAuditoria: 'LogAuditoria'
 } as const
@@ -220,8 +222,6 @@ export const SolicitudScalarFieldEnum = {
   tipoPersona: 'tipoPersona',
   sector: 'sector',
   tamanoEmpresa: 'tamanoEmpresa',
-  montoSolicitado: 'montoSolicitado',
-  plazoSolicitado: 'plazoSolicitado',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -293,6 +293,31 @@ export const DatosAvalScalarFieldEnum = {
 } as const
 
 export type DatosAvalScalarFieldEnum = (typeof DatosAvalScalarFieldEnum)[keyof typeof DatosAvalScalarFieldEnum]
+
+
+export const DatosCreditoScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  plazoMeses: 'plazoMeses',
+  mesesGracia: 'mesesGracia',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosCreditoScalarFieldEnum = (typeof DatosCreditoScalarFieldEnum)[keyof typeof DatosCreditoScalarFieldEnum]
+
+
+export const ConceptoCreditoScalarFieldEnum = {
+  id: 'id',
+  datosCreditoId: 'datosCreditoId',
+  categoria: 'categoria',
+  concepto: 'concepto',
+  monto: 'monto',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type ConceptoCreditoScalarFieldEnum = (typeof ConceptoCreditoScalarFieldEnum)[keyof typeof ConceptoCreditoScalarFieldEnum]
 
 
 export const DocumentoSolicitudScalarFieldEnum = {

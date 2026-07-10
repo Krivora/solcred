@@ -7,7 +7,6 @@ import { Button } from '@/shared/components/ui/button'
 import { Card } from '@/shared/components/ui/card'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { ErrorState } from '@/shared/components/ui/ErrorState'
-import { PageHeader } from '@/shared/components/ui/PageHeader'
 import { useSolicitudDetalle } from '@/features/promocion/hooks/useSolicitudesPromocion'
 import { SolicitudTimeline } from '@/features/promocion/components/detalle/SolicitudTimeline'
 import { SolicitudInfoGeneral } from '@/features/promocion/components/detalle/SolicitudInfoGeneral'
@@ -21,8 +20,8 @@ interface Props {
 export default function SolicitudDetallePage({ params }: Props) {
     const { id } = use(params)
     const router = useRouter()
-    const { solicitud, cargando, error, recargar } = useSolicitudDetalle(id)
-
+    const { solicitud, cargando, error } = useSolicitudDetalle(id)
+    console.log('solicitud', solicitud)
     if (cargando) {
         return (
             <div className="flex flex-col gap-6 p-6">
@@ -70,7 +69,7 @@ export default function SolicitudDetallePage({ params }: Props) {
                     <div>
                         <div className="flex items-center gap-2.5">
                             <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                                Detalle solicitud con Folio: {solicitud.folio}
+                                Detalle: {solicitud.folio}
                             </h1>
                             <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${estatus.className}`}>
                                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${estatus.dotClass}`} />
@@ -111,8 +110,10 @@ export default function SolicitudDetallePage({ params }: Props) {
                 {/* Columna izquierda: info general + solicitante + documentos */}
                 <div className="lg:col-span-2 flex flex-col gap-6">
                     <SolicitudInfoGeneral solicitud={solicitud} />
-                    <SolicitudDocumentosResumen documentos={solicitud.documentos} />
-                </div>
+                    <SolicitudDocumentosResumen
+                        documentos={solicitud.documentos}
+                        documentosRequeridos={solicitud.programa.documentosRequeridos}
+                    />                </div>
 
                 {/* Columna derecha: timeline */}
                 <div className="lg:col-span-1">

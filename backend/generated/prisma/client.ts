@@ -100,6 +100,16 @@ export type DatosSolicitante = Prisma.DatosSolicitanteModel
  */
 export type DatosAval = Prisma.DatosAvalModel
 /**
+ * Model DatosCredito
+ * 
+ */
+export type DatosCredito = Prisma.DatosCreditoModel
+/**
+ * Model ConceptoCredito
+ * 
+ */
+export type ConceptoCredito = Prisma.ConceptoCreditoModel
+/**
  * Model DocumentoSolicitud
  * 
  */
