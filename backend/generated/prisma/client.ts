@@ -110,6 +110,31 @@ export type DatosCredito = Prisma.DatosCreditoModel
  */
 export type ConceptoCredito = Prisma.ConceptoCreditoModel
 /**
+ * Model DatosGarantia
+ * 
+ */
+export type DatosGarantia = Prisma.DatosGarantiaModel
+/**
+ * Model Garantia
+ * 
+ */
+export type Garantia = Prisma.GarantiaModel
+/**
+ * Model DatosNegocio
+ * 
+ */
+export type DatosNegocio = Prisma.DatosNegocioModel
+/**
+ * Model DatosMercado
+ * 
+ */
+export type DatosMercado = Prisma.DatosMercadoModel
+/**
+ * Model DatosBancarios
+ * 
+ */
+export type DatosBancarios = Prisma.DatosBancariosModel
+/**
  * Model DocumentoSolicitud
  * 
  */

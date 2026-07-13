@@ -195,6 +195,118 @@ export const guardarDatosCredito = async (
     }
 };
 
+export const guardarDatosGarantia = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const datos = await solicitudesService.guardarDatosGarantia(
+            req.params.id as string,
+            req.body,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        await registrarLog({
+            accion: AccionLog.ACTUALIZAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Datos de garantía guardados en solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.status(200).json(ok("Datos de garantía guardados", datos));
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const guardarDatosNegocio = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const datos = await solicitudesService.guardarDatosNegocio(
+            req.params.id as string,
+            req.body,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        await registrarLog({
+            accion: AccionLog.ACTUALIZAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Datos del negocio guardados en solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.status(200).json(ok("Datos del negocio guardados", datos));
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const guardarDatosMercado = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const datos = await solicitudesService.guardarDatosMercado(
+            req.params.id as string,
+            req.body,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        await registrarLog({
+            accion: AccionLog.ACTUALIZAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Datos de mercado guardados en solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.status(200).json(ok("Datos de mercado guardados", datos));
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const guardarDatosBancarios = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const datos = await solicitudesService.guardarDatosBancarios(
+            req.params.id as string,
+            req.body,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        await registrarLog({
+            accion: AccionLog.ACTUALIZAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Datos bancarios guardados en solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.status(200).json(ok("Datos bancarios guardados", datos));
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const enviar = async (
     req: RequestAutenticado,
     res: Response,
@@ -221,6 +333,7 @@ export const enviar = async (
         next(error);
     }
 };
+
 
 export const cambiarEstatus = async (
     req: RequestAutenticado,

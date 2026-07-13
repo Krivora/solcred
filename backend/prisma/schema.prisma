@@ -113,6 +113,17 @@ enum CategoriaCredito {
   REMODELACION
 }
 
+enum TipoGarantia {
+  PRENDARIA
+  HIPOTECARIA
+}
+enum TipoLocal {
+  PROPIO
+  RENTADO
+  FAMILIAR
+  OTRO
+}
+
 model HistorialEstatus {
   id          String           @id @default(uuid())
   solicitud   Solicitud        @relation(fields: [solicitudId], references: [id])
@@ -305,6 +316,10 @@ model Solicitud {
   datosSolicitante DatosSolicitante?
   datosAval        DatosAval?
   datosCredito DatosCredito?
+  datosGarantia    DatosGarantia?
+  datosNegocio       DatosNegocio?
+  datosMercado       DatosMercado?
+  datosBancarios     DatosBancarios?
   documentos       DocumentoSolicitud[]
   historialEstatus  HistorialEstatus[]
   asignaciones AsignacionSolicitud[]
@@ -423,6 +438,132 @@ model ConceptoCredito {
 
   @@index([datosCreditoId])
   @@index([datosCreditoId, categoria])
+}
+
+model DatosGarantia {
+  id            String      @id @default(uuid())
+  solicitud     Solicitud   @relation(fields: [solicitudId], references: [id])
+  solicitudId   String      @unique
+
+  garantias     Garantia[]
+
+  creadoEn      DateTime    @default(now())
+  actualizadoEn DateTime    @updatedAt
+}
+
+model Garantia {
+  id              String        @id @default(uuid())
+  datosGarantia   DatosGarantia @relation(fields: [datosGarantiaId], references: [id], onDelete: Cascade)
+  datosGarantiaId String
+
+  tipo            TipoGarantia
+
+  // Comunes a ambos tipos
+  nombrePropietario String
+  valor             Float
+  descripcion       String?       // texto libre: qué es, estado, etc.
+
+  // ── Solo PRENDARIA (bien mueble: vehículo, maquinaria, equipo) ──
+  marca             String?
+  modelo            String?
+  anio              Int?
+  numeroSerie       String?       // VIN / número de serie / factura
+
+  // ── Solo HIPOTECARIA (inmueble) ──
+  calle             String?
+  numeroExterior    String?
+  numeroInterior    String?
+  colonia           String?
+  ciudad            String?
+  estado            String?
+  codigoPostal      String?
+  numeroEscritura   String?
+  folioReal         String?       // folio real / registro público de la propiedad
+
+  creadoEn        DateTime      @default(now())
+  actualizadoEn   DateTime      @updatedAt
+
+  @@index([datosGarantiaId])
+  @@index([datosGarantiaId, tipo])
+}
+
+model DatosNegocio {
+  id                  String     @id @default(uuid())
+  solicitud           Solicitud  @relation(fields: [solicitudId], references: [id])
+  solicitudId         String     @unique
+
+  razonSocial         String?
+  rfcNegocio          String?
+  nombreNegocio       String?
+
+  // Domicilio del negocio
+  domicilioNegocio    String?
+  numeroExteriorNegocio String?
+  numeroInteriorNegocio String?
+  coloniaLocal        String?
+  codigoPostalLocal   String?
+  municipioLocal      String?
+  estadoLocal         String?
+
+  actividadNegocio    String?
+  areaNegocio         String?
+
+  empleosConservados  Int?
+  empleosNuevos       Int?
+
+  fechaInicioOperaciones DateTime?
+  antiguedadNegocio   Int?
+
+  tipoLocal           TipoLocal?
+
+  experienciaActividadSolicitante   Int?
+  experienciaEmpresarioSolicitante  Int?
+
+  actualExporta       Boolean?
+  obtuvoExperiencia   Boolean?
+  negocioConsidera    String?
+
+  telefonoRecadosNegocio String?
+  telefonoFijoNegocio    String?
+
+  creadoEn            DateTime   @default(now())
+  actualizadoEn       DateTime   @updatedAt
+}
+
+model DatosMercado {
+  id                        String    @id @default(uuid())
+  solicitud                 Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId               String    @unique
+
+  principalesProductos      String?   // texto libre: qué vende/produce
+
+  // Distribución por tipo de cliente (% que debe sumar 100)
+  porcentajeMayoristas      Float?
+  porcentajeDetallistas     Float?
+  porcentajeClienteFinal    Float?
+
+  // Cobertura geográfica (% que debe sumar 100)
+  coberturaLocal            Float?
+  coberturaRegional         Float?
+  coberturaEstatal          Float?
+  coberturaNacional         Float?
+  coberturaExportacion      Float?
+
+  creadoEn                  DateTime  @default(now())
+  actualizadoEn             DateTime  @updatedAt
+}
+
+model DatosBancarios {
+  id            String    @id @default(uuid())
+  solicitud     Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId   String    @unique
+
+  banco         String
+  numeroCuenta  String?
+  clabe         String
+
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
 }
 model DocumentoSolicitud {
   id              String        @id @default(uuid())

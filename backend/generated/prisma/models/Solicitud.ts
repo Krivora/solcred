@@ -227,6 +227,10 @@ export type SolicitudWhereInput = {
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   datosCredito?: Prisma.XOR<Prisma.DatosCreditoNullableScalarRelationFilter, Prisma.DatosCreditoWhereInput> | null
+  datosGarantia?: Prisma.XOR<Prisma.DatosGarantiaNullableScalarRelationFilter, Prisma.DatosGarantiaWhereInput> | null
+  datosNegocio?: Prisma.XOR<Prisma.DatosNegocioNullableScalarRelationFilter, Prisma.DatosNegocioWhereInput> | null
+  datosMercado?: Prisma.XOR<Prisma.DatosMercadoNullableScalarRelationFilter, Prisma.DatosMercadoWhereInput> | null
+  datosBancarios?: Prisma.XOR<Prisma.DatosBancariosNullableScalarRelationFilter, Prisma.DatosBancariosWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignaciones?: Prisma.AsignacionSolicitudListRelationFilter
@@ -248,6 +252,10 @@ export type SolicitudOrderByWithRelationInput = {
   datosSolicitante?: Prisma.DatosSolicitanteOrderByWithRelationInput
   datosAval?: Prisma.DatosAvalOrderByWithRelationInput
   datosCredito?: Prisma.DatosCreditoOrderByWithRelationInput
+  datosGarantia?: Prisma.DatosGarantiaOrderByWithRelationInput
+  datosNegocio?: Prisma.DatosNegocioOrderByWithRelationInput
+  datosMercado?: Prisma.DatosMercadoOrderByWithRelationInput
+  datosBancarios?: Prisma.DatosBancariosOrderByWithRelationInput
   documentos?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
   historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
   asignaciones?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
@@ -272,6 +280,10 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   datosSolicitante?: Prisma.XOR<Prisma.DatosSolicitanteNullableScalarRelationFilter, Prisma.DatosSolicitanteWhereInput> | null
   datosAval?: Prisma.XOR<Prisma.DatosAvalNullableScalarRelationFilter, Prisma.DatosAvalWhereInput> | null
   datosCredito?: Prisma.XOR<Prisma.DatosCreditoNullableScalarRelationFilter, Prisma.DatosCreditoWhereInput> | null
+  datosGarantia?: Prisma.XOR<Prisma.DatosGarantiaNullableScalarRelationFilter, Prisma.DatosGarantiaWhereInput> | null
+  datosNegocio?: Prisma.XOR<Prisma.DatosNegocioNullableScalarRelationFilter, Prisma.DatosNegocioWhereInput> | null
+  datosMercado?: Prisma.XOR<Prisma.DatosMercadoNullableScalarRelationFilter, Prisma.DatosMercadoWhereInput> | null
+  datosBancarios?: Prisma.XOR<Prisma.DatosBancariosNullableScalarRelationFilter, Prisma.DatosBancariosWhereInput> | null
   documentos?: Prisma.DocumentoSolicitudListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
   asignaciones?: Prisma.AsignacionSolicitudListRelationFilter
@@ -323,6 +335,10 @@ export type SolicitudCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -342,6 +358,10 @@ export type SolicitudUncheckedCreateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -361,6 +381,10 @@ export type SolicitudUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -380,6 +404,10 @@ export type SolicitudUncheckedUpdateInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -642,6 +670,62 @@ export type SolicitudUpdateOneRequiredWithoutDatosCreditoNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDatosCreditoInput, Prisma.SolicitudUpdateWithoutDatosCreditoInput>, Prisma.SolicitudUncheckedUpdateWithoutDatosCreditoInput>
 }
 
+export type SolicitudCreateNestedOneWithoutDatosGarantiaInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedCreateWithoutDatosGarantiaInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosGarantiaInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutDatosGarantiaNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedCreateWithoutDatosGarantiaInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosGarantiaInput
+  upsert?: Prisma.SolicitudUpsertWithoutDatosGarantiaInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDatosGarantiaInput, Prisma.SolicitudUpdateWithoutDatosGarantiaInput>, Prisma.SolicitudUncheckedUpdateWithoutDatosGarantiaInput>
+}
+
+export type SolicitudCreateNestedOneWithoutDatosNegocioInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedCreateWithoutDatosNegocioInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosNegocioInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutDatosNegocioNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedCreateWithoutDatosNegocioInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosNegocioInput
+  upsert?: Prisma.SolicitudUpsertWithoutDatosNegocioInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDatosNegocioInput, Prisma.SolicitudUpdateWithoutDatosNegocioInput>, Prisma.SolicitudUncheckedUpdateWithoutDatosNegocioInput>
+}
+
+export type SolicitudCreateNestedOneWithoutDatosMercadoInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedCreateWithoutDatosMercadoInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosMercadoInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutDatosMercadoNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedCreateWithoutDatosMercadoInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosMercadoInput
+  upsert?: Prisma.SolicitudUpsertWithoutDatosMercadoInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDatosMercadoInput, Prisma.SolicitudUpdateWithoutDatosMercadoInput>, Prisma.SolicitudUncheckedUpdateWithoutDatosMercadoInput>
+}
+
+export type SolicitudCreateNestedOneWithoutDatosBancariosInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedCreateWithoutDatosBancariosInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosBancariosInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneRequiredWithoutDatosBancariosNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedCreateWithoutDatosBancariosInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDatosBancariosInput
+  upsert?: Prisma.SolicitudUpsertWithoutDatosBancariosInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutDatosBancariosInput, Prisma.SolicitudUpdateWithoutDatosBancariosInput>, Prisma.SolicitudUncheckedUpdateWithoutDatosBancariosInput>
+}
+
 export type SolicitudCreateNestedOneWithoutDocumentosInput = {
   create?: Prisma.XOR<Prisma.SolicitudCreateWithoutDocumentosInput, Prisma.SolicitudUncheckedCreateWithoutDocumentosInput>
   connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutDocumentosInput
@@ -670,6 +754,10 @@ export type SolicitudCreateWithoutHistorialEstatusInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
 }
@@ -688,6 +776,10 @@ export type SolicitudUncheckedCreateWithoutHistorialEstatusInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
 }
@@ -722,6 +814,10 @@ export type SolicitudUpdateWithoutHistorialEstatusInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
 }
@@ -740,6 +836,10 @@ export type SolicitudUncheckedUpdateWithoutHistorialEstatusInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
 }
@@ -758,6 +858,10 @@ export type SolicitudCreateWithoutAsignacionesInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
 }
@@ -776,6 +880,10 @@ export type SolicitudUncheckedCreateWithoutAsignacionesInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
 }
@@ -810,6 +918,10 @@ export type SolicitudUpdateWithoutAsignacionesInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
 }
@@ -828,6 +940,10 @@ export type SolicitudUncheckedUpdateWithoutAsignacionesInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
 }
@@ -845,6 +961,10 @@ export type SolicitudCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -863,6 +983,10 @@ export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -923,6 +1047,10 @@ export type SolicitudCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -941,6 +1069,10 @@ export type SolicitudUncheckedCreateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -985,6 +1117,10 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -1003,6 +1139,10 @@ export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Date | string
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -1037,6 +1177,10 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -1055,6 +1199,10 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -1073,6 +1221,10 @@ export type SolicitudCreateWithoutDatosAvalInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -1091,6 +1243,10 @@ export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -1125,6 +1281,10 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -1143,6 +1303,10 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -1161,6 +1325,10 @@ export type SolicitudCreateWithoutDatosCreditoInput = {
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
@@ -1179,6 +1347,10 @@ export type SolicitudUncheckedCreateWithoutDatosCreditoInput = {
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
@@ -1213,6 +1385,10 @@ export type SolicitudUpdateWithoutDatosCreditoInput = {
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -1231,6 +1407,426 @@ export type SolicitudUncheckedUpdateWithoutDatosCreditoInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudCreateWithoutDatosGarantiaInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutDatosGarantiaInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutDatosGarantiaInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedCreateWithoutDatosGarantiaInput>
+}
+
+export type SolicitudUpsertWithoutDatosGarantiaInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedUpdateWithoutDatosGarantiaInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedCreateWithoutDatosGarantiaInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutDatosGarantiaInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosGarantiaInput, Prisma.SolicitudUncheckedUpdateWithoutDatosGarantiaInput>
+}
+
+export type SolicitudUpdateWithoutDatosGarantiaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutDatosGarantiaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudCreateWithoutDatosNegocioInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutDatosNegocioInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutDatosNegocioInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedCreateWithoutDatosNegocioInput>
+}
+
+export type SolicitudUpsertWithoutDatosNegocioInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedUpdateWithoutDatosNegocioInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedCreateWithoutDatosNegocioInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutDatosNegocioInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosNegocioInput, Prisma.SolicitudUncheckedUpdateWithoutDatosNegocioInput>
+}
+
+export type SolicitudUpdateWithoutDatosNegocioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutDatosNegocioInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudCreateWithoutDatosMercadoInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutDatosMercadoInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutDatosMercadoInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedCreateWithoutDatosMercadoInput>
+}
+
+export type SolicitudUpsertWithoutDatosMercadoInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedUpdateWithoutDatosMercadoInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedCreateWithoutDatosMercadoInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutDatosMercadoInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosMercadoInput, Prisma.SolicitudUncheckedUpdateWithoutDatosMercadoInput>
+}
+
+export type SolicitudUpdateWithoutDatosMercadoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutDatosMercadoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudCreateWithoutDatosBancariosInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutDatosBancariosInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutDatosBancariosInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedCreateWithoutDatosBancariosInput>
+}
+
+export type SolicitudUpsertWithoutDatosBancariosInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedUpdateWithoutDatosBancariosInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedCreateWithoutDatosBancariosInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutDatosBancariosInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutDatosBancariosInput, Prisma.SolicitudUncheckedUpdateWithoutDatosBancariosInput>
+}
+
+export type SolicitudUpdateWithoutDatosBancariosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutDatosBancariosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -1250,6 +1846,10 @@ export type SolicitudCreateWithoutDocumentosInput = {
   datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
 }
@@ -1268,6 +1868,10 @@ export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
   datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
 }
@@ -1302,6 +1906,10 @@ export type SolicitudUpdateWithoutDocumentosInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
 }
@@ -1320,6 +1928,10 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
 }
@@ -1349,6 +1961,10 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -1367,6 +1983,10 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -1409,6 +2029,10 @@ export type SolicitudUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
@@ -1427,6 +2051,10 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
   datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
   documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
@@ -1509,6 +2137,10 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   datosCredito?: boolean | Prisma.Solicitud$datosCreditoArgs<ExtArgs>
+  datosGarantia?: boolean | Prisma.Solicitud$datosGarantiaArgs<ExtArgs>
+  datosNegocio?: boolean | Prisma.Solicitud$datosNegocioArgs<ExtArgs>
+  datosMercado?: boolean | Prisma.Solicitud$datosMercadoArgs<ExtArgs>
+  datosBancarios?: boolean | Prisma.Solicitud$datosBancariosArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Solicitud$historialEstatusArgs<ExtArgs>
   asignaciones?: boolean | Prisma.Solicitud$asignacionesArgs<ExtArgs>
@@ -1565,6 +2197,10 @@ export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   datosSolicitante?: boolean | Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>
   datosAval?: boolean | Prisma.Solicitud$datosAvalArgs<ExtArgs>
   datosCredito?: boolean | Prisma.Solicitud$datosCreditoArgs<ExtArgs>
+  datosGarantia?: boolean | Prisma.Solicitud$datosGarantiaArgs<ExtArgs>
+  datosNegocio?: boolean | Prisma.Solicitud$datosNegocioArgs<ExtArgs>
+  datosMercado?: boolean | Prisma.Solicitud$datosMercadoArgs<ExtArgs>
+  datosBancarios?: boolean | Prisma.Solicitud$datosBancariosArgs<ExtArgs>
   documentos?: boolean | Prisma.Solicitud$documentosArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Solicitud$historialEstatusArgs<ExtArgs>
   asignaciones?: boolean | Prisma.Solicitud$asignacionesArgs<ExtArgs>
@@ -1587,6 +2223,10 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     datosSolicitante: Prisma.$DatosSolicitantePayload<ExtArgs> | null
     datosAval: Prisma.$DatosAvalPayload<ExtArgs> | null
     datosCredito: Prisma.$DatosCreditoPayload<ExtArgs> | null
+    datosGarantia: Prisma.$DatosGarantiaPayload<ExtArgs> | null
+    datosNegocio: Prisma.$DatosNegocioPayload<ExtArgs> | null
+    datosMercado: Prisma.$DatosMercadoPayload<ExtArgs> | null
+    datosBancarios: Prisma.$DatosBancariosPayload<ExtArgs> | null
     documentos: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
     historialEstatus: Prisma.$HistorialEstatusPayload<ExtArgs>[]
     asignaciones: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
@@ -2001,6 +2641,10 @@ export interface Prisma__SolicitudClient<T, Null = never, ExtArgs extends runtim
   datosSolicitante<T extends Prisma.Solicitud$datosSolicitanteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosSolicitanteArgs<ExtArgs>>): Prisma.Prisma__DatosSolicitanteClient<runtime.Types.Result.GetResult<Prisma.$DatosSolicitantePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   datosAval<T extends Prisma.Solicitud$datosAvalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosAvalArgs<ExtArgs>>): Prisma.Prisma__DatosAvalClient<runtime.Types.Result.GetResult<Prisma.$DatosAvalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   datosCredito<T extends Prisma.Solicitud$datosCreditoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosCreditoArgs<ExtArgs>>): Prisma.Prisma__DatosCreditoClient<runtime.Types.Result.GetResult<Prisma.$DatosCreditoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  datosGarantia<T extends Prisma.Solicitud$datosGarantiaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosGarantiaArgs<ExtArgs>>): Prisma.Prisma__DatosGarantiaClient<runtime.Types.Result.GetResult<Prisma.$DatosGarantiaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  datosNegocio<T extends Prisma.Solicitud$datosNegocioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosNegocioArgs<ExtArgs>>): Prisma.Prisma__DatosNegocioClient<runtime.Types.Result.GetResult<Prisma.$DatosNegocioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  datosMercado<T extends Prisma.Solicitud$datosMercadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosMercadoArgs<ExtArgs>>): Prisma.Prisma__DatosMercadoClient<runtime.Types.Result.GetResult<Prisma.$DatosMercadoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  datosBancarios<T extends Prisma.Solicitud$datosBancariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$datosBancariosArgs<ExtArgs>>): Prisma.Prisma__DatosBancariosClient<runtime.Types.Result.GetResult<Prisma.$DatosBancariosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   documentos<T extends Prisma.Solicitud$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   historialEstatus<T extends Prisma.Solicitud$historialEstatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$historialEstatusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HistorialEstatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignaciones<T extends Prisma.Solicitud$asignacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$asignacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2498,6 +3142,82 @@ export type Solicitud$datosCreditoArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.DatosCreditoInclude<ExtArgs> | null
   where?: Prisma.DatosCreditoWhereInput
+}
+
+/**
+ * Solicitud.datosGarantia
+ */
+export type Solicitud$datosGarantiaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DatosGarantia
+   */
+  select?: Prisma.DatosGarantiaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DatosGarantia
+   */
+  omit?: Prisma.DatosGarantiaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DatosGarantiaInclude<ExtArgs> | null
+  where?: Prisma.DatosGarantiaWhereInput
+}
+
+/**
+ * Solicitud.datosNegocio
+ */
+export type Solicitud$datosNegocioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DatosNegocio
+   */
+  select?: Prisma.DatosNegocioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DatosNegocio
+   */
+  omit?: Prisma.DatosNegocioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DatosNegocioInclude<ExtArgs> | null
+  where?: Prisma.DatosNegocioWhereInput
+}
+
+/**
+ * Solicitud.datosMercado
+ */
+export type Solicitud$datosMercadoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DatosMercado
+   */
+  select?: Prisma.DatosMercadoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DatosMercado
+   */
+  omit?: Prisma.DatosMercadoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DatosMercadoInclude<ExtArgs> | null
+  where?: Prisma.DatosMercadoWhereInput
+}
+
+/**
+ * Solicitud.datosBancarios
+ */
+export type Solicitud$datosBancariosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DatosBancarios
+   */
+  select?: Prisma.DatosBancariosSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DatosBancarios
+   */
+  omit?: Prisma.DatosBancariosOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DatosBancariosInclude<ExtArgs> | null
+  where?: Prisma.DatosBancariosWhereInput
 }
 
 /**

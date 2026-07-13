@@ -65,6 +65,11 @@ export const ModelName = {
   DatosAval: 'DatosAval',
   DatosCredito: 'DatosCredito',
   ConceptoCredito: 'ConceptoCredito',
+  DatosGarantia: 'DatosGarantia',
+  Garantia: 'Garantia',
+  DatosNegocio: 'DatosNegocio',
+  DatosMercado: 'DatosMercado',
+  DatosBancarios: 'DatosBancarios',
   DocumentoSolicitud: 'DocumentoSolicitud',
   LogAuditoria: 'LogAuditoria'
 } as const
@@ -318,6 +323,109 @@ export const ConceptoCreditoScalarFieldEnum = {
 } as const
 
 export type ConceptoCreditoScalarFieldEnum = (typeof ConceptoCreditoScalarFieldEnum)[keyof typeof ConceptoCreditoScalarFieldEnum]
+
+
+export const DatosGarantiaScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosGarantiaScalarFieldEnum = (typeof DatosGarantiaScalarFieldEnum)[keyof typeof DatosGarantiaScalarFieldEnum]
+
+
+export const GarantiaScalarFieldEnum = {
+  id: 'id',
+  datosGarantiaId: 'datosGarantiaId',
+  tipo: 'tipo',
+  nombrePropietario: 'nombrePropietario',
+  valor: 'valor',
+  descripcion: 'descripcion',
+  marca: 'marca',
+  modelo: 'modelo',
+  anio: 'anio',
+  numeroSerie: 'numeroSerie',
+  calle: 'calle',
+  numeroExterior: 'numeroExterior',
+  numeroInterior: 'numeroInterior',
+  colonia: 'colonia',
+  ciudad: 'ciudad',
+  estado: 'estado',
+  codigoPostal: 'codigoPostal',
+  numeroEscritura: 'numeroEscritura',
+  folioReal: 'folioReal',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type GarantiaScalarFieldEnum = (typeof GarantiaScalarFieldEnum)[keyof typeof GarantiaScalarFieldEnum]
+
+
+export const DatosNegocioScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  razonSocial: 'razonSocial',
+  rfcNegocio: 'rfcNegocio',
+  nombreNegocio: 'nombreNegocio',
+  domicilioNegocio: 'domicilioNegocio',
+  numeroExteriorNegocio: 'numeroExteriorNegocio',
+  numeroInteriorNegocio: 'numeroInteriorNegocio',
+  coloniaLocal: 'coloniaLocal',
+  codigoPostalLocal: 'codigoPostalLocal',
+  municipioLocal: 'municipioLocal',
+  estadoLocal: 'estadoLocal',
+  actividadNegocio: 'actividadNegocio',
+  areaNegocio: 'areaNegocio',
+  empleosConservados: 'empleosConservados',
+  empleosNuevos: 'empleosNuevos',
+  fechaInicioOperaciones: 'fechaInicioOperaciones',
+  antiguedadNegocio: 'antiguedadNegocio',
+  tipoLocal: 'tipoLocal',
+  experienciaActividadSolicitante: 'experienciaActividadSolicitante',
+  experienciaEmpresarioSolicitante: 'experienciaEmpresarioSolicitante',
+  actualExporta: 'actualExporta',
+  obtuvoExperiencia: 'obtuvoExperiencia',
+  negocioConsidera: 'negocioConsidera',
+  telefonoRecadosNegocio: 'telefonoRecadosNegocio',
+  telefonoFijoNegocio: 'telefonoFijoNegocio',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosNegocioScalarFieldEnum = (typeof DatosNegocioScalarFieldEnum)[keyof typeof DatosNegocioScalarFieldEnum]
+
+
+export const DatosMercadoScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  principalesProductos: 'principalesProductos',
+  porcentajeMayoristas: 'porcentajeMayoristas',
+  porcentajeDetallistas: 'porcentajeDetallistas',
+  porcentajeClienteFinal: 'porcentajeClienteFinal',
+  coberturaLocal: 'coberturaLocal',
+  coberturaRegional: 'coberturaRegional',
+  coberturaEstatal: 'coberturaEstatal',
+  coberturaNacional: 'coberturaNacional',
+  coberturaExportacion: 'coberturaExportacion',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosMercadoScalarFieldEnum = (typeof DatosMercadoScalarFieldEnum)[keyof typeof DatosMercadoScalarFieldEnum]
+
+
+export const DatosBancariosScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  banco: 'banco',
+  numeroCuenta: 'numeroCuenta',
+  clabe: 'clabe',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DatosBancariosScalarFieldEnum = (typeof DatosBancariosScalarFieldEnum)[keyof typeof DatosBancariosScalarFieldEnum]
 
 
 export const DocumentoSolicitudScalarFieldEnum = {

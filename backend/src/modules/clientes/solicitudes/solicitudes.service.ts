@@ -6,6 +6,11 @@ import {
     GuardarDatosGeneralesDto,
     GuardarDatosAvalDto,
     GuardarDatosSolicitanteDto,
+    GuardarDatosCreditoDto,
+    GuardarDatosGarantiaDto,
+    GuardarDatosNegocioDto,
+    GuardarDatosMercadoDto,
+    GuardarDatosBancariosDto,
 } from "./solicitudes.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
 
@@ -270,7 +275,163 @@ export const guardarDatosCredito = async (
         });
     });
 };
+export const guardarDatosGarantia = async (
+    solicitudId: string,
+    dto: GuardarDatosGarantiaDto,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+    });
 
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+    }
+
+    if (solicitud.estatus !== "BORRADOR") {
+        throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+    }
+
+    return prisma.$transaction(async (tx) => {
+        const datosGarantia = await tx.datosGarantia.upsert({
+            where: { solicitudId },
+            create: { solicitudId },
+            update: {},
+        });
+
+        // Reemplaza las garantías por completo: borra las anteriores y crea las nuevas
+        await tx.garantia.deleteMany({
+            where: { datosGarantiaId: datosGarantia.id },
+        });
+
+        await tx.garantia.createMany({
+            data: dto.garantias.map((g) => ({
+                datosGarantiaId: datosGarantia.id,
+                tipo: g.tipo,
+                nombrePropietario: g.nombrePropietario,
+                valor: g.valor,
+                descripcion: g.descripcion,
+                marca: g.marca,
+                modelo: g.modelo,
+                anio: g.anio,
+                numeroSerie: g.numeroSerie,
+                calle: g.calle,
+                numeroExterior: g.numeroExterior,
+                numeroInterior: g.numeroInterior,
+                colonia: g.colonia,
+                ciudad: g.ciudad,
+                estado: g.estado,
+                codigoPostal: g.codigoPostal,
+                numeroEscritura: g.numeroEscritura,
+                folioReal: g.folioReal,
+            })),
+        });
+
+        return tx.datosGarantia.findUnique({
+            where: { id: datosGarantia.id },
+            include: { garantias: true },
+        });
+    });
+};
+
+export const guardarDatosNegocio = async (
+    solicitudId: string,
+    dto: GuardarDatosNegocioDto,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+    }
+
+    if (solicitud.estatus !== "BORRADOR") {
+        throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+    }
+
+    return prisma.datosNegocio.upsert({
+        where: { solicitudId },
+        create: {
+            solicitudId,
+            ...dto,
+        },
+        update: {
+            ...dto,
+        },
+    });
+};
+
+export const guardarDatosMercado = async (
+    solicitudId: string,
+    dto: GuardarDatosMercadoDto,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+    }
+
+    if (solicitud.estatus !== "BORRADOR") {
+        throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+    }
+
+    return prisma.datosMercado.upsert({
+        where: { solicitudId },
+        create: {
+            solicitudId,
+            ...dto,
+        },
+        update: {
+            ...dto,
+        },
+    });
+};
+
+export const guardarDatosBancarios = async (
+    solicitudId: string,
+    dto: GuardarDatosBancariosDto,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para modificar esta solicitud", 403);
+    }
+
+    if (solicitud.estatus !== "BORRADOR") {
+        throw new AppError("Solo se pueden modificar solicitudes en borrador", 400);
+    }
+
+    return prisma.datosBancarios.upsert({
+        where: { solicitudId },
+        create: {
+            solicitudId,
+            ...dto,
+        },
+        update: {
+            ...dto,
+        },
+    });
+};
 export const enviarSolicitud = async (
     solicitudId: string,
     usuarioId: string,

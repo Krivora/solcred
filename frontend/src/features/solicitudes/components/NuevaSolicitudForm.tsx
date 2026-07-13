@@ -5,9 +5,11 @@ import { StepIndicator } from './form/StepIndicator'
 import { StepPrograma } from './form/StepPrograma'
 import { StepGeneral } from './form/StepGeneral'
 import { PersonaForm } from './form/PersonaForm'
+import { StepCredito } from './form/StepCredito'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/shared/lib/utils/toast'
+
 export function NuevaSolicitudForm() {
   const router = useRouter()
   const {
@@ -21,8 +23,9 @@ export function NuevaSolicitudForm() {
     guardarGenerales,
     guardarSolicitante,
     guardarAval,
+    guardarCredito,
     enviarSolicitud,
-    skipAval
+    skipAval,
   } = useSolicitudForm()
 
   async function handleEnviar() {
@@ -30,6 +33,7 @@ export function NuevaSolicitudForm() {
     toast.success('Solicitud enviada correctamente')
     router.push('/dashboard/usuarios/solicitudes')
   }
+
   return (
     <div className="max-w-8xl mx-auto space-y-8">
       <StepIndicator currentIndex={stepIndex} />
@@ -76,6 +80,16 @@ export function NuevaSolicitudForm() {
             error={error}
             skipLabel="Omitir aval"
             onSkip={skipAval}
+          />
+        )}
+
+        {currentStep === 'credito' && solicitud && (
+          <StepCredito
+            defaultValues={solicitud.datosCredito}
+            onSubmit={guardarCredito}
+            onBack={goBack}
+            loading={loading}
+            error={error}
           />
         )}
 

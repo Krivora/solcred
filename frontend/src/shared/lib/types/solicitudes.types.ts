@@ -3,6 +3,7 @@ import type { Programa } from '@/features/programas/types/programa.types'
 export type TipoPersona = 'FISICA' | 'MORAL'
 export type Sector = 'AGROPECUARIO' | 'INDUSTRIAL' | 'COMERCIAL' | 'SERVICIOS' | 'TECNOLOGIA' | 'OTRO'
 export type TamanoEmpresa = 'MICRO' | 'PEQUENA' | 'MEDIANA' | 'GRANDE'
+export type CategoriaCredito = 'CAPITAL' | 'MAQUINARIA_EQUIPO' | 'REMODELACION'
 export type EstatusSolicitud =
   | 'BORRADOR'
   | 'PENDIENTE'
@@ -79,6 +80,7 @@ export interface Solicitud {
   plazoSolicitado?: number         // ← opcional
   datosSolicitante?: DatosPersona & { id: string }
   datosAval?: DatosPersona & { id: string }
+  datosCredito?: DatosCredito & { id: string }
   creadoEn: string
   actualizadoEn: string
 }
@@ -311,4 +313,92 @@ export interface SolicitudDetalle {
   gestorAsignado: AsignacionDetalle | null
   historialAsignaciones: AsignacionDetalle[]
   timeline: TimelineEvento[]
+}
+
+export interface ConceptoCredito {
+  id?: string
+  categoria: CategoriaCredito
+  concepto: string
+  monto: number
+}
+
+export interface DatosCredito {
+  id?: string
+  plazoMeses: number
+  mesesGracia: number
+  conceptos: ConceptoCredito[]
+}
+
+export type TipoGarantia = 'PRENDARIA' | 'HIPOTECARIA'
+
+export interface Garantia {
+  id?: string
+  tipo: TipoGarantia
+  nombrePropietario: string
+  valor: number
+  descripcion?: string
+  // Prendaria
+  marca?: string
+  modelo?: string
+  anio?: number
+  numeroSerie?: string
+  // Hipotecaria
+  calle?: string
+  numeroExterior?: string
+  numeroInterior?: string
+  colonia?: string
+  ciudad?: string
+  estado?: string
+  codigoPostal?: string
+  numeroEscritura?: string
+  folioReal?: string
+}
+
+export interface DatosGarantia {
+  garantias: Garantia[]
+}
+
+export interface DatosNegocio {
+  razonSocial?: string
+  rfcNegocio?: string
+  nombreNegocio?: string
+  domicilioNegocio?: string
+  numeroExteriorNegocio?: string
+  numeroInteriorNegocio?: string
+  coloniaLocal?: string
+  codigoPostalLocal?: string
+  municipioLocal?: string
+  estadoLocal?: string
+  actividadNegocio?: string
+  areaNegocio?: string
+  empleosConservados?: number
+  empleosNuevos?: number
+  fechaInicioOperaciones?: string
+  antiguedadNegocio?: number
+  tipoLocal?: 'PROPIO' | 'RENTADO' | 'FAMILIAR' | 'OTRO'
+  experienciaActividadSolicitante?: number
+  experienciaEmpresarioSolicitante?: number
+  actualExporta?: boolean
+  obtuvoExperiencia?: boolean
+  negocioConsidera?: string
+  telefonoRecadosNegocio?: string
+  telefonoFijoNegocio?: string
+}
+
+export interface DatosMercado {
+  principalesProductos?: string
+  porcentajeMayoristas?: number
+  porcentajeDetallistas?: number
+  porcentajeClienteFinal?: number
+  coberturaLocal?: number
+  coberturaRegional?: number
+  coberturaEstatal?: number
+  coberturaNacional?: number
+  coberturaExportacion?: number
+}
+
+export interface DatosBancarios {
+  banco: string
+  numeroCuenta?: string
+  clabe: string
 }

@@ -157,6 +157,24 @@ export const CategoriaCredito = {
 export type CategoriaCredito = (typeof CategoriaCredito)[keyof typeof CategoriaCredito]
 
 
+export const TipoGarantia = {
+  PRENDARIA: 'PRENDARIA',
+  HIPOTECARIA: 'HIPOTECARIA'
+} as const
+
+export type TipoGarantia = (typeof TipoGarantia)[keyof typeof TipoGarantia]
+
+
+export const TipoLocal = {
+  PROPIO: 'PROPIO',
+  RENTADO: 'RENTADO',
+  FAMILIAR: 'FAMILIAR',
+  OTRO: 'OTRO'
+} as const
+
+export type TipoLocal = (typeof TipoLocal)[keyof typeof TipoLocal]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',
