@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Users, Globe, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
@@ -10,13 +11,64 @@ import { cn } from '@/shared/lib/utils/cn'
 import {
     guardarDatosMercadoSchema,
     type GuardarDatosMercadoDto,
-} from '@/shared/lib/schemas/solicitudes.schema'
+} from '@/shared/lib/schema/solicitudes.schema'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosMercadoDto>
     onSubmit: (dto: GuardarDatosMercadoDto) => void
     onBack: () => void
     loading: boolean
+}
+
+function SeccionHeader({
+    icon: Icon,
+    title,
+    subtitle,
+}: {
+    icon: React.ElementType
+    title: string
+    subtitle?: string
+}) {
+    return (
+        <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5 bg-accent/40 border-b border-border">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent shrink-0">
+                <Icon className="w-4 h-4 text-accent-foreground" />
+            </div>
+            <div>
+                <p className="text-sm font-semibold text-foreground">{title}</p>
+                {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+            </div>
+        </div>
+    )
+}
+
+function BarraTotal({ total }: { total: number }) {
+    const completo = total === 100
+    const excedido = total > 100
+
+    return (
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <div className="h-1.5 w-24 sm:w-28 rounded-full bg-secondary overflow-hidden shrink-0">
+                <div
+                    className={cn(
+                        'h-full rounded-full transition-all duration-300 ease-out',
+                        completo ? 'bg-success' : excedido ? 'bg-destructive' : 'bg-primary'
+                    )}
+                    style={{ width: `${Math.min(total, 100)}%` }}
+                />
+            </div>
+            <span
+                className={cn(
+                    'flex items-center gap-1 text-xs font-medium shrink-0',
+                    completo ? 'text-success' : excedido ? 'text-destructive' : 'text-muted-foreground'
+                )}
+            >
+                {completo && <CheckCircle2 className="w-3.5 h-3.5" />}
+                {excedido && <AlertCircle className="w-3.5 h-3.5" />}
+                {total}%
+            </span>
+        </div>
+    )
 }
 
 export function MercadoForm({ defaultValues, onSubmit, onBack, loading }: Props) {
@@ -27,6 +79,7 @@ export function MercadoForm({ defaultValues, onSubmit, onBack, loading }: Props)
         formState: { errors },
     } = useForm<GuardarDatosMercadoDto>({
         resolver: zodResolver(guardarDatosMercadoSchema),
+        mode: 'onBlur',
         defaultValues,
     })
 
@@ -46,104 +99,125 @@ export function MercadoForm({ defaultValues, onSubmit, onBack, loading }: Props)
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-1">
+                <h2 className="text-lg font-semibold text-foreground">Mercado</h2>
+                <p className="text-sm text-muted-foreground">
+                    Describe a quién le vendes y en qué zonas opera el negocio.
+                </p>
+            </div>
+
             <div className="space-y-1.5">
                 <Label>Principales productos o servicios</Label>
-                <Textarea rows={3} {...register('principalesProductos')} />
+                <Textarea rows={3} className="resize-none" {...register('principalesProductos')} />
             </div>
 
             {/* Distribución de clientes */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-foreground">
-                        Distribución de clientes (%)
-                    </h3>
-                    <span
-                        className={cn(
-                            'text-xs font-medium',
-                            totalClientes === 100 ? 'text-emerald-600' : 'text-muted-foreground'
-                        )}
-                    >
-                        Total: {totalClientes}%
-                    </span>
+            <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 bg-accent/40 border-b border-border">
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent shrink-0">
+                            <Users className="w-4 h-4 text-accent-foreground" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-foreground">Distribución de clientes</p>
+                            <p className="text-xs text-muted-foreground">Debe sumar 100%</p>
+                        </div>
+                    </div>
+                    <BarraTotal total={totalClientes} />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-1.5">
-                        <Label>Mayoristas</Label>
-                        <Input
-                            type="number"
-                            {...register('porcentajeMayoristas', { valueAsNumber: true })}
-                        />
+                <div className="p-4 sm:p-5">
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-1.5">
+                            <Label>Mayoristas</Label>
+                            <Input
+                                type="number"
+                                inputMode="numeric"
+                                className="h-11"
+                                placeholder="0"
+                                {...register('porcentajeMayoristas', { valueAsNumber: true })}
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Detallistas</Label>
+                            <Input
+                                type="number"
+                                inputMode="numeric"
+                                className="h-11"
+                                placeholder="0"
+                                {...register('porcentajeDetallistas', { valueAsNumber: true })}
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Cliente final</Label>
+                            <Input
+                                type="number"
+                                inputMode="numeric"
+                                className="h-11"
+                                placeholder="0"
+                                {...register('porcentajeClienteFinal', { valueAsNumber: true })}
+                            />
+                        </div>
                     </div>
-                    <div className="space-y-1.5">
-                        <Label>Detallistas</Label>
-                        <Input
-                            type="number"
-                            {...register('porcentajeDetallistas', { valueAsNumber: true })}
-                        />
-                    </div>
-                    <div className="space-y-1.5">
-                        <Label>Cliente final</Label>
-                        <Input
-                            type="number"
-                            {...register('porcentajeClienteFinal', { valueAsNumber: true })}
-                        />
-                    </div>
+                    {errors.porcentajeMayoristas && (
+                        <p className="flex items-center gap-1 text-xs text-destructive mt-3">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                            {errors.porcentajeMayoristas.message}
+                        </p>
+                    )}
                 </div>
-                {errors.porcentajeMayoristas && (
-                    <p className="text-xs text-destructive">{errors.porcentajeMayoristas.message}</p>
-                )}
             </div>
 
             {/* Cobertura geográfica */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-foreground">
-                        Cobertura geográfica (%)
-                    </h3>
-                    <span
-                        className={cn(
-                            'text-xs font-medium',
-                            totalCobertura === 100 ? 'text-emerald-600' : 'text-muted-foreground'
-                        )}
-                    >
-                        Total: {totalCobertura}%
-                    </span>
+            <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 bg-accent/40 border-b border-border">
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent shrink-0">
+                            <Globe className="w-4 h-4 text-accent-foreground" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-foreground">Cobertura geográfica</p>
+                            <p className="text-xs text-muted-foreground">Debe sumar 100%</p>
+                        </div>
+                    </div>
+                    <BarraTotal total={totalCobertura} />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-1.5">
-                        <Label>Local</Label>
-                        <Input type="number" {...register('coberturaLocal', { valueAsNumber: true })} />
+                <div className="p-4 sm:p-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div className="space-y-1.5">
+                            <Label>Local</Label>
+                            <Input type="number" inputMode="numeric" className="h-11" placeholder="0" {...register('coberturaLocal', { valueAsNumber: true })} />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Regional</Label>
+                            <Input type="number" inputMode="numeric" className="h-11" placeholder="0" {...register('coberturaRegional', { valueAsNumber: true })} />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Estatal</Label>
+                            <Input type="number" inputMode="numeric" className="h-11" placeholder="0" {...register('coberturaEstatal', { valueAsNumber: true })} />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Nacional</Label>
+                            <Input type="number" inputMode="numeric" className="h-11" placeholder="0" {...register('coberturaNacional', { valueAsNumber: true })} />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label>Exportación</Label>
+                            <Input type="number" inputMode="numeric" className="h-11" placeholder="0" {...register('coberturaExportacion', { valueAsNumber: true })} />
+                        </div>
                     </div>
-                    <div className="space-y-1.5">
-                        <Label>Regional</Label>
-                        <Input type="number" {...register('coberturaRegional', { valueAsNumber: true })} />
-                    </div>
-                    <div className="space-y-1.5">
-                        <Label>Estatal</Label>
-                        <Input type="number" {...register('coberturaEstatal', { valueAsNumber: true })} />
-                    </div>
-                    <div className="space-y-1.5">
-                        <Label>Nacional</Label>
-                        <Input type="number" {...register('coberturaNacional', { valueAsNumber: true })} />
-                    </div>
-                    <div className="space-y-1.5">
-                        <Label>Exportación</Label>
-                        <Input
-                            type="number"
-                            {...register('coberturaExportacion', { valueAsNumber: true })}
-                        />
-                    </div>
+                    {errors.coberturaLocal && (
+                        <p className="flex items-center gap-1 text-xs text-destructive mt-3">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                            {errors.coberturaLocal.message}
+                        </p>
+                    )}
                 </div>
-                {errors.coberturaLocal && (
-                    <p className="text-xs text-destructive">{errors.coberturaLocal.message}</p>
-                )}
             </div>
 
-            <div className="flex justify-between pt-4">
-                <Button type="button" variant="ghost" onClick={onBack}>
+            <div className="flex justify-between pt-2 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-1 px-1 py-3 sm:static sm:bg-transparent sm:backdrop-blur-none sm:p-0">
+                <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
                     Regresar
                 </Button>
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
                     {loading ? 'Guardando...' : 'Continuar'}
                 </Button>
             </div>

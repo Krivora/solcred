@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
 import { Button } from '@/shared/components/ui/button'
+import { Checkbox } from '@/shared/components/ui/checkbox'
 import { FormError } from '@/shared/components/ui/FormError'
 import { Separator } from '@/shared/components/ui/separator'
-import { ChevronLeft, Send, User, Users, Briefcase } from 'lucide-react'
+import { ChevronLeft, Send, User, Users, Briefcase, ShieldCheck } from 'lucide-react'
 
 interface Props {
   solicitud: Solicitud
@@ -44,6 +46,7 @@ const SECTOR_LABELS: Record<string, string> = {
 }
 
 export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Props) {
+  const [aceptaUso, setAceptaUso] = useState(false)
   const s = solicitud.datosSolicitante
   const a = solicitud.datosAval
 
@@ -95,13 +98,35 @@ export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Pro
         )}
       </div>
 
+      {/* Consentimiento de uso de datos */}
+      <label
+        className="flex items-start gap-3 rounded-lg border border-border bg-muted/50 p-4 cursor-pointer hover:bg-muted/70 transition-colors"
+      >
+        <Checkbox
+          checked={aceptaUso}
+          onCheckedChange={(v) => setAceptaUso(v === true)}
+          className="mt-0.5"
+        />
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
+            <span className="text-xs font-medium text-foreground">Uso de tus datos</span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Confirmo que la información capturada es correcta y autorizo que se utilice
+            únicamente para evaluar y dar seguimiento a esta solicitud de crédito. Tus datos
+            se manejan de forma confidencial y no se comparten con terceros ajenos al proceso.
+          </p>
+        </div>
+      </label>
+
       <FormError message={error} />
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack} className="gap-2">
           <ChevronLeft className="w-4 h-4" /> Atrás
         </Button>
-        <Button onClick={onEnviar} disabled={loading} className="gap-2">
+        <Button onClick={onEnviar} disabled={loading || !aceptaUso} className="gap-2">
           <Send className="w-4 h-4" />
           {loading ? 'Enviando...' : 'Enviar solicitud'}
         </Button>

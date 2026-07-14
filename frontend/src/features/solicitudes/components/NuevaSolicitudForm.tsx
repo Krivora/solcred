@@ -6,6 +6,10 @@ import { StepPrograma } from './form/StepPrograma'
 import { StepGeneral } from './form/StepGeneral'
 import { PersonaForm } from './form/PersonaForm'
 import { StepCredito } from './form/StepCredito'
+import { GarantiaForm } from './form/GarantiaForm'
+import { NegocioForm } from './form/NegocioForm'
+import { MercadoForm } from './form/MercadoForm'
+import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/shared/lib/utils/toast'
@@ -24,6 +28,10 @@ export function NuevaSolicitudForm() {
     guardarSolicitante,
     guardarAval,
     guardarCredito,
+    guardarGarantia,
+    guardarNegocio,
+    guardarMercado,
+    guardarBancarios,
     enviarSolicitud,
     skipAval,
   } = useSolicitudForm()
@@ -90,6 +98,42 @@ export function NuevaSolicitudForm() {
             onBack={goBack}
             loading={loading}
             error={error}
+          />
+        )}
+
+        {currentStep === 'garantia' && solicitud && (
+          <GarantiaForm
+            defaultValues={solicitud.datosGarantia}
+            onSubmit={guardarGarantia}
+            onBack={goBack}
+            loading={loading}
+          />
+        )}
+
+        {currentStep === 'negocio' && solicitud && (
+          <NegocioForm
+            defaultValues={solicitud.datosNegocio}
+            onSubmit={guardarNegocio}
+            onBack={goBack}
+            loading={loading}
+          />
+        )}
+
+        {currentStep === 'mercado' && solicitud && (
+          <MercadoForm
+            defaultValues={solicitud.datosMercado}
+            onSubmit={guardarMercado}
+            onBack={goBack}
+            loading={loading}
+          />
+        )}
+
+        {currentStep === 'bancarios' && solicitud && (
+          <BancariosForm
+            defaultValues={solicitud.datosBancarios}
+            onSubmit={guardarBancarios}
+            onBack={goBack}
+            loading={loading}
           />
         )}
 

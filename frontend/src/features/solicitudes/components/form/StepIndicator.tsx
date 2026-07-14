@@ -1,71 +1,75 @@
+'use client'
+
 import { Check } from 'lucide-react'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from "@/shared/lib/utils/cn"
 
 const STEPS = [
-  { key: 'programa',    label: 'Programa' },
-  { key: 'general',     label: 'Generales' },
-  { key: 'solicitante', label: 'Solicitante' },
-  { key: 'aval',        label: 'Aval' },
-  { key: 'credito',     label: 'Crédito' },
-  { key: 'garantia',    label: 'Garantía' },
-  { key: 'negocio',     label: 'Negocio' },
-  { key: 'mercado',     label: 'Mercado' },
-  { key: 'bancarios',   label: 'Bancarios' },
-  { key: 'resumen',     label: 'Resumen' },
+    { id: 'programa', label: 'Programa' },
+    { id: 'general', label: 'Generales' },
+    { id: 'solicitante', label: 'Solicitante' },
+    { id: 'aval', label: 'Aval' },
+    { id: 'credito', label: 'Crédito' },
+    { id: 'garantia', label: 'Garantía' },
+    { id: 'negocio', label: 'Negocio' },
+    { id: 'mercado', label: 'Mercado' },
+    { id: 'bancarios', label: 'Bancarios' },
+    { id: 'resumen', label: 'Resumen' },
 ]
 
 interface Props {
-  currentIndex: number
+    currentIndex: number
 }
 
 export function StepIndicator({ currentIndex }: Props) {
-  return (
-    <div className="flex items-center justify-between w-full">
-      {STEPS.map((step, i) => {
-        const done    = i < currentIndex
-        const active  = i === currentIndex
-        const pending = i > currentIndex
+    const total = STEPS.length
+    const currentLabel = STEPS[currentIndex]?.label ?? ''
 
-        return (
-          <div key={step.key} className="flex items-center flex-1 last:flex-none">
-            {/* Círculo */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div
-                className={cn(
-                  'flex items-center justify-center w-8 h-8 rounded-full border-2 text-xs font-semibold transition-all duration-300 shrink-0',
-                  done    && 'bg-primary border-primary text-primary-foreground',
-                  active  && 'border-primary text-primary bg-primary/10',
-                  pending && 'border-border text-muted-foreground bg-background',
-                )}
-              >
-                {done ? <Check className="w-4 h-4" /> : <span>{i + 1}</span>}
-              </div>
-              <span
-                className={cn(
-                  'text-[11px] font-medium whitespace-nowrap hidden lg:block',
-                  active  && 'text-primary',
-                  done    && 'text-primary',
-                  pending && 'text-muted-foreground',
-                )}
-              >
-                {step.label}
-              </span>
+    return (
+        <div className="w-full">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">
+                    Paso {currentIndex + 1} de {total}
+                </span>
+                <span className="text-sm text-muted-foreground">{currentLabel}</span>
             </div>
 
-            {/* Línea conectora */}
-            {i < STEPS.length - 1 && (
-              <div className="flex-1 mx-2 mb-5">
+            <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
                 <div
-                  className={cn(
-                    'h-0.5 w-full rounded transition-all duration-500',
-                    i < currentIndex ? 'bg-primary' : 'bg-border',
-                  )}
+                    className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+                    style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
                 />
-              </div>
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
+            </div>
+
+            {/* Puntos desktop — escala mejor que 10 círculos con texto */}
+            <div className="hidden md:flex items-center justify-between mt-3">
+                {STEPS.map((step, index) => {
+                    const isCompleted = index < currentIndex
+                    const isCurrent = index === currentIndex
+
+                    return (
+                        <div key={step.id} className="flex flex-col items-center gap-1.5 flex-1 group">
+                            <div
+                                className={cn(
+                                    'flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-semibold transition-colors duration-200 shrink-0',
+                                    isCompleted && 'bg-primary text-primary-foreground',
+                                    isCurrent && 'bg-primary/15 text-primary ring-2 ring-primary ring-offset-2 ring-offset-background',
+                                    !isCompleted && !isCurrent && 'bg-secondary text-muted-foreground'
+                                )}
+                            >
+                                {isCompleted ? <Check className="w-3 h-3" /> : index + 1}
+                            </div>
+                            <span
+                                className={cn(
+                                    'text-[10px] text-center leading-tight max-w-[60px] truncate',
+                                    isCurrent ? 'text-foreground font-medium' : 'text-muted-foreground'
+                                )}
+                            >
+                                {step.label}
+                            </span>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
 }
