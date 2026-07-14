@@ -90,4 +90,6 @@ export const solicitudesApi = {
         method: 'PATCH',
       }
     ),
+    descargarPDF: (id: string) =>
+    apiAuth<Blob>(`/clientes/solicitudes/${id}/pdf`),
 }

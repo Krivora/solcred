@@ -22,6 +22,7 @@ router.use(autenticar);
 router.get("/", solicitudesController.listar);
 router.post("/", autorizar("CLIENTE"), validate(crearSolicitudSchema), solicitudesController.crear);
 router.get("/:id", solicitudesController.obtenerPorId);
+router.get("/:id/pdf", solicitudesController.descargarPDF);
 router.put("/:id/generales", autorizar("CLIENTE"), validate(guardarDatosGeneralesSchema), solicitudesController.guardarDatosGenerales);
 router.put("/:id/solicitante", autorizar("CLIENTE"), validate(guardarDatosSolicitanteSchema), solicitudesController.guardarDatosSolicitante);
 router.put("/:id/aval", autorizar("CLIENTE"), validate(guardarDatosAvalSchema), solicitudesController.guardarDatosAval);

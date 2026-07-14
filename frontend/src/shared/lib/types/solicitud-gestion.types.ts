@@ -1,4 +1,4 @@
-import type { Programa } from '@/features/programas/types/programa.types'
+import type { Programa } from '@/features/settings/types/programa.types'
 import type {
   TipoPersona,
   Sector,
@@ -15,7 +15,7 @@ export type EstatusSolicitud =
   | 'BORRADOR'
   | 'PENDIENTE'
   | 'EN_REVISION'
-  | 'EN_CORRECION'
+  | 'EN_CORRECCION'
   | 'EN_FINANCIAMIENTO'
   | 'EN_APROBACION'
   | 'APROBADO'

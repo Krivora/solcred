@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Building2, Search, SlidersHorizontal, Users } from "lucide-react";
+import { Building2, Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -12,10 +12,10 @@ import {
     SelectValue,
 } from "@/shared/components/ui/select";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/programas/api/programas";
-import { ProgramaCard } from "@/features/programas/components/ProgramaCard";
-import type { Programa } from "@/features/programas/types/programa.types";
-import { PageHeader, RefreshAction } from "@/shared/components/ui/PageHeader";
+import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas";
+import { ProgramaCard } from "@/features/settings/components/programas/ProgramaCard";
+import type { Programa } from "@/features/settings/types/programa.types";
+import { PageHeader } from "@/shared/components/ui/PageHeader";
 
 export default function ProgramasPage() {
     const [programas, setProgramas] = useState<Programa[]>([]);

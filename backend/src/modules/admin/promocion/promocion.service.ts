@@ -296,7 +296,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
 
   const skip = (page - 1) * limit;
   const where: any = {};
-  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION', 'PENDIENTE', 'BORRADOR'];
+  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
   if (estatus) {
     const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
     const estatusFiltrados = estatusArray.filter(e => ESTATUS_PRICIPAL_PROMOCION.includes(e));
@@ -782,11 +782,11 @@ export const devolverAlSolicitante = async (
   return prisma.$transaction(async (tx) => {
     const actualizada = await tx.solicitud.update({
       where: { id: solicitudId },
-      data: { estatus: 'EN_CORRECION' },
+      data: { estatus: 'EN_CORRECCION' },
       include: incluyeTodo,
     })
 
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_CORRECION', usuarioId, dto.motivo)
+    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_CORRECCION', usuarioId, dto.motivo)
 
     return actualizada
   })

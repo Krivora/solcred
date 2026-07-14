@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { solicitudesApi } from '../api/solicitudes.api'
 import type {
   CrearSolicitudDto,
@@ -37,13 +37,50 @@ const STEPS: Step[] = [
   'resumen',
 ]
 
-export function useSolicitudForm() {
-  const [currentStep, setCurrentStep] = useState<Step>('programa')
+interface UseSolicitudFormOptions {
+  solicitudIdExistente?: string
+}
+
+export function useSolicitudForm(options?: UseSolicitudFormOptions) {
+  const solicitudIdExistente = options?.solicitudIdExistente
+  const esEdicion = Boolean(solicitudIdExistente)
+
+  const [currentStep, setCurrentStep] = useState<Step>(
+    esEdicion ? 'general' : 'programa'
+  )
   const [solicitud, setSolicitud] = useState<Solicitud | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(esEdicion)
   const [error, setError] = useState<string | null>(null)
+  const [guardadoOk, setGuardadoOk] = useState(false)
 
   const stepIndex = STEPS.indexOf(currentStep)
+
+  // Carga inicial de la solicitud existente en modo edición
+  useEffect(() => {
+    if (!solicitudIdExistente) return
+
+    let cancelado = false
+
+    async function cargar() {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await solicitudesApi.obtener(solicitudIdExistente!)
+        if (!cancelado) setSolicitud(data)
+      } catch (e: unknown) {
+        if (!cancelado) {
+          setError(e instanceof Error ? e.message : 'Error al cargar la solicitud')
+        }
+      } finally {
+        if (!cancelado) setLoading(false)
+      }
+    }
+
+    cargar()
+    return () => {
+      cancelado = true
+    }
+  }, [solicitudIdExistente])
 
   const goNext = () => {
     if (stepIndex < STEPS.length - 1) setCurrentStep(STEPS[stepIndex + 1])
@@ -54,6 +91,11 @@ export function useSolicitudForm() {
   }
 
   const goTo = (step: Step) => setCurrentStep(step)
+
+  const marcarGuardado = () => {
+    setGuardadoOk(true)
+    setTimeout(() => setGuardadoOk(false), 2000)
+  }
 
   async function crearSolicitud(dto: CrearSolicitudDto) {
     setLoading(true)
@@ -76,7 +118,7 @@ export function useSolicitudForm() {
     try {
       const data = await solicitudesApi.guardarGenerales(solicitud.id, dto)
       setSolicitud(data)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos generales')
     } finally {
@@ -90,7 +132,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarSolicitante(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos del solicitante')
     } finally {
@@ -104,7 +146,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarAval(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos del aval')
     } finally {
@@ -122,7 +164,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarCredito(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos del crédito')
     } finally {
@@ -136,7 +178,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarGarantia(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos de garantía')
     } finally {
@@ -150,7 +192,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarNegocio(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos del negocio')
     } finally {
@@ -164,7 +206,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarMercado(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos de mercado')
     } finally {
@@ -178,7 +220,7 @@ export function useSolicitudForm() {
     setError(null)
     try {
       await solicitudesApi.guardarBancarios(solicitud.id, dto)
-      goNext()
+      esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Error al guardar datos bancarios')
     } finally {
@@ -207,6 +249,8 @@ export function useSolicitudForm() {
     solicitud,
     loading,
     error,
+    esEdicion,
+    guardadoOk,
     goNext,
     goBack,
     goTo,

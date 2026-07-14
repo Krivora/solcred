@@ -9,10 +9,10 @@ import {
     Table, TableBody, TableCell,
     TableHead, TableHeader, TableRow,
 } from "@/shared/components/ui/table";
-import { TipoDocumentoDialog } from "@/features/programas/components/TipoDocumentoDialog";
-import { getTiposDocumento } from "@/features/programas/api/programas";
+import { TipoDocumentoDialog } from "@/features/settings/components/programas/TipoDocumentoDialog";
+import { getTiposDocumento } from "@/features/settings/api/programas";
 import { toast } from "@/shared/lib/utils/toast";
-import type { TipoDocumento } from "@/features/programas/types/programa.types";
+import type { TipoDocumento } from "@/features/settings/types/programa.types";
 import { PageHeader } from "@/shared/components/ui/PageHeader";
 
 export default function DocumentosPage() {

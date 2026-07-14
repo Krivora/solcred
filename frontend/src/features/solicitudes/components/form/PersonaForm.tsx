@@ -57,7 +57,7 @@ const ESTADOS_MX = [
 function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <div className="flex items-center justify-center w-6 h-6 rounded-md bg-primary/10">
+      <div className="flex items-center justify-center w-6 h-6 rounded-md bg-primary/10 shrink-0">
         <Icon className="w-3.5 h-3.5 text-primary" />
       </div>
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -131,26 +131,25 @@ export function PersonaForm({
         <SectionHeader icon={User} label="Datos personales" />
         <div className="space-y-4">
 
-          {/* Nombre completo: 3 columnas iguales, nombres tienen espacio suficiente */}
-          <div className="grid grid-cols-6 gap-4">
-            <Field label="Nombre(s)" error={errors.nombre?.message} className="col-span-2">
+          {/* Nombre completo: 1 col en mobile, 3 iguales desde sm */}
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <Field label="Nombre(s)" error={errors.nombre?.message} className="sm:col-span-2">
               <Input
                 {...register('nombre', { required: 'Requerido', minLength: { value: 2, message: 'Mín. 2 caracteres' } })}
                 placeholder="Juan"
               />
             </Field>
-            <Field label="Apellido paterno" error={errors.apellidoPaterno?.message} className="col-span-2">
+            <Field label="Apellido paterno" error={errors.apellidoPaterno?.message} className="sm:col-span-2">
               <Input {...register('apellidoPaterno', { required: 'Requerido' })} placeholder="García" />
             </Field>
-            <Field label="Apellido materno" error={errors.apellidoMaterno?.message} className="col-span-2">
+            <Field label="Apellido materno" error={errors.apellidoMaterno?.message} className="sm:col-span-2">
               <Input {...register('apellidoMaterno', { required: 'Requerido' })} placeholder="López" />
             </Field>
           </div>
 
-          {/* CURP (tamaño fijo 18) + RFC (tamaño fijo 13) + No. INE */}
-          {/* 6 cols: CURP=2, RFC=2, INE=2 — proporcional al largo real del dato */}
-          <div className="grid grid-cols-6 gap-4">
-            <Field label="CURP" error={errors.curp?.message} optional className="col-span-2">
+          {/* CURP + RFC + INE */}
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <Field label="CURP" error={errors.curp?.message} optional className="sm:col-span-2">
               <Input
                 {...register('curp', {
                   pattern: { value: /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/, message: 'CURP inválida' },
@@ -160,7 +159,7 @@ export function PersonaForm({
                 maxLength={18}
               />
             </Field>
-            <Field label="RFC" error={errors.rfc?.message} optional className="col-span-2">
+            <Field label="RFC" error={errors.rfc?.message} optional className="sm:col-span-2">
               <Input
                 {...register('rfc', {
                   pattern: { value: /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/, message: 'RFC inválido' },
@@ -170,15 +169,14 @@ export function PersonaForm({
                 maxLength={13}
               />
             </Field>
-            <Field label="Número de INE" error={errors.numeroINE?.message} optional className="col-span-2">
+            <Field label="Número de INE" error={errors.numeroINE?.message} optional className="sm:col-span-2">
               <Input {...register('numeroINE')} placeholder="0000000000000" maxLength={13} />
             </Field>
           </div>
 
           {/* Estado civil + Cónyuge + Nivel estudios */}
-          {/* Estado civil es un select corto; cónyuge toma más espacio; nivel estudios = corto */}
-          <div className="grid grid-cols-6 gap-4">
-            <Field label="Estado civil" optional className="col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <Field label="Estado civil" optional className="sm:col-span-2">
               <Select
                 value={estadoCivil ?? ''}
                 onValueChange={(v) => setValue('estadoCivil', v as EstadoCivil)}
@@ -191,7 +189,7 @@ export function PersonaForm({
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Nombre del cónyuge" optional className="col-span-2">
+            <Field label="Nombre del cónyuge" optional className="sm:col-span-2">
               <Input
                 {...register('nombreConyuge')}
                 placeholder="Nombre completo"
@@ -199,7 +197,7 @@ export function PersonaForm({
                 className="disabled:opacity-40"
               />
             </Field>
-            <Field label="Nivel de estudios" optional className="col-span-2">
+            <Field label="Nivel de estudios" optional className="sm:col-span-2">
               <Select
                 value={nivelEstudio ?? ''}
                 onValueChange={(v) => setValue('nivelEstudio', v as NivelEstudio)}
@@ -214,9 +212,9 @@ export function PersonaForm({
             </Field>
           </div>
 
-          {/* Universidad — solo cuando aplica, campo amplio */}
-          <div className="grid grid-cols-6 gap-4">
-            <Field label="Institución educativa" optional className="col-span-4">
+          {/* Universidad */}
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+            <Field label="Institución educativa" optional className="sm:col-span-4">
               <Input
                 {...register('universidad')}
                 placeholder="Universidad de Sonora"
@@ -234,9 +232,9 @@ export function PersonaForm({
       {/* ── DOMICILIO ─────────────────────────────────────────── */}
       <section>
         <SectionHeader icon={MapPin} label="Domicilio" />
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* IZQUIERDA */}
-          <div className="col-span-7 space-y-4">
+          <div className="lg:col-span-7 space-y-4">
             <Field label="Calle" optional>
               <Input
                 {...register('calle')}
@@ -251,11 +249,11 @@ export function PersonaForm({
               />
             </Field>
 
-            <div className="grid grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
               <Field
                 label="Ciudad / Municipio"
                 optional
-                className="col-span-3"
+                className="sm:col-span-3"
               >
                 <Input
                   {...register('ciudad')}
@@ -266,7 +264,7 @@ export function PersonaForm({
               <Field
                 label="Estado"
                 optional
-                className="col-span-3"
+                className="sm:col-span-3"
               >
                 <Select
                   value={watch('estado') ?? ''}
@@ -289,7 +287,7 @@ export function PersonaForm({
           </div>
 
           {/* DERECHA */}
-          <div className="col-span-5 space-y-4">
+          <div className="lg:col-span-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Field label="Núm. ext." optional>
                 <Input
@@ -388,23 +386,22 @@ export function PersonaForm({
       {/* ── CONTACTO ──────────────────────────────────────────── */}
       <section>
         <SectionHeader icon={Phone} label="Información de contacto" />
-        {/* Teléfono 10 dígitos + Celular 10 dígitos = misma anchura; correo más largo */}
-        <div className="grid grid-cols-6 gap-4">
-          <Field label="Teléfono fijo" error={errors.telefono?.message} optional className="col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+          <Field label="Teléfono fijo" error={errors.telefono?.message} optional className="sm:col-span-2">
             <Input
               {...register('telefono', { pattern: { value: /^[0-9]{10}$/, message: '10 dígitos' } })}
               placeholder="6441234567"
               maxLength={10}
             />
           </Field>
-          <Field label="Celular" error={errors.celular?.message} optional className="col-span-2">
+          <Field label="Celular" error={errors.celular?.message} optional className="sm:col-span-2">
             <Input
               {...register('celular', { pattern: { value: /^[0-9]{10}$/, message: '10 dígitos' } })}
               placeholder="6441234567"
               maxLength={10}
             />
           </Field>
-          <Field label="Correo electrónico" error={errors.correo?.message} optional className="col-span-2">
+          <Field label="Correo electrónico" error={errors.correo?.message} optional className="sm:col-span-2">
             <Input
               {...register('correo', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Correo inválido' } })}
               type="email"
@@ -416,15 +413,15 @@ export function PersonaForm({
 
       <FormError message={error} />
       {/* Acciones */}
-      <div className="flex justify-between pt-1">
-        <Button type="button" variant="outline" onClick={onBack} className="gap-2">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-1">
+        <Button type="button" variant="outline" onClick={onBack} className="gap-2 w-full sm:w-auto">
           <ChevronLeft className="w-4 h-4" /> Atrás
         </Button>
-        <div className="flex gap-2">
+        <div className="flex flex-col-reverse sm:flex-row gap-2 w-full sm:w-auto">
           {onSkip && skipLabel && (
-            <Button type="button" variant="ghost" onClick={onSkip}>{skipLabel}</Button>
+            <Button type="button" variant="ghost" onClick={onSkip} className="w-full sm:w-auto">{skipLabel}</Button>
           )}
-          <Button type="submit" disabled={loading} className="gap-2">
+          <Button type="submit" disabled={loading} className="gap-2 w-full sm:w-auto">
             Continuar <ChevronRight className="w-4 h-4" />
           </Button>
         </div>

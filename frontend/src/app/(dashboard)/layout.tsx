@@ -2,7 +2,7 @@
 
 // src/app/(dashboard)/layout.tsx
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "@/shared/components/layout/sidebar/Sidebar";
 import { Header } from "@/shared/components/layout/Header";
 import { useAuthStore } from "@/shared/lib/store/auth.store";
@@ -13,14 +13,21 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, isLoading } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.replace("/login");
     }
   }, [isAuthenticated, isLoading, router]);
+
+  // Cierra el drawer mobile al navegar a otra ruta
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   if (isLoading) {
     return (
@@ -38,21 +45,26 @@ export default function DashboardLayout({
   return (
     // h-screen + overflow-hidden en el root: nada se desborda del viewport
     <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
+      <Sidebar
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((v) => !v)}
+        mobileOpen={mobileOpen}
+        onMobileOpenChange={setMobileOpen}
+      />
 
       {/* Columna derecha: header fijo + contenido con scroll propio */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Header no se mueve */}
-        <Header />
+        <Header onOpenMobileMenu={() => setMobileOpen(true)} />
 
         {/* Solo este elemento scrollea */}
         <main className="flex-1 overflow-y-auto">
           {/*
             - No hay max-w fijo; el form usa todo el ancho disponible menos la sidebar
-            - px-6 py-6 da aire lateral sin desperdiciar espacio
+            - Padding responsivo: menos aire en mobile, más en desktop
             - En pantallas grandes podés agregar max-w-screen-xl si querés limitar
           */}
-          <div className="px-6 py-6">
+          <div className="px-3 py-4 sm:px-6 sm:py-6">
             {children}
           </div>
         </main>

@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getProgramas } from '@/features/programas/api/programas'
-import type { Programa } from '@/features/programas/types/programa.types'
+import { getProgramas } from '../../api/programas'
+import type { Programa } from '../..//types/programa.types'
 import type { CrearSolicitudDto } from '@/shared/lib/types/solicitudes.types'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'

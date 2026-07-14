@@ -22,10 +22,10 @@ import {
     CardTitle,
 } from "@/shared/components/ui/card";
 
-import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/programas/api/programas";
-import { ProgramaBadge, TipoPersonaBadge } from "@/features/programas/components/ProgramaBadge";
-import { DocumentosPrograma } from "@/features/programas/components/DocumentosPrograma";
-import { Requerimiento, type Programa } from "@/features/programas/types/programa.types";
+import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas";
+import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/programas/ProgramaBadge";
+import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
+import { Requerimiento, type Programa } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/utils/cn";
 
 const fmt = (n: number) =>

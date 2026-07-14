@@ -4,6 +4,9 @@ import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import * as solicitudesService from "./solicitudes.service";
 import { ok } from "@utils/response";
+import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
+import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
+import { mapearSolicitudAPDF } from "./solicitudes.service";
 
 export const listar = async (
     req: RequestAutenticado,
@@ -315,8 +318,6 @@ export const enviar = async (
     try {
         const solicitud = await solicitudesService.enviarSolicitud(
             req.params.id as string,
-            req.usuario!.id,
-            req.usuario!.rol
         );
 
         await registrarLog({
@@ -357,6 +358,40 @@ export const cambiarEstatus = async (
         });
 
         res.status(200).json(ok("Estatus actualizado", solicitud));
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const descargarPDF = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const solicitud = await solicitudesService.obtenerSolicitudPorId(
+            req.params.id as string,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        const data = mapearSolicitudAPDF(solicitud);
+        const html = solicitudTemplate(data);
+        const pdfBuffer = await generarPDFDesdeHTML(html);
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `PDF generado para solicitud: ${solicitud.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: solicitud.id,
+            req,
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
+        res.setHeader('Content-Length', pdfBuffer.length.toString());
+        res.status(200).send(pdfBuffer);
     } catch (error) {
         next(error);
     }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
@@ -14,19 +14,24 @@ import {
     TableRow,
 } from '@/shared/components/ui/table'
 import { EstatusDocumentoBadge } from './Estatusdocumentobadge'
+import { ValidarDocumentoDialog } from './Validardocumentodialog'
 import {
     XCircle,
     ExternalLink,
     History,
     FileX,
     ShieldCheck,
+    ThumbsUp,
+    ThumbsDown,
     Upload,
     Loader2,
 } from 'lucide-react'
 import type {
     ResumenDocumento,
+    ValidarDocumentoDto,
 } from '@/shared/lib/types/expediente.types'
-
+import { uploadsApi } from '@/shared/lib/api/uploads.api'
+import { ApiError } from '@/shared/lib/client'
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface TablaDocumentosProps {
     solicitudId: string
@@ -36,7 +41,8 @@ interface TablaDocumentosProps {
     rolUsuario: string
     gestorAsignadoId: string | null
     usuarioId: string
-    onSubir: (tipoDocumentoId: string,archivo: File) => Promise<any> // ← SubirDocumentoForm
+    onValidar: (documentoId: string, dto: ValidarDocumentoDto) => Promise<void>
+    onSubir: (tipoDocumentoId: string, archivo: File) => Promise<any> // ← SubirDocumentoForm
     onVerHistorial: (tipoDocumentoId: string, nombre: string) => void
 }
 
@@ -56,7 +62,7 @@ const DIALOG_INICIAL: DialogState = {
 
 // ─── Acento de color por estatus ──────────────────────────────────────────────
 const accentColor: Record<string, string> = {
-    APROBADO:  'bg-emerald-400',
+    APROBADO: 'bg-emerald-400',
     PENDIENTE: 'bg-amber-400',
     RECHAZADO: 'bg-red-400',
     NO_SUBIDO: 'bg-border',
@@ -68,29 +74,114 @@ const accentColor: Record<string, string> = {
 const MotivoRechazo = ({ motivo }: { motivo: string }) => (
     <Tooltip>
         <TooltipTrigger asChild>
-            <div className="flex items-center gap-1.5 max-w-[180px] cursor-help group">
+            <div className="flex items-center gap-1.5 max-w-45 cursor-help group">
                 <XCircle className="h-3 w-3 shrink-0 text-red-400" />
                 <p className="text-xs text-red-600 truncate group-hover:underline decoration-dashed underline-offset-2">
                     {motivo}
                 </p>
             </div>
         </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[260px] text-xs">
+        <TooltipContent side="top" className="max-w-65 text-xs">
             {motivo}
         </TooltipContent>
     </Tooltip>
 )
 
-const CeldaArchivo = ({ url, nombre }: { url: string; nombre: string }) => (
-    <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 max-w-[200px] text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80"
-    >
-        <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
-        <span className="truncate">{nombre}</span>
-    </a>
+const CeldaArchivo = ({
+    solicitudId,
+    documentoId,
+    nombre,
+}: {
+    solicitudId: string
+    documentoId: string
+    nombre: string
+}) => {
+    const [cargando, setCargando] = useState(false)
+
+    const handleClick = async () => {
+        setCargando(true)
+        try {
+            const blob = await uploadsApi.descargarArchivo(solicitudId, documentoId)
+            const url = URL.createObjectURL(blob)
+            const nuevaVentana = window.open(url, '_blank')
+
+            if (!nuevaVentana) {
+                URL.revokeObjectURL(url)
+                return
+            }
+
+            const intervalo = setInterval(() => {
+                if (nuevaVentana.closed) {
+                    URL.revokeObjectURL(url)
+                    clearInterval(intervalo)
+                }
+            }, 2000)
+        } catch (err) {
+            const msg = err instanceof ApiError ? err.message : 'No se pudo abrir el documento'
+            console.error(msg)
+        } finally {
+            setCargando(false)
+        }
+    }
+
+    return (
+        <button
+            onClick={handleClick}
+            disabled={cargando}
+            className="inline-flex items-center gap-1.5 max-w-50 text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80 disabled:opacity-50"
+        >
+            {cargando
+                ? <Loader2 className="h-3 w-3 shrink-0 animate-spin" />
+                : <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
+            }
+            <span className="truncate">{nombre}</span>
+        </button>
+    )
+}
+
+const BotonesValidacion = ({
+    documentoId,
+    nombreDocumento,
+    cargando,
+    onAbrir,
+}: {
+    documentoId: string
+    nombreDocumento: string
+    cargando: boolean
+    onAbrir: (id: string, nombre: string, accion: 'APROBADO' | 'RECHAZADO') => void
+}) => (
+    <div className="flex items-center gap-1.5">
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 w-7 p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 transition-all"
+                    disabled={cargando}
+                    onClick={() => onAbrir(documentoId, nombreDocumento, 'APROBADO')}
+                    aria-label={`Aprobar ${nombreDocumento}`}
+                >
+                    <ThumbsUp className="h-3.5 w-3.5" />
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>Aprobar</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 w-7 p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all"
+                    disabled={cargando}
+                    onClick={() => onAbrir(documentoId, nombreDocumento, 'RECHAZADO')}
+                    aria-label={`Rechazar ${nombreDocumento}`}
+                >
+                    <ThumbsDown className="h-3.5 w-3.5" />
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>Rechazar</TooltipContent>
+        </Tooltip>
+    </div>
 )
 
 // ─── Botón de subida por fila ─────────────────────────────────────────────────
@@ -148,13 +239,16 @@ const BotonSubir = ({
 export const TablaDocumentos = ({
     solicitudId,
     documentos,
+    validando,
     subiendo,
     rolUsuario,
     gestorAsignadoId,
     usuarioId,
+    onValidar,
     onSubir,
     onVerHistorial,
 }: TablaDocumentosProps) => {
+    const [dialog, setDialog] = useState<DialogState>(DIALOG_INICIAL)
 
     const esCliente = rolUsuario === 'CLIENTE'
     const esAdmin = rolUsuario === 'ADMIN'
@@ -162,6 +256,11 @@ export const TablaDocumentos = ({
     const puedeValidar = esGestorAsignado || esAdmin
     const puedeSubir = esCliente || esGestorAsignado || esAdmin
 
+    const abrirDialog = (
+        documentoId: string,
+        nombreDocumento: string,
+        accion: 'APROBADO' | 'RECHAZADO'
+    ) => setDialog({ open: true, documentoId, nombreDocumento, accion })
 
     // Cuando el usuario selecciona un archivo construimos el DTO y llamamos onSubir
     const handleArchivo = async (
@@ -279,7 +378,8 @@ export const TablaDocumentos = ({
                                         <TableCell className="py-3.5">
                                             {documentoActivo ? (
                                                 <CeldaArchivo
-                                                    url={documentoActivo.urlArchivo}
+                                                    solicitudId={solicitudId}
+                                                    documentoId={documentoActivo.id}
                                                     nombre={documentoActivo.nombreArchivo}
                                                 />
                                             ) : (
@@ -329,6 +429,17 @@ export const TablaDocumentos = ({
                                                         onArchivo={handleArchivo}
                                                     />
                                                 )}
+
+                                                {/* Validar — solo gestor asignado, solo en PENDIENTE */}
+                                                {esValidable && (
+                                                    <BotonesValidacion
+                                                        documentoId={documentoActivo!.id}
+                                                        nombreDocumento={tipoDocumento.nombre}
+                                                        cargando={validando === documentoActivo!.id}
+                                                        onAbrir={abrirDialog}
+                                                    />
+                                                )}
+
                                                 {/* Historial */}
                                                 {tieneHistorial ? (
                                                     <Tooltip>
@@ -375,6 +486,16 @@ export const TablaDocumentos = ({
                     )}
                 </CardContent>
             </Card>
+
+            <ValidarDocumentoDialog
+                open={dialog.open}
+                onOpenChange={(open) => setDialog((prev) => ({ ...prev, open }))}
+                documentoId={dialog.documentoId}
+                nombreDocumento={dialog.nombreDocumento}
+                accion={dialog.accion}
+                loading={validando === dialog.documentoId}
+                onConfirm={onValidar}
+            />
         </>
     )
 }

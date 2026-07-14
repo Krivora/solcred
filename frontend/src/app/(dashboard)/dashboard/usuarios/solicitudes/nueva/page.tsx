@@ -2,7 +2,7 @@ import { NuevaSolicitudForm } from '@/features/solicitudes/components/NuevaSolic
 
 export default function NuevaSolicitudPage() {
   return (
-    <div className="mx-auto max-w-8xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Nueva solicitud</h1>
         <p className="text-muted-foreground text-sm mt-1">

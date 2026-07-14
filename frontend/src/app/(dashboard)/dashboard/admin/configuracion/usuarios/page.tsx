@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Users } from "lucide-react";
 
-import { UsuariosStats } from "@/features/usuarios/components/UsuariosStats";
-import { UsuariosTable } from "@/features/usuarios/components/UsuariosTable";
-import { UsuarioDetalleSheet } from "@/features/usuarios/components/UsuarioDetalleSheet";
-import { UsuarioRolDialog } from "@/features/usuarios/components/UsuarioRolDialog";
-import { UsuarioDesactivarDialog } from "@/features/usuarios/components/UsuarioDesactivarDialog";
-import { useUsuarios } from "@/features/usuarios/hooks/useUsuarios";
-import type { Usuario } from "@/features/usuarios/types/usuario.types";
-import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/usuarios/schema/usuario.schemas";
+import { UsuariosStats } from "@/features/settings/components/usuarios/UsuariosStats";
+import { UsuariosTable } from "@/features/settings/components/usuarios/UsuariosTable";
+import { UsuarioDetalleSheet } from "@/features/settings/components/usuarios/UsuarioDetalleSheet";
+import { UsuarioRolDialog } from "@/features/settings/components/usuarios/UsuarioRolDialog";
+import { UsuarioDesactivarDialog } from "@/features/settings/components/usuarios/UsuarioDesactivarDialog";
+import { useUsuarios } from "@/features/settings/hooks/useUsuarios";
+import type { Usuario } from "@/features/settings/types/usuario.types";
+import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
 import { PageHeader, RefreshAction } from "@/shared/components/ui/PageHeader";
 
 export default function UsuariosPage() {

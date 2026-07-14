@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Usuario } from '../types/auth.types';
 import { setCookie, deleteCookie } from '../utils/cookies';
 
-type UsuarioBasico = Pick<Usuario, 'id' | 'correo' | 'rol'>;
+type UsuarioBasico = Pick<Usuario, 'id' | 'correo' | 'rol' | 'nombre' | 'apellidoPaterno'>;
 
 interface AuthStore {
   usuario: UsuarioBasico | null;

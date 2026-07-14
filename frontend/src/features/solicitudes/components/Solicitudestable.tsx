@@ -17,10 +17,11 @@ import { SolicitudesEmptyState } from './SolicitudesEmptyState'
 import { SolicitudEnviarDialog } from './Solicitudenviardialog'
 import { solicitudesApi } from '../api/solicitudes.api'
 import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
-import { Pencil, Send, Printer, Building2, User, FolderOpen, FileText } from 'lucide-react'
+import { Pencil, Send, User, FolderOpen, FileText, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
+import { useDescargarPDF } from '../hooks/useDescargarPDF'
 
 const SECTOR_LABELS: Record<string, string> = {
   AGROPECUARIO: 'Agropecuario',
@@ -63,7 +64,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selected, setSelected] = useState<Solicitud | null>(null)
-
+  const { descargar, idDescargando } = useDescargarPDF()
   function handleEnviarClick(s: Solicitud) {
     setSelected(s)
     setDialogOpen(true)
@@ -171,7 +172,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                   <TableCell className="py-3">
                     <EstatusBadge estatus={s.estatus} size="sm" />
                   </TableCell>
-
                   {/* Fecha */}
                   <TableCell className="py-3">
                     <span className="text-sm text-muted-foreground">
@@ -194,7 +194,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                       <span className="text-sm text-center text-muted-foreground">Sin asignar</span>
                     )}
                   </TableCell>
-
                   {/* PDF */}
                   <TableCell className="py-3 text-right" onClick={e => e.stopPropagation()}>
                     <Button
@@ -202,15 +201,19 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                       size="icon"
                       className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 ml-auto"
                       title="Generar PDF"
-                      onClick={() => router.push(`/dashboard/admin/solicitudes/${s.id}/pdf`)}
+                      disabled={idDescargando === s.id}
+                      onClick={() => descargar(s.id, s.folio)}
                     >
-                      <FileText className="h-3.5 w-3.5" />
+                      {idDescargando === s.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <FileText className="h-3.5 w-3.5" />
+                      )}
                     </Button>
                   </TableCell>
-
                   {/* Acciones */}
                   <TableCell className="py-3 pr-4">
-                    {s.estatus === 'BORRADOR' ? (
+                    {s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION' ? (
                       <div className="flex items-center justify-end gap-1.5">
                         <Button
                           variant="ghost"
@@ -225,7 +228,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                           variant="outline"
                           size="sm"
                           className="h-8 gap-1.5 text-xs rounded-full"
-                          onClick={() => router.push(`/dashboard/usuarios/solicitudes/${s.id}`)}
+                          onClick={() => router.push(`/dashboard/usuarios/solicitudes/${s.id}/editar`)}
                         >
                           <Pencil className="w-3.5 h-3.5" />
                           Editar

@@ -2,7 +2,7 @@
 
 // src/components/layout/Header.tsx
 import { usePathname } from "next/navigation";
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, Menu } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useAuthStore } from "@/shared/lib/store/auth.store";
 import { cn } from "@/shared/lib/utils/cn";
@@ -32,52 +32,72 @@ function getBreadcrumbs(pathname: string): { label: string; href: string }[] {
   }));
 }
 
-export function Header() {
+interface HeaderProps {
+  onOpenMobileMenu: () => void;
+}
+
+export function Header({ onOpenMobileMenu }: HeaderProps) {
   const pathname = usePathname();
   const { usuario } = useAuthStore();
   const breadcrumbs = getBreadcrumbs(pathname);
   const currentPage = breadcrumbs[breadcrumbs.length - 1];
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/95 backdrop-blur-sm px-6 gap-4">
-      {/* Left: Page title / breadcrumb */}
-      <div className="min-w-0">
-        <h1 className="text-base font-semibold text-foreground truncate">
-          {currentPage?.label ?? "Dashboard"}
-        </h1>
-        {breadcrumbs.length > 1 && (
-          <nav className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-            {breadcrumbs.map((crumb, i) => (
-              <span key={crumb.href} className="flex items-center gap-1">
-                {i > 0 && <span>/</span>}
-                <span
-                  className={cn(
-                    i === breadcrumbs.length - 1
-                      ? "text-foreground font-medium"
-                      : "hover:text-foreground cursor-pointer"
-                  )}
-                >
-                  {crumb.label}
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/95 backdrop-blur-sm px-3 sm:px-6 gap-2 sm:gap-4">
+      {/* Left: hamburger (mobile) + page title / breadcrumb */}
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0 lg:hidden"
+          onClick={onOpenMobileMenu}
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+
+        <div className="min-w-0">
+          <h1 className="text-sm sm:text-base font-semibold text-foreground truncate">
+            {currentPage?.label ?? "Dashboard"}
+          </h1>
+          {breadcrumbs.length > 1 && (
+            <nav className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+              {breadcrumbs.map((crumb, i) => (
+                <span key={crumb.href} className="flex items-center gap-1">
+                  {i > 0 && <span>/</span>}
+                  <span
+                    className={cn(
+                      i === breadcrumbs.length - 1
+                        ? "text-foreground font-medium"
+                        : "hover:text-foreground cursor-pointer"
+                    )}
+                  >
+                    {crumb.label}
+                  </span>
                 </span>
-              </span>
-            ))}
-          </nav>
-        )}
+              ))}
+            </nav>
+          )}
+        </div>
       </div>
 
       {/* Right: actions */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* Search */}
         <Button
           variant="outline"
           size="sm"
-          className="hidden sm:flex items-center gap-2 text-muted-foreground h-8 px-3 text-xs"
+          className="hidden md:flex items-center gap-2 text-muted-foreground h-8 px-3 text-xs"
         >
           <Search className="h-3.5 w-3.5" />
           <span>Buscar...</span>
           <kbd className="ml-1 rounded border border-border bg-muted px-1 text-[10px] font-mono">
             ⌘K
           </kbd>
+        </Button>
+
+        {/* Search icon only (mobile/tablet) */}
+        <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
+          <Search className="h-4 w-4" />
         </Button>
 
         {/* Notifications */}
@@ -88,7 +108,7 @@ export function Header() {
 
         {/* Avatar */}
         {usuario && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold shrink-0">
             {usuario.nombre[0]}{usuario.apellidoPaterno[0]}
           </div>
         )}
