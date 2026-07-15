@@ -1,278 +1,212 @@
 interface BaseLayoutParams {
-    folio: string;
-    estatus: string;
-    titulo: string;
-    subtitulo: string;
-    contenido: string;
+  folio: string;
+  lugar: string;
+  fechaEnvio: string;
+  contenido: string;
+  nombreSolicitante: string;
 }
 
 const TOKENS = `
-  --background: oklch(0.9851 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 267.51);
-  --card-foreground: oklch(0.2103 0 267.51);
-  --primary: oklch(0.5144 0.1605 267.44);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.94 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.44 0 0);
-  --accent: oklch(0.9214 0.0248 257.65);
-  --accent-foreground: oklch(0.2571 0.1161 272.24);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.92 0 0);
-  --chart-4: oklch(0.5144 0.1605 267.44);
-  --chart-5: oklch(0.2571 0.1161 272.24);
+  --ink: oklch(0.18 0.02 258);
+  --bar: oklch(0.25 0.03 258);
+  --bar-foreground: oklch(0.98 0 0);
+  --muted-foreground: oklch(0.42 0 0);
+  --border: oklch(0.82 0 0);
+  --border-strong: oklch(0.25 0.03 258);
+  --row-alt: oklch(0.965 0 0);
 `;
 
-const ESTATUS_COLOR: Record<string, string> = {
-    BORRADOR: 'var(--muted-foreground)',
-    EN_REVISION: 'var(--chart-4)',
-    APROBADA: 'oklch(0.55 0.15 145)',
-    RECHAZADA: 'var(--destructive)',
-    ENVIADA: 'var(--chart-4)',
-};
-
-function colorEstatus(estatus: string): string {
-    return ESTATUS_COLOR[estatus] ?? 'var(--chart-4)';
-}
-
-export function baseLayout({ folio, estatus, titulo, subtitulo, contenido }: BaseLayoutParams): string {
-    return `
+export function baseLayout({ folio, lugar, fechaEnvio, contenido, nombreSolicitante }: BaseLayoutParams): string {
+  return `
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <style>
   :root { ${TOKENS} }
-
   * { box-sizing: border-box; }
-
-  @page {
-    size: letter;
-    margin: 0;
-  }
+  @page { size: letter; margin: 0; }
 
   body {
     font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif;
-    color: var(--foreground);
-    background: var(--background);
-    font-size: 10.5px;
-    line-height: 1.5;
+    color: var(--ink);
+    font-size: 9px;
+    line-height: 1.35;
     margin: 0;
   }
 
-  .page-padding {
-    padding: 36px 42px 60px 42px;
-  }
+  .page { padding: 26px 34px 24px 34px; }
 
-  /* ---------- HEADER ---------- */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2.5px solid var(--primary);
-    padding-bottom: 16px;
-    margin-bottom: 22px;
-  }
-
-  .header-left { display: flex; flex-direction: column; gap: 4px; }
-
-  .header-brand {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--primary);
-    text-transform: uppercase;
-  }
-
-  .header-title { font-size: 19px; font-weight: 700; color: var(--card-foreground); margin: 2px 0 0 0; }
-  .header-subtitle { font-size: 11px; color: var(--muted-foreground); margin: 0; }
-
-  .header-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-
-  .folio-tag {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--card-foreground);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 9.5px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    background: var(--accent);
-    color: ${colorEstatus(estatus)};
-    border: 1px solid ${colorEstatus(estatus)};
-  }
-
-  /* ---------- SECTIONS ---------- */
-  .section { margin-bottom: 18px; break-inside: avoid; }
-
-  .section-header {
+  /* ---------- ENCABEZADO ---------- */
+  .top-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .section-icon {
-    width: 6px;
-    height: 6px;
-    border-radius: 2px;
-    background: var(--primary);
-  }
-
-  .section-title {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-  }
-
-  /* ---------- FIELD GRID ---------- */
-  .field-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 24px;
-  }
-
-  .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .field-grid.cols-1 { grid-template-columns: 1fr; }
-
-  .field { display: flex; flex-direction: column; gap: 2px; }
-  .field-label {
-    font-size: 8.5px;
-    color: var(--muted-foreground);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-weight: 600;
-  }
-  .field-value { font-size: 10.5px; color: var(--card-foreground); font-weight: 500; }
-  .field-value.empty { color: var(--muted-foreground); font-style: italic; font-weight: 400; }
-
-  /* ---------- TABLE ---------- */
-  table.data-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-  table.data-table th {
-    text-align: left;
-    font-size: 8.5px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--muted-foreground);
-    font-weight: 600;
-    padding: 6px 8px;
-    border-bottom: 1.5px solid var(--border);
-  }
-  table.data-table td {
-    font-size: 10px;
-    padding: 7px 8px;
-    border-bottom: 1px solid var(--border);
-    color: var(--card-foreground);
-  }
-  table.data-table tr:last-child td { border-bottom: none; }
-  table.data-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
-  table.data-table tfoot td {
-    font-weight: 700;
-    border-top: 1.5px solid var(--primary);
-    border-bottom: none;
-    padding-top: 8px;
-  }
-
-  /* ---------- SUBBLOCK (para garantías, conceptos individuales) ---------- */
-  .subblock {
-    border-left: 2.5px solid var(--accent);
-    padding-left: 12px;
+    justify-content: space-between;
+    border-bottom: 2.5px solid var(--border-strong);
+    padding-bottom: 10px;
     margin-bottom: 12px;
   }
-  .subblock:last-child { margin-bottom: 0; }
-  .subblock-title { font-size: 10px; font-weight: 700; color: var(--card-foreground); margin-bottom: 6px; }
 
-  /* ---------- FOOTER / FIRMAS ---------- */
-  .firmas {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 40px;
-    padding-top: 20px;
+  .brand-name {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
   }
-  .firma-box { text-align: center; }
-  .firma-linea { border-top: 1px solid var(--foreground); margin-bottom: 6px; padding-top: 30px; }
-  .firma-label { font-size: 9.5px; color: var(--muted-foreground); }
-
-  .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 42px;
-    font-size: 8px;
+  .brand-tagline {
+    font-size: 7.5px;
     color: var(--muted-foreground);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 1px;
   }
+
+  .title-block { text-align: right; }
+  .title-main {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .title-sub { font-size: 8.5px; color: var(--muted-foreground); margin-top: 1px; }
+
+  /* ---------- BARRA DE SECCIÓN ---------- */
+  .block { break-inside: avoid; margin-bottom: 8px; }
+
+  .bar {
+    background: var(--bar);
+    color: var(--bar-foreground);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+  }
+
+  .section-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 6px 10px 7px 10px;
+  }
+
+  /* ---------- FILAS DE CAMPOS ---------- */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+    padding: 2px 0;
+    border-bottom: 1px solid var(--row-alt);
+  }
+  .row:last-child { border-bottom: none; }
+
+  .f {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .f.w-half { flex-basis: calc(50% - 9px); white-space: normal; }
+  .f.w-third { flex-basis: calc(33.333% - 12px); white-space: normal; }
+  .f.w-quarter { flex-basis: calc(25% - 13.5px); white-space: normal; }
+  .f.w-full { flex-basis: 100%; white-space: normal; }
+
+  .f-label {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 8.5px;
+  }
+  .f-value { color: var(--ink); font-size: 8.5px; }
+  .f-value.empty { color: var(--muted-foreground); }
+
+  /* ---------- TABLAS ---------- */
+  table.data-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
+  table.data-table th {
+    background: var(--row-alt);
+    text-align: left;
+    font-size: 7.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--muted-foreground);
+    font-weight: 700;
+    padding: 4px 7px;
+    border: 1px solid var(--border);
+  }
+  table.data-table td {
+    font-size: 8.5px;
+    padding: 4px 7px;
+    border: 1px solid var(--border);
+  }
+  table.data-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+  table.data-table tfoot td { font-weight: 700; background: var(--row-alt); }
+
+  /* ---------- FIRMA ÚNICA ---------- */
+  .firma {
+    break-inside: avoid;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .firma-box { text-align: center; width: 260px; }
+  .firma-linea { border-top: 1px solid var(--ink); padding-top: 4px; }
+  .firma-nombre { font-size: 9px; font-weight: 700; }
+  .firma-label { font-size: 8px; color: var(--muted-foreground); margin-top: 2px; }
 </style>
 </head>
 <body>
-  <div class="page-padding">
-    <div class="header">
-      <div class="header-left">
-        <span class="header-brand">SolCred</span>
-        <h1 class="header-title">${titulo}</h1>
-        <p class="header-subtitle">${subtitulo}</p>
+  <div class="page">
+    <div class="top-header">
+      <div>
+        <div class="brand-name">SolCred</div>
+        <div class="brand-tagline">Sistema de Gestión de Solicitudes</div>
       </div>
-      <div class="header-right">
-        <span class="folio-tag">Folio ${folio}</span>
-        <span class="badge">${estatus.replace(/_/g, ' ')}</span>
+      <div class="title-block">
+        <div class="title-main">Solicitud de Financiamiento</div>
+        <div class="title-sub">${lugar}</div>
       </div>
     </div>
 
     ${contenido}
-  </div>
 
-  <div class="footer">
-    <span>Documento generado por SolCred · ${new Date().toLocaleString('es-MX')}</span>
-    <span>Folio ${folio}</span>
+    <div class="firma">
+      <div class="firma-box">
+        <div class="firma-linea">
+          <div class="firma-nombre">${nombreSolicitante}</div>
+          <div class="firma-label">Firma del Solicitante</div>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
 `;
 }
 
-// ---------- HELPERS REUTILIZABLES PARA TEMPLATES ----------
+// ---------- HELPERS ----------
 
-export function field(label: string, value: string | number | null | undefined, sufijo = ''): string {
-    const vacio = value === null || value === undefined || value === '';
-    return `
-    <div class="field">
-      <span class="field-label">${label}</span>
-      <span class="field-value ${vacio ? 'empty' : ''}">${vacio ? 'No especificado' : `${value}${sufijo}`}</span>
-    </div>
+export function bar(titulo: string): string {
+  return `<div class="bar">${titulo}</div>`;
+}
+
+export function f(label: string, value: string | number | null | undefined, ancho: 'auto' | 'half' | 'third' | 'quarter' | 'full' = 'auto', sufijo = ''): string {
+  const vacio = value === null || value === undefined || value === '';
+  const claseAncho = ancho === 'auto' ? '' : `w-${ancho}`;
+  return `
+    <span class="f ${claseAncho}">
+      <span class="f-label">${label}:</span>
+      <span class="f-value ${vacio ? 'empty' : ''}">${vacio ? '—' : `${value}${sufijo}`}</span>
+    </span>
   `;
 }
 
-export function sectionHeader(titulo: string): string {
-    return `
-    <div class="section-header">
-      <span class="section-icon"></span>
-      <span class="section-title">${titulo}</span>
-    </div>
-  `;
+export function row(...campos: string[]): string {
+  return `<div class="row">${campos.join('')}</div>`;
+}
+
+export function block(barHtml: string, bodyHtml: string): string {
+  return `<div class="block">${barHtml}<div class="section-body">${bodyHtml}</div></div>`;
 }
 
 export function formatoMoneda(valor: number): string {
-    return valor.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+  return valor.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
 }

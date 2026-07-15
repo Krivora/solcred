@@ -176,7 +176,7 @@ export default function ExpedientePage({
                     </div>
 
                     {/* Main */}
-                    <div className="flex-1 min-w-0 space-y-4">
+                    <div className="flex-1 min-w-0 space-y-5">
                         <DatosGeneralesCard
                             expediente={expediente}
                         />

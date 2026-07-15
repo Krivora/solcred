@@ -87,32 +87,33 @@ export const DatosGeneralesCard = ({ expediente }: DatosGeneralesCardProps) => {
     const estatusClass = estatusBg[expediente.estatus] ?? 'bg-muted text-foreground border-border'
 
     return (
-        <Card className="overflow-hidden">
+        // DatosGeneralesCard.tsx
+        <Card className="w-full overflow-hidden">
             {/* ── Banda: folio + programa + estatus ─────────────────────── */}
-            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-border bg-muted/30">
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5">
+           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-muted/30">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-1.5 shrink-0">
                         <Hash className="h-3.5 w-3.5 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                             Folio
                         </span>
                     </div>
-                    <span className="font-mono text-base font-bold tracking-widest text-primary">
+                    <span className="font-mono text-base font-bold tracking-widest text-primary shrink-0">
                         {expediente.folio}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap min-w-0">
                     <Badge
                         variant="outline"
-                        className="bg-accent/50 text-accent-foreground border-accent text-xs font-medium px-2.5"
+                        className="bg-accent/50 text-accent-foreground border-accent text-xs font-medium px-2.5 max-w-[200px] sm:max-w-none"
                     >
-                        <Building2 className="h-3 w-3 mr-1.5 opacity-70" />
-                        {expediente.programa.nombre}
+                        <Building2 className="h-3 w-3 mr-1.5 opacity-70 shrink-0" />
+                        <span className="truncate">{expediente.programa.nombre}</span>
                     </Badge>
                     <Badge
                         variant="outline"
-                        className={`text-xs font-medium px-2.5 ${estatusClass}`}
+                        className={`text-xs font-medium px-2.5 shrink-0 ${estatusClass}`}
                     >
                         {estatusLabel[expediente.estatus] ?? expediente.estatus}
                     </Badge>
@@ -120,7 +121,7 @@ export const DatosGeneralesCard = ({ expediente }: DatosGeneralesCardProps) => {
             </div>
 
             {/* ── Campos: grid 2 columnas en el espacio disponible ──────── */}
-            <CardContent className="p-5">
+            <CardContent className="px-4 py-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-4">
                     <Campo icon={User} label="Solicitante" value={nombre} />
                     <Campo icon={Mail} label="Correo electrónico" value={correo} />

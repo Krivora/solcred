@@ -6,7 +6,7 @@ export function SolicitudesEmptyState() {
   const router = useRouter()
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+    <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 text-center">
       <div className="p-4 rounded-full bg-muted mb-4">
         <FileText className="w-8 h-8 text-muted-foreground" />
       </div>
@@ -17,7 +17,7 @@ export function SolicitudesEmptyState() {
         Crea tu primera solicitud de crédito y sigue su proceso en tiempo real.
       </p>
       <Button
-        className="gap-2"
+        className="gap-2 w-full sm:w-auto"
         onClick={() => router.push('/dashboard/usuarios/solicitudes/nueva')}
       >
         <Plus className="w-4 h-4" />
