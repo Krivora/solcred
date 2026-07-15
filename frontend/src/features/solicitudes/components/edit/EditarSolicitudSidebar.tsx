@@ -32,7 +32,7 @@ function estaCompleta(step: Step, solicitud: Solicitud): boolean | null {
             return Boolean(solicitud.datosSolicitante)
         case 'aval':
             // El aval puede ser opcional según el programa — null indica "no aplica/no requerido"
-            return solicitud.programa?.avalObligatorio || solicitud.programa?.avalOpcional
+            return solicitud.datosAval?.id || solicitud.programa?.nombre
                 ? Boolean(solicitud.datosAval)
                 : null
         case 'credito':

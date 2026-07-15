@@ -11,9 +11,7 @@ interface SolicitudParaEvaluar {
     tipoPersona: string | null;
     sector: string | null;
     tamanoEmpresa: string | null;
-    programaId: string;
-    montoSolicitado: number | null;
-}
+    programaId: string;}
 
 interface FiltrosAsignacion {
     page: number;
@@ -181,7 +179,6 @@ const evaluarRegla = async (
                 });
                 return programa?.nombre ?? null;
             }
-            case CampoRegla.MONTO_SOLICITADO: return solicitud.montoSolicitado;
             default: return null;
         }
     })();
@@ -283,7 +280,6 @@ export const asignarAutomaticamente = async (
             sector: true,
             tamanoEmpresa: true,
             programaId: true,
-            montoSolicitado: true,
             asignaciones: { where: { activa: true } }, // ← cambio aquí
         },
     });

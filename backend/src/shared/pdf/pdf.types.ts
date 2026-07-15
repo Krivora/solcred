@@ -103,19 +103,58 @@ export interface DocumentoPDF {
 }
 
 export interface CartaRechazoPDFData {
-  folio: string;
-  programa: string;
-  monto: string; // ya formateado en moneda
-  fechaSolicitud: string;
-  fechaRechazo: string;
-  lugarFecha: string; // "Hermosillo, Sonora a 14 de Julio del 2026"
+    folio: string;
+    programa: string;
+    monto: string;
+    fechaSolicitud: string;
+    fechaRechazo: string;
+    lugarFecha: string;
+    nombreDestinatario: string;
+    domicilioDestinatario: string;
+    motivoRechazo: string;
+}
 
-  nombreDestinatario: string; // nombre completo en mayúsculas
-  domicilioDestinatario: string; // calle, colonia, C.P., localidad
+export interface TarjetaInformativaPDFData {
+    folio: string;
+    solicitanteNombre: string;
+    programa: string;
+    fechaRegistro: string;
+    montoSolicitado: string | null;
+    municipio: string | null;
+    sector: string | null;
+    tamanoEmpresa: string | null;
+    tipoPersona: string | null;
+    estatusActual: string;
 
-  motivoRechazo: string;
-  fundamentoLegal: string;
+    gestorActual: { nombre: string; grupo: string; fechaAsignacion: string } | null;
+    historialAsignaciones: {
+        gestor: string;
+        grupo: string;
+        fechaAsignacion: string;
+        fechaReasignacion: string | null;
+        motivoReasignacion: string | null;
+        asignadoPor: string | null;
+    }[];
 
-  firmanteNombre: string;
-  firmanteCargo: string;
+    historialEstatus: {
+        estatusAnterior: string;
+        estatusNuevo: string;
+        fecha: string;
+        usuario: string;
+        motivo: string | null;
+    }[];
+
+    timeline: { fecha: string; titulo: string; detalle: string | null; tipo: 'estatus' | 'asignacion' }[];
+
+    documentos: {
+        totalRequeridos: number;
+        totalSubidos: number;
+        aprobados: number;
+        rechazados: number;
+        pendientes: number;
+        porcentajeAvance: number;
+        detalle: { nombre: string; estatus: string; version: number; motivoRechazo: string | null }[];
+    };
+
+    observaciones: string[];
 }

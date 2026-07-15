@@ -8,9 +8,10 @@ import {
   RechazarDto,
 } from "./promocion.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
-import { CartaRechazoPDFData } from "../../../shared/pdf/pdf.types";
-const FIRMANTE_NOMBRE = "ALDO PAUL AVALOS GARCIA";
-const FIRMANTE_CARGO = "DIRECCION DE PROMOCIÓN";
+import { CartaRechazoPDFData, SolicitudPDFData, DatosPersonaPDF,TarjetaInformativaPDFData  } from "../../../shared/pdf/pdf.types";
+
+const ESTATUS_RECHAZO: EstatusSolicitud[] = ["RECHAZADO", "CANCELADO"];
+
 const ESTATUS_FINALES: EstatusSolicitud[] = ["APROBADO", "RECHAZADO", "CANCELADO"];
 const ESTATUS_HISTORICO_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "PENDIENTE", "BORRADOR"];
 interface FiltrosPromocion {
@@ -40,18 +41,27 @@ interface FiltrosMisCasos {
   busqueda?: string
 }
 const incluyeTodo = {
-  programa: {
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
-      },
+    programa: {
+        include: {
+            documentosRequeridos: {
+                include: { tipoDocumento: true },
+            },
+        },
     },
-  },
-  datosSolicitante: true,
-  datosAval: true,
-  documentos: {
-    include: { tipoDocumento: true },
-  },
+    datosSolicitante: true,
+    datosAval: true,
+    datosCredito: {
+        include: { conceptos: true },
+    },
+    datosGarantia: {
+        include: { garantias: true },
+    },
+    datosNegocio: true,
+    datosMercado: true,
+    datosBancarios: true,
+    documentos: {
+        include: { tipoDocumento: true },
+    },
 };
 
 // helper reutilizable
@@ -440,7 +450,7 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   } = filtros;
 
   const skip = (page - 1) * limit;
-  const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECION'];
+  const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION'];
   // ── FIX: asignacion -> asignaciones, con some ────────────────────────────
   const where: any = {
     asignaciones: {
@@ -894,6 +904,25 @@ export const rechazar = async (
   })
 }
 
+export const SolicitudId = async (
+    id: string,
+    usuarioId: string,
+    rol: string
+) => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id },
+        include: incluyeTodo,
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    // El cliente solo puede ver sus propias solicitudes
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para ver esta solicitud", 403);
+    }
+
+    return solicitud;
+};
 const capitalizar = (texto: string): string =>
   texto
     .toLowerCase()
@@ -901,70 +930,437 @@ const capitalizar = (texto: string): string =>
     .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
     .join(" ");
 
+const construirDomicilio = (d: {
+    calle?: string | null;
+    numeroExterior?: string | null;
+    numeroInterior?: string | null;
+    colonia?: string | null;
+    ciudad?: string | null;
+    estado?: string | null;
+    codigoPostal?: string | null;
+}): string => {
+    const partes = [
+        d.calle,
+        d.numeroExterior ? `#${d.numeroExterior}` : null,
+        d.numeroInterior ? `Int. ${d.numeroInterior}` : null,
+        d.colonia,
+        d.ciudad,
+        d.estado,
+        d.codigoPostal ? `C.P. ${d.codigoPostal}` : null,
+    ].filter(Boolean);
+
+    return partes.length > 0 ? partes.join(", ") : "";
+};
+
+const mapearPersona = (p: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    curp: string | null;
+    rfc: string | null;
+    telefono: string | null;
+    celular: string | null;
+    correo: string | null;
+    calle: string | null;
+    numeroExterior: string | null;
+    numeroInterior: string | null;
+    colonia: string | null;
+    ciudad: string | null;
+    estado: string | null;
+    codigoPostal: string | null;
+    nivelEstudio: string | null;
+    universidad: string | null;
+    estadoCivil: string | null;
+    nombreConyuge: string | null;
+    numeroINE: string | null;
+    tipoVivienda: string | null;
+    aniosDomicilioActual: number | null;
+    aniosDomicilioAnterior: number | null;
+}): DatosPersonaPDF => ({
+    nombreCompleto: `${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}`,
+    curp: p.curp,
+    rfc: p.rfc,
+    telefono: p.telefono,
+    celular: p.celular,
+    correo: p.correo,
+    domicilio: construirDomicilio(p),
+    nivelEstudio: p.nivelEstudio,
+    universidad: p.universidad,
+    estadoCivil: p.estadoCivil,
+    nombreConyuge: p.nombreConyuge,
+    numeroINE: p.numeroINE,
+    tipoVivienda: p.tipoVivienda,
+    aniosDomicilioActual: p.aniosDomicilioActual,
+    aniosDomicilioAnterior: p.aniosDomicilioAnterior,
+});
+
+const formatearFechaHora = (fecha: Date): string =>
+    fecha.toLocaleString("es-MX", {
+        year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+    });
+
+const formatearFecha = (fecha: Date): string =>
+    fecha.toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" });
+
+const nombreUsuario = (u: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }): string =>
+    `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`;
+
+export const mapearSolicitudAPDF = (
+    solicitud: Awaited<ReturnType<typeof SolicitudId>>
+): SolicitudPDFData => {
+    return {
+        folio: solicitud.folio,
+        estatus: solicitud.estatus,
+        programa: solicitud.programa.nombre,
+        fechaSolicitud: formatearFecha(solicitud.creadoEn) ?? "",
+        tipoPersona: solicitud.tipoPersona,
+        sector: solicitud.sector,
+        tamanoEmpresa: solicitud.tamanoEmpresa,
+
+        datosSolicitante: solicitud.datosSolicitante
+            ? mapearPersona(solicitud.datosSolicitante)
+            : null,
+
+        datosAval: solicitud.datosAval
+            ? mapearPersona(solicitud.datosAval)
+            : null,
+
+        datosNegocio: solicitud.datosNegocio
+            ? {
+                razonSocial: solicitud.datosNegocio.razonSocial,
+                rfcNegocio: solicitud.datosNegocio.rfcNegocio,
+                nombreNegocio: solicitud.datosNegocio.nombreNegocio,
+                domicilioNegocio: [
+                    solicitud.datosNegocio.domicilioNegocio,
+                    solicitud.datosNegocio.numeroExteriorNegocio ? `#${solicitud.datosNegocio.numeroExteriorNegocio}` : null,
+                    solicitud.datosNegocio.numeroInteriorNegocio ? `Int. ${solicitud.datosNegocio.numeroInteriorNegocio}` : null,
+                    solicitud.datosNegocio.coloniaLocal,
+                    solicitud.datosNegocio.municipioLocal,
+                    solicitud.datosNegocio.estadoLocal,
+                    solicitud.datosNegocio.codigoPostalLocal ? `C.P. ${solicitud.datosNegocio.codigoPostalLocal}` : null,
+                ].filter(Boolean).join(", "),
+                actividadNegocio: solicitud.datosNegocio.actividadNegocio,
+                areaNegocio: solicitud.datosNegocio.areaNegocio,
+                empleosConservados: solicitud.datosNegocio.empleosConservados,
+                empleosNuevos: solicitud.datosNegocio.empleosNuevos,
+                fechaInicioOperaciones: formatearFecha(solicitud.datosNegocio.fechaInicioOperaciones),
+                antiguedadNegocio: solicitud.datosNegocio.antiguedadNegocio,
+                tipoLocal: solicitud.datosNegocio.tipoLocal,
+                experienciaActividadSolicitante: solicitud.datosNegocio.experienciaActividadSolicitante,
+                experienciaEmpresarioSolicitante: solicitud.datosNegocio.experienciaEmpresarioSolicitante,
+                actualExporta: solicitud.datosNegocio.actualExporta,
+                telefonoRecadosNegocio: solicitud.datosNegocio.telefonoRecadosNegocio,
+                telefonoFijoNegocio: solicitud.datosNegocio.telefonoFijoNegocio,
+            }
+            : null,
+
+        datosCredito: solicitud.datosCredito
+            ? {
+                plazoMeses: solicitud.datosCredito.plazoMeses,
+                mesesGracia: solicitud.datosCredito.mesesGracia,
+                montoTotal: solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0),
+                conceptos: solicitud.datosCredito.conceptos.map((c) => ({
+                    categoria: c.categoria,
+                    concepto: c.concepto,
+                    monto: c.monto,
+                })),
+            }
+            : null,
+
+        datosGarantia:
+            solicitud.datosGarantia && solicitud.datosGarantia.garantias.length > 0
+                ? solicitud.datosGarantia.garantias.map((g) => ({
+                    tipo: g.tipo,
+                    nombrePropietario: g.nombrePropietario,
+                    valor: g.valor,
+                    descripcion: g.descripcion,
+                    marca: g.marca,
+                    modelo: g.modelo,
+                    anio: g.anio,
+                    numeroSerie: g.numeroSerie,
+                    domicilio:
+                        g.tipo === "HIPOTECARIA"
+                            ? construirDomicilio(g)
+                            : null,
+                    numeroEscritura: g.numeroEscritura,
+                    folioReal: g.folioReal,
+                }))
+                : null,
+
+        datosMercado: solicitud.datosMercado
+            ? {
+                principalesProductos: solicitud.datosMercado.principalesProductos,
+                distribucionClientes: [
+                    { label: "Mayoristas", valor: solicitud.datosMercado.porcentajeMayoristas },
+                    { label: "Detallistas", valor: solicitud.datosMercado.porcentajeDetallistas },
+                    { label: "Cliente final", valor: solicitud.datosMercado.porcentajeClienteFinal },
+                ],
+                coberturaGeografica: [
+                    { label: "Local", valor: solicitud.datosMercado.coberturaLocal },
+                    { label: "Regional", valor: solicitud.datosMercado.coberturaRegional },
+                    { label: "Estatal", valor: solicitud.datosMercado.coberturaEstatal },
+                    { label: "Nacional", valor: solicitud.datosMercado.coberturaNacional },
+                    { label: "Exportación", valor: solicitud.datosMercado.coberturaExportacion },
+                ],
+            }
+            : null,
+
+        datosBancarios: solicitud.datosBancarios
+            ? {
+                banco: solicitud.datosBancarios.banco,
+                numeroCuenta: solicitud.datosBancarios.numeroCuenta,
+                clabe: solicitud.datosBancarios.clabe,
+            }
+            : null,
+
+        documentos:
+            solicitud.documentos.length > 0
+                ? solicitud.documentos.map((d) => ({
+                    nombreArchivo: d.nombreArchivo,
+                    tipoDocumento: d.tipoDocumento.nombre,
+                    estatus: d.estatus,
+                    fechaCarga: formatearFecha(d.subidoEn) ?? "",
+                }))
+                : null,
+    };
+};
 export const obtenerCartaRechazo = async (
-  solicitudId: string,
-  usuarioId: string,
-  rol: string
+    solicitudId: string,
+    usuarioId: string,
+    rol: string
 ): Promise<CartaRechazoPDFData> => {
-  const solicitud = await prisma.solicitud.findUnique({
-    where: { id: solicitudId },
-    include: incluyeTodo,
-  });
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+        include: incluyeTodo,
+    });
 
-  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
 
-  if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
-    throw new AppError("No tienes permisos para ver este documento", 403);
-  }
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para ver este documento", 403);
+    }
 
-  if (solicitud.estatus !== "RECHAZADO") {
-    throw new AppError("Solo se puede generar la carta para solicitudes rechazadas", 400);
-  }
+    if (!ESTATUS_RECHAZO.includes(solicitud.estatus)) {
+        throw new AppError("Solo se puede generar la carta para solicitudes rechazadas o canceladas", 400);
+    }
 
-  if (!solicitud.motivoRechazo || !solicitud.fundamentoLegal) {
-    throw new AppError("La solicitud no tiene registrado el motivo o fundamento del rechazo", 400);
-  }
+    if (!solicitud.datosSolicitante) {
+        throw new AppError("La solicitud no cuenta con datos del solicitante capturados", 400);
+    }
 
-  if (!solicitud.datosSolicitante) {
-    throw new AppError("La solicitud no cuenta con datos del solicitante capturados", 400);
-  }
+    const historialRechazo = await prisma.historialEstatus.findFirst({
+        where: {
+            solicitudId,
+            estatusNuevo: { in: ESTATUS_RECHAZO },
+        },
+        orderBy: { creadoEn: "desc" },
+    });
 
-  const p = solicitud.datosSolicitante;
-  const nombreCompleto = `${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}`.toUpperCase();
+    if (!historialRechazo || !historialRechazo.motivo) {
+        throw new AppError("No se encontró un motivo de rechazo registrado para esta solicitud", 400);
+    }
 
-  const domicilioPartes = [
-    p.calle,
-    p.numeroExterior ? `#${p.numeroExterior}` : null,
-    p.colonia ? `COL: ${p.colonia}` : null,
-    p.codigoPostal ? `C.P: ${p.codigoPostal}` : null,
-    p.ciudad,
-    p.estado,
-  ].filter(Boolean);
+    const p = solicitud.datosSolicitante;
+    const nombreCompleto = `${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}`.toUpperCase();
 
-  const montoTotal = solicitud.datosCredito
-    ? solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0)
-    : 0;
+    const domicilioPartes = [
+        p.calle,
+        p.numeroExterior ? `#${p.numeroExterior}` : null,
+        p.colonia ? `COL: ${p.colonia}` : null,
+        p.codigoPostal ? `C.P: ${p.codigoPostal}` : null,
+        p.ciudad,
+        p.estado,
+    ].filter(Boolean);
 
-  const fechaRechazo = new Date();
+    const montoTotal = solicitud.datosCredito
+        ? solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0)
+        : 0;
 
-  return {
-    folio: solicitud.folio,
-    programa: solicitud.programa.nombre,
-    monto: montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }),
-    fechaSolicitud: solicitud.creadoEn.toLocaleDateString("es-MX", {
-      year: "numeric", month: "long", day: "numeric",
-    }),
-    fechaRechazo: fechaRechazo.toLocaleDateString("es-MX", {
-      year: "numeric", month: "long", day: "numeric",
-    }),
-    lugarFecha: `Hermosillo, Sonora a ${fechaRechazo.toLocaleDateString("es-MX", {
-      day: "numeric", month: "long", year: "numeric",
-    })}`,
-    nombreDestinatario: nombreCompleto,
-    domicilioDestinatario: domicilioPartes.join(", "),
-    motivoRechazo: capitalizar(solicitud.motivoRechazo),
-    fundamentoLegal: solicitud.fundamentoLegal,
-    firmanteNombre: FIRMANTE_NOMBRE,
-    firmanteCargo: FIRMANTE_CARGO,
-  };
+    return {
+        folio: solicitud.folio,
+        programa: solicitud.programa.nombre,
+        monto: montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }),
+        fechaSolicitud: solicitud.creadoEn.toLocaleDateString("es-MX", {
+            year: "numeric", month: "long", day: "numeric",
+        }),
+        fechaRechazo: historialRechazo.creadoEn.toLocaleDateString("es-MX", {
+            year: "numeric", month: "long", day: "numeric",
+        }),
+        lugarFecha: `Hermosillo, Sonora a ${historialRechazo.creadoEn.toLocaleDateString("es-MX", {
+            day: "numeric", month: "long", year: "numeric",
+        })}`,
+        nombreDestinatario: nombreCompleto,
+        domicilioDestinatario: domicilioPartes.join(", "),
+        motivoRechazo: capitalizar(historialRechazo.motivo),
+    };
+};
+export const obtenerTarjetaInformativa = async (
+    solicitudId: string,
+    usuarioId: string,
+    rol: string
+): Promise<TarjetaInformativaPDFData> => {
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+        include: {
+            ...incluyeTodo,
+            solicitante: true,
+            historialEstatus: {
+                include: { usuario: true },
+                orderBy: { creadoEn: "asc" },
+            },
+            asignaciones: {
+                include: { gestor: true, grupo: true, asignadoPor: true },
+                orderBy: { fechaAsignacion: "asc" },
+            },
+            documentos: {
+                where: { activo: true },
+                include: { tipoDocumento: true },
+                orderBy: { subidoEn: "desc" },
+            },
+        },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para ver esta solicitud", 403);
+    }
+
+    // ── Documentos requeridos según el programa y tipo de persona ──
+    const documentosRequeridosPrograma = await prisma.programaDocumento.findMany({
+        where: {
+            programaId: solicitud.programaId,
+            esObligatorio: true,
+            OR: [
+                { aplicaA: null },
+                ...(solicitud.tipoPersona
+                    ? [{ aplicaA: solicitud.tipoPersona as any }, { aplicaA: "AMBOS" as any }]
+                    : []),
+            ],
+        },
+    });
+
+    const totalRequeridos = documentosRequeridosPrograma.length;
+    const totalSubidos = solicitud.documentos.length;
+    const aprobados = solicitud.documentos.filter((d) => d.estatus === "APROBADO").length;
+    const rechazados = solicitud.documentos.filter((d) => d.estatus === "RECHAZADO").length;
+    const pendientes = solicitud.documentos.filter((d) => d.estatus === "PENDIENTE").length;
+    const porcentajeAvance = totalRequeridos > 0 ? Math.round((aprobados / totalRequeridos) * 100) : 0;
+
+    // ── Gestor actual (asignación activa) ──
+    const asignacionActiva = solicitud.asignaciones.find((a) => a.activa) ?? null;
+
+    const gestorActual = asignacionActiva
+        ? {
+              nombre: nombreUsuario(asignacionActiva.gestor),
+              grupo: asignacionActiva.grupo.nombre,
+              fechaAsignacion: formatearFecha(asignacionActiva.fechaAsignacion),
+          }
+        : null;
+
+    const historialAsignaciones = solicitud.asignaciones.map((a) => ({
+        gestor: nombreUsuario(a.gestor),
+        grupo: a.grupo.nombre,
+        fechaAsignacion: formatearFecha(a.fechaAsignacion),
+        fechaReasignacion: a.fechaReasignacion ? formatearFecha(a.fechaReasignacion) : null,
+        motivoReasignacion: a.motivoReasignacion,
+        asignadoPor: a.asignadoPor ? nombreUsuario(a.asignadoPor) : null,
+    }));
+
+    // ── Historial de estatus ──
+    const historialEstatus = solicitud.historialEstatus.map((h) => ({
+        estatusAnterior: h.estatusAnterior,
+        estatusNuevo: h.estatusNuevo,
+        fecha: formatearFechaHora(h.creadoEn),
+        usuario: nombreUsuario(h.usuario),
+        motivo: h.motivo,
+    }));
+
+    // ── Timeline unificada: estatus + asignaciones, ordenada cronológicamente ──
+    const eventosTimeline: { fechaRaw: Date; fecha: string; titulo: string; detalle: string | null; tipo: "estatus" | "asignacion" }[] = [];
+
+    eventosTimeline.push({
+        fechaRaw: solicitud.creadoEn,
+        fecha: formatearFechaHora(solicitud.creadoEn),
+        titulo: "Solicitud creada",
+        detalle: `Folio ${solicitud.folio} — Programa ${solicitud.programa.nombre}`,
+        tipo: "estatus",
+    });
+
+    solicitud.historialEstatus.forEach((h) => {
+        eventosTimeline.push({
+            fechaRaw: h.creadoEn,
+            fecha: formatearFechaHora(h.creadoEn),
+            titulo: `Cambio de estatus: ${h.estatusAnterior.replace(/_/g, " ")} → ${h.estatusNuevo.replace(/_/g, " ")}`,
+            detalle: h.motivo ? `${nombreUsuario(h.usuario)} — ${h.motivo}` : nombreUsuario(h.usuario),
+            tipo: "estatus",
+        });
+    });
+
+    solicitud.asignaciones.forEach((a) => {
+        eventosTimeline.push({
+            fechaRaw: a.fechaAsignacion,
+            fecha: formatearFechaHora(a.fechaAsignacion),
+            titulo: `Asignado a ${nombreUsuario(a.gestor)}`,
+            detalle: `Grupo: ${a.grupo.nombre}`,
+            tipo: "asignacion",
+        });
+        if (a.fechaReasignacion) {
+            eventosTimeline.push({
+                fechaRaw: a.fechaReasignacion,
+                fecha: formatearFechaHora(a.fechaReasignacion),
+                titulo: `Reasignado — dejó de ser ${nombreUsuario(a.gestor)}`,
+                detalle: a.motivoReasignacion,
+                tipo: "asignacion",
+            });
+        }
+    });
+
+    eventosTimeline.sort((a, b) => a.fechaRaw.getTime() - b.fechaRaw.getTime());
+
+    // ── Observaciones: motivos de rechazo de documentos + motivos de historial ──
+    const observaciones: string[] = [];
+    solicitud.documentos
+        .filter((d) => d.motivoRechazo)
+        .forEach((d) => observaciones.push(`Documento "${d.tipoDocumento.nombre}": ${d.motivoRechazo}`));
+
+    const montoTotal = solicitud.datosCredito
+        ? solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0)
+        : null;
+
+    return {
+        folio: solicitud.folio,
+        solicitanteNombre: nombreUsuario(solicitud.solicitante),
+        programa: solicitud.programa.nombre,
+        fechaRegistro: formatearFecha(solicitud.creadoEn),
+        montoSolicitado: montoTotal !== null ? montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) : null,
+        municipio: solicitud.datosNegocio?.municipioLocal ?? solicitud.datosSolicitante?.ciudad ?? null,
+        sector: solicitud.sector,
+        tamanoEmpresa: solicitud.tamanoEmpresa,
+        tipoPersona: solicitud.tipoPersona,
+        estatusActual: solicitud.estatus,
+
+        gestorActual,
+        historialAsignaciones,
+        historialEstatus,
+
+        timeline: eventosTimeline.map(({ fecha, titulo, detalle, tipo }) => ({ fecha, titulo, detalle, tipo })),
+
+        documentos: {
+            totalRequeridos,
+            totalSubidos,
+            aprobados,
+            rechazados,
+            pendientes,
+            porcentajeAvance,
+            detalle: solicitud.documentos.map((d) => ({
+                nombre: d.tipoDocumento.nombre,
+                estatus: d.estatus,
+                version: d.version,
+                motivoRechazo: d.motivoRechazo,
+            })),
+        },
+
+        observaciones,
+    };
 };

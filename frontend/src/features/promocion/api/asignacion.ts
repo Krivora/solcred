@@ -5,7 +5,7 @@ import type {
     SolicitudAsignacion,      // ← tipo que necesitarás crear
     FiltrosAsignacion,        // ← ídem
     PaginatedResponse,        // ← si ya lo tienes en tipos compartidos
-} from '@/features/asignacion/types/asignacion.types'
+} from '@/features/promocion/types/asignacion.types'
 
 const BASE = '/admin/asignacion'
 

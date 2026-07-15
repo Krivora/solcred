@@ -3,7 +3,7 @@
 import { SolicitudesToolbar } from './SolicitudesToolbar'
 import { SolicitudesTable } from './SolicitudesTable'
 import type { SolicitudAsignacion } from '../../types/asignacion.types'
-import type { GrupoGestion } from '@/features/grupos/types/grupos.types'
+import type { GrupoGestion } from '@/features/settings/types/grupos.types'
 import { AsignacionFiltros } from './AsignacionFiltros'
 import type { FiltrosAsignacion } from '../../types/asignacion.types'
 // ─── Props ────────────────────────────────────────────────────────────────────

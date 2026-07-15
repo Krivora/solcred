@@ -151,6 +151,42 @@ export function baseLayout({ folio, lugar, fechaEnvio, contenido, nombreSolicita
   .firma-linea { border-top: 1px solid var(--ink); padding-top: 4px; }
   .firma-nombre { font-size: 9px; font-weight: 700; }
   .firma-label { font-size: 8px; color: var(--muted-foreground); margin-top: 2px; }
+  /* ---------- TIMELINE ---------- */
+  .timeline { padding: 4px 4px 0 4px; }
+  .tl-item { display: flex; gap: 10px; }
+  .tl-marker-col { display: flex; flex-direction: column; align-items: center; width: 10px; }
+  .tl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--bar); margin-top: 3px; flex-shrink: 0; }
+  .tl-line { flex: 1; width: 1px; background: var(--border); margin-top: 2px; }
+  .tl-content { padding-bottom: 10px; flex: 1; }
+  .tl-fecha { font-size: 7.5px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.03em; }
+  .tl-titulo { font-size: 9px; font-weight: 700; margin-top: 1px; }
+  .tl-detalle { font-size: 8.5px; color: var(--muted-foreground); margin-top: 1px; }
+
+  /* ---------- STATS (documentos) ---------- */
+  .stats-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .stat-box {
+    flex: 1; text-align: center; border: 1px solid var(--border); border-radius: 4px; padding: 6px 4px;
+  }
+  .stat-valor { font-size: 15px; font-weight: 800; color: var(--ink); }
+  .stat-label { font-size: 7px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.03em; margin-top: 1px; }
+
+  /* ---------- PROGRESS BAR ---------- */
+  .progress-track { width: 100%; height: 6px; background: var(--row-alt); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .progress-fill { height: 100%; background: var(--bar); }
+  .progress-label { font-size: 8px; color: var(--muted-foreground); margin-top: 3px; text-align: right; }
+
+  /* ---------- BADGE ESTATUS ---------- */
+  .estatus-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 4px;
+    background: var(--bar);
+    color: var(--bar-foreground);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -209,4 +245,38 @@ export function block(barHtml: string, bodyHtml: string): string {
 
 export function formatoMoneda(valor: number): string {
   return valor.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+}
+
+export function timelineItem(fecha: string, titulo: string, detalle: string | null, esUltimo: boolean): string {
+  return `
+    <div class="tl-item">
+      <div class="tl-marker-col">
+        <div class="tl-dot"></div>
+        ${esUltimo ? '' : '<div class="tl-line"></div>'}
+      </div>
+      <div class="tl-content">
+        <div class="tl-fecha">${fecha}</div>
+        <div class="tl-titulo">${titulo}</div>
+        ${detalle ? `<div class="tl-detalle">${detalle}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+export function progressBar(porcentaje: number): string {
+  return `
+    <div class="progress-track">
+      <div class="progress-fill" style="width:${porcentaje}%;"></div>
+    </div>
+    <div class="progress-label">${porcentaje}% del expediente integrado</div>
+  `;
+}
+
+export function statBox(label: string, valor: number | string): string {
+  return `
+    <div class="stat-box">
+      <div class="stat-valor">${valor}</div>
+      <div class="stat-label">${label}</div>
+    </div>
+  `;
 }

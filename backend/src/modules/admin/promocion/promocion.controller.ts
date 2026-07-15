@@ -4,7 +4,11 @@ import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import * as solicitudesService from "./promocion.service";
 import { ok } from "@utils/response";
-
+import { cartaRechazoTemplate } from '../../../shared/pdf/templates/carta-rechazo.template';
+import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
+import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
+import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjeta-informativa.template';
+import { mapearSolicitudAPDF } from "./promocion.service";
 export const listar = async (
   req: RequestAutenticado,
   res: Response,
@@ -394,4 +398,103 @@ export const rechazar = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const descargarCartaRechazo = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const data = await solicitudesService.obtenerCartaRechazo(
+            req.params.id as string,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        const html = cartaRechazoTemplate(data);
+        const pdfBuffer = await generarPDFDesdeHTML(html);
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Carta de rechazo generada para solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="rechazo-${data.folio}.pdf"`);
+        res.setHeader('Content-Length', pdfBuffer.length.toString());
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const descargarPDF = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const solicitud = await solicitudesService.SolicitudId(
+            req.params.id as string,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        const data = mapearSolicitudAPDF(solicitud);
+        const html = solicitudTemplate(data);
+        const pdfBuffer = await generarPDFDesdeHTML(html);
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `PDF generado para solicitud: ${solicitud.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: solicitud.id,
+            req,
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
+        res.setHeader('Content-Length', pdfBuffer.length.toString());
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        next(error);
+    }
+};
+export const descargarTarjetaInformativa = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const data = await solicitudesService.obtenerTarjetaInformativa(
+            req.params.id as string,
+            req.usuario!.id,
+            req.usuario!.rol
+        );
+
+        const html = tarjetaInformativaTemplate(data);
+        const pdfBuffer = await generarPDFDesdeHTML(html);
+
+        await registrarLog({
+            accion: AccionLog.CONSULTAR,
+            modulo: ModuloLog.SOLICITUDES,
+            descripcion: `Tarjeta informativa generada para solicitud: ${req.params.id}`,
+            usuarioId: req.usuario!.id,
+            entidadId: req.params.id as string,
+            req,
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="tarjeta-informativa-${data.folio}.pdf"`);
+        res.setHeader('Content-Length', pdfBuffer.length.toString());
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        next(error);
+    }
 };

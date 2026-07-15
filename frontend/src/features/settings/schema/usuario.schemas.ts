@@ -40,9 +40,8 @@ export const actualizarUsuarioSchema = z.object({
 
 export const cambiarRolSchema = z.object({
   rol: z.enum(["ADMIN", "ANALISTA", "CLIENTE", "GESTOR"], {
-    required_error: "El rol es obligatorio",
+    error: "El rol es obligatorio",
   }),
 });
-
 export type ActualizarUsuarioForm = z.infer<typeof actualizarUsuarioSchema>;
 export type CambiarRolForm = z.infer<typeof cambiarRolSchema>;

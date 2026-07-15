@@ -23,7 +23,7 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/shared/components/ui/sheet'
-import { GrupoForm } from '@/features/promocion/components/asignacion/GrupoForm'
+import { GrupoForm } from '@/features/settings/components/grupos/GrupoForm'
 import { useGrupos } from '@/features/settings/hooks/useGrupos'
 import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/features/settings/types/grupos.types'
 import { CAMPO_LABELS, OPERADOR_LABELS } from '@/features/promocion/types/asignacion.types'

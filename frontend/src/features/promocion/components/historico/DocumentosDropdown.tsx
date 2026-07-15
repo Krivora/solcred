@@ -12,9 +12,10 @@ import type { EstatusSolicitud } from '@/shared/lib/types/solicitudes.types'
 interface Props {
     estatus: EstatusSolicitud
     onSeleccionar: (tipo: DocumentoTipo) => void
+    disabled?: boolean
 }
 
-export function DocumentosDropdown({ estatus, onSeleccionar }: Props) {
+export function DocumentosDropdown({ estatus, onSeleccionar,disabled  }: Props) {
     const disponibles = getDocumentosDisponibles(estatus)
 
     return (
@@ -24,6 +25,7 @@ export function DocumentosDropdown({ estatus, onSeleccionar }: Props) {
                     variant="ghost" size="icon"
                     className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                     title="Ver documentos"
+                    disabled={disabled}
                 >
                     <FileStack className="h-3.5 w-3.5" />
                 </Button>

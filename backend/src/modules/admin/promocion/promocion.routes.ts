@@ -22,7 +22,9 @@ router.get("/mis-casos",       autorizar("GESTOR"),            solicitudesContro
 router.get("/aprobacion", autorizar("ADMIN"), solicitudesController.listarAprobacion);
 router.get("/historico", autorizar("ADMIN", "GESTOR"), solicitudesController.listarHistorico);
 router.get("/:id", autorizar("ADMIN", "GESTOR"), solicitudesController.obtenerPorId);
-
+router.get("/:id/pdf", autorizar("ADMIN", "GESTOR"),solicitudesController.descargarPDF);
+router.get("/:id/carta-rechazo", autorizar("ADMIN", "GESTOR"), solicitudesController.descargarCartaRechazo);
+router.get("/:id/tarjeta-informativa",autorizar("ADMIN", "GESTOR"), solicitudesController.descargarTarjetaInformativa);
 // ─── Acciones de promoción ────────────────────────────────────────────────────
 router.patch("/:id/devolver",
   autorizar("ADMIN", "ANALISTA", "GESTOR"),

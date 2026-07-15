@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+const iconRegistry = LucideIcons as unknown as Record<string, React.ElementType>;
 import { Button } from '@/shared/components/ui/button';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import {
@@ -199,8 +200,8 @@ function LogRow({
   const moduloCfg = MODULO_CONFIG[log.modulo];
 
   // Get icon component dynamically
-  const AccionIcon = (LucideIcons as Record<string, React.ElementType>)[accionCfg.icon] as React.ElementType;
-  const ModuloIcon = (LucideIcons as Record<string, React.ElementType>)[moduloCfg.icon] as React.ElementType;
+  const AccionIcon = iconRegistry[accionCfg.icon] as React.ElementType;
+  const ModuloIcon = iconRegistry[moduloCfg.icon] as React.ElementType;
 
   return (
     <TooltipProvider delayDuration={300}>

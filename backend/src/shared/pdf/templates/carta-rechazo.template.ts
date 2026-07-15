@@ -8,6 +8,13 @@ const TOKENS = `
   --border-strong: oklch(0.25 0.03 258);
 `;
 
+const FIRMANTE_NOMBRE = "ALDO PAUL AVALOS GARCIA";
+const FIRMANTE_CARGO = "DIRECCIÓN DE PROMOCIÓN";
+const FUNDAMENTO_LEGAL_ESTANDAR =
+    "los artículos 18, fracción II, y 34, fracción I del apartado B del Reglamento Interior de SolCred, " +
+    "así como el apartado 4.2 del Manual de Normas y Políticas de Crédito de SolCred y el numeral 12 " +
+    "de las Reglas de Operación del Programa de Financiamiento correspondiente.";
+
 export function cartaRechazoTemplate(data: CartaRechazoPDFData): string {
     return `
 <!DOCTYPE html>
@@ -110,39 +117,43 @@ export function cartaRechazoTemplate(data: CartaRechazoPDFData): string {
 
     <div class="cuerpo">
       <p>
-        En atención a su solicitud de crédito con folio <strong>${data.folio}</strong> correspondiente
-        al programa "<strong>${data.programa}</strong>", por un importe de <strong>${data.monto}</strong>
-        presentada ante este Organismo el pasado <strong>${data.fechaSolicitud}</strong>, le informo que,
-        tras la revisión efectuada conforme a los requisitos de valuación establecidos por el área
-        correspondiente, se ha determinado el rechazo de su solicitud.
+        Por medio de la presente, hacemos referencia a su solicitud de crédito con folio
+        <strong>${data.folio}</strong>, correspondiente al programa "<strong>${data.programa}</strong>",
+        por un importe de <strong>${data.monto}</strong>, presentada ante este Organismo el
+        <strong>${data.fechaSolicitud}</strong>.
       </p>
 
-      <p>La negativa de su solicitud de crédito se debe a que:</p>
+      <p>
+        Le informamos que, una vez concluido el proceso de revisión y evaluación conforme a los
+        requisitos y políticas de crédito vigentes, no fue posible autorizar su solicitud.
+      </p>
+
+      <p>El motivo de esta decisión es el siguiente:</p>
 
       <div class="motivo-box">${data.motivoRechazo}</div>
 
       <p class="fundamento">
-        Con fundamento en: ${data.fundamentoLegal}
+        Lo anterior con fundamento en ${FUNDAMENTO_LEGAL_ESTANDAR}
       </p>
 
       <p>
-        No obstante lo anterior, le reiteramos nuestra disposición para atenderle en futuras ocasiones.
-        Actualmente, nuestro proceso de solicitud es más ágil y sencillo, por lo que le invitamos a
-        considerar nuevamente nuestras opciones de financiamiento, diseñadas para impulsar su
-        emprendimiento y fortalecer su negocio con tasas preferenciales.
+        Le invitamos a no considerar esta respuesta como definitiva para futuras gestiones. Nuestro
+        proceso de solicitud es continuo y contamos con distintas opciones de financiamiento
+        diseñadas para impulsar su emprendimiento, por lo que quedamos atentos para acompañarle en
+        una próxima oportunidad.
       </p>
 
       <p>
-        Agradecemos su interés en nuestros programas y quedamos a su disposición para cualquier
-        aclaración o trámite futuro.
+        Agradecemos el interés mostrado en nuestros programas y quedamos a sus órdenes para
+        cualquier duda o aclaración al respecto.
       </p>
 
       <p>Atentamente.</p>
     </div>
 
     <div class="firma">
-      <div class="firma-nombre">C. ${data.firmanteNombre}</div>
-      <div class="firma-cargo">${data.firmanteCargo}</div>
+      <div class="firma-nombre">C. ${FIRMANTE_NOMBRE}</div>
+      <div class="firma-cargo">${FIRMANTE_CARGO}</div>
     </div>
 
     <div class="footer-institucional">

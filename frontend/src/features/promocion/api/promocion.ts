@@ -8,7 +8,13 @@ import type {
   FiltrosAprobacion,
   SolicitudDetalle,
 } from '@/shared/lib/types/solicitudes.types'
-
+import type { DocumentoTipo } from '@/shared/config/documentos.config'
+const DOCUMENTO_ENDPOINT: Record<DocumentoTipo, string> = {
+  solicitud: 'pdf',
+  tarjeta_informativa: 'tarjeta-informativa',
+  carta_rechazo: 'carta-rechazo',
+  carta_financiamiento: 'carta-financiamiento',
+}
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
 export interface AccionConMotivoDto {
   motivo: string
@@ -106,4 +112,5 @@ export const solicitudesApi = {
       method: 'PATCH',
       body: dto,
     }),
+  descargarDocumento: (id: string, tipo: DocumentoTipo) =>apiAuth<Blob>(`/admin/promocion/${id}/${DOCUMENTO_ENDPOINT[tipo]}`),
 }

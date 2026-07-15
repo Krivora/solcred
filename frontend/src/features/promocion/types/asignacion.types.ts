@@ -17,7 +17,7 @@ export type OperadorRegla =
     | 'MENOR_QUE'
     | 'MAYOR_IGUAL'
     | 'MENOR_IGUAL'
-
+export type TipoPersona = 'FISICA' | 'MORAL'
 // ─── Reglas ───────────────────────────────────────────────────────────────────
 
 export interface ReglaGrupo {
@@ -151,7 +151,7 @@ export interface SolicitudAsignacion {
     id: string
     folio: string
     estatus: string
-    tipoPersona: string | null
+    tipoPersona: TipoPersona
     sector: string | null
     tamanoEmpresa: string | null
     montoSolicitado: number | null

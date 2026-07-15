@@ -19,7 +19,7 @@ export const ESTATUS_FINALES: EstatusSolicitud[] = ['CANCELADO', 'RECHAZADO', 'A
 export type EstatusDocumento = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO'
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export type NivelEstudio = 'PRIMARIA' | 'SECUNDARIA' | 'PREPARATORIA' | 'TECNICO' | 'LICENCIATURA' | 'MAESTRIA' | 'DOCTORADO'
-export type TipoVivienda =| "PROPIA"| "RENTADA"| "PAGANDO"
+export type TipoVivienda = | "PROPIA" | "RENTADA" | "PAGANDO"
 
 export interface GestorAsignado {
   id: string
@@ -74,7 +74,7 @@ export interface Solicitud {
   solicitanteId: string
   estatus: EstatusSolicitud
   tipoPersona?: TipoPersona        // ← opcional
-  sector?: Sector                  // ← opcional
+  sector: Sector                  // ← opcional
   tamanoEmpresa?: TamanoEmpresa
   montoSolicitado?: number         // ← opcional
   plazoSolicitado?: number         // ← opcional
@@ -87,13 +87,17 @@ export interface Solicitud {
   datosBancarios?: DatosBancarios & { id: string }
   creadoEn: string
   actualizadoEn: string
+  gestorAsignado?: {
+    id: string;
+    nombre: string;
+  } | null;
 }
 
 // AGREGAR al final de solicitudes.types.ts
 
 export interface SolicitudPromocion {
   id: string
-  folio:string
+  folio: string
   estatus: EstatusSolicitud
   tipoPersona?: TipoPersona
   sector?: Sector

@@ -15,6 +15,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+const iconRegistry = LucideIcons as unknown as Record<string, React.ElementType>;
 import { useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
 import { Separator } from '@/shared/components/ui/separator';
@@ -83,7 +84,7 @@ function DrawerHeader({
 }) {
   const accionCfg = log ? ACCION_CONFIG[log.accion] : null;
   const AccionIcon = accionCfg
-    ? ((LucideIcons as Record<string, React.ElementType>)[accionCfg.icon] as React.ElementType)
+    ? (iconRegistry[accionCfg.icon] as React.ElementType)
     : ShieldAlert;
 
   return (
@@ -147,9 +148,7 @@ function LogDetailContent({
   onClose: () => void;
 }) {
   const moduloCfg = MODULO_CONFIG[log.modulo];
-  const ModuloIcon = (LucideIcons as Record<string, React.ElementType>)[
-    moduloCfg.icon
-  ] as React.ElementType;
+  const ModuloIcon = iconRegistry[moduloCfg.icon] as React.ElementType;
 
   return (
     <>

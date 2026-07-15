@@ -22,7 +22,6 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 import { useDescargarPDF } from '../hooks/useDescargarPDF'
-import { cn } from '@/shared/lib/utils/cn'
 
 const SECTOR_LABELS: Record<string, string> = {
   AGROPECUARIO: 'Agropecuario',
@@ -290,28 +289,31 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                 <TableHead className="py-2.5 pl-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-20">
                   Folio
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-60">
+                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-80">
                   Solicitante
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-40">
+                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-50">
                   Programa
                 </TableHead>
-                <TableHead className="hidden lg:table-cell py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-30">
+                <TableHead className="hidden lg:table-cell py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-20">
                   Sector
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-35">
+                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-45">
                   Estatus
                 </TableHead>
                 <TableHead className="hidden lg:table-cell py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-35">
                   Fecha
                 </TableHead>
-                <TableHead className="hidden xl:table-cell py-2.5 pl-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-40">
+                <TableHead className="hidden xl:table-cell py-2.5 pl-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-60">
                   Gestor Asignado
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-right w-16">
-                  PDF
+                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-left w-10">
+                  Solicitud
                 </TableHead>
-                <TableHead className="py-2.5 pr-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-right w-40">
+                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-left w-15">
+                  Expediente
+                </TableHead>
+                <TableHead className="py-2.5 pr-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-right">
                   Acciones
                 </TableHead>
               </TableRow>
@@ -393,19 +395,53 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     </TableCell>
 
                     {/* PDF */}
-                    <TableCell className="py-3 text-right" onClick={e => e.stopPropagation()}>
+                    <TableCell
+                      className="py-3 text-right"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10 ml-auto"
+                        variant="outline"
+                        size="sm"
+                        className="ml-auto flex items-center gap-2"
                         title="Generar PDF"
                         disabled={idDescargando === s.id}
                         onClick={() => descargar(s.id, s.folio)}
                       >
                         {idDescargando === s.id ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span>Generando...</span>
+                          </>
                         ) : (
-                          <FileText className="h-3.5 w-3.5" />
+                          <>
+                            <span>Solicitud</span>
+                            <FileText className="h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    </TableCell>
+                    <TableCell
+                      className="py-3 text-right"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="ml-auto flex items-center gap-2"
+                        title="Generar PDF"
+                        disabled={idDescargando === s.id}
+                        onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+                      >
+                        {idDescargando === s.id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span>Generando...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Expediente</span>
+                            <FolderOpen className="h-4 w-4" />
+                          </>
                         )}
                       </Button>
                     </TableCell>
@@ -414,15 +450,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     <TableCell className="py-3 pr-4">
                       {s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION' ? (
                         <div className="flex items-center justify-end gap-1.5">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                            title="Ver expediente digital"
-                            onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
-                          >
-                            <FolderOpen className="h-3.5 w-3.5" />
-                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -443,15 +470,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         </div>
                       ) : (
                         <div className="flex items-center justify-end gap-1.5">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                            title="Ver expediente digital"
-                            onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
-                          >
-                            <FolderOpen className="h-3.5 w-3.5" />
-                          </Button>
                         </div>
                       )}
                     </TableCell>

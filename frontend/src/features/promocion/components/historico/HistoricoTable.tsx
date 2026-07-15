@@ -1,9 +1,10 @@
 'use client'
 
-import { CheckSquare,} from 'lucide-react'
+import { CheckSquare } from 'lucide-react'
 import { SolicitudesTable } from '../SolicitudesTable'
 import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
 import { DocumentosDropdown } from './DocumentosDropdown'
+import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export function HistoricoTable({ solicitudes, meta, cargando, onPaginar }: Props) {
+  const { descargar, idDescargando, error } = useDescargarPDF()
+
   return (
     <>
       <SolicitudesTable
@@ -23,8 +26,8 @@ export function HistoricoTable({ solicitudes, meta, cargando, onPaginar }: Props
         onPaginar={onPaginar}
         config={{
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
-          getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
-          mostrarColumnaGestor:  true,
+          getPdfUrl: (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
+          mostrarColumnaGestor: true,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: false,
           mostrarColumnaPdf: false,
@@ -35,15 +38,17 @@ export function HistoricoTable({ solicitudes, meta, cargando, onPaginar }: Props
             descripcion: 'No hay solicitudes pendientes de aprobación',
           },
           renderDocumentos: (solicitudId, estatus) => (
-          <DocumentosDropdown
-            estatus={estatus}
-            onSeleccionar={() => {
-              // ruta/descarga del documento
-            }}
-          />
-        ),
+            <DocumentosDropdown
+              estatus={estatus}
+              disabled={idDescargando === solicitudId}
+              onSeleccionar={(tipo) => descargar(solicitudId, tipo)}
+            />
+          ),
         }}
       />
+      {error && (
+        <p className="text-xs text-destructive px-1">{error}</p>
+      )}
     </>
   )
 }

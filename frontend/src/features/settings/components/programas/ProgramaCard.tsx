@@ -106,9 +106,9 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                     disabled={isToggling}
-                                    onClick={() => onToggleActivo(programa.id, programa.activo)}
+                                    onClick={() => onToggleActivo?.(programa.id, programa.activo)}
                                     className={programa.activo ? "text-destructive focus:text-destructive" : ""}
-                                >
+                                    >
                                     {programa.activo ? "Desactivar" : "Activar"}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -141,7 +141,7 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                 </div>
 
                 {/* Tags */}
-                {programa.avalObligatorio && (
+                {programa.aval && (
                     <div className="flex items-center gap-1.5">
                         <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/8 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
                             Aval requerido
