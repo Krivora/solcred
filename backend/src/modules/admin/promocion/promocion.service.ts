@@ -8,6 +8,9 @@ import {
   RechazarDto,
 } from "./promocion.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
+import { CartaRechazoPDFData } from "../../../shared/pdf/pdf.types";
+const FIRMANTE_NOMBRE = "ALDO PAUL AVALOS GARCIA";
+const FIRMANTE_CARGO = "DIRECCION DE PROMOCIÓN";
 const ESTATUS_FINALES: EstatusSolicitud[] = ["APROBADO", "RECHAZADO", "CANCELADO"];
 const ESTATUS_HISTORICO_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "PENDIENTE", "BORRADOR"];
 interface FiltrosPromocion {
@@ -771,7 +774,6 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
   };
 };
 
-
 export const devolverAlSolicitante = async (
   solicitudId: string,
   dto: DevolverAlSolicitanteDto,
@@ -891,3 +893,78 @@ export const rechazar = async (
     return actualizada
   })
 }
+
+const capitalizar = (texto: string): string =>
+  texto
+    .toLowerCase()
+    .split(" ")
+    .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+    .join(" ");
+
+export const obtenerCartaRechazo = async (
+  solicitudId: string,
+  usuarioId: string,
+  rol: string
+): Promise<CartaRechazoPDFData> => {
+  const solicitud = await prisma.solicitud.findUnique({
+    where: { id: solicitudId },
+    include: incluyeTodo,
+  });
+
+  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+  if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+    throw new AppError("No tienes permisos para ver este documento", 403);
+  }
+
+  if (solicitud.estatus !== "RECHAZADO") {
+    throw new AppError("Solo se puede generar la carta para solicitudes rechazadas", 400);
+  }
+
+  if (!solicitud.motivoRechazo || !solicitud.fundamentoLegal) {
+    throw new AppError("La solicitud no tiene registrado el motivo o fundamento del rechazo", 400);
+  }
+
+  if (!solicitud.datosSolicitante) {
+    throw new AppError("La solicitud no cuenta con datos del solicitante capturados", 400);
+  }
+
+  const p = solicitud.datosSolicitante;
+  const nombreCompleto = `${p.nombre} ${p.apellidoPaterno} ${p.apellidoMaterno}`.toUpperCase();
+
+  const domicilioPartes = [
+    p.calle,
+    p.numeroExterior ? `#${p.numeroExterior}` : null,
+    p.colonia ? `COL: ${p.colonia}` : null,
+    p.codigoPostal ? `C.P: ${p.codigoPostal}` : null,
+    p.ciudad,
+    p.estado,
+  ].filter(Boolean);
+
+  const montoTotal = solicitud.datosCredito
+    ? solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0)
+    : 0;
+
+  const fechaRechazo = new Date();
+
+  return {
+    folio: solicitud.folio,
+    programa: solicitud.programa.nombre,
+    monto: montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }),
+    fechaSolicitud: solicitud.creadoEn.toLocaleDateString("es-MX", {
+      year: "numeric", month: "long", day: "numeric",
+    }),
+    fechaRechazo: fechaRechazo.toLocaleDateString("es-MX", {
+      year: "numeric", month: "long", day: "numeric",
+    }),
+    lugarFecha: `Hermosillo, Sonora a ${fechaRechazo.toLocaleDateString("es-MX", {
+      day: "numeric", month: "long", year: "numeric",
+    })}`,
+    nombreDestinatario: nombreCompleto,
+    domicilioDestinatario: domicilioPartes.join(", "),
+    motivoRechazo: capitalizar(solicitud.motivoRechazo),
+    fundamentoLegal: solicitud.fundamentoLegal,
+    firmanteNombre: FIRMANTE_NOMBRE,
+    firmanteCargo: FIRMANTE_CARGO,
+  };
+};

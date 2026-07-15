@@ -101,3 +101,21 @@ export interface DocumentoPDF {
     estatus: string;
     fechaCarga: string;
 }
+
+export interface CartaRechazoPDFData {
+  folio: string;
+  programa: string;
+  monto: string; // ya formateado en moneda
+  fechaSolicitud: string;
+  fechaRechazo: string;
+  lugarFecha: string; // "Hermosillo, Sonora a 14 de Julio del 2026"
+
+  nombreDestinatario: string; // nombre completo en mayúsculas
+  domicilioDestinatario: string; // calle, colonia, C.P., localidad
+
+  motivoRechazo: string;
+  fundamentoLegal: string;
+
+  firmanteNombre: string;
+  firmanteCargo: string;
+}
