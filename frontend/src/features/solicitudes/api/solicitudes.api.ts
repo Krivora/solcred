@@ -9,7 +9,7 @@ import type {
   DatosNegocio,
   DatosPersona,
   Solicitud,
-} from '@/shared/lib/types/solicitudes.types'
+} from '@/features/solicitudes/types/solicitud.types'
 
 export const solicitudesApi = {
   listar: () => apiAuth<Solicitud[]>('/clientes/solicitudes'),

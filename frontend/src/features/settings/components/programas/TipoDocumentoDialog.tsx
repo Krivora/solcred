@@ -11,7 +11,7 @@ import {
     DialogFooter, DialogHeader, DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { crearTipoDocumento } from "@/features/settings/api/programas";
-import { toast } from "@/shared/lib/utils/toast";
+import { programaToast } from "@/shared/lib/utils/toaster";
 import type { TipoDocumento } from "@/features/settings/types/programa.types";
 
 interface Props {
@@ -43,11 +43,11 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                 });
                 onSuccess(nuevo);
             }
-           toast.success("Tipo de documento creado", "El tipo de documento se ha creado correctamente");
+            programaToast.tipoDocumentoCreado();
             reset();
             onOpenChange(false);
         } catch (e: unknown) {
-            toast.error("Error al guardar", e instanceof Error ? e.message : "Ocurrió un error inesperado, intenta de nuevo");
+            programaToast.tipoDocumentoError(e instanceof Error ? e.message : undefined);
         } finally {
             setGuardando(false);
         }

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Building2, Search, SlidersHorizontal } from "lucide-react";
+import { Building2, Search, SlidersHorizontal, Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
@@ -99,6 +99,12 @@ export default function ProgramasPage() {
                         <SelectItem value="inactivos">Inactivos</SelectItem>
                     </SelectContent>
                 </Select>
+                <Button asChild className="w-full sm:w-auto">
+                    <Link href="/dashboard/admin/configuracion/programas/nuevo">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Nuevo programa
+                    </Link>
+                </Button>
             </div>
             {loading ? (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

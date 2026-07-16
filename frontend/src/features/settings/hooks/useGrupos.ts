@@ -5,7 +5,7 @@ import type {
     CrearGrupoDto,
     ActualizarGrupoDto,
 } from '../types/grupos.types'
-import { toast } from "@/shared/lib/utils/toast"
+import { grupoToast } from '@/shared/lib/utils/toaster'
 
 export function useGrupos() {
     const [grupos, setGrupos] = useState<GrupoGestion[]>([])
@@ -31,10 +31,10 @@ export function useGrupos() {
         try {
             const nuevo = await gruposApi.crearGrupo(dto)
             setGrupos(prev => [nuevo, ...prev])
-            toast.success('Grupo creado correctamente')
+            grupoToast.creado()
             return true
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al crear grupo')
+            grupoToast.crearError(err.message)
             return false
         }
     }
@@ -48,10 +48,10 @@ export function useGrupos() {
             setGrupos(prev =>
                 prev.map(g => (g.id === id ? actualizado : g))
             )
-            toast.success('Grupo actualizado correctamente')
+            grupoToast.actualizado()
             return true
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al actualizar grupo')
+            grupoToast.actualizarError(err.message)
             return false
         }
     }
@@ -62,10 +62,10 @@ export function useGrupos() {
             setGrupos(prev =>
                 prev.map(g => (g.id === id ? { ...g, activo: false } : g))
             )
-            toast.success('Grupo desactivado correctamente')
+            grupoToast.desactivado()
             return true
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al eliminar grupo')
+            grupoToast.eliminarError(err.message)
             return false
         }
     }

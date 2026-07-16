@@ -390,7 +390,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                     <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
                         Regresar
                     </Button>
-                    <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
+                    <Button type="submit" disabled={loading} className="h-11 min-w-30">
                         {loading ? 'Guardando...' : 'Continuar'}
                     </Button>
                 </div>

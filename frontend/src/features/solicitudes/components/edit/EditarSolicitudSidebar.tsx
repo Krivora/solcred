@@ -4,7 +4,7 @@
 import { Check, Circle } from 'lucide-react'
 import { cn } from '@/shared/lib/utils/cn'
 import type { Step } from '../../hooks/useSolicitudForm'
-import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
+import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 
 const SECCIONES: { id: Step; label: string }[] = [
     { id: 'general', label: 'Generales' },

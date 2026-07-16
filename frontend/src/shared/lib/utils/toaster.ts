@@ -1,116 +1,271 @@
-import { sileo } from 'sileo'
+import { toast } from 'sonner'
+
 // ============================================
 // Auth
 // ============================================
 export const authToast = {
     loginSuccess: () =>
-        sileo.success({
-            title: 'Bienvenido de vuelta',
-        }),
+        toast.info('Bienvenido de vuelta'),
 
     loginError: (message?: string) =>
-        sileo.error({
-            title: 'Error al iniciar sesión',
+        toast.error('Error al iniciar sesión', {
             description: message ?? 'Credenciales inválidas',
         }),
 
     registerSuccess: () =>
-        sileo.success({
-            title: 'Cuenta creada correctamente',
+        toast.success('Cuenta creada correctamente', {
             description: 'Ya puedes iniciar sesión',
         }),
 
     registerError: (message?: string) =>
-        sileo.error({
-            title: 'Error al crear cuenta',
+        toast.error('Error al crear cuenta', {
             description: message ?? 'Intenta nuevamente',
         }),
 
     logoutSuccess: () =>
-        sileo.info({
-            title: 'Sesión cerrada',
+        toast.info('Sesión cerrada', {
             description: 'Has cerrado sesión correctamente',
         }),
 
     unauthorized: () =>
-        sileo.error({
-            title: 'Sesión expirada',
+        toast.error('Sesión expirada', {
             description: 'Vuelve a iniciar sesión',
         }),
 }
+
 // ============================================
 // DOCUMENTOS
 // ============================================
 export const documentoToast = {
     subidaExitosa: (version: number) =>
-        sileo.success({
-            title: 'Documento cargado',
+        toast.success('Documento cargado', {
             description: `Versión ${version} cargada correctamente`,
         }),
     subidaError: (message?: string) =>
-        sileo.error({
-            title: 'Error al subir documento',
+        toast.error('Error al subir documento', {
             description: message ?? 'Intenta nuevamente',
         }),
     downloadError: (message?: string) =>
-        sileo.error({
-            title: 'Error al descargar documento',
+        toast.error('Error al descargar documento', {
             description: message ?? 'Intenta nuevamente',
         }),
     eliminacionExitosa: () =>
-        sileo.success({
-            title: 'Documento eliminado',
-        }),
+        toast.success('Documento eliminado'),
     eliminacionError: (message?: string) =>
-        sileo.error({
-            title: 'Error al eliminar documento',
+        toast.error('Error al eliminar documento', {
             description: message ?? 'Intenta nuevamente',
         }),
     actualizacionExitosa: () =>
-        sileo.success({
-            title: 'Documento actualizado',
-        }),
+        toast.success('Documento actualizado'),
     actualizacionError: (message?: string) =>
-        sileo.error({
-            title: 'Error al actualizar documento',
+        toast.error('Error al actualizar documento', {
             description: message ?? 'Intenta nuevamente',
         }),
 }
+
 // ============================================
 // EXPEDIENTE
 // ============================================
 export const expedienteToast = {
-    // Carga
     cargaError: (message?: string) =>
-        sileo.error({
-            title: 'Error al cargar el expediente',
+        toast.error('Error al cargar el expediente', {
             description: message ?? 'Intenta nuevamente',
         }),
     historialError: (message?: string) =>
-        sileo.error({
-            title: 'Error al cargar el historial',
+        toast.error('Error al cargar el historial', {
             description: message ?? 'Intenta nuevamente',
         }),
-    // Validación
     documentoAprobado: () =>
-        sileo.success({
-            title: 'Documento aprobado',
+        toast.success('Documento aprobado', {
             description: 'El documento fue aprobado correctamente',
         }),
     documentoRechazado: () =>
-        sileo.warning({
-            title: 'Documento rechazado',
+        toast.warning('Documento rechazado', {
             description: 'El documento fue rechazado',
         }),
     validacionError: (message?: string) =>
-        sileo.error({
-            title: 'Error al validar el documento',
+        toast.error('Error al validar el documento', {
             description: message ?? 'Intenta nuevamente',
         }),
-    // Historial
     historialVacio: () =>
-        sileo.info({
-            title: 'Sin historial',
+        toast.info('Sin historial', {
             description: 'No existen versiones previas del documento',
         }),
+}
+
+// ============================================
+// SOLICITUDES
+// ============================================
+export const solicitudToast = {
+    devuelta: () =>
+        toast.success('Solicitud devuelta al solicitante'),
+    devolverError: (message?: string) =>
+        toast.error('Error al devolver la solicitud', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    regresada: () =>
+        toast.success('Solicitud regresada al promotor'),
+    regresarError: (message?: string) =>
+        toast.error('Error al regresar la solicitud', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    enviadaAAprobacion: () =>
+        toast.success('Solicitud enviada a aprobación'),
+    enviarAAprobacionError: (message?: string) =>
+        toast.error('Error al enviar a aprobación', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    enviadaAFinanciamiento: () =>
+        toast.success('Solicitud enviada a financiamiento'),
+    enviarAFinanciamientoError: (message?: string) =>
+        toast.error('Error al enviar a financiamiento', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    cancelada: () =>
+        toast.success('Solicitud cancelada'),
+    cancelarError: (message?: string) =>
+        toast.error('Error al cancelar la solicitud', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    rechazada: () =>
+        toast.success('Solicitud rechazada'),
+    rechazarError: (message?: string) =>
+        toast.error('Error al rechazar la solicitud', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+    cargarSolicitudesError: (message?: string) =>
+        toast.error('Error al cargar solicitudes', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    cargarGestoresError: (message?: string) =>
+        toast.error('Error al cargar gestores', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    asignadaManualmente: () =>
+        toast.success('Solicitud asignada correctamente'),
+    asignadaAutomaticamente: () =>
+        toast.success('Solicitud asignada automáticamente'),
+    asignarError: (message?: string) =>
+        toast.error('Error al asignar solicitud', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+}
+
+// ============================================
+// GRUPOS
+// ============================================
+export const grupoToast = {
+    creado: () =>
+        toast.success('Grupo creado correctamente'),
+    crearError: (message?: string) =>
+        toast.error('Error al crear grupo', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    actualizado: () =>
+        toast.success('Grupo actualizado correctamente'),
+    actualizarError: (message?: string) =>
+        toast.error('Error al actualizar grupo', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    desactivado: () =>
+        toast.success('Grupo desactivado correctamente'),
+    eliminarError: (message?: string) =>
+        toast.error('Error al eliminar grupo', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+}
+
+// ============================================
+// PROGRAMAS
+// ============================================
+export const programaToast = {
+    creado: (nombre: string) =>
+        toast.success('Programa creado', {
+            description: `El programa "${nombre}" ya está disponible en el sistema`,
+        }),
+    crearError: (message?: string) =>
+        toast.error('Error al crear el programa', {
+            description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',
+        }),
+
+    actualizado: (nombre: string) =>
+        toast.success('Programa actualizado', {
+            description: `Los cambios en "${nombre}" se guardaron correctamente`,
+        }),
+    actualizarError: (message?: string) =>
+        toast.error('Error al actualizar el programa', {
+            description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',
+        }),
+
+    activado: () =>
+        toast.success('Programa activado'),
+    desactivado: () =>
+        toast.success('Programa desactivado'),
+    cambiarEstadoError: (message?: string) =>
+        toast.error('Error al cambiar el estado del programa', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    tipoDocumentoCreado: () =>
+        toast.success('Tipo de documento creado', {
+            description: 'El tipo de documento se ha creado correctamente',
+        }),
+    tipoDocumentoError: (message?: string) =>
+        toast.error('Error al guardar', {
+            description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',
+        }),
+
+    documentoAgregado: () =>
+        toast.success('Documento agregado al programa'),
+    documentoAgregarError: (message?: string) =>
+        toast.error('Error al agregar documento', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    documentoQuitado: () =>
+        toast.success('Documento quitado del programa'),
+    documentoQuitarError: (message?: string) =>
+        toast.error('Error al quitar documento', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    cargarError: (message?: string) =>
+        toast.error('Error al cargar programas', {
+            description: message ?? 'Intenta nuevamente',
+        }),
+
+    faltaTipoSolicitante: () =>
+        toast.warning('Selecciona al menos un tipo de solicitante'),
+}
+
+// ============================================
+// USUARIOS
+// ============================================
+export const usuarioToast = {
+    cargarError: () =>
+        toast.error('Error al cargar usuarios'),
+
+    actualizado: () =>
+        toast.success('Usuario actualizado correctamente'),
+    actualizarError: () =>
+        toast.error('Error al actualizar el usuario'),
+
+    rolActualizado: () =>
+        toast.success('Rol actualizado correctamente'),
+    cambiarRolError: () =>
+        toast.error('Error al cambiar el rol'),
+
+    desactivado: () =>
+        toast.success('Usuario desactivado'),
+    desactivarError: () =>
+        toast.error('Error al desactivar el usuario'),
 }

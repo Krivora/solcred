@@ -12,7 +12,6 @@ import { MercadoForm } from '../form/MercadoForm'
 import { BancariosForm } from '../form/BancariosForm'
 import { StepResumen } from '../form/StepResumen'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/shared/lib/utils/toast'
 import { Check } from 'lucide-react'
 
 interface Props {
@@ -43,7 +42,6 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
 
     async function handleEnviar() {
         await enviarSolicitud()
-        toast.success('Solicitud enviada correctamente')
         router.push('/dashboard/usuarios/solicitudes')
     }
 

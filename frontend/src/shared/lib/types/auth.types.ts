@@ -35,6 +35,6 @@ export interface RegisterCredentials {
 // El backend retorna en data: { usuario, token }
 // usuario solo trae id, correo, rol en el login
 export interface LoginResponseData {
-  usuario: Pick<Usuario, 'id' | 'correo' | 'rol'>;
+  usuario: Pick<Usuario, 'id' | 'correo' | 'rol' | 'nombre' | 'apellidoPaterno'>;
   token: string;
 }

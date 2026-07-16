@@ -1,6 +1,5 @@
 // features/solicitudes/components/form/StepCredito.tsx
 'use client'
-
 import { useState } from 'react'
 import {
     Plus,
@@ -16,11 +15,10 @@ import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Card, CardContent } from '@/shared/components/ui/card'
 import type {
-    CategoriaCredito,
     ConceptoCredito,
     DatosCredito,
-} from '@/shared/lib/types/solicitudes.types'
-
+} from '@/features/solicitudes/types/solicitud.types'
+import { CategoriaCredito } from '@/shared/lib/types/solicitudes.types'
 interface StepCreditoProps {
     defaultValues?: DatosCredito
     onSubmit: (dto: DatosCredito) => void

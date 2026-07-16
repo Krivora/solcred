@@ -14,7 +14,7 @@ import { Paginacion } from '@/shared/components/ui/Paginacion'
 import {
   ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
 } from '@/shared/config/solicitudes.config'
-import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
+import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 import type { ReactNode } from 'react'
 

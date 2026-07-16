@@ -2,7 +2,7 @@
 import { Building2, Calendar, Clock, User, Briefcase, DollarSign } from 'lucide-react'
 import { Card } from '@/shared/components/ui/card'
 import { SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto } from '@/shared/config/solicitudes.config'
-import type { SolicitudDetalle } from '@/shared/lib/types/solicitudes.types'
+import type { SolicitudDetalle } from '@/features/promocion/types/solicitud.types'
 
 interface Props {
     solicitud: SolicitudDetalle

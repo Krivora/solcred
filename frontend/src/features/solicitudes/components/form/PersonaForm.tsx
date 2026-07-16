@@ -1,7 +1,8 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import type { DatosPersona, EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/lib/types/solicitudes.types'
+import type { EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/lib/types/solicitudes.types'
+import {DatosPersona} from '@/features/solicitudes/types/solicitud.types'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'

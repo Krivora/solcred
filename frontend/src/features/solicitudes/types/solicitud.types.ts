@@ -1,20 +1,16 @@
-// Catálogos base usados en el formulario
-export type TipoPersona = 'FISICA' | 'MORAL'
-export type Sector = 'AGROPECUARIO' | 'INDUSTRIAL' | 'COMERCIAL' | 'SERVICIOS' | 'TECNOLOGIA' | 'OTRO'
-export type TamanoEmpresa = 'MICRO' | 'PEQUENA' | 'MEDIANA' | 'GRANDE'
-export type CategoriaCredito = 'CAPITAL' | 'MAQUINARIA_EQUIPO' | 'REMODELACION'
-export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
-export type NivelEstudio =
-  | 'PRIMARIA'
-  | 'SECUNDARIA'
-  | 'PREPARATORIA'
-  | 'TECNICO'
-  | 'LICENCIATURA'
-  | 'MAESTRIA'
-  | 'DOCTORADO'
-export type TipoVivienda = 'PROPIA' | 'RENTADA' | 'PAGANDO'
-export type TipoGarantia = 'PRENDARIA' | 'HIPOTECARIA'
 
+import {
+  CategoriaCredito,
+  EstadoCivil,
+  EstatusSolicitud,
+  NivelEstudio,
+  Sector,
+  TamanoEmpresa,
+  TipoGarantia,
+  TipoPersona,
+  TipoVivienda} from '@/shared/lib/types/solicitudes.types'
+
+import { Programa } from '@/shared/lib/types/programa'
 // Step: Programa
 export interface CrearSolicitudDto {
   programaId: string
@@ -143,4 +139,32 @@ export interface DatosBancarios {
   banco: string
   numeroCuenta?: string
   clabe: string
+}
+
+
+export interface Solicitud {
+  id: string
+  folio: string
+  programaId: string
+  programa: Pick<Programa, 'id' | 'nombre'>
+  solicitanteId: string
+  estatus: EstatusSolicitud
+  tipoPersona?: TipoPersona        // ← opcional
+  sector: Sector                  // ← opcional
+  tamanoEmpresa?: TamanoEmpresa
+  montoSolicitado?: number         // ← opcional
+  plazoSolicitado?: number         // ← opcional
+  datosSolicitante?: DatosPersona & { id: string }
+  datosAval?: DatosPersona & { id: string }
+  datosCredito?: DatosCredito & { id: string }
+  datosGarantia?: DatosGarantia & { id: string }
+  datosNegocio?: DatosNegocio & { id: string }
+  datosMercado?: DatosMercado & { id: string }
+  datosBancarios?: DatosBancarios & { id: string }
+  creadoEn: string
+  actualizadoEn: string
+  gestorAsignado?: {
+    id: string;
+    nombre: string;
+  } | null;
 }

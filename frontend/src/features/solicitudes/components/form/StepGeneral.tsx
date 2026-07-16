@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { Solicitud, TipoPersona, Sector, TamanoEmpresa, DatosGenerales } from '@/shared/lib/types/solicitudes.types'
+import type { Solicitud,DatosGenerales } from '@/features/solicitudes/types/solicitud.types'
+import { TipoPersona,Sector, TamanoEmpresa } from '@/shared/lib/types/solicitudes.types'
 import { Button } from '@/shared/components/ui/button'
 import { FormError } from '@/shared/components/ui/FormError'
 import {

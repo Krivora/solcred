@@ -6,7 +6,7 @@ import type {
     SolicitudPromocion,
     PaginacionMeta,
     FiltrosAprobacion,
-} from '@/shared/lib/types/solicitudes.types'
+} from '@/features/promocion/types/solicitud.types'
 
 const FILTROS_INICIALES: FiltrosAprobacion = {
     page: 1,

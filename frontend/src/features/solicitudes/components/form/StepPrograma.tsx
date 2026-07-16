@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { getProgramas } from '../../api/programas'
-import type { Programa } from '../..//types/programa.types'
-import type { CrearSolicitudDto } from '@/shared/lib/types/solicitudes.types'
+import type { Programa } from '@/shared/lib/types/programa'
+import type { CrearSolicitudDto } from '@/features/solicitudes/types/solicitud.types'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { FormError } from '@/shared/components/ui/FormError'

@@ -1,4 +1,4 @@
-import type { AccionLog, ModuloLog } from '@/shared/lib/types/logs.types';
+import type { AccionLog, ModuloLog } from '@/features/settings/types/logs.types';
 
 // ─────────────────────────────────────────
 // ACCIÓN — color, ícono, label

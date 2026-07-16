@@ -7,8 +7,8 @@ import type {
   PaginacionMeta,
   StatsPromocion,
   FiltrosPromocion,
-} from '@/shared/lib/types/solicitudes.types'
-import type { SolicitudDetalle } from '@/shared/lib/types/solicitudes.types'
+  SolicitudDetalle
+} from '@/features/promocion/types/solicitud.types'
 const FILTROS_INICIALES: FiltrosPromocion = {
   page: 1,
   limit: 10,

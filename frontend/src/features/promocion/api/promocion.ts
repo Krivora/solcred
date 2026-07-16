@@ -1,13 +1,12 @@
 import { apiAuth } from '@/shared/lib/client'
 import type {
-  Solicitud,
   SolicitudesPromocionResponse,
   StatsPromocion,
   FiltrosPromocion,
   FiltrosMisCasos,
   FiltrosAprobacion,
   SolicitudDetalle,
-} from '@/shared/lib/types/solicitudes.types'
+} from '@/features/promocion/types/solicitud.types'
 import type { DocumentoTipo } from '@/shared/config/documentos.config'
 const DOCUMENTO_ENDPOINT: Record<DocumentoTipo, string> = {
   solicitud: 'pdf',
@@ -26,7 +25,7 @@ export interface AccionOpcionalDto {
 
 export const solicitudesApi = {
   listar: () =>
-    apiAuth<Solicitud[]>('/admin/promocion/solicitudes'),
+    apiAuth<SolicitudesPromocionResponse[]>('/admin/promocion/solicitudes'),
 
   obtener: (id: string) =>
     apiAuth<SolicitudDetalle>(`/admin/promocion/${id}`),
@@ -78,37 +77,37 @@ export const solicitudesApi = {
   },
 
   devolverAlSolicitante: (id: string, dto: AccionConMotivoDto) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/devolver`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/devolver`, {
       method: 'PATCH',
       body: dto,  // ← sin JSON.stringify
     }),
 
   regresarAlPromotor: (id: string, dto: AccionConMotivoDto) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/promotor`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/promotor`, {
       method: 'PATCH',
       body: dto,
     }),
 
   enviarAAprobacion: (id: string, dto: AccionOpcionalDto = {}) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/aprobacion`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/aprobacion`, {
       method: 'PATCH',
       body: dto,
     }),
 
   enviarAFinanciamiento: (id: string, dto: AccionOpcionalDto = {}) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/financiamiento`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/financiamiento`, {
       method: 'PATCH',
       body: dto,
     }),
 
   cancelar: (id: string, dto: AccionConMotivoDto) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/cancelar`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/cancelar`, {
       method: 'PATCH',
       body: dto,
     }),
 
   rechazar: (id: string, dto: AccionConMotivoDto) =>
-    apiAuth<Solicitud>(`/admin/promocion/${id}/rechazar`, {
+    apiAuth<SolicitudesPromocionResponse>(`/admin/promocion/${id}/rechazar`, {
       method: 'PATCH',
       body: dto,
     }),

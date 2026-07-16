@@ -7,7 +7,7 @@ import type {
     FiltrosAsignacion,
     PaginatedResponse,
 } from '../types/asignacion.types'
-import { toast } from "@/shared/lib/utils/toast";
+import { solicitudToast } from '@/shared/lib/utils/toaster'
 
 export function useAsignacion() {
     const [gestores, setGestores] = useState<GestorConCarga[]>([])
@@ -31,7 +31,7 @@ export function useAsignacion() {
             setSolicitudes(data)
             setMeta(meta)
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al cargar solicitudes')
+            solicitudToast.cargarSolicitudesError(err.message)
         } finally {
             setCargandoSolicitudes(false)
         }
@@ -44,7 +44,7 @@ export function useAsignacion() {
             const data = await asignacionApi.obtenerCargaGestores(grupoId)
             setGestores(data)
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al cargar gestores')
+            solicitudToast.cargarGestoresError(err.message)
         } finally {
             setCargandoGestores(false)
         }
@@ -58,11 +58,11 @@ export function useAsignacion() {
         try {
             setAsignando(true)
             await asignacionApi.asignarManualmente(solicitudId, dto)
-            toast.success('Solicitud asignada correctamente')
+            solicitudToast.asignadaManualmente()
             onSuccess?.()
             return true
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al asignar solicitud')
+            solicitudToast.asignarError(err.message)
             return false
         } finally {
             setAsignando(false)
@@ -76,16 +76,17 @@ export function useAsignacion() {
         try {
             setAsignando(true)
             await asignacionApi.asignarAutomaticamente(solicitudId)
-            toast.success('Solicitud asignada automáticamente')
+            solicitudToast.asignadaAutomaticamente()
             onSuccess?.()
             return true
         } catch (err: any) {
-            toast.error(err.message ?? 'Error al asignar solicitud')
+            solicitudToast.asignarError(err.message)
             return false
         } finally {
             setAsignando(false)
         }
     }
+
     return {
         solicitudes,
         meta,

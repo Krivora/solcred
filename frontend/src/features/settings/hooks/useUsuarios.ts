@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { toast } from "@/shared/lib/utils/toast";
+import { usuarioToast } from "@/shared/lib/utils/toaster";
 import { usuariosApi } from "../api/usuarios";
 import type {
   Usuario,
@@ -23,7 +23,7 @@ export function useUsuarios() {
       setUsuarios(data);
     } catch (err) {
       setError("No se pudieron cargar los usuarios");
-      toast.error("Error al cargar usuarios",);
+      usuarioToast.cargarError();
     } finally {
       setIsLoading(false);
     }
@@ -38,10 +38,10 @@ export function useUsuarios() {
       try {
         const usuario = await usuariosApi.actualizar(id, datos);
         setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        toast.success("Usuario actualizado correctamente");
+        usuarioToast.actualizado();
         return true;
       } catch {
-        toast.error("Error al actualizar el usuario");
+        usuarioToast.actualizarError();
         return false;
       }
     },
@@ -53,10 +53,10 @@ export function useUsuarios() {
       try {
         const usuario = await usuariosApi.cambiarRol(id, datos);
         setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        toast.success("Rol actualizado correctamente");
+        usuarioToast.rolActualizado();
         return true;
       } catch {
-        toast.error("Error al cambiar el rol");
+        usuarioToast.cambiarRolError();
         return false;
       }
     },
@@ -68,10 +68,10 @@ export function useUsuarios() {
       try {
         const usuario = await usuariosApi.desactivar(id);
         setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        toast.success("Usuario desactivado");
+        usuarioToast.desactivado();
         return true;
       } catch {
-        toast.error("Error al desactivar el usuario");
+        usuarioToast.desactivarError();
         return false;
       }
     },

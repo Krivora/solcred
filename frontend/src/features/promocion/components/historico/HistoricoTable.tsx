@@ -2,7 +2,7 @@
 
 import { CheckSquare } from 'lucide-react'
 import { SolicitudesTable } from '../SolicitudesTable'
-import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
+import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 import { DocumentosDropdown } from './DocumentosDropdown'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 

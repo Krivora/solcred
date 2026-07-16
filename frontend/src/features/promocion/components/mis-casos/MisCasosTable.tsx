@@ -6,7 +6,7 @@ import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/
 import { SolicitudesTable } from '../SolicitudesTable'
 import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/AccionSolicitudDialog'
 import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
-import type { SolicitudPromocion, PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
+import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 
 interface Props {
   solicitudes: SolicitudPromocion[]

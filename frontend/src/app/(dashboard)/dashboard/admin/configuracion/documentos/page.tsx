@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FileBadge2, Plus, Search, FileText } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
@@ -10,26 +10,13 @@ import {
     TableHead, TableHeader, TableRow,
 } from "@/shared/components/ui/table";
 import { TipoDocumentoDialog } from "@/features/settings/components/programas/TipoDocumentoDialog";
-import { getTiposDocumento } from "@/features/settings/api/programas";
-import { toast } from "@/shared/lib/utils/toast";
-import type { TipoDocumento } from "@/features/settings/types/programa.types";
+import { useTiposDocumento } from "@/features/settings/hooks/useProgramas";
 import { PageHeader } from "@/shared/components/ui/PageHeader";
 
 export default function DocumentosPage() {
-    const [tipos, setTipos] = useState<TipoDocumento[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { tipos, cargando, recargar } = useTiposDocumento();
     const [search, setSearch] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
-
-
-    useEffect(() => {
-    getTiposDocumento()
-        .then(setTipos)
-        .catch((e: unknown) => {
-            toast.error(e instanceof Error ? e.message : "Error al cargar los documentos");
-        })
-        .finally(() => setLoading(false));
-}, []);
 
     const filtered = tipos
         .filter((t) =>
@@ -72,7 +59,7 @@ export default function DocumentosPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {loading ? (
+                        {cargando ? (
                             Array.from({ length: 5 }).map((_, i) => (
                                 <TableRow key={i}>
                                     <TableCell><Skeleton className="h-4 w-4 mx-auto" /></TableCell>
@@ -129,7 +116,7 @@ export default function DocumentosPage() {
                     </TableBody>
                 </Table>
 
-                {!loading && filtered.length > 0 && (
+                {!cargando && filtered.length > 0 && (
                     <div className="border-t border-border bg-muted/20 px-4 py-2.5">
                         <p className="text-xs text-muted-foreground">
                             {filtered.length} tipo{filtered.length !== 1 && "s"} de documento
@@ -142,7 +129,7 @@ export default function DocumentosPage() {
             <TipoDocumentoDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
-                onSuccess={(tipo) => setTipos(prev => [tipo, ...prev])}
+                onSuccess={() => recargar()}
             />
         </div>
     );

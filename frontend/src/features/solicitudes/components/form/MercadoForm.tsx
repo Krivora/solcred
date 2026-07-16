@@ -20,27 +20,6 @@ interface Props {
     loading: boolean
 }
 
-function SeccionHeader({
-    icon: Icon,
-    title,
-    subtitle,
-}: {
-    icon: React.ElementType
-    title: string
-    subtitle?: string
-}) {
-    return (
-        <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5 bg-accent/40 border-b border-border">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent shrink-0">
-                <Icon className="w-4 h-4 text-accent-foreground" />
-            </div>
-            <div>
-                <p className="text-sm font-semibold text-foreground">{title}</p>
-                {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
-            </div>
-        </div>
-    )
-}
 
 function BarraTotal({ total }: { total: number }) {
     const completo = total === 100
@@ -217,7 +196,7 @@ export function MercadoForm({ defaultValues, onSubmit, onBack, loading }: Props)
                 <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
                     Regresar
                 </Button>
-                <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
+                <Button type="submit" disabled={loading} className="h-11 min-w-30">
                     {loading ? 'Guardando...' : 'Continuar'}
                 </Button>
             </div>

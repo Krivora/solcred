@@ -2,7 +2,7 @@
 import { Card } from '@/shared/components/ui/card'
 import { FileCheck, FileClock, FileX, CircleDashed } from 'lucide-react'
 import { formatFecha } from '@/shared/config/solicitudes.config'
-import type { DocumentoDetalle } from '@/shared/lib/types/solicitudes.types'
+import type { DocumentoDetalle } from '@/features/promocion/types/solicitud.types'
 
 interface DocumentoRequerido {
     id: string

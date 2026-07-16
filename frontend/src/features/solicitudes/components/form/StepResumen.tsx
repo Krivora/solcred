@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
+import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 import { Button } from '@/shared/components/ui/button'
 import { Checkbox } from '@/shared/components/ui/checkbox'
 import { FormError } from '@/shared/components/ui/FormError'

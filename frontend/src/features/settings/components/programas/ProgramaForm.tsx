@@ -13,8 +13,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Badge } from "@/shared/components/ui/badge";
 import { cn } from "@/shared/lib/utils/cn";
-import { toast } from "@/shared/lib/utils/toast";
-
+import { programaToast } from "@/shared/lib/utils/toaster";
 import { Card } from "./form/Card";
 import { Divider } from "./form/Divider";
 import { FieldRow } from "./form/FieldRow";
@@ -55,7 +54,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
 
     const onSubmit = async (data: ProgramaFormData) => {
         if (!data.permitePersonaFisica && !data.permitePersonaMoral) {
-            toast.warning("Selecciona al menos un tipo de solicitante");
+            programaToast.faltaTipoSolicitante();
             return;
         }
 
@@ -63,29 +62,29 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
         try {
             const parsed = {
                 ...data,
-                montoMinimo:     Number(data.montoMinimo),
-                montoMaximo:     Number(data.montoMaximo),
-                tasaOrdinaria:   Number(data.tasaOrdinaria),
-                tasaMoratoria:   Number(data.tasaMoratoria),
-                tasaAnual:       Number(data.tasaAnual),
+                montoMinimo: Number(data.montoMinimo),
+                montoMaximo: Number(data.montoMaximo),
+                tasaOrdinaria: Number(data.tasaOrdinaria),
+                tasaMoratoria: Number(data.tasaMoratoria),
+                tasaAnual: Number(data.tasaAnual),
                 plazoMinimoMeses: Number(data.plazoMinimoMeses),
                 plazoMaximoMeses: Number(data.plazoMaximoMeses),
             };
-            programa
-                ? await actualizarPrograma(programa.id, parsed)
-                : await crearPrograma(parsed);
 
-           toast.success(programa ? "Programa actualizado" : "Programa creado", 
-                programa 
-                    ? `Los cambios en "${programa.nombre}" se guardaron correctamente` 
-                    : `El programa "${data.nombre}" ya está disponible en el sistema`
-            );
+            if (programa) {
+                await actualizarPrograma(programa.id, parsed);
+                programaToast.actualizado(programa.nombre);
+            } else {
+                await crearPrograma(parsed);
+                programaToast.creado(data.nombre);
+            }
+
             router.push("/dashboard/admin/configuracion/programas");
         } catch (err: unknown) {
-           toast.error(
-                programa ? "Error al actualizar el programa" : "Error al crear el programa",
-                err instanceof Error ? err.message : "Ocurrió un error inesperado, intenta de nuevo"
-            );
+            const message = err instanceof Error ? err.message : undefined;
+            programa
+                ? programaToast.actualizarError(message)
+                : programaToast.crearError(message);
         } finally {
             setLoading(false);
         }

@@ -36,7 +36,7 @@ export const registerSchema = z.object({
     .min(8, 'Mínimo 8 caracteres')
     .regex(PASSWORD_REGEX, 'Debe contener mayúscula, minúscula, número y símbolo'),
   tipoPersona: z.enum(['FISICA', 'MORAL'], {
-    required_error: 'Selecciona el tipo de persona',
+    error: 'Selecciona el tipo de persona',
   }),
   curp: z
     .string()

@@ -1,7 +1,7 @@
 // components/admin/solicitudes/PromocionStats.tsx
 import { FileText, Clock, Search, LayoutDashboard } from 'lucide-react'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import type { StatsPromocion } from '@/shared/lib/types/solicitudes.types'
+import type { StatsPromocion } from '@/features/promocion/types/solicitud.types'
 
 interface Props {
   stats: StatsPromocion | null

@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog'
 import { Button } from '@/shared/components/ui/button'
-import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
+import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 
 interface SolicitudEnviarDialogProps {
   solicitud: Solicitud | null

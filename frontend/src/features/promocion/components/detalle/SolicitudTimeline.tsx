@@ -1,6 +1,6 @@
 // SolicitudTimeline.tsx
 import { UserPlus, RefreshCw, ArrowRightLeft, User } from 'lucide-react'
-import type { TimelineEvento, AsignacionDetalle } from '@/shared/lib/types/solicitudes.types'
+import type { TimelineEvento, AsignacionDetalle } from '@/features/promocion/types/solicitud.types'
 import { ESTATUS_STYLES, formatFecha } from '@/shared/config/solicitudes.config'
 
 interface Props {

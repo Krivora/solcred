@@ -10,7 +10,7 @@ import {
 } from '../../types/Filterbar.constants'
 import { FilterBar } from '../Filterbar'
 import type { FilterField as FilterFieldConfig } from '../../types/Filterbar.types'
-import type { FiltrosMisCasos } from '@/shared/lib/types/solicitudes.types'
+import type { FiltrosMisCasos } from '@/features/promocion/types/solicitud.types'
 
 // ── Config de campos ──────────────────────────────────────────────────────────
 

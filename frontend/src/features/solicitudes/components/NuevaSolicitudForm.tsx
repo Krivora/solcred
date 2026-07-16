@@ -12,7 +12,6 @@ import { MercadoForm } from './form/MercadoForm'
 import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/shared/lib/utils/toast'
 
 export function NuevaSolicitudForm() {
   const router = useRouter()
@@ -38,7 +37,6 @@ export function NuevaSolicitudForm() {
 
   async function handleEnviar() {
     await enviarSolicitud()
-    toast.success('Solicitud enviada correctamente')
     router.push('/dashboard/usuarios/solicitudes')
   }
 

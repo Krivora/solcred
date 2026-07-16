@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { solicitudesApi } from '../api/solicitudes.api'
-import type { Solicitud } from '@/shared/lib/types/solicitudes.types'
+import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 
 interface UseMisSolicitudesReturn {
   solicitudes: Solicitud[]

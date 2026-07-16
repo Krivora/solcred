@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { solicitudesApi, type AccionConMotivoDto, type AccionOpcionalDto } from '../api/promocion'
-import { toast } from '@/shared/lib/utils/toast'
+import { solicitudToast } from '@/shared/lib/utils/toaster'
 
 interface UseAccionesSolicitudOptions {
   onSuccess?: () => void
@@ -10,14 +10,18 @@ export const useAccionesSolicitud = (options: UseAccionesSolicitudOptions = {}) 
   const { onSuccess } = options
   const [loading, setLoading] = useState(false)
 
-  const ejecutar = async (accion: () => Promise<unknown>, mensajeExito: string) => {
+  const ejecutar = async (
+    accion: () => Promise<unknown>,
+    onExito: () => void,
+    onError: (message?: string) => void
+  ) => {
     try {
       setLoading(true)
       await accion()
-      toast.success(mensajeExito)
+      onExito()
       onSuccess?.()
     } catch (error: any) {
-      toast.error(error?.message ?? 'Ocurrió un error')
+      onError(error?.message)
     } finally {
       setLoading(false)
     }
@@ -26,37 +30,43 @@ export const useAccionesSolicitud = (options: UseAccionesSolicitudOptions = {}) 
   const devolverAlSolicitante = (id: string, dto: AccionConMotivoDto) =>
     ejecutar(
       () => solicitudesApi.devolverAlSolicitante(id, dto),
-      'Solicitud devuelta al solicitante'
+      solicitudToast.devuelta,
+      solicitudToast.devolverError
     )
 
   const regresarAlPromotor = (id: string, dto: AccionConMotivoDto) =>
     ejecutar(
       () => solicitudesApi.regresarAlPromotor(id, dto),
-      'Solicitud regresada al promotor'
+      solicitudToast.regresada,
+      solicitudToast.regresarError
     )
 
   const enviarAAprobacion = (id: string, dto: AccionOpcionalDto = {}) =>
     ejecutar(
       () => solicitudesApi.enviarAAprobacion(id, dto),
-      'Solicitud enviada a aprobación'
+      solicitudToast.enviadaAAprobacion,
+      solicitudToast.enviarAAprobacionError
     )
 
   const enviarAFinanciamiento = (id: string, dto: AccionOpcionalDto = {}) =>
     ejecutar(
       () => solicitudesApi.enviarAFinanciamiento(id, dto),
-      'Solicitud enviada a financiamiento'
+      solicitudToast.enviadaAFinanciamiento,
+      solicitudToast.enviarAFinanciamientoError
     )
 
   const cancelar = (id: string, dto: AccionConMotivoDto) =>
     ejecutar(
       () => solicitudesApi.cancelar(id, dto),
-      'Solicitud cancelada'
+      solicitudToast.cancelada,
+      solicitudToast.cancelarError
     )
 
   const rechazar = (id: string, dto: AccionConMotivoDto) =>
     ejecutar(
       () => solicitudesApi.rechazar(id, dto),
-      'Solicitud rechazada'
+      solicitudToast.rechazada,
+      solicitudToast.rechazarError
     )
 
   return {

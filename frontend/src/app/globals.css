@@ -69,6 +69,8 @@
   --success-foreground: oklch(0.98 0.02 145);
   --warning: oklch(0.78 0.16 85);
   --warning-foreground: oklch(0.25 0.05 85);
+  --info: oklch(0.55 0.18 255);
+  --info-foreground: oklch(0.98 0.02 255);
 }
 
 .dark {
@@ -136,6 +138,8 @@
   --success-foreground: oklch(0.15 0.03 145);
   --warning: oklch(0.82 0.17 85);
   --warning-foreground: oklch(0.2 0.04 85);
+  --info: oklch(0.65 0.19 255);
+  --info-foreground: oklch(0.15 0.03 255);
 }
 
 @theme inline {
@@ -193,6 +197,8 @@
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 @layer base {
