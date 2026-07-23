@@ -5,6 +5,7 @@ import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import * as asignacionService from "./asignacion.service";
 import { ok } from "@utils/response";
 import { AsignarManualDto, ListarAsignacionQuerySchema } from "./asignacion.schema";
+import { AppError } from "@/middlewares/error.middleware";
 
 export const listarSolicitudesAsignacion = async (
     req: RequestAutenticado,
@@ -34,14 +35,16 @@ export const asignarAutomaticamente = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        await asignacionService.asignarAutomaticamente(req.params.solicitudId);
+        const { solicitudId } = req.params as { solicitudId: string };
+
+        await asignacionService.asignarAutomaticamente(solicitudId);
 
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Solicitud asignada automáticamente: ${req.params.solicitudId}`,
+            descripcion: `Solicitud asignada automáticamente: ${solicitudId}`,
             usuarioId: req.usuario!.id,
-            entidadId: req.params.solicitudId,
+            entidadId: solicitudId,
             req,
         });
 
@@ -57,18 +60,21 @@ export const asignarManualmente = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        await asignacionService.asignarManualmente(
-            req.params.solicitudId,
-            req.body,
-            req.usuario!.id
-        );
+        const { solicitudId } = req.params as { solicitudId: string };
+        const { id: usuarioId, personalId } = req.usuario!;
+
+        if (!personalId) {
+            throw new AppError("Este usuario no tiene un perfil de Personal asociado", 403);
+        }
+
+        await asignacionService.asignarManualmente(solicitudId, req.body, personalId);
 
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Solicitud asignada manualmente a gestor ${req.body.gestorId}: ${req.params.solicitudId}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.solicitudId,
+            descripcion: `Solicitud asignada manualmente a gestor ${req.body.gestorId}: ${solicitudId}`,
+            usuarioId,
+            entidadId: solicitudId,
             req,
             metadata: { gestorId: req.body.gestorId, motivo: req.body.motivo },
         });
@@ -78,7 +84,6 @@ export const asignarManualmente = async (
         next(error);
     }
 };
-
 export const obtenerCargaGestores = async (
     req: RequestAutenticado,
     res: Response,

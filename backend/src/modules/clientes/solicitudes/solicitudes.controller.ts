@@ -318,8 +318,9 @@ export const enviar = async (
     try {
         const solicitud = await solicitudesService.enviarSolicitud(
             req.params.id as string,
+            req.usuario!.id,
+            req.usuario!.rol
         );
-
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,

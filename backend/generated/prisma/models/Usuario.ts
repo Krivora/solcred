@@ -28,7 +28,7 @@ export type UsuarioMinAggregateOutputType = {
   id: string | null
   correo: string | null
   contrasena: string | null
-  rol: $Enums.Rol | null
+  tipoUsuario: $Enums.TipoUsuario | null
   tipoPersona: $Enums.TipoPersona | null
   nombre: string | null
   apellidoPaterno: string | null
@@ -44,7 +44,7 @@ export type UsuarioMaxAggregateOutputType = {
   id: string | null
   correo: string | null
   contrasena: string | null
-  rol: $Enums.Rol | null
+  tipoUsuario: $Enums.TipoUsuario | null
   tipoPersona: $Enums.TipoPersona | null
   nombre: string | null
   apellidoPaterno: string | null
@@ -60,7 +60,7 @@ export type UsuarioCountAggregateOutputType = {
   id: number
   correo: number
   contrasena: number
-  rol: number
+  tipoUsuario: number
   tipoPersona: number
   nombre: number
   apellidoPaterno: number
@@ -78,7 +78,7 @@ export type UsuarioMinAggregateInputType = {
   id?: true
   correo?: true
   contrasena?: true
-  rol?: true
+  tipoUsuario?: true
   tipoPersona?: true
   nombre?: true
   apellidoPaterno?: true
@@ -94,7 +94,7 @@ export type UsuarioMaxAggregateInputType = {
   id?: true
   correo?: true
   contrasena?: true
-  rol?: true
+  tipoUsuario?: true
   tipoPersona?: true
   nombre?: true
   apellidoPaterno?: true
@@ -110,7 +110,7 @@ export type UsuarioCountAggregateInputType = {
   id?: true
   correo?: true
   contrasena?: true
-  rol?: true
+  tipoUsuario?: true
   tipoPersona?: true
   nombre?: true
   apellidoPaterno?: true
@@ -199,7 +199,7 @@ export type UsuarioGroupByOutputType = {
   id: string
   correo: string
   contrasena: string
-  rol: $Enums.Rol
+  tipoUsuario: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -236,7 +236,7 @@ export type UsuarioWhereInput = {
   id?: Prisma.StringFilter<"Usuario"> | string
   correo?: Prisma.StringFilter<"Usuario"> | string
   contrasena?: Prisma.StringFilter<"Usuario"> | string
-  rol?: Prisma.EnumRolFilter<"Usuario"> | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFilter<"Usuario"> | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFilter<"Usuario"> | $Enums.TipoPersona
   nombre?: Prisma.StringFilter<"Usuario"> | string
   apellidoPaterno?: Prisma.StringFilter<"Usuario"> | string
@@ -248,18 +248,15 @@ export type UsuarioWhereInput = {
   actualizadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
-  gruposGestion?: Prisma.GrupoGestorListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
-  asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
-  asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
-  documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
+  personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }
 
 export type UsuarioOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   correo?: Prisma.SortOrder
   contrasena?: Prisma.SortOrder
-  rol?: Prisma.SortOrder
+  tipoUsuario?: Prisma.SortOrder
   tipoPersona?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   apellidoPaterno?: Prisma.SortOrder
@@ -271,11 +268,8 @@ export type UsuarioOrderByWithRelationInput = {
   actualizadoEn?: Prisma.SortOrder
   solicitudes?: Prisma.SolicitudOrderByRelationAggregateInput
   logs?: Prisma.LogAuditoriaOrderByRelationAggregateInput
-  gruposGestion?: Prisma.GrupoGestorOrderByRelationAggregateInput
   historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
-  documentosValidados?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
+  personal?: Prisma.PersonalOrderByWithRelationInput
 }
 
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -287,7 +281,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UsuarioWhereInput[]
   NOT?: Prisma.UsuarioWhereInput | Prisma.UsuarioWhereInput[]
   contrasena?: Prisma.StringFilter<"Usuario"> | string
-  rol?: Prisma.EnumRolFilter<"Usuario"> | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFilter<"Usuario"> | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFilter<"Usuario"> | $Enums.TipoPersona
   nombre?: Prisma.StringFilter<"Usuario"> | string
   apellidoPaterno?: Prisma.StringFilter<"Usuario"> | string
@@ -297,18 +291,15 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   actualizadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
-  gruposGestion?: Prisma.GrupoGestorListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
-  asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
-  asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
-  documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
+  personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }, "id" | "correo" | "curp" | "rfc">
 
 export type UsuarioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   correo?: Prisma.SortOrder
   contrasena?: Prisma.SortOrder
-  rol?: Prisma.SortOrder
+  tipoUsuario?: Prisma.SortOrder
   tipoPersona?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   apellidoPaterno?: Prisma.SortOrder
@@ -330,7 +321,7 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   correo?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   contrasena?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
-  rol?: Prisma.EnumRolWithAggregatesFilter<"Usuario"> | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioWithAggregatesFilter<"Usuario"> | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaWithAggregatesFilter<"Usuario"> | $Enums.TipoPersona
   nombre?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   apellidoPaterno?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
@@ -346,7 +337,7 @@ export type UsuarioCreateInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -358,18 +349,15 @@ export type UsuarioCreateInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -381,18 +369,15 @@ export type UsuarioUncheckedCreateInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -404,18 +389,15 @@ export type UsuarioUpdateInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -427,18 +409,15 @@ export type UsuarioUncheckedUpdateInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateManyInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -454,7 +433,7 @@ export type UsuarioUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -470,7 +449,7 @@ export type UsuarioUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -487,16 +466,11 @@ export type UsuarioScalarRelationFilter = {
   isNot?: Prisma.UsuarioWhereInput
 }
 
-export type UsuarioNullableScalarRelationFilter = {
-  is?: Prisma.UsuarioWhereInput | null
-  isNot?: Prisma.UsuarioWhereInput | null
-}
-
 export type UsuarioCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   correo?: Prisma.SortOrder
   contrasena?: Prisma.SortOrder
-  rol?: Prisma.SortOrder
+  tipoUsuario?: Prisma.SortOrder
   tipoPersona?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   apellidoPaterno?: Prisma.SortOrder
@@ -512,7 +486,7 @@ export type UsuarioMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   correo?: Prisma.SortOrder
   contrasena?: Prisma.SortOrder
-  rol?: Prisma.SortOrder
+  tipoUsuario?: Prisma.SortOrder
   tipoPersona?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   apellidoPaterno?: Prisma.SortOrder
@@ -528,7 +502,7 @@ export type UsuarioMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   correo?: Prisma.SortOrder
   contrasena?: Prisma.SortOrder
-  rol?: Prisma.SortOrder
+  tipoUsuario?: Prisma.SortOrder
   tipoPersona?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   apellidoPaterno?: Prisma.SortOrder
@@ -538,6 +512,11 @@ export type UsuarioMinOrderByAggregateInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type UsuarioNullableScalarRelationFilter = {
+  is?: Prisma.UsuarioWhereInput | null
+  isNot?: Prisma.UsuarioWhereInput | null
 }
 
 export type UsuarioCreateNestedOneWithoutHistorialEstatusInput = {
@@ -554,56 +533,26 @@ export type UsuarioUpdateOneRequiredWithoutHistorialEstatusNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutHistorialEstatusInput, Prisma.UsuarioUpdateWithoutHistorialEstatusInput>, Prisma.UsuarioUncheckedUpdateWithoutHistorialEstatusInput>
 }
 
-export type UsuarioCreateNestedOneWithoutGruposGestionInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutGruposGestionInput, Prisma.UsuarioUncheckedCreateWithoutGruposGestionInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutGruposGestionInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-}
-
-export type UsuarioUpdateOneRequiredWithoutGruposGestionNestedInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutGruposGestionInput, Prisma.UsuarioUncheckedCreateWithoutGruposGestionInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutGruposGestionInput
-  upsert?: Prisma.UsuarioUpsertWithoutGruposGestionInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutGruposGestionInput, Prisma.UsuarioUpdateWithoutGruposGestionInput>, Prisma.UsuarioUncheckedUpdateWithoutGruposGestionInput>
-}
-
-export type UsuarioCreateNestedOneWithoutAsignacionesGestorInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesGestorInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesGestorInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-}
-
-export type UsuarioCreateNestedOneWithoutAsignacionesDadasInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesDadasInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesDadasInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-}
-
-export type UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesGestorInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesGestorInput
-  upsert?: Prisma.UsuarioUpsertWithoutAsignacionesGestorInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesGestorInput, Prisma.UsuarioUpdateWithoutAsignacionesGestorInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesGestorInput>
-}
-
-export type UsuarioUpdateOneWithoutAsignacionesDadasNestedInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesDadasInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesDadasInput
-  upsert?: Prisma.UsuarioUpsertWithoutAsignacionesDadasInput
-  disconnect?: Prisma.UsuarioWhereInput | boolean
-  delete?: Prisma.UsuarioWhereInput | boolean
-  connect?: Prisma.UsuarioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesDadasInput, Prisma.UsuarioUpdateWithoutAsignacionesDadasInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesDadasInput>
-}
-
-export type EnumRolFieldUpdateOperationsInput = {
-  set?: $Enums.Rol
+export type EnumTipoUsuarioFieldUpdateOperationsInput = {
+  set?: $Enums.TipoUsuario
 }
 
 export type EnumTipoPersonaFieldUpdateOperationsInput = {
   set?: $Enums.TipoPersona
+}
+
+export type UsuarioCreateNestedOneWithoutPersonalInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutPersonalInput, Prisma.UsuarioUncheckedCreateWithoutPersonalInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutPersonalInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutPersonalNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutPersonalInput, Prisma.UsuarioUncheckedCreateWithoutPersonalInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutPersonalInput
+  upsert?: Prisma.UsuarioUpsertWithoutPersonalInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutPersonalInput, Prisma.UsuarioUpdateWithoutPersonalInput>, Prisma.UsuarioUncheckedUpdateWithoutPersonalInput>
 }
 
 export type UsuarioCreateNestedOneWithoutSolicitudesInput = {
@@ -618,22 +567,6 @@ export type UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput = {
   upsert?: Prisma.UsuarioUpsertWithoutSolicitudesInput
   connect?: Prisma.UsuarioWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutSolicitudesInput, Prisma.UsuarioUpdateWithoutSolicitudesInput>, Prisma.UsuarioUncheckedUpdateWithoutSolicitudesInput>
-}
-
-export type UsuarioCreateNestedOneWithoutDocumentosValidadosInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDocumentosValidadosInput
-  connect?: Prisma.UsuarioWhereUniqueInput
-}
-
-export type UsuarioUpdateOneWithoutDocumentosValidadosNestedInput = {
-  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
-  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDocumentosValidadosInput
-  upsert?: Prisma.UsuarioUpsertWithoutDocumentosValidadosInput
-  disconnect?: Prisma.UsuarioWhereInput | boolean
-  delete?: Prisma.UsuarioWhereInput | boolean
-  connect?: Prisma.UsuarioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutDocumentosValidadosInput, Prisma.UsuarioUpdateWithoutDocumentosValidadosInput>, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
 }
 
 export type UsuarioCreateNestedOneWithoutLogsInput = {
@@ -656,7 +589,7 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -668,17 +601,14 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -690,10 +620,7 @@ export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutHistorialEstatusInput = {
@@ -716,7 +643,7 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -728,17 +655,14 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -750,17 +674,14 @@ export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
-export type UsuarioCreateWithoutGruposGestionInput = {
+export type UsuarioCreateWithoutPersonalInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -773,16 +694,13 @@ export type UsuarioCreateWithoutGruposGestionInput = {
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
 }
 
-export type UsuarioUncheckedCreateWithoutGruposGestionInput = {
+export type UsuarioUncheckedCreateWithoutPersonalInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -795,32 +713,29 @@ export type UsuarioUncheckedCreateWithoutGruposGestionInput = {
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
 }
 
-export type UsuarioCreateOrConnectWithoutGruposGestionInput = {
+export type UsuarioCreateOrConnectWithoutPersonalInput = {
   where: Prisma.UsuarioWhereUniqueInput
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutGruposGestionInput, Prisma.UsuarioUncheckedCreateWithoutGruposGestionInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutPersonalInput, Prisma.UsuarioUncheckedCreateWithoutPersonalInput>
 }
 
-export type UsuarioUpsertWithoutGruposGestionInput = {
-  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutGruposGestionInput, Prisma.UsuarioUncheckedUpdateWithoutGruposGestionInput>
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutGruposGestionInput, Prisma.UsuarioUncheckedCreateWithoutGruposGestionInput>
+export type UsuarioUpsertWithoutPersonalInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutPersonalInput, Prisma.UsuarioUncheckedUpdateWithoutPersonalInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutPersonalInput, Prisma.UsuarioUncheckedCreateWithoutPersonalInput>
   where?: Prisma.UsuarioWhereInput
 }
 
-export type UsuarioUpdateToOneWithWhereWithoutGruposGestionInput = {
+export type UsuarioUpdateToOneWithWhereWithoutPersonalInput = {
   where?: Prisma.UsuarioWhereInput
-  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutGruposGestionInput, Prisma.UsuarioUncheckedUpdateWithoutGruposGestionInput>
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutPersonalInput, Prisma.UsuarioUncheckedUpdateWithoutPersonalInput>
 }
 
-export type UsuarioUpdateWithoutGruposGestionInput = {
+export type UsuarioUpdateWithoutPersonalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -833,16 +748,13 @@ export type UsuarioUpdateWithoutGruposGestionInput = {
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
 }
 
-export type UsuarioUncheckedUpdateWithoutGruposGestionInput = {
+export type UsuarioUncheckedUpdateWithoutPersonalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -855,224 +767,13 @@ export type UsuarioUncheckedUpdateWithoutGruposGestionInput = {
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
-}
-
-export type UsuarioCreateWithoutAsignacionesGestorInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
-}
-
-export type UsuarioUncheckedCreateWithoutAsignacionesGestorInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
-}
-
-export type UsuarioCreateOrConnectWithoutAsignacionesGestorInput = {
-  where: Prisma.UsuarioWhereUniqueInput
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesGestorInput>
-}
-
-export type UsuarioCreateWithoutAsignacionesDadasInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
-}
-
-export type UsuarioUncheckedCreateWithoutAsignacionesDadasInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
-}
-
-export type UsuarioCreateOrConnectWithoutAsignacionesDadasInput = {
-  where: Prisma.UsuarioWhereUniqueInput
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesDadasInput>
-}
-
-export type UsuarioUpsertWithoutAsignacionesGestorInput = {
-  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesGestorInput>
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesGestorInput>
-  where?: Prisma.UsuarioWhereInput
-}
-
-export type UsuarioUpdateToOneWithWhereWithoutAsignacionesGestorInput = {
-  where?: Prisma.UsuarioWhereInput
-  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesGestorInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesGestorInput>
-}
-
-export type UsuarioUpdateWithoutAsignacionesGestorInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
-}
-
-export type UsuarioUncheckedUpdateWithoutAsignacionesGestorInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
-}
-
-export type UsuarioUpsertWithoutAsignacionesDadasInput = {
-  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesDadasInput>
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesDadasInput>
-  where?: Prisma.UsuarioWhereInput
-}
-
-export type UsuarioUpdateToOneWithWhereWithoutAsignacionesDadasInput = {
-  where?: Prisma.UsuarioWhereInput
-  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesDadasInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesDadasInput>
-}
-
-export type UsuarioUpdateWithoutAsignacionesDadasInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
-}
-
-export type UsuarioUncheckedUpdateWithoutAsignacionesDadasInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
 }
 
 export type UsuarioCreateWithoutSolicitudesInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -1083,18 +784,15 @@ export type UsuarioCreateWithoutSolicitudesInput = {
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -1105,11 +803,8 @@ export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutSolicitudesInput = {
@@ -1132,7 +827,7 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1143,18 +838,15 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1165,122 +857,15 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
-}
-
-export type UsuarioCreateWithoutDocumentosValidadosInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-}
-
-export type UsuarioUncheckedCreateWithoutDocumentosValidadosInput = {
-  id?: string
-  correo: string
-  contrasena: string
-  rol?: $Enums.Rol
-  tipoPersona: $Enums.TipoPersona
-  nombre: string
-  apellidoPaterno: string
-  apellidoMaterno: string
-  curp?: string | null
-  rfc?: string | null
-  activo?: boolean
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
-  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-}
-
-export type UsuarioCreateOrConnectWithoutDocumentosValidadosInput = {
-  where: Prisma.UsuarioWhereUniqueInput
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
-}
-
-export type UsuarioUpsertWithoutDocumentosValidadosInput = {
-  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
-  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedCreateWithoutDocumentosValidadosInput>
-  where?: Prisma.UsuarioWhereInput
-}
-
-export type UsuarioUpdateToOneWithWhereWithoutDocumentosValidadosInput = {
-  where?: Prisma.UsuarioWhereInput
-  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutDocumentosValidadosInput, Prisma.UsuarioUncheckedUpdateWithoutDocumentosValidadosInput>
-}
-
-export type UsuarioUpdateWithoutDocumentosValidadosInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-}
-
-export type UsuarioUncheckedUpdateWithoutDocumentosValidadosInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  correo?: Prisma.StringFieldUpdateOperationsInput | string
-  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
-  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
-  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
-  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
-  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutLogsInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -1291,18 +876,15 @@ export type UsuarioCreateWithoutLogsInput = {
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
-  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutLogsInput = {
   id?: string
   correo: string
   contrasena: string
-  rol?: $Enums.Rol
+  tipoUsuario?: $Enums.TipoUsuario
   tipoPersona: $Enums.TipoPersona
   nombre: string
   apellidoPaterno: string
@@ -1313,11 +895,8 @@ export type UsuarioUncheckedCreateWithoutLogsInput = {
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutLogsInput = {
@@ -1340,7 +919,7 @@ export type UsuarioUpdateWithoutLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1351,18 +930,15 @@ export type UsuarioUpdateWithoutLogsInput = {
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
-  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   correo?: Prisma.StringFieldUpdateOperationsInput | string
   contrasena?: Prisma.StringFieldUpdateOperationsInput | string
-  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
   tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1373,11 +949,8 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
-  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
-  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
-  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
-  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
 
@@ -1388,21 +961,13 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
 export type UsuarioCountOutputType = {
   solicitudes: number
   logs: number
-  gruposGestion: number
   historialEstatus: number
-  asignacionesGestor: number
-  asignacionesDadas: number
-  documentosValidados: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitudes?: boolean | UsuarioCountOutputTypeCountSolicitudesArgs
   logs?: boolean | UsuarioCountOutputTypeCountLogsArgs
-  gruposGestion?: boolean | UsuarioCountOutputTypeCountGruposGestionArgs
   historialEstatus?: boolean | UsuarioCountOutputTypeCountHistorialEstatusArgs
-  asignacionesGestor?: boolean | UsuarioCountOutputTypeCountAsignacionesGestorArgs
-  asignacionesDadas?: boolean | UsuarioCountOutputTypeCountAsignacionesDadasArgs
-  documentosValidados?: boolean | UsuarioCountOutputTypeCountDocumentosValidadosArgs
 }
 
 /**
@@ -1432,36 +997,8 @@ export type UsuarioCountOutputTypeCountLogsArgs<ExtArgs extends runtime.Types.Ex
 /**
  * UsuarioCountOutputType without action
  */
-export type UsuarioCountOutputTypeCountGruposGestionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.GrupoGestorWhereInput
-}
-
-/**
- * UsuarioCountOutputType without action
- */
 export type UsuarioCountOutputTypeCountHistorialEstatusArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.HistorialEstatusWhereInput
-}
-
-/**
- * UsuarioCountOutputType without action
- */
-export type UsuarioCountOutputTypeCountAsignacionesGestorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AsignacionSolicitudWhereInput
-}
-
-/**
- * UsuarioCountOutputType without action
- */
-export type UsuarioCountOutputTypeCountAsignacionesDadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AsignacionSolicitudWhereInput
-}
-
-/**
- * UsuarioCountOutputType without action
- */
-export type UsuarioCountOutputTypeCountDocumentosValidadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.DocumentoSolicitudWhereInput
 }
 
 
@@ -1469,7 +1006,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   correo?: boolean
   contrasena?: boolean
-  rol?: boolean
+  tipoUsuario?: boolean
   tipoPersona?: boolean
   nombre?: boolean
   apellidoPaterno?: boolean
@@ -1481,11 +1018,8 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   actualizadoEn?: boolean
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
-  gruposGestion?: boolean | Prisma.Usuario$gruposGestionArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
-  asignacionesGestor?: boolean | Prisma.Usuario$asignacionesGestorArgs<ExtArgs>
-  asignacionesDadas?: boolean | Prisma.Usuario$asignacionesDadasArgs<ExtArgs>
-  documentosValidados?: boolean | Prisma.Usuario$documentosValidadosArgs<ExtArgs>
+  personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -1493,7 +1027,7 @@ export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   correo?: boolean
   contrasena?: boolean
-  rol?: boolean
+  tipoUsuario?: boolean
   tipoPersona?: boolean
   nombre?: boolean
   apellidoPaterno?: boolean
@@ -1509,7 +1043,7 @@ export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   correo?: boolean
   contrasena?: boolean
-  rol?: boolean
+  tipoUsuario?: boolean
   tipoPersona?: boolean
   nombre?: boolean
   apellidoPaterno?: boolean
@@ -1525,7 +1059,7 @@ export type UsuarioSelectScalar = {
   id?: boolean
   correo?: boolean
   contrasena?: boolean
-  rol?: boolean
+  tipoUsuario?: boolean
   tipoPersona?: boolean
   nombre?: boolean
   apellidoPaterno?: boolean
@@ -1537,15 +1071,12 @@ export type UsuarioSelectScalar = {
   actualizadoEn?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "correo" | "contrasena" | "rol" | "tipoPersona" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "correo" | "contrasena" | "tipoUsuario" | "tipoPersona" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
-  gruposGestion?: boolean | Prisma.Usuario$gruposGestionArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
-  asignacionesGestor?: boolean | Prisma.Usuario$asignacionesGestorArgs<ExtArgs>
-  asignacionesDadas?: boolean | Prisma.Usuario$asignacionesDadasArgs<ExtArgs>
-  documentosValidados?: boolean | Prisma.Usuario$documentosValidadosArgs<ExtArgs>
+  personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1556,17 +1087,14 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     solicitudes: Prisma.$SolicitudPayload<ExtArgs>[]
     logs: Prisma.$LogAuditoriaPayload<ExtArgs>[]
-    gruposGestion: Prisma.$GrupoGestorPayload<ExtArgs>[]
     historialEstatus: Prisma.$HistorialEstatusPayload<ExtArgs>[]
-    asignacionesGestor: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
-    asignacionesDadas: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
-    documentosValidados: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
+    personal: Prisma.$PersonalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     correo: string
     contrasena: string
-    rol: $Enums.Rol
+    tipoUsuario: $Enums.TipoUsuario
     tipoPersona: $Enums.TipoPersona
     nombre: string
     apellidoPaterno: string
@@ -1972,11 +1500,8 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   solicitudes<T extends Prisma.Usuario$solicitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$solicitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.Usuario$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  gruposGestion<T extends Prisma.Usuario$gruposGestionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$gruposGestionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GrupoGestorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   historialEstatus<T extends Prisma.Usuario$historialEstatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$historialEstatusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HistorialEstatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  asignacionesGestor<T extends Prisma.Usuario$asignacionesGestorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesGestorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  asignacionesDadas<T extends Prisma.Usuario$asignacionesDadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesDadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  documentosValidados<T extends Prisma.Usuario$documentosValidadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$documentosValidadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  personal<T extends Prisma.Usuario$personalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$personalArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2009,7 +1534,7 @@ export interface UsuarioFieldRefs {
   readonly id: Prisma.FieldRef<"Usuario", 'String'>
   readonly correo: Prisma.FieldRef<"Usuario", 'String'>
   readonly contrasena: Prisma.FieldRef<"Usuario", 'String'>
-  readonly rol: Prisma.FieldRef<"Usuario", 'Rol'>
+  readonly tipoUsuario: Prisma.FieldRef<"Usuario", 'TipoUsuario'>
   readonly tipoPersona: Prisma.FieldRef<"Usuario", 'TipoPersona'>
   readonly nombre: Prisma.FieldRef<"Usuario", 'String'>
   readonly apellidoPaterno: Prisma.FieldRef<"Usuario", 'String'>
@@ -2460,30 +1985,6 @@ export type Usuario$logsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 /**
- * Usuario.gruposGestion
- */
-export type Usuario$gruposGestionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the GrupoGestor
-   */
-  select?: Prisma.GrupoGestorSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the GrupoGestor
-   */
-  omit?: Prisma.GrupoGestorOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.GrupoGestorInclude<ExtArgs> | null
-  where?: Prisma.GrupoGestorWhereInput
-  orderBy?: Prisma.GrupoGestorOrderByWithRelationInput | Prisma.GrupoGestorOrderByWithRelationInput[]
-  cursor?: Prisma.GrupoGestorWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.GrupoGestorScalarFieldEnum | Prisma.GrupoGestorScalarFieldEnum[]
-}
-
-/**
  * Usuario.historialEstatus
  */
 export type Usuario$historialEstatusArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2508,75 +2009,22 @@ export type Usuario$historialEstatusArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
- * Usuario.asignacionesGestor
+ * Usuario.personal
  */
-export type Usuario$asignacionesGestorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Usuario$personalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AsignacionSolicitud
+   * Select specific fields to fetch from the Personal
    */
-  select?: Prisma.AsignacionSolicitudSelect<ExtArgs> | null
+  select?: Prisma.PersonalSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AsignacionSolicitud
+   * Omit specific fields from the Personal
    */
-  omit?: Prisma.AsignacionSolicitudOmit<ExtArgs> | null
+  omit?: Prisma.PersonalOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AsignacionSolicitudInclude<ExtArgs> | null
-  where?: Prisma.AsignacionSolicitudWhereInput
-  orderBy?: Prisma.AsignacionSolicitudOrderByWithRelationInput | Prisma.AsignacionSolicitudOrderByWithRelationInput[]
-  cursor?: Prisma.AsignacionSolicitudWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AsignacionSolicitudScalarFieldEnum | Prisma.AsignacionSolicitudScalarFieldEnum[]
-}
-
-/**
- * Usuario.asignacionesDadas
- */
-export type Usuario$asignacionesDadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AsignacionSolicitud
-   */
-  select?: Prisma.AsignacionSolicitudSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AsignacionSolicitud
-   */
-  omit?: Prisma.AsignacionSolicitudOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AsignacionSolicitudInclude<ExtArgs> | null
-  where?: Prisma.AsignacionSolicitudWhereInput
-  orderBy?: Prisma.AsignacionSolicitudOrderByWithRelationInput | Prisma.AsignacionSolicitudOrderByWithRelationInput[]
-  cursor?: Prisma.AsignacionSolicitudWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AsignacionSolicitudScalarFieldEnum | Prisma.AsignacionSolicitudScalarFieldEnum[]
-}
-
-/**
- * Usuario.documentosValidados
- */
-export type Usuario$documentosValidadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the DocumentoSolicitud
-   */
-  select?: Prisma.DocumentoSolicitudSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the DocumentoSolicitud
-   */
-  omit?: Prisma.DocumentoSolicitudOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.DocumentoSolicitudInclude<ExtArgs> | null
-  where?: Prisma.DocumentoSolicitudWhereInput
-  orderBy?: Prisma.DocumentoSolicitudOrderByWithRelationInput | Prisma.DocumentoSolicitudOrderByWithRelationInput[]
-  cursor?: Prisma.DocumentoSolicitudWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.DocumentoSolicitudScalarFieldEnum | Prisma.DocumentoSolicitudScalarFieldEnum[]
+  include?: Prisma.PersonalInclude<ExtArgs> | null
+  where?: Prisma.PersonalWhereInput
 }
 
 /**

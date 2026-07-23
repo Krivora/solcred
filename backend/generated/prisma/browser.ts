@@ -48,6 +48,11 @@ export type AsignacionSolicitud = Prisma.AsignacionSolicitudModel
  */
 export type Usuario = Prisma.UsuarioModel
 /**
+ * Model Personal
+ * 
+ */
+export type Personal = Prisma.PersonalModel
+/**
  * Model Programa
  * 
  */

@@ -390,6 +390,7 @@ export const ModelName = {
   GrupoGestor: 'GrupoGestor',
   AsignacionSolicitud: 'AsignacionSolicitud',
   Usuario: 'Usuario',
+  Personal: 'Personal',
   Programa: 'Programa',
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "personal" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -865,6 +866,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UsuarioCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UsuarioCountAggregateOutputType> | number
+        }
+      }
+    }
+    Personal: {
+      payload: Prisma.$PersonalPayload<ExtArgs>
+      fields: Prisma.PersonalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PersonalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PersonalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        findFirst: {
+          args: Prisma.PersonalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PersonalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        findMany: {
+          args: Prisma.PersonalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>[]
+        }
+        create: {
+          args: Prisma.PersonalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        createMany: {
+          args: Prisma.PersonalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PersonalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>[]
+        }
+        delete: {
+          args: Prisma.PersonalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        update: {
+          args: Prisma.PersonalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        deleteMany: {
+          args: Prisma.PersonalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PersonalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PersonalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>[]
+        }
+        upsert: {
+          args: Prisma.PersonalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PersonalPayload>
+        }
+        aggregate: {
+          args: Prisma.PersonalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePersonal>
+        }
+        groupBy: {
+          args: Prisma.PersonalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PersonalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PersonalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PersonalCountAggregateOutputType> | number
         }
       }
     }
@@ -2084,7 +2159,7 @@ export const UsuarioScalarFieldEnum = {
   id: 'id',
   correo: 'correo',
   contrasena: 'contrasena',
-  rol: 'rol',
+  tipoUsuario: 'tipoUsuario',
   tipoPersona: 'tipoPersona',
   nombre: 'nombre',
   apellidoPaterno: 'apellidoPaterno',
@@ -2097,6 +2172,22 @@ export const UsuarioScalarFieldEnum = {
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const PersonalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  rol: 'rol',
+  departamento: 'departamento',
+  extension: 'extension',
+  supervisorId: 'supervisorId',
+  fechaIngreso: 'fechaIngreso',
+  activo: 'activo',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type PersonalScalarFieldEnum = (typeof PersonalScalarFieldEnum)[keyof typeof PersonalScalarFieldEnum]
 
 
 export const ProgramaScalarFieldEnum = {
@@ -2528,16 +2619,16 @@ export type ListEnumOperadorReglaFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'Rol'
+ * Reference to a field of type 'TipoUsuario'
  */
-export type EnumRolFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Rol'>
+export type EnumTipoUsuarioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoUsuario'>
     
 
 
 /**
- * Reference to a field of type 'Rol[]'
+ * Reference to a field of type 'TipoUsuario[]'
  */
-export type ListEnumRolFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Rol[]'>
+export type ListEnumTipoUsuarioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoUsuario[]'>
     
 
 
@@ -2552,6 +2643,20 @@ export type EnumTipoPersonaFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'TipoPersona[]'
  */
 export type ListEnumTipoPersonaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoPersona[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Rol'
+ */
+export type EnumRolFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Rol'>
+    
+
+
+/**
+ * Reference to a field of type 'Rol[]'
+ */
+export type ListEnumRolFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Rol[]'>
     
 
 
@@ -2880,6 +2985,7 @@ export type GlobalOmitConfig = {
   grupoGestor?: Prisma.GrupoGestorOmit
   asignacionSolicitud?: Prisma.AsignacionSolicitudOmit
   usuario?: Prisma.UsuarioOmit
+  personal?: Prisma.PersonalOmit
   programa?: Prisma.ProgramaOmit
   tipoDocumento?: Prisma.TipoDocumentoOmit
   programaDocumento?: Prisma.ProgramaDocumentoOmit

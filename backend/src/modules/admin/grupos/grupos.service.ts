@@ -12,10 +12,16 @@ export const listarGrupos = async () => {
                     gestor: {
                         select: {
                             id: true,
-                            nombre: true,
-                            apellidoPaterno: true,
-                            apellidoMaterno: true,
-                            correo: true,
+                            activo: true,
+                            // ── FIX: Personal -> usuario anidado ────────────
+                            usuario: {
+                                select: {
+                                    nombre: true,
+                                    apellidoPaterno: true,
+                                    apellidoMaterno: true,
+                                    correo: true,
+                                },
+                            },
                         },
                     },
                 },
@@ -36,10 +42,16 @@ export const obtenerGrupoPorId = async (id: string) => {
                     gestor: {
                         select: {
                             id: true,
-                            nombre: true,
-                            apellidoPaterno: true,
-                            apellidoMaterno: true,
-                            correo: true,
+                            activo: true,
+                            // ── FIX: mismo caso ──────────────────────────────
+                            usuario: {
+                                select: {
+                                    nombre: true,
+                                    apellidoPaterno: true,
+                                    apellidoMaterno: true,
+                                    correo: true,
+                                },
+                            },
                         },
                     },
                 },

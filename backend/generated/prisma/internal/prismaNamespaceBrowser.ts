@@ -57,6 +57,7 @@ export const ModelName = {
   GrupoGestor: 'GrupoGestor',
   AsignacionSolicitud: 'AsignacionSolicitud',
   Usuario: 'Usuario',
+  Personal: 'Personal',
   Programa: 'Programa',
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
@@ -157,7 +158,7 @@ export const UsuarioScalarFieldEnum = {
   id: 'id',
   correo: 'correo',
   contrasena: 'contrasena',
-  rol: 'rol',
+  tipoUsuario: 'tipoUsuario',
   tipoPersona: 'tipoPersona',
   nombre: 'nombre',
   apellidoPaterno: 'apellidoPaterno',
@@ -170,6 +171,22 @@ export const UsuarioScalarFieldEnum = {
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const PersonalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  rol: 'rol',
+  departamento: 'departamento',
+  extension: 'extension',
+  supervisorId: 'supervisorId',
+  fechaIngreso: 'fechaIngreso',
+  activo: 'activo',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type PersonalScalarFieldEnum = (typeof PersonalScalarFieldEnum)[keyof typeof PersonalScalarFieldEnum]
 
 
 export const ProgramaScalarFieldEnum = {

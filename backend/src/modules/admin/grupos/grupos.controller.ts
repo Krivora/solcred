@@ -24,7 +24,8 @@ export const obtenerGrupoPorId = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const grupo = await gruposService.obtenerGrupoPorId(req.params.id);
+        const { id } = req.params as { id: string };
+        const grupo = await gruposService.obtenerGrupoPorId(id);
         res.status(200).json(ok("Grupo obtenido", grupo));
     } catch (error) {
         next(error);
@@ -61,7 +62,8 @@ export const actualizarGrupo = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const grupo = await gruposService.actualizarGrupo(req.params.id, req.body);
+        const { id } = req.params as { id: string };
+        const grupo = await gruposService.actualizarGrupo(id, req.body);
 
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
@@ -79,20 +81,22 @@ export const actualizarGrupo = async (
     }
 };
 
+
 export const eliminarGrupo = async (
     req: RequestAutenticado,
     res: Response,
     next: NextFunction
 ): Promise<void> => {
     try {
-        const resultado = await gruposService.eliminarGrupo(req.params.id);
+        const { id } = req.params as { id: string };
+        const resultado = await gruposService.eliminarGrupo(id);
 
         await registrarLog({
             accion: AccionLog.ELIMINAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Grupo de gestión eliminado/desactivado: ${req.params.id}`,
+            descripcion: `Grupo de gestión eliminado/desactivado: ${id}`,
             usuarioId: req.usuario!.id,
-            entidadId: req.params.id,
+            entidadId: id,
             req,
         });
 

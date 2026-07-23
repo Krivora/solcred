@@ -9,11 +9,19 @@
 * 🟢 You can import this file directly.
 */
 
+export const TipoUsuario = {
+  CLIENTE: 'CLIENTE',
+  PERSONAL: 'PERSONAL'
+} as const
+
+export type TipoUsuario = (typeof TipoUsuario)[keyof typeof TipoUsuario]
+
+
 export const Rol = {
   ADMIN: 'ADMIN',
   ANALISTA: 'ANALISTA',
   GESTOR: 'GESTOR',
-  CLIENTE: 'CLIENTE'
+  SUPERVISOR: 'SUPERVISOR'
 } as const
 
 export type Rol = (typeof Rol)[keyof typeof Rol]

@@ -108,22 +108,36 @@ export const obtenerExpediente = async (
                     telefono: true,
                 },
             },
+            // ── FIX: montoSolicitado/plazoSolicitado ya no viven en Solicitud,
+            // ahora se leen desde DatosCredito ────────────────────────────────
+            datosCredito: {
+                select: {
+                    plazoMeses: true,
+                    mesesGracia: true,
+                    conceptos: { select: { monto: true } },
+                },
+            },
             documentos: {
                 where: { activo: true },
                 include: {
                     tipoDocumento: { select: { id: true, nombre: true } },
+                    // ── FIX: validadoPor ahora es Personal, sin nombre propio.
+                    // Se anida a través de la relación usuario ─────────────
                     validadoPor: {
                         select: {
                             id: true,
-                            nombre: true,
-                            apellidoPaterno: true,
-                            apellidoMaterno: true,
+                            usuario: {
+                                select: {
+                                    nombre: true,
+                                    apellidoPaterno: true,
+                                    apellidoMaterno: true,
+                                },
+                            },
                         },
                     },
                 },
                 orderBy: { subidoEn: "desc" },
             },
-            // ── FIX: asignacion -> asignaciones, filtrando solo la activa ──────
             asignaciones: {
                 where: { activa: true },
                 take: 1,
@@ -131,9 +145,14 @@ export const obtenerExpediente = async (
                     gestor: {
                         select: {
                             id: true,
-                            nombre: true,
-                            apellidoPaterno: true,
-                            apellidoMaterno: true,
+                            // ── FIX: mismo caso, Personal -> usuario ────────
+                            usuario: {
+                                select: {
+                                    nombre: true,
+                                    apellidoPaterno: true,
+                                    apellidoMaterno: true,
+                                },
+                            },
                         },
                     },
                     fechaAsignacion: true,
@@ -172,8 +191,12 @@ export const obtenerExpediente = async (
     const totalRechazados = resumenDocumentos.filter((d) => d.estatus === "RECHAZADO").length;
     const totalNoSubidos = resumenDocumentos.filter((d) => d.estatus === "NO_SUBIDO").length;
 
-    // ── FIX: leer de asignaciones[0] en lugar de asignacion ────────────────
     const asignacionActiva = expediente.asignaciones[0] ?? null;
+
+    // ── FIX: monto total = suma de conceptos; plazo = plazoMeses ───────────
+    const montoSolicitado =
+        expediente.datosCredito?.conceptos.reduce((sum, c) => sum + c.monto, 0) ?? null;
+    const plazoSolicitado = expediente.datosCredito?.plazoMeses ?? null;
 
     return {
         id: expediente.id,
@@ -182,18 +205,41 @@ export const obtenerExpediente = async (
         tipoPersona: expediente.tipoPersona,
         sector: expediente.sector,
         tamanoEmpresa: expediente.tamanoEmpresa,
-        montoSolicitado: expediente.montoSolicitado,
-        plazoSolicitado: expediente.plazoSolicitado,
+        montoSolicitado,
+        plazoSolicitado,
         creadoEn: expediente.creadoEn,
         actualizadoEn: expediente.actualizadoEn,
 
         programa: { id: expediente.programa.id, nombre: expediente.programa.nombre },
         solicitante: expediente.solicitante,
         datosSolicitante: expediente.datosSolicitante,
-        gestor: asignacionActiva?.gestor ?? null,
+        // ── FIX: aplanar usuario.nombre... al mismo shape que antes ────────
+        gestor: asignacionActiva?.gestor
+            ? {
+                id: asignacionActiva.gestor.id,
+                nombre: asignacionActiva.gestor.usuario.nombre,
+                apellidoPaterno: asignacionActiva.gestor.usuario.apellidoPaterno,
+                apellidoMaterno: asignacionActiva.gestor.usuario.apellidoMaterno,
+            }
+            : null,
         fechaAsignacion: asignacionActiva?.fechaAsignacion ?? null,
 
-        documentos: resumenDocumentos,
+        documentos: resumenDocumentos.map((d) => ({
+            ...d,
+            documentoActivo: d.documentoActivo
+                ? {
+                    ...d.documentoActivo,
+                    validadoPor: d.documentoActivo.validadoPor
+                        ? {
+                            id: d.documentoActivo.validadoPor.id,
+                            nombre: d.documentoActivo.validadoPor.usuario.nombre,
+                            apellidoPaterno: d.documentoActivo.validadoPor.usuario.apellidoPaterno,
+                            apellidoMaterno: d.documentoActivo.validadoPor.usuario.apellidoMaterno,
+                        }
+                        : null,
+                }
+                : null,
+        })),
 
         metricas: {
             totalRequeridos,

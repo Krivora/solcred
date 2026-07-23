@@ -269,3 +269,4 @@ export const usuarioToast = {
     desactivarError: () =>
         toast.error('Error al desactivar el usuario'),
 }
+

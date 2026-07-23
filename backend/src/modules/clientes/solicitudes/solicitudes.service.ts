@@ -198,7 +198,7 @@ export const guardarDatosAval = async (
 
     validarEditable(solicitud);
 
-    if (!solicitud.programa.aval && !solicitud.programa.aval) {
+    if (solicitud.programa.aval === "NO_REQUIERE") {
         throw new AppError("Este programa no requiere aval", 400);
     }
 
@@ -437,16 +437,35 @@ export const guardarDatosBancarios = async (
 };
 export const enviarSolicitud = async (
     solicitudId: string,
+    usuarioId: string,
+    rol: string
 ) => {
-    return prisma.$transaction(async (tx) => {
-        const actualizada = await tx.solicitud.update({
-            where: { id: solicitudId },
-            data: { estatus: 'PENDIENTE' },
-            include: incluyeTodo,
-        })
-        return actualizada
-    })
-}
+    const solicitud = await prisma.solicitud.findUnique({
+        where: { id: solicitudId },
+        include: { datosSolicitante: true, datosCredito: true },
+    });
+
+    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+    if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
+        throw new AppError("No tienes permisos para enviar esta solicitud", 403);
+    }
+
+    validarEditable(solicitud);
+
+    if (!solicitud.datosSolicitante) {
+        throw new AppError("Debes completar los datos del solicitante antes de enviar", 400);
+    }
+    if (!solicitud.datosCredito) {
+        throw new AppError("Debes completar los datos del crédito antes de enviar", 400);
+    }
+
+    return prisma.solicitud.update({
+        where: { id: solicitudId },
+        data: { estatus: 'PENDIENTE' },
+        include: incluyeTodo,
+    });
+};
 
 export const cambiarEstatus = async (
     solicitudId: string,

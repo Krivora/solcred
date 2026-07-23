@@ -175,7 +175,7 @@ export type GrupoGestorWhereInput = {
   activo?: Prisma.BoolFilter<"GrupoGestor"> | boolean
   asignadoEn?: Prisma.DateTimeFilter<"GrupoGestor"> | Date | string
   grupo?: Prisma.XOR<Prisma.GrupoGestionScalarRelationFilter, Prisma.GrupoGestionWhereInput>
-  gestor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  gestor?: Prisma.XOR<Prisma.PersonalScalarRelationFilter, Prisma.PersonalWhereInput>
 }
 
 export type GrupoGestorOrderByWithRelationInput = {
@@ -184,7 +184,7 @@ export type GrupoGestorOrderByWithRelationInput = {
   activo?: Prisma.SortOrder
   asignadoEn?: Prisma.SortOrder
   grupo?: Prisma.GrupoGestionOrderByWithRelationInput
-  gestor?: Prisma.UsuarioOrderByWithRelationInput
+  gestor?: Prisma.PersonalOrderByWithRelationInput
 }
 
 export type GrupoGestorWhereUniqueInput = Prisma.AtLeast<{
@@ -197,7 +197,7 @@ export type GrupoGestorWhereUniqueInput = Prisma.AtLeast<{
   activo?: Prisma.BoolFilter<"GrupoGestor"> | boolean
   asignadoEn?: Prisma.DateTimeFilter<"GrupoGestor"> | Date | string
   grupo?: Prisma.XOR<Prisma.GrupoGestionScalarRelationFilter, Prisma.GrupoGestionWhereInput>
-  gestor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  gestor?: Prisma.XOR<Prisma.PersonalScalarRelationFilter, Prisma.PersonalWhereInput>
 }, "grupoId_gestorId">
 
 export type GrupoGestorOrderByWithAggregationInput = {
@@ -224,7 +224,7 @@ export type GrupoGestorCreateInput = {
   activo?: boolean
   asignadoEn?: Date | string
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutGestoresInput
-  gestor: Prisma.UsuarioCreateNestedOneWithoutGruposGestionInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutGruposGestionInput
 }
 
 export type GrupoGestorUncheckedCreateInput = {
@@ -238,7 +238,7 @@ export type GrupoGestorUpdateInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   asignadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutGestoresNestedInput
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutGruposGestionNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutGruposGestionNestedInput
 }
 
 export type GrupoGestorUncheckedUpdateInput = {
@@ -390,7 +390,7 @@ export type GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput = {
 export type GrupoGestorCreateWithoutGrupoInput = {
   activo?: boolean
   asignadoEn?: Date | string
-  gestor: Prisma.UsuarioCreateNestedOneWithoutGruposGestionInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutGruposGestionInput
 }
 
 export type GrupoGestorUncheckedCreateWithoutGrupoInput = {
@@ -482,7 +482,7 @@ export type GrupoGestorCreateManyGrupoInput = {
 export type GrupoGestorUpdateWithoutGrupoInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   asignadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutGruposGestionNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutGruposGestionNestedInput
 }
 
 export type GrupoGestorUncheckedUpdateWithoutGrupoInput = {
@@ -529,7 +529,7 @@ export type GrupoGestorSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   activo?: boolean
   asignadoEn?: boolean
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["grupoGestor"]>
 
 export type GrupoGestorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -538,7 +538,7 @@ export type GrupoGestorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   activo?: boolean
   asignadoEn?: boolean
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["grupoGestor"]>
 
 export type GrupoGestorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -547,7 +547,7 @@ export type GrupoGestorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   activo?: boolean
   asignadoEn?: boolean
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["grupoGestor"]>
 
 export type GrupoGestorSelectScalar = {
@@ -560,22 +560,22 @@ export type GrupoGestorSelectScalar = {
 export type GrupoGestorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"grupoId" | "gestorId" | "activo" | "asignadoEn", ExtArgs["result"]["grupoGestor"]>
 export type GrupoGestorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }
 export type GrupoGestorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }
 export type GrupoGestorIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
 }
 
 export type $GrupoGestorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GrupoGestor"
   objects: {
     grupo: Prisma.$GrupoGestionPayload<ExtArgs>
-    gestor: Prisma.$UsuarioPayload<ExtArgs>
+    gestor: Prisma.$PersonalPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     grupoId: string
@@ -977,7 +977,7 @@ readonly fields: GrupoGestorFieldRefs;
 export interface Prisma__GrupoGestorClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   grupo<T extends Prisma.GrupoGestionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GrupoGestionDefaultArgs<ExtArgs>>): Prisma.Prisma__GrupoGestionClient<runtime.Types.Result.GetResult<Prisma.$GrupoGestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  gestor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  gestor<T extends Prisma.PersonalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PersonalDefaultArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

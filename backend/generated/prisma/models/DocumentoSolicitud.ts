@@ -274,7 +274,7 @@ export type DocumentoSolicitudWhereInput = {
   subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
-  validadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  validadoPor?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }
 
 export type DocumentoSolicitudOrderByWithRelationInput = {
@@ -292,7 +292,7 @@ export type DocumentoSolicitudOrderByWithRelationInput = {
   subidoEn?: Prisma.SortOrder
   solicitud?: Prisma.SolicitudOrderByWithRelationInput
   tipoDocumento?: Prisma.TipoDocumentoOrderByWithRelationInput
-  validadoPor?: Prisma.UsuarioOrderByWithRelationInput
+  validadoPor?: Prisma.PersonalOrderByWithRelationInput
 }
 
 export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
@@ -314,7 +314,7 @@ export type DocumentoSolicitudWhereUniqueInput = Prisma.AtLeast<{
   subidoEn?: Prisma.DateTimeFilter<"DocumentoSolicitud"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
   tipoDocumento?: Prisma.XOR<Prisma.TipoDocumentoScalarRelationFilter, Prisma.TipoDocumentoWhereInput>
-  validadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  validadoPor?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }, "id" | "solicitudId_tipoDocumentoId_version">
 
 export type DocumentoSolicitudOrderByWithAggregationInput = {
@@ -367,7 +367,7 @@ export type DocumentoSolicitudCreateInput = {
   subidoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDocumentosInput
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutDocumentosInput
-  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
+  validadoPor?: Prisma.PersonalCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateInput = {
@@ -397,7 +397,7 @@ export type DocumentoSolicitudUpdateInput = {
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDocumentosNestedInput
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutDocumentosNestedInput
-  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
+  validadoPor?: Prisma.PersonalUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateInput = {
@@ -739,7 +739,7 @@ export type DocumentoSolicitudCreateWithoutTipoDocumentoInput = {
   motivoRechazo?: string | null
   subidoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutDocumentosInput
-  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
+  validadoPor?: Prisma.PersonalCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateWithoutTipoDocumentoInput = {
@@ -793,7 +793,7 @@ export type DocumentoSolicitudCreateWithoutSolicitudInput = {
   motivoRechazo?: string | null
   subidoEn?: Date | string
   tipoDocumento: Prisma.TipoDocumentoCreateNestedOneWithoutDocumentosInput
-  validadoPor?: Prisma.UsuarioCreateNestedOneWithoutDocumentosValidadosInput
+  validadoPor?: Prisma.PersonalCreateNestedOneWithoutDocumentosValidadosInput
 }
 
 export type DocumentoSolicitudUncheckedCreateWithoutSolicitudInput = {
@@ -917,7 +917,7 @@ export type DocumentoSolicitudUpdateWithoutTipoDocumentoInput = {
   motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutDocumentosNestedInput
-  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
+  validadoPor?: Prisma.PersonalUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateWithoutTipoDocumentoInput = {
@@ -973,7 +973,7 @@ export type DocumentoSolicitudUpdateWithoutSolicitudInput = {
   motivoRechazo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipoDocumento?: Prisma.TipoDocumentoUpdateOneRequiredWithoutDocumentosNestedInput
-  validadoPor?: Prisma.UsuarioUpdateOneWithoutDocumentosValidadosNestedInput
+  validadoPor?: Prisma.PersonalUpdateOneWithoutDocumentosValidadosNestedInput
 }
 
 export type DocumentoSolicitudUncheckedUpdateWithoutSolicitudInput = {
@@ -1097,7 +1097,7 @@ export type $DocumentoSolicitudPayload<ExtArgs extends runtime.Types.Extensions.
   objects: {
     solicitud: Prisma.$SolicitudPayload<ExtArgs>
     tipoDocumento: Prisma.$TipoDocumentoPayload<ExtArgs>
-    validadoPor: Prisma.$UsuarioPayload<ExtArgs> | null
+    validadoPor: Prisma.$PersonalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1508,7 +1508,7 @@ export interface Prisma__DocumentoSolicitudClient<T, Null = never, ExtArgs exten
   readonly [Symbol.toStringTag]: "PrismaPromise"
   solicitud<T extends Prisma.SolicitudDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SolicitudDefaultArgs<ExtArgs>>): Prisma.Prisma__SolicitudClient<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tipoDocumento<T extends Prisma.TipoDocumentoDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TipoDocumentoDefaultArgs<ExtArgs>>): Prisma.Prisma__TipoDocumentoClient<runtime.Types.Result.GetResult<Prisma.$TipoDocumentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  validadoPor<T extends Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  validadoPor<T extends Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DocumentoSolicitud$validadoPorArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1955,18 +1955,18 @@ export type DocumentoSolicitudDeleteManyArgs<ExtArgs extends runtime.Types.Exten
  */
 export type DocumentoSolicitud$validadoPorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Usuario
+   * Select specific fields to fetch from the Personal
    */
-  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  select?: Prisma.PersonalSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Usuario
+   * Omit specific fields from the Personal
    */
-  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  omit?: Prisma.PersonalOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UsuarioInclude<ExtArgs> | null
-  where?: Prisma.UsuarioWhereInput
+  include?: Prisma.PersonalInclude<ExtArgs> | null
+  where?: Prisma.PersonalWhereInput
 }
 
 /**

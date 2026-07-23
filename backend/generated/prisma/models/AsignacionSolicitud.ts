@@ -215,9 +215,9 @@ export type AsignacionSolicitudWhereInput = {
   fechaReasignacion?: Prisma.DateTimeNullableFilter<"AsignacionSolicitud"> | Date | string | null
   motivoReasignacion?: Prisma.StringNullableFilter<"AsignacionSolicitud"> | string | null
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
-  gestor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  gestor?: Prisma.XOR<Prisma.PersonalScalarRelationFilter, Prisma.PersonalWhereInput>
   grupo?: Prisma.XOR<Prisma.GrupoGestionScalarRelationFilter, Prisma.GrupoGestionWhereInput>
-  asignadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  asignadoPor?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }
 
 export type AsignacionSolicitudOrderByWithRelationInput = {
@@ -231,9 +231,9 @@ export type AsignacionSolicitudOrderByWithRelationInput = {
   fechaReasignacion?: Prisma.SortOrderInput | Prisma.SortOrder
   motivoReasignacion?: Prisma.SortOrderInput | Prisma.SortOrder
   solicitud?: Prisma.SolicitudOrderByWithRelationInput
-  gestor?: Prisma.UsuarioOrderByWithRelationInput
+  gestor?: Prisma.PersonalOrderByWithRelationInput
   grupo?: Prisma.GrupoGestionOrderByWithRelationInput
-  asignadoPor?: Prisma.UsuarioOrderByWithRelationInput
+  asignadoPor?: Prisma.PersonalOrderByWithRelationInput
 }
 
 export type AsignacionSolicitudWhereUniqueInput = Prisma.AtLeast<{
@@ -250,9 +250,9 @@ export type AsignacionSolicitudWhereUniqueInput = Prisma.AtLeast<{
   fechaReasignacion?: Prisma.DateTimeNullableFilter<"AsignacionSolicitud"> | Date | string | null
   motivoReasignacion?: Prisma.StringNullableFilter<"AsignacionSolicitud"> | string | null
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
-  gestor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  gestor?: Prisma.XOR<Prisma.PersonalScalarRelationFilter, Prisma.PersonalWhereInput>
   grupo?: Prisma.XOR<Prisma.GrupoGestionScalarRelationFilter, Prisma.GrupoGestionWhereInput>
-  asignadoPor?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  asignadoPor?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }, "id">
 
 export type AsignacionSolicitudOrderByWithAggregationInput = {
@@ -292,9 +292,9 @@ export type AsignacionSolicitudCreateInput = {
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
-  gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutAsignacionesGestorInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
-  asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
+  asignadoPor?: Prisma.PersonalCreateNestedOneWithoutAsignacionesDadasInput
 }
 
 export type AsignacionSolicitudUncheckedCreateInput = {
@@ -316,9 +316,9 @@ export type AsignacionSolicitudUpdateInput = {
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
-  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
+  asignadoPor?: Prisma.PersonalUpdateOneWithoutAsignacionesDadasNestedInput
 }
 
 export type AsignacionSolicitudUncheckedUpdateInput = {
@@ -590,8 +590,8 @@ export type AsignacionSolicitudCreateWithoutGrupoInput = {
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
-  gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
-  asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutAsignacionesGestorInput
+  asignadoPor?: Prisma.PersonalCreateNestedOneWithoutAsignacionesDadasInput
 }
 
 export type AsignacionSolicitudUncheckedCreateWithoutGrupoInput = {
@@ -654,7 +654,7 @@ export type AsignacionSolicitudCreateWithoutGestorInput = {
   motivoReasignacion?: string | null
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
-  asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
+  asignadoPor?: Prisma.PersonalCreateNestedOneWithoutAsignacionesDadasInput
 }
 
 export type AsignacionSolicitudUncheckedCreateWithoutGestorInput = {
@@ -685,7 +685,7 @@ export type AsignacionSolicitudCreateWithoutAsignadoPorInput = {
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAsignacionesInput
-  gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutAsignacionesGestorInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
 }
 
@@ -748,9 +748,9 @@ export type AsignacionSolicitudCreateWithoutSolicitudInput = {
   fechaAsignacion?: Date | string
   fechaReasignacion?: Date | string | null
   motivoReasignacion?: string | null
-  gestor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesGestorInput
+  gestor: Prisma.PersonalCreateNestedOneWithoutAsignacionesGestorInput
   grupo: Prisma.GrupoGestionCreateNestedOneWithoutAsignacionesInput
-  asignadoPor?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesDadasInput
+  asignadoPor?: Prisma.PersonalCreateNestedOneWithoutAsignacionesDadasInput
 }
 
 export type AsignacionSolicitudUncheckedCreateWithoutSolicitudInput = {
@@ -808,8 +808,8 @@ export type AsignacionSolicitudUpdateWithoutGrupoInput = {
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
-  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutAsignacionesGestorNestedInput
+  asignadoPor?: Prisma.PersonalUpdateOneWithoutAsignacionesDadasNestedInput
 }
 
 export type AsignacionSolicitudUncheckedUpdateWithoutGrupoInput = {
@@ -864,7 +864,7 @@ export type AsignacionSolicitudUpdateWithoutGestorInput = {
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
-  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
+  asignadoPor?: Prisma.PersonalUpdateOneWithoutAsignacionesDadasNestedInput
 }
 
 export type AsignacionSolicitudUncheckedUpdateWithoutGestorInput = {
@@ -896,7 +896,7 @@ export type AsignacionSolicitudUpdateWithoutAsignadoPorInput = {
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAsignacionesNestedInput
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
 }
 
@@ -939,9 +939,9 @@ export type AsignacionSolicitudUpdateWithoutSolicitudInput = {
   fechaAsignacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fechaReasignacion?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoReasignacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gestor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesGestorNestedInput
+  gestor?: Prisma.PersonalUpdateOneRequiredWithoutAsignacionesGestorNestedInput
   grupo?: Prisma.GrupoGestionUpdateOneRequiredWithoutAsignacionesNestedInput
-  asignadoPor?: Prisma.UsuarioUpdateOneWithoutAsignacionesDadasNestedInput
+  asignadoPor?: Prisma.PersonalUpdateOneWithoutAsignacionesDadasNestedInput
 }
 
 export type AsignacionSolicitudUncheckedUpdateWithoutSolicitudInput = {
@@ -979,7 +979,7 @@ export type AsignacionSolicitudSelect<ExtArgs extends runtime.Types.Extensions.I
   fechaReasignacion?: boolean
   motivoReasignacion?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["asignacionSolicitud"]>
@@ -995,7 +995,7 @@ export type AsignacionSolicitudSelectCreateManyAndReturn<ExtArgs extends runtime
   fechaReasignacion?: boolean
   motivoReasignacion?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["asignacionSolicitud"]>
@@ -1011,7 +1011,7 @@ export type AsignacionSolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime
   fechaReasignacion?: boolean
   motivoReasignacion?: boolean
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }, ExtArgs["result"]["asignacionSolicitud"]>
@@ -1031,19 +1031,19 @@ export type AsignacionSolicitudSelectScalar = {
 export type AsignacionSolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "solicitudId" | "gestorId" | "grupoId" | "asignadoPorId" | "activa" | "fechaAsignacion" | "fechaReasignacion" | "motivoReasignacion", ExtArgs["result"]["asignacionSolicitud"]>
 export type AsignacionSolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }
 export type AsignacionSolicitudIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }
 export type AsignacionSolicitudIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitud?: boolean | Prisma.SolicitudDefaultArgs<ExtArgs>
-  gestor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  gestor?: boolean | Prisma.PersonalDefaultArgs<ExtArgs>
   grupo?: boolean | Prisma.GrupoGestionDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>
 }
@@ -1052,9 +1052,9 @@ export type $AsignacionSolicitudPayload<ExtArgs extends runtime.Types.Extensions
   name: "AsignacionSolicitud"
   objects: {
     solicitud: Prisma.$SolicitudPayload<ExtArgs>
-    gestor: Prisma.$UsuarioPayload<ExtArgs>
+    gestor: Prisma.$PersonalPayload<ExtArgs>
     grupo: Prisma.$GrupoGestionPayload<ExtArgs>
-    asignadoPor: Prisma.$UsuarioPayload<ExtArgs> | null
+    asignadoPor: Prisma.$PersonalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1461,9 +1461,9 @@ readonly fields: AsignacionSolicitudFieldRefs;
 export interface Prisma__AsignacionSolicitudClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   solicitud<T extends Prisma.SolicitudDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SolicitudDefaultArgs<ExtArgs>>): Prisma.Prisma__SolicitudClient<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  gestor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  gestor<T extends Prisma.PersonalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PersonalDefaultArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   grupo<T extends Prisma.GrupoGestionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GrupoGestionDefaultArgs<ExtArgs>>): Prisma.Prisma__GrupoGestionClient<runtime.Types.Result.GetResult<Prisma.$GrupoGestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  asignadoPor<T extends Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  asignadoPor<T extends Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AsignacionSolicitud$asignadoPorArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1907,18 +1907,18 @@ export type AsignacionSolicitudDeleteManyArgs<ExtArgs extends runtime.Types.Exte
  */
 export type AsignacionSolicitud$asignadoPorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Usuario
+   * Select specific fields to fetch from the Personal
    */
-  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  select?: Prisma.PersonalSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Usuario
+   * Omit specific fields from the Personal
    */
-  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  omit?: Prisma.PersonalOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UsuarioInclude<ExtArgs> | null
-  where?: Prisma.UsuarioWhereInput
+  include?: Prisma.PersonalInclude<ExtArgs> | null
+  where?: Prisma.PersonalWhereInput
 }
 
 /**

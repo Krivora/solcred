@@ -4,6 +4,7 @@ import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../generated/prisma/client";
 import * as expedienteService from "./expediente.service";
 import { ok } from "@utils/response";
+import { AppError } from "@/middlewares/error.middleware";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EXPEDIENTE
@@ -53,35 +54,6 @@ export const obtenerExpediente = async (
  *
  * req.body ya viene validado y limpiado por el middleware validate(subirDocumentoSchema)
  */
-export const subirDocumento = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const { solicitudId } = req.params;
-        const { id: clienteId } = req.usuario!;
-
-        const documento = await expedienteService.subirDocumento(
-            solicitudId as string,
-            clienteId,
-            req.body
-        );
-
-        await registrarLog({
-            accion: AccionLog.CREAR,
-            modulo: ModuloLog.DOCUMENTOS,
-            descripcion: `Documento subido: ${documento.tipoDocumento.nombre} (v${documento.version})`,
-            entidadId: solicitudId as string,
-            usuarioId: clienteId,
-            req,
-        });
-
-        res.status(201).json(ok("Documento subido correctamente", documento));
-    } catch (error) {
-        next(error);
-    }
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DOCUMENTOS — GESTOR
@@ -100,12 +72,17 @@ export const validarDocumento = async (
 ): Promise<void> => {
     try {
         const { solicitudId, documentoId } = req.params;
-        const { id: gestorId } = req.usuario!;
+        // ── FIX: separar usuarioId (para el log) de personalId (para el gestor) ──
+        const { id: usuarioId, personalId } = req.usuario!;
+
+        if (!personalId) {
+            throw new AppError("Este usuario no tiene un perfil de Personal asociado", 403);
+        }
 
         const documento = await expedienteService.validarDocumento(
             solicitudId as string,
             documentoId as string,
-            gestorId,
+            personalId,
             req.body
         );
 
@@ -114,7 +91,7 @@ export const validarDocumento = async (
             modulo: ModuloLog.DOCUMENTOS,
             descripcion: `Documento ${documento.estatus.toLowerCase()}: ${documento.tipoDocumento.nombre}`,
             entidadId: documentoId as string,
-            usuarioId: gestorId,
+            usuarioId, // ← sigue siendo Usuario.id, correcto para el log
             req,
             metadata: {
                 solicitudId,

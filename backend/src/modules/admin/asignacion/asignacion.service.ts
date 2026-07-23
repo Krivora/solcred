@@ -11,7 +11,8 @@ interface SolicitudParaEvaluar {
     tipoPersona: string | null;
     sector: string | null;
     tamanoEmpresa: string | null;
-    programaId: string;}
+    programaId: string;
+}
 
 interface FiltrosAsignacion {
     page: number;
@@ -123,17 +124,22 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
                 },
                 asignaciones: {
                     where: { activa: true },
-                    take: 1, // solo puede haber una activa, pero por si acaso
+                    take: 1,
                     select: {
                         fechaAsignacion: true,
                         grupoId: true,
                         grupo: { select: { id: true, nombre: true } },
+                        // ── FIX: Personal -> usuario anidado ──────────────
                         gestor: {
                             select: {
                                 id: true,
-                                nombre: true,
-                                apellidoPaterno: true,
-                                apellidoMaterno: true,
+                                usuario: {
+                                    select: {
+                                        nombre: true,
+                                        apellidoPaterno: true,
+                                        apellidoMaterno: true,
+                                    },
+                                },
                             },
                         },
                     },
@@ -146,9 +152,22 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
     // ── Aplanar: de arreglo "asignaciones" a objeto singular "asignacion" ─────
     const data = solicitudes.map((sol) => {
         const { asignaciones, ...resto } = sol;
+        const a = asignaciones[0] ?? null;
         return {
             ...resto,
-            asignacion: asignaciones[0] ?? null,
+            asignacion: a
+                ? {
+                    fechaAsignacion: a.fechaAsignacion,
+                    grupoId: a.grupoId,
+                    grupo: a.grupo,
+                    gestor: {
+                        id: a.gestor.id,
+                        nombre: a.gestor.usuario.nombre,
+                        apellidoPaterno: a.gestor.usuario.apellidoPaterno,
+                        apellidoMaterno: a.gestor.usuario.apellidoMaterno,
+                    },
+                }
+                : null,
         };
     });
 
@@ -314,20 +333,22 @@ export const asignarManualmente = async (
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
-            asignaciones: { where: { activa: true } }, // ← ya no es singular
+            asignaciones: { where: { activa: true } },
         },
     });
 
     if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
 
-    const asignacionActiva = solicitud.asignaciones[0]; // 0 o 1 por el constraint parcial
+    const asignacionActiva = solicitud.asignaciones[0];
 
-    const gestor = await prisma.usuario.findUnique({
+    // ── FIX: dto.gestorId es Personal.id, no Usuario.id ──────────────────
+    const gestor = await prisma.personal.findUnique({
         where: { id: dto.gestorId },
         include: { gruposGestion: { where: { activo: true } } },
     });
 
     if (!gestor) throw new AppError("Gestor no encontrado", 404);
+    if (!gestor.activo) throw new AppError("El gestor no está activo", 400);
     if (gestor.rol !== "GESTOR")
         throw new AppError("El usuario no es un gestor", 400);
     if (gestor.gruposGestion.length === 0)
@@ -374,11 +395,16 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
             gestor: {
                 select: {
                     id: true,
-                    nombre: true,
-                    apellidoPaterno: true,
-                    apellidoMaterno: true,
-                    correo: true,
                     activo: true,
+                    // ── FIX: nombre/apellidos/correo viven en usuario ──────
+                    usuario: {
+                        select: {
+                            nombre: true,
+                            apellidoPaterno: true,
+                            apellidoMaterno: true,
+                            correo: true,
+                        },
+                    },
                 },
             },
         },
@@ -402,7 +428,12 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
     cargas.forEach((c) => mapaCargas.set(c.gestorId, c._count.gestorId));
 
     return gestores.map((g) => ({
-        ...g.gestor,
+        id: g.gestor.id,
+        nombre: g.gestor.usuario.nombre,
+        apellidoPaterno: g.gestor.usuario.apellidoPaterno,
+        apellidoMaterno: g.gestor.usuario.apellidoMaterno,
+        correo: g.gestor.usuario.correo,
+        activo: g.gestor.activo,
         grupoId: g.grupoId,
         cargaActual: mapaCargas.get(g.gestorId) ?? 0,
     }));
