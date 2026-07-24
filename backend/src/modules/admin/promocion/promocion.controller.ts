@@ -9,6 +9,7 @@ import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
 import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
 import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjeta-informativa.template';
 import { mapearSolicitudAPDF } from "./promocion.service";
+import { AppError } from "@/middlewares/error.middleware";
 export const listar = async (
   req: RequestAutenticado,
   res: Response,
@@ -90,6 +91,12 @@ export const listarMisCasos = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const { personalId } = req.usuario!;
+
+    if (!personalId) {
+      throw new AppError("Este usuario no tiene un perfil de Personal asociado", 403);
+    }
+
     const {
       page = "1",
       limit = "20",
@@ -104,7 +111,7 @@ export const listarMisCasos = async (
     } = req.query;
 
     const filtros = {
-      gestorId: req.usuario!.id,
+      gestorId: personalId, // ── FIX ──
       page: parseInt(page as string),
       limit: Math.min(parseInt(limit as string), 100),
       estatus: estatus as string | undefined,
@@ -401,100 +408,100 @@ export const rechazar = async (
 };
 
 export const descargarCartaRechazo = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
-    try {
-        const data = await solicitudesService.obtenerCartaRechazo(
-            req.params.id as string,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+  try {
+    const data = await solicitudesService.obtenerCartaRechazo(
+      req.params.id as string,
+      req.usuario!.id,
+      req.usuario!.rol
+    );
 
-        const html = cartaRechazoTemplate(data);
-        const pdfBuffer = await generarPDFDesdeHTML(html);
+    const html = cartaRechazoTemplate(data);
+    const pdfBuffer = await generarPDFDesdeHTML(html);
 
-        await registrarLog({
-            accion: AccionLog.CONSULTAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Carta de rechazo generada para solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `Carta de rechazo generada para solicitud: ${req.params.id}`,
+      usuarioId: req.usuario!.id,
+      entidadId: req.params.id as string,
+      req,
+    });
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="rechazo-${data.folio}.pdf"`);
-        res.setHeader('Content-Length', pdfBuffer.length.toString());
-        res.status(200).send(pdfBuffer);
-    } catch (error) {
-        next(error);
-    }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="rechazo-${data.folio}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length.toString());
+    res.status(200).send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const descargarPDF = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
-    try {
-        const solicitud = await solicitudesService.SolicitudId(
-            req.params.id as string,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+  try {
+    const solicitud = await solicitudesService.SolicitudId(
+      req.params.id as string,
+      req.usuario!.id,
+      req.usuario!.rol
+    );
 
-        const data = mapearSolicitudAPDF(solicitud);
-        const html = solicitudTemplate(data);
-        const pdfBuffer = await generarPDFDesdeHTML(html);
+    const data = mapearSolicitudAPDF(solicitud);
+    const html = solicitudTemplate(data);
+    const pdfBuffer = await generarPDFDesdeHTML(html);
 
-        await registrarLog({
-            accion: AccionLog.CONSULTAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `PDF generado para solicitud: ${solicitud.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: solicitud.id,
-            req,
-        });
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `PDF generado para solicitud: ${solicitud.id}`,
+      usuarioId: req.usuario!.id,
+      entidadId: solicitud.id,
+      req,
+    });
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
-        res.setHeader('Content-Length', pdfBuffer.length.toString());
-        res.status(200).send(pdfBuffer);
-    } catch (error) {
-        next(error);
-    }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length.toString());
+    res.status(200).send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
 };
 export const descargarTarjetaInformativa = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
-    try {
-        const data = await solicitudesService.obtenerTarjetaInformativa(
-            req.params.id as string,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+  try {
+    const data = await solicitudesService.obtenerTarjetaInformativa(
+      req.params.id as string,
+      req.usuario!.id,
+      req.usuario!.rol
+    );
 
-        const html = tarjetaInformativaTemplate(data);
-        const pdfBuffer = await generarPDFDesdeHTML(html);
+    const html = tarjetaInformativaTemplate(data);
+    const pdfBuffer = await generarPDFDesdeHTML(html);
 
-        await registrarLog({
-            accion: AccionLog.CONSULTAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Tarjeta informativa generada para solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `Tarjeta informativa generada para solicitud: ${req.params.id}`,
+      usuarioId: req.usuario!.id,
+      entidadId: req.params.id as string,
+      req,
+    });
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="tarjeta-informativa-${data.folio}.pdf"`);
-        res.setHeader('Content-Length', pdfBuffer.length.toString());
-        res.status(200).send(pdfBuffer);
-    } catch (error) {
-        next(error);
-    }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="tarjeta-informativa-${data.folio}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length.toString());
+    res.status(200).send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
 };

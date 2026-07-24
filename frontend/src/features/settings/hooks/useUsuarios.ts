@@ -9,6 +9,7 @@ import type {
   ActualizarUsuarioDto,
   CambiarRolDto,
 } from "../types/usuario.types";
+import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 
 export function useUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -77,6 +78,20 @@ export function useUsuarios() {
     },
     []
   );
+  const revocarAcceso = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        const usuario = await usuariosApi.revocarAcceso(id);
+        setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
+        usuarioToast.accesoRevocado();
+        return true;
+      } catch {
+        usuarioToast.revocarAccesoError();
+        return false;
+      }
+    },
+    []
+  );
 
   return {
     usuarios,
@@ -85,6 +100,7 @@ export function useUsuarios() {
     recargar: cargar,
     actualizar,
     cambiarRol,
+    revocarAcceso,
     desactivar,
   };
 }
@@ -105,7 +121,7 @@ export function useUsuariosFiltrados(
     ) {
       return false;
     }
-    if (filtros.rol && filtros.rol !== "TODOS" && usuario.rol !== filtros.rol) {
+     if (filtros.rol && filtros.rol !== "TODOS" && obtenerRolEfectivo(usuario) !== filtros.rol) {
       return false;
     }
     if (

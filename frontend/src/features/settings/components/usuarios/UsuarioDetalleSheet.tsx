@@ -37,6 +37,7 @@ import {
 } from "@/shared/components/ui/select";
 
 import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
+import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 import {
   actualizarUsuarioSchema,
   type ActualizarUsuarioForm,
@@ -173,7 +174,6 @@ export function UsuarioDetalleSheet({
       nombre: usuario.nombre,
       apellidoPaterno: usuario.apellidoPaterno,
       apellidoMaterno: usuario.apellidoMaterno,
-      correo: usuario.correo,
       curp: usuario.curp ?? "",
       rfc: usuario.rfc ?? "",
       tipoPersona: usuario.tipoPersona,
@@ -238,7 +238,7 @@ export function UsuarioDetalleSheet({
                 {usuario.correo}
               </p>
               <div className="flex flex-wrap gap-1.5 mt-2.5">
-                <RolBadge rol={usuario.rol} />
+                <RolBadge rol={obtenerRolEfectivo(usuario)} />                
                 <TipoPersonaBadge tipoPersona={usuario.tipoPersona} />
                 <EstadoBadge activo={usuario.activo} />
               </div>
@@ -338,21 +338,6 @@ export function UsuarioDetalleSheet({
               </div>
 
               <Separator />
-
-              {/* Contacto */}
-              <div className="space-y-3">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
-                  Contacto
-                </p>
-                <FormField
-                  id="correo"
-                  label="Correo electrónico"
-                  error={errors.correo?.message}
-                >
-                  <Input id="correo" type="email" {...register("correo")} />
-                </FormField>
-              </div>
-
               <Separator />
 
               {/* Identidad */}

@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils/cn";
 import { useAuthStore } from "@/shared/lib/store/auth.store";
-import { Rol } from "@/shared/lib/types/auth.types";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -38,11 +37,9 @@ interface BrandMenuProps {
 }
 
 export function BrandMenu({ collapsed, onToggleSidebar }: BrandMenuProps) {
-    const { usuario, clearAuth: logout } = useAuthStore();
+    const { rol: role, clearAuth: logout } = useAuthStore(); // ── FIX ──
     const [themeDialogOpen, setThemeDialogOpen] = useState(false);
-    const role = usuario?.rol as Rol | undefined;
     const roleConfig = role ? ROLE_CONFIG[role] : null;
-
     const trigger = (
         <button
             className={cn(

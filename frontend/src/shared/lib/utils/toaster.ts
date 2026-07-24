@@ -264,6 +264,12 @@ export const usuarioToast = {
     cambiarRolError: () =>
         toast.error('Error al cambiar el rol'),
 
+    // ── NUEVO ──
+    accesoRevocado: () =>
+        toast.success('Acceso de personal revocado, el usuario ahora es CLIENTE'),
+    revocarAccesoError: () =>
+        toast.error('Error al revocar el acceso de personal'),
+
     desactivado: () =>
         toast.success('Usuario desactivado'),
     desactivarError: () =>

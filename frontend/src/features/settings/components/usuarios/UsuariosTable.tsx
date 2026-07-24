@@ -11,6 +11,7 @@ import {
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
+  ShieldOff,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -36,7 +37,9 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/tooltip";
 
 import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
-import type { Usuario, UsuarioFiltros, Rol, TipoPersona } from "../../types/usuario.types";
+import type { Usuario, UsuarioFiltros, TipoPersona } from "../../types/usuario.types";
+import type { RolAplicacion } from "@/shared/lib/types/auth.types";
+import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 
 type SortKey = "nombre" | "correo" | "rol" | "creadoEn";
 type SortDir = "asc" | "desc";
@@ -46,6 +49,7 @@ interface UsuariosTableProps {
   isLoading: boolean;
   onVerDetalle: (usuario: Usuario) => void;
   onCambiarRol: (usuario: Usuario) => void;
+  onRevocarAcceso: (usuario: Usuario) => void; // ── NUEVO ──
   onDesactivar: (usuario: Usuario) => void;
   onRecargar: () => void;
 }
@@ -55,6 +59,7 @@ export function UsuariosTable({
   isLoading,
   onVerDetalle,
   onCambiarRol,
+  onRevocarAcceso,
   onDesactivar,
   onRecargar,
 }: UsuariosTableProps) {
@@ -84,8 +89,7 @@ export function UsuariosTable({
       const nombre = `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`.toLowerCase();
       const busqueda = filtros.busqueda?.toLowerCase() ?? "";
       if (busqueda && !nombre.includes(busqueda) && !u.correo.toLowerCase().includes(busqueda)) return false;
-      if (filtros.rol !== "TODOS" && u.rol !== filtros.rol) return false;
-      if (filtros.tipoPersona !== "TODOS" && u.tipoPersona !== filtros.tipoPersona) return false;
+      if (filtros.rol !== "TODOS" && obtenerRolEfectivo(u) !== filtros.rol) return false; // ── FIX ──      if (filtros.tipoPersona !== "TODOS" && u.tipoPersona !== filtros.tipoPersona) return false;
       if (filtros.activo !== "TODOS" && u.activo !== filtros.activo) return false;
       return true;
     })
@@ -98,6 +102,9 @@ export function UsuariosTable({
         return sortDir === "asc"
           ? new Date(a.creadoEn).getTime() - new Date(b.creadoEn).getTime()
           : new Date(b.creadoEn).getTime() - new Date(a.creadoEn).getTime();
+      } else if (sortKey === "rol") {
+        av = obtenerRolEfectivo(a);
+        bv = obtenerRolEfectivo(b);
       } else {
         av = a[sortKey];
         bv = b[sortKey];
@@ -135,8 +142,7 @@ export function UsuariosTable({
           <Select
             value={String(filtros.rol)}
             onValueChange={(v) => {
-              setFiltros((f) => ({ ...f, rol: v as Rol | "TODOS" }));
-              setPagina(1);
+              setFiltros((f) => ({ ...f, rol: v as RolAplicacion | "TODOS" }));
             }}
           >
             <SelectTrigger className="h-9 w-36">
@@ -146,6 +152,8 @@ export function UsuariosTable({
               <SelectItem value="TODOS">Todos los roles</SelectItem>
               <SelectItem value="ADMIN">Admin</SelectItem>
               <SelectItem value="ANALISTA">Analista</SelectItem>
+              <SelectItem value="GESTOR">Gestor</SelectItem>
+              <SelectItem value="SUPERVISOR">Supervisor</SelectItem>
               <SelectItem value="CLIENTE">Cliente</SelectItem>
             </SelectContent>
           </Select>
@@ -232,7 +240,6 @@ export function UsuariosTable({
                 >
                   <span className="flex items-center">
                     Registro
-                    <SortIcon col="creadoEn" />
                   </span>
                 </th>
                 <th className="h-10 px-4 text-right font-medium text-muted-foreground">
@@ -243,23 +250,23 @@ export function UsuariosTable({
             <tbody>
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
-                    <tr key={i} className="border-b">
-                      {Array.from({ length: 7 }).map((_, j) => (
-                        <td key={j} className="px-4 py-3">
-                          <Skeleton className="h-4 w-full" />
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                : paginados.length === 0
-                ? (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                      No se encontraron usuarios con los filtros aplicados.
-                    </td>
+                  <tr key={i} className="border-b">
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <td key={j} className="px-4 py-3">
+                        <Skeleton className="h-4 w-full" />
+                      </td>
+                    ))}
                   </tr>
-                )
-                : paginados.map((usuario) => (
+                ))
+                : paginados.length === 0
+                  ? (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                        No se encontraron usuarios con los filtros aplicados.
+                      </td>
+                    </tr>
+                  )
+                  : paginados.map((usuario) => (
                     <tr
                       key={usuario.id}
                       className="border-b transition-colors hover:bg-muted/30 cursor-pointer"
@@ -279,7 +286,7 @@ export function UsuariosTable({
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{usuario.correo}</td>
                       <td className="px-4 py-3">
-                        <RolBadge rol={usuario.rol} />
+                        <RolBadge rol={obtenerRolEfectivo(usuario)} />
                       </td>
                       <td className="px-4 py-3">
                         <TipoPersonaBadge tipoPersona={usuario.tipoPersona} />
@@ -315,6 +322,12 @@ export function UsuariosTable({
                               <Shield className="mr-2 h-4 w-4" />
                               Cambiar rol
                             </DropdownMenuItem>
+                             {usuario.personal && (
+                              <DropdownMenuItem onClick={() => onRevocarAcceso(usuario)}>
+                                <ShieldOff className="mr-2 h-4 w-4" />
+                                Revocar acceso
+                              </DropdownMenuItem>
+                            )}
                             {usuario.activo && (
                               <>
                                 <DropdownMenuSeparator />

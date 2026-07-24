@@ -5,7 +5,6 @@ import { cn } from "@/shared/lib/utils/cn";
 import { useAuthStore } from "@/shared/lib/store/auth.store";
 import { getNavForRole, settingsNavItem } from "@/shared/config/nav.config";
 import { Separator } from "@/shared/components/ui/separator";
-import { Rol } from "@/shared/lib/types/auth.types";
 import { Sheet, SheetContent } from "@/shared/components/ui/sheet";
 import { BrandMenu } from "./BrandMenu";
 import { NavLink } from "./NavLink";
@@ -28,11 +27,11 @@ function SidebarContent({
   onToggle: () => void;
   isMobile?: boolean;
 }) {
-  const { usuario } = useAuthStore();
-  const role = usuario?.rol as Rol | undefined;
+  // ── FIX: rol efectivo ya viene calculado en el store, no en usuario.rol ──
+  const rol = useAuthStore((s) => s.rol);
 
-  const navItems = role ? getNavForRole(role) : [];
-  const showSettings = role && settingsNavItem.roles.includes(role);
+  const navItems = rol ? getNavForRole(rol) : [];
+  const showSettings = rol && settingsNavItem.roles.includes(rol);
 
   // En mobile el sidebar nunca está "colapsado" visualmente (siempre expandido dentro del sheet)
   const effectiveCollapsed = isMobile ? false : collapsed;

@@ -30,6 +30,7 @@ import { CAMPO_LABELS, OPERADOR_LABELS } from '@/features/promocion/types/asigna
 import { cn } from '@/shared/lib/utils/cn'
 import { useUsuarios } from '@/features/settings/hooks/useUsuarios'
 import { PageHeader } from '@/shared/components/ui/PageHeader'
+import { obtenerRolEfectivo } from '@/shared/lib/types/auth.types'
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -121,12 +122,12 @@ function GrupoCard({
                 <div className="flex items-center gap-2">
                     <div className="flex -space-x-1.5">
                         {gestoresActivos.slice(0, 4).map((gg) => {
-                            const iniciales = `${gg.gestor.nombre[0]}${gg.gestor.apellidoPaterno[0]}`.toUpperCase()
+                            const iniciales = `${gg.gestor.usuario.nombre[0]}${gg.gestor.usuario.apellidoPaterno[0]}`.toUpperCase() // ── FIX ──
                             return (
                                 <div
                                     key={gg.gestorId}
                                     className="w-6 h-6 rounded-full bg-primary/20 border-2 border-card flex items-center justify-center text-[9px] font-bold text-primary"
-                                    title={`${gg.gestor.nombre} ${gg.gestor.apellidoPaterno}`}
+                                    title={`${gg.gestor.usuario.nombre} ${gg.gestor.usuario.apellidoPaterno}`} // ── FIX ──
                                 >
                                     {iniciales}
                                 </div>
@@ -231,7 +232,7 @@ export default function GruposPage() {
     const [eliminando, setEliminando] = useState(false)
 
     const gestoresDisponibles: GestorResumen[] = usuarios
-        .filter(u => u.rol === 'GESTOR' && u.activo)
+        .filter(u => obtenerRolEfectivo(u) === 'GESTOR' && u.activo) // ── FIX ──
         .map(u => ({
             id: u.id,
             nombre: u.nombre,

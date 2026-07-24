@@ -126,3 +126,26 @@ export const desactivar = async (
     next(error);
   }
 };
+
+export const revocarAcceso = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const usuario = await usuariosService.revocarAccesoPersonal(req.params.id as string);
+
+    await registrarLog({
+      accion: AccionLog.ACTUALIZAR,
+      modulo: ModuloLog.USUARIOS,
+      descripcion: `Acceso de personal revocado: ${usuario.correo}`,
+      usuarioId: req.usuario!.id,
+      entidadId: usuario.id,
+      req,
+    });
+
+    res.status(200).json(ok("Acceso de personal revocado, usuario regresado a CLIENTE", usuario));
+  } catch (error) {
+    next(error);
+  }
+};

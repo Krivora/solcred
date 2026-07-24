@@ -1,9 +1,9 @@
 import { navConfig, settingsNavItem, type NavItem } from './nav.config';
-import type { Rol } from '@/shared/lib/types/auth.types';
+import type { RolAplicacion } from '@/shared/lib/types/auth.types';
 
 interface RoutePermission {
     pattern: string; // puede contener :param como comodín de un segmento
-    roles: Rol[];
+    roles: RolAplicacion[];
 }
 
 // Aplana navConfig (padres + hijos) en pares { pattern, roles }
@@ -29,14 +29,15 @@ const EXTRA_ROUTES: RoutePermission[] = [
     { pattern: '/dashboard/admin/configuracion/programas/:id/editar', roles: ['ADMIN'] },
 ];
 
-const DEFAULT_ROUTE_BY_ROLE: Record<Rol, string> = {
+const DEFAULT_ROUTE_BY_ROLE: Record<RolAplicacion, string> = {
     ADMIN: '/dashboard',
     GESTOR: '/dashboard/admin/promocion/mis-casos',
     ANALISTA: '/dashboard/financiamiento/mis-casos',
+    SUPERVISOR: '/dashboard', // ── NUEVO: faltaba, Rol ya incluía SUPERVISOR en el schema ──
     CLIENTE: '/dashboard/usuarios/solicitudes',
 };
 
-export function getDefaultRouteForRole(role: Rol): string {
+export function getDefaultRouteForRole(role: RolAplicacion): string {
     return DEFAULT_ROUTE_BY_ROLE[role];
 }
 export const ROUTE_PERMISSIONS: RoutePermission[] = [
@@ -56,7 +57,7 @@ function patternToRegex(pattern: string): RegExp {
 // Devuelve los roles permitidos para un pathname exacto, o null si la ruta
 // no está registrada (en ese caso se deja pasar: no todo requiere rol,
 // ej. /dashboard raíz para roles sin item "Inicio" propio).
-export function getRolesForPath(pathname: string): Rol[] | null {
+export function getRolesForPath(pathname: string): RolAplicacion[] | null {
     const match = ROUTE_PERMISSIONS.find((r) => patternToRegex(r.pattern).test(pathname));
     return match ? match.roles : null;
 }

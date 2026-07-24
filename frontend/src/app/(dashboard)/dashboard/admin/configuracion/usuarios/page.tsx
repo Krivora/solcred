@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Users } from "lucide-react";
-
 import { UsuariosStats } from "@/features/settings/components/usuarios/UsuariosStats";
 import { UsuariosTable } from "@/features/settings/components/usuarios/UsuariosTable";
 import { UsuarioDetalleSheet } from "@/features/settings/components/usuarios/UsuarioDetalleSheet";
@@ -11,18 +9,24 @@ import { UsuarioDesactivarDialog } from "@/features/settings/components/usuarios
 import { useUsuarios } from "@/features/settings/hooks/useUsuarios";
 import type { Usuario } from "@/features/settings/types/usuario.types";
 import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
-import { PageHeader, RefreshAction } from "@/shared/components/ui/PageHeader";
+import { PageHeader } from "@/shared/components/ui/PageHeader";
+import { UsuarioRevocarAccesoDialog } from "@/features/settings/components/usuarios/UsuarioRevocarAccesoDialog";
 
 export default function UsuariosPage() {
-  const { usuarios, isLoading, recargar, actualizar, cambiarRol, desactivar } =
+  const { usuarios, isLoading, recargar, actualizar, cambiarRol, desactivar, revocarAcceso } =
     useUsuarios();
 
   const [usuarioDetalle, setUsuarioDetalle] = useState<Usuario | null>(null);
   const [usuarioRol, setUsuarioRol] = useState<Usuario | null>(null);
   const [usuarioDesactivar, setUsuarioDesactivar] = useState<Usuario | null>(null);
+   const [usuarioRevocar, setUsuarioRevocar] = useState<Usuario | null>(null);
 
   const handleGuardar = async (id: string, datos: ActualizarUsuarioForm): Promise<boolean> => {
     return actualizar(id, datos);
+  };
+
+  const handleRevocarAcceso = async (id: string): Promise<boolean> => {
+    return revocarAcceso(id);
   };
 
   const handleCambiarRol = async (id: string, datos: CambiarRolForm): Promise<boolean> => {
@@ -33,29 +37,26 @@ export default function UsuariosPage() {
     return desactivar(id);
   };
 
-  return (
+return (
     <div className="space-y-6 p-6">
-      {/* Header */}
       <PageHeader
         title="Gestión de Usuarios"
         description="Administra los usuarios registrados en el sistema"
         backHref="/dashboard/admin/configuracion"
       />
 
-      {/* Stats */}
       <UsuariosStats usuarios={usuarios} isLoading={isLoading} />
 
-      {/* Tabla */}
       <UsuariosTable
         usuarios={usuarios}
         isLoading={isLoading}
         onVerDetalle={setUsuarioDetalle}
         onCambiarRol={setUsuarioRol}
+        onRevocarAcceso={setUsuarioRevocar} // ── NUEVO ──
         onDesactivar={setUsuarioDesactivar}
         onRecargar={recargar}
       />
 
-      {/* Sheet detalle / edición */}
       <UsuarioDetalleSheet
         usuario={usuarioDetalle}
         open={!!usuarioDetalle}
@@ -63,7 +64,6 @@ export default function UsuariosPage() {
         onGuardar={handleGuardar}
       />
 
-      {/* Dialog cambiar rol */}
       <UsuarioRolDialog
         usuario={usuarioRol}
         open={!!usuarioRol}
@@ -71,7 +71,14 @@ export default function UsuariosPage() {
         onConfirmar={handleCambiarRol}
       />
 
-      {/* Dialog desactivar */}
+      {/* ── NUEVO ── */}
+      <UsuarioRevocarAccesoDialog
+        usuario={usuarioRevocar}
+        open={!!usuarioRevocar}
+        onOpenChange={(open) => !open && setUsuarioRevocar(null)}
+        onConfirmar={handleRevocarAcceso}
+      />
+
       <UsuarioDesactivarDialog
         usuario={usuarioDesactivar}
         open={!!usuarioDesactivar}

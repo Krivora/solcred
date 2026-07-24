@@ -2,7 +2,6 @@
 import {
   LayoutDashboard,
   FileText,
-  Clock,
   Briefcase,
   Users,
   FileCheck,
@@ -19,14 +18,14 @@ import {
   BadgeDollarSign,
   Settings2,
 } from "lucide-react";
-import { Rol } from "@/shared/lib/types/auth.types";
+import { RolAplicacion } from "@/shared/lib/types/auth.types";
 
 export interface NavItem {
   label: string;
   href?: string;
   icon: React.ElementType;
   children?: NavItem[];
-  roles: Rol[];
+  roles: RolAplicacion[];
   badge?: string;
   exact?: boolean;
 }
@@ -155,7 +154,7 @@ export const settingsNavItem: NavItem = {
   roles: ["ADMIN"],
 };
 
-export function getNavForRole(role: Rol): NavItem[] {
+export function getNavForRole(role: RolAplicacion): NavItem[] {
   return navConfig
     .filter((item) => item.roles.includes(role))
     .map((item) => ({

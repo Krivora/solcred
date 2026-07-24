@@ -23,6 +23,8 @@ import {
 
 import { cambiarRolSchema, type CambiarRolForm } from "../../schema/usuario.schemas";
 import type { Usuario } from "../../types/usuario.types";
+import type { RolAplicacion } from "@/shared/lib/types/auth.types";
+import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 
 // ─── Config de roles ──────────────────────────────────────────────────────────
 // Para agregar más roles: solo añade objetos a este array.
@@ -45,7 +47,7 @@ const ROLES: RolConfig[] = [
     colorClass: "text-amber-500",
     pillClass: "bg-amber-50 text-amber-700 border-amber-200",
   },
-    {
+  {
     value: "GESTOR",
     label: "Gestor",
     descripcion: "Revisión, dictamen y gestión de solicitudes.",
@@ -60,11 +62,11 @@ const ROLES: RolConfig[] = [
     pillClass: "bg-blue-50 text-blue-700 border-blue-200",
   },
   {
-    value: "CLIENTE",
-    label: "Cliente",
-    descripcion: "Creación y seguimiento de sus propias solicitudes.",
-    colorClass: "text-slate-500",
-    pillClass: "bg-slate-100 text-slate-700 border-slate-200",
+    value: "SUPERVISOR",
+    label: "Supervisor",
+    descripcion: "Supervisión de equipos de gestión y reasignaciones.",
+    colorClass: "text-purple-500",
+    pillClass: "bg-purple-50 text-purple-700 border-purple-200",
   },
 ];
 
@@ -114,14 +116,16 @@ export function UsuarioRolDialog({
 
   const { handleSubmit, setValue, watch } = useForm<CambiarRolForm>({
     resolver: zodResolver(cambiarRolSchema),
-    defaultValues: { rol: usuario?.rol },
+    defaultValues: { rol: usuario?.personal?.rol },
   });
-
+  const getRolConfig = (value?: RolValue | RolAplicacion) =>
+  ROLES.find((r) => r.value === value) ?? null;
   const rolSeleccionado = watch("rol");
-  const mismoRol = rolSeleccionado === usuario?.rol;
+  const rolActual = usuario ? obtenerRolEfectivo(usuario) : undefined;
+  const mismoRol = rolSeleccionado === rolActual;
 
   const configSeleccionado = getRolConfig(rolSeleccionado);
-  const configActual = getRolConfig(usuario?.rol);
+  const configActual = getRolConfig(rolActual);
 
   const onSubmit = async (datos: CambiarRolForm) => {
     if (!usuario) return;
@@ -208,14 +212,14 @@ export function UsuarioRolDialog({
                 >
                   {ROLES.map((rol) => {
                     const isSelected = rolSeleccionado === rol.value;
-                    const isCurrent = usuario.rol === rol.value;
+                    const isCurrent = rolActual === rol.value;
                     return (
                       <DropdownMenuItem
                         key={rol.value}
                         onSelect={() => setValue("rol", rol.value)}
                         className="flex items-center gap-3 py-2.5 px-3 cursor-pointer"
                       >
-                         <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-medium">{rol.label}</span>
                             {isCurrent && (

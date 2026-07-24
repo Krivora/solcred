@@ -1,10 +1,19 @@
-export type Rol = 'ADMIN' | 'ANALISTA' | 'CLIENTE' | 'GESTOR';
+export type Rol = 'ADMIN' | 'ANALISTA' | 'GESTOR' | 'SUPERVISOR';
+export type RolAplicacion = Rol | 'CLIENTE';
 export type TipoPersona = 'FISICA' | 'MORAL';
+export type TipoUsuario = 'CLIENTE' | 'PERSONAL';
+
+export interface PersonalInfo {
+  id: string;
+  rol: Rol;
+  departamento?: string | null;
+  activo: boolean;
+}
 
 export interface Usuario {
   id: string;
   correo: string;
-  rol: Rol;
+  tipoUsuario: TipoUsuario;
   tipoPersona: TipoPersona;
   nombre: string;
   apellidoPaterno: string;
@@ -14,6 +23,8 @@ export interface Usuario {
   activo: boolean;
   creadoEn: string;
   actualizadoEn: string;
+  // ── FIX: rol ya no es plano, viene anidado. null si es CLIENTE ─────────
+  personal: PersonalInfo | null;
 }
 
 export interface LoginCredentials {
@@ -33,8 +44,12 @@ export interface RegisterCredentials {
 }
 
 // El backend retorna en data: { usuario, token }
-// usuario solo trae id, correo, rol en el login
 export interface LoginResponseData {
-  usuario: Pick<Usuario, 'id' | 'correo' | 'rol' | 'nombre' | 'apellidoPaterno'>;
+  usuario: Pick<Usuario,'id' | 'correo' | 'nombre' | 'apellidoPaterno' | 'tipoUsuario' | 'personal'>;
   token: string;
 }
+
+// Helper para obtener el rol efectivo (CLIENTE si no tiene Personal)
+export const obtenerRolEfectivo = (usuario: Pick<Usuario, 'personal'>): RolAplicacion =>
+  usuario.personal?.activo ? usuario.personal.rol : 'CLIENTE';
+

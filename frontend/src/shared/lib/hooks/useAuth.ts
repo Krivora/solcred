@@ -11,6 +11,7 @@ import type {
 } from '../schema/auth.schemas'
 import { authToast } from '@/shared/lib/utils/toaster'
 import { getDefaultRouteForRole } from '@/shared/config/route-permissions'
+import { obtenerRolEfectivo } from '../types/auth.types'
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof ApiError) return err.message
     if (err instanceof Error) return err.message
@@ -28,8 +29,9 @@ export function useAuth() {
         try {
             const data = await authApi.login(values)
             setAuth(data.usuario, data.token)
+            const { rol } = useAuthStore.getState() 
             authToast.loginSuccess()
-            router.push(getDefaultRouteForRole(data.usuario.rol))
+            router.push(getDefaultRouteForRole(rol!))
         } catch (err: unknown) {
             const message = getErrorMessage(err)
             setError(message)

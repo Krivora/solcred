@@ -39,7 +39,7 @@ export const actualizarUsuarioSchema = z.object({
 });
 
 export const cambiarRolSchema = z.object({
-  rol: z.enum(["ADMIN", "ANALISTA", "CLIENTE", "GESTOR"], {
+  rol: z.enum(["ADMIN", "ANALISTA", "GESTOR", "SUPERVISOR"], {
     error: "El rol es obligatorio",
   }),
 });

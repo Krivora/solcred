@@ -12,6 +12,7 @@ router.use(autenticar);
 // Solo ADMIN
 router.get("/", autorizar("ADMIN"), usuariosController.listar);
 router.patch("/:id/rol", autorizar("ADMIN"), validate(cambiarRolSchema), usuariosController.cambiarRol);
+router.patch("/:id/revocar-acceso", autorizar("ADMIN"), usuariosController.revocarAcceso); // ── NUEVO ──
 router.patch("/:id/desactivar", autorizar("ADMIN"), usuariosController.desactivar);
 
 // ADMIN o el mismo usuario

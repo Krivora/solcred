@@ -2,17 +2,18 @@ import { Users, ShieldCheck, BarChart2, UserX } from "lucide-react";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import type { Usuario } from "../../types/usuario.types";
-
+import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 interface UsuariosStatsProps {
   usuarios: Usuario[];
   isLoading: boolean;
 }
 
 export function UsuariosStats({ usuarios = [], isLoading }: UsuariosStatsProps) {
+
   const stats = {
     total: usuarios.length,
     activos: usuarios.filter((u) => u.activo).length,
-    admins: usuarios.filter((u) => u.rol === "ADMIN").length,
+    admins: usuarios.filter((u) => obtenerRolEfectivo(u) === "ADMIN").length, // ── FIX ──
     inactivos: usuarios.filter((u) => !u.activo).length,
   };
 
