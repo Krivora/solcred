@@ -52,7 +52,6 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
         onPaginar={onPaginar}
         config={{
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
-          getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: true,
           labelFecha: 'Recibida',

@@ -2,30 +2,31 @@ import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { CrearGrupoDto, ActualizarGrupoDto } from "./grupos.schema";
 
+const includeGestorConUsuario = {
+    where: { activo: true },
+    include: {
+        gestor: {
+            select: {
+                id: true,
+                activo: true,
+                usuario: {
+                    select: {
+                        nombre: true,
+                        apellidoPaterno: true,
+                        apellidoMaterno: true,
+                        correo: true,
+                    },
+                },
+            },
+        },
+    },
+} as const;
+
 export const listarGrupos = async () => {
     return prisma.grupoGestion.findMany({
         include: {
             reglas: true,
-            gestores: {
-                where: { activo: true },
-                include: {
-                    gestor: {
-                        select: {
-                            id: true,
-                            activo: true,
-                            // ── FIX: Personal -> usuario anidado ────────────
-                            usuario: {
-                                select: {
-                                    nombre: true,
-                                    apellidoPaterno: true,
-                                    apellidoMaterno: true,
-                                    correo: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
+            gestores: includeGestorConUsuario,
             _count: { select: { asignaciones: true } },
         },
         orderBy: { prioridad: "desc" },
@@ -37,25 +38,8 @@ export const obtenerGrupoPorId = async (id: string) => {
         where: { id },
         include: {
             reglas: true,
-            gestores: {
-                include: {
-                    gestor: {
-                        select: {
-                            id: true,
-                            activo: true,
-                            // ── FIX: mismo caso ──────────────────────────────
-                            usuario: {
-                                select: {
-                                    nombre: true,
-                                    apellidoPaterno: true,
-                                    apellidoMaterno: true,
-                                    correo: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
+            // sin el filtro where:{activo:true} aquí si quieres ver también inactivos al editar
+            gestores: { include: includeGestorConUsuario.include },
             _count: { select: { asignaciones: true } },
         },
     });
@@ -77,7 +61,10 @@ export const crearGrupo = async (dto: CrearGrupoDto) => {
                 create: dto.gestorIds.map((gestorId) => ({ gestorId })),
             },
         },
-        include: { reglas: true, gestores: true },
+        include: {
+            reglas: true,
+            gestores: { include: includeGestorConUsuario.include },
+        },
     });
 };
 
@@ -110,11 +97,13 @@ export const actualizarGrupo = async (id: string, dto: ActualizarGrupoDto) => {
                     },
                 }),
             },
-            include: { reglas: true, gestores: true },
+            include: {
+                reglas: true,
+                gestores: { include: includeGestorConUsuario.include },
+            },
         });
     });
 };
-
 export const eliminarGrupo = async (id: string) => {
     const grupo = await prisma.grupoGestion.findUnique({
         where: { id },

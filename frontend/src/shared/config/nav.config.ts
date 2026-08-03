@@ -72,7 +72,7 @@ export const navConfig: NavItem[] = [
         label: "Mis Casos",
         href: "/dashboard/admin/promocion/mis-casos",
         icon: FolderKanban,
-        roles: ["ADMIN", "GESTOR"],
+        roles: ["GESTOR"],
       },
       {
         label: "Historico",

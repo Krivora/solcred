@@ -25,6 +25,7 @@ router.get("/:id", autorizar("ADMIN", "GESTOR"), solicitudesController.obtenerPo
 router.get("/:id/pdf", autorizar("ADMIN", "GESTOR"),solicitudesController.descargarPDF);
 router.get("/:id/carta-rechazo", autorizar("ADMIN", "GESTOR"), solicitudesController.descargarCartaRechazo);
 router.get("/:id/tarjeta-informativa",autorizar("ADMIN", "GESTOR"), solicitudesController.descargarTarjetaInformativa);
+router.get('/:id/acuse-entrega', autorizar("ADMIN", "GESTOR"), solicitudesController.descargarAcuseEntregaExpediente);
 // ─── Acciones de promoción ────────────────────────────────────────────────────
 router.patch("/:id/devolver",
   autorizar("ADMIN", "ANALISTA", "GESTOR"),

@@ -66,7 +66,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
         return (
             <>
                 <p className="text-sm font-semibold text-foreground leading-tight">
-                    Asignado a {nombreCompleto(evento.gestor)}
+                    Asignado a {nombreCompleto(evento.gestor.usuario)}
                 </p>
                 <p className="text-[11px] text-muted-foreground mt-1">
                     Grupo <span className="font-medium text-foreground/70">{evento.grupo.nombre}</span>
@@ -95,6 +95,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
 }
 
 export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
+    console.log('SolicitudTimeline render', { timeline, gestorAsignado })
     return (
         <div className="flex flex-col gap-5">
             {/* Gestor actual */}
@@ -105,10 +106,10 @@ export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
                     </div>
                     <div className="flex flex-col gap-0">
                         <span className="text-xs font-semibold text-foreground leading-tight">
-                            {nombreCompleto(gestorAsignado.gestor)}
+                            {nombreCompleto(gestorAsignado.gestor.usuario)}
                         </span>
                         <span className="text-[11px] text-muted-foreground leading-tight">
-                            Gestor actual · {gestorAsignado.grupo.nombre}
+                            Gestor actual · {gestorAsignado.gestor.usuario.nombre}
                         </span>
                     </div>
                 </div>
@@ -127,7 +128,7 @@ export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
                     Aún no hay eventos registrados
                 </p>
             ) : (
-                <ol className="flex flex-col max-h-[560px] overflow-y-auto pr-1 -mr-1">
+                <ol className="flex flex-col max-h-140 overflow-y-auto pr-1 -mr-1">
                     {[...timeline].reverse().map((evento, i, arr) => {
                         const esUltimo = i === arr.length - 1
                         return (
@@ -140,7 +141,7 @@ export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
                                         <EventoIcon tipo={evento.tipo} />
                                     </div>
                                     {!esUltimo && (
-                                        <div className="w-px flex-1 min-h-[2.75rem] bg-border" />
+                                        <div className="w-px flex-1 min-h-11 bg-border" />
                                     )}
                                 </div>
 

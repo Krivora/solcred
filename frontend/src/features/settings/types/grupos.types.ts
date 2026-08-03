@@ -52,13 +52,20 @@ export interface GestorConCarga extends GestorResumen {
 }
 
 export interface GrupoGestor {
-    gestorId: string
     grupoId: string
+    gestorId: string
     activo: boolean
-    asignadoEn: string
-    gestor: GestorResumen
+    gestor: {
+        id: string
+        activo: boolean
+        usuario: {
+            nombre: string
+            apellidoPaterno: string
+            apellidoMaterno: string
+            correo: string
+        }
+    }
 }
-
 // ─── Grupos ───────────────────────────────────────────────────────────────────
 
 export interface GrupoGestion {

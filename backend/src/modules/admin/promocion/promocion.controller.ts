@@ -10,6 +10,7 @@ import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.templ
 import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjeta-informativa.template';
 import { mapearSolicitudAPDF } from "./promocion.service";
 import { AppError } from "@/middlewares/error.middleware";
+import { acuseEntregaExpedienteTemplate } from "@/shared/pdf/templates/acuse-entrega-expediente.template";
 export const listar = async (
   req: RequestAutenticado,
   res: Response,
@@ -499,6 +500,42 @@ export const descargarTarjetaInformativa = async (
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="tarjeta-informativa-${data.folio}.pdf"`);
+    res.setHeader('Content-Length', pdfBuffer.length.toString());
+    res.status(200).send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const descargarAcuseEntregaExpediente = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const comentarios = (req.query.comentarios as string) ?? null;
+
+    const data = await solicitudesService.obtenerAcuseEntregaExpediente(
+      req.params.id as string,
+      req.usuario!.id,
+      req.usuario!.rol,
+      comentarios
+    );
+
+    const html = acuseEntregaExpedienteTemplate(data);
+    const pdfBuffer = await generarPDFDesdeHTML(html);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `Acuse de entrega de expediente generado para solicitud: ${req.params.id}`,
+      usuarioId: req.usuario!.id,
+      entidadId: req.params.id as string,
+      req,
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="acuse-${data.folio}.pdf"`);
     res.setHeader('Content-Length', pdfBuffer.length.toString());
     res.status(200).send(pdfBuffer);
   } catch (error) {

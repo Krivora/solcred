@@ -8,7 +8,7 @@ import {
   RechazarDto,
 } from "./promocion.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
-import { CartaRechazoPDFData, SolicitudPDFData, DatosPersonaPDF, TarjetaInformativaPDFData } from "../../../shared/pdf/pdf.types";
+import { CartaRechazoPDFData, SolicitudPDFData, DatosPersonaPDF, TarjetaInformativaPDFData, AcuseEntregaExpedientePDFData } from "../../../shared/pdf/pdf.types";
 
 const ESTATUS_RECHAZO: EstatusSolicitud[] = ["RECHAZADO", "CANCELADO"];
 
@@ -60,7 +60,12 @@ const incluyeTodo = {
   datosMercado: true,
   datosBancarios: true,
   documentos: {
-    include: { tipoDocumento: true },
+    include: {
+    tipoDocumento: true,
+    validadoPor: {
+      include: { usuario: true },
+    },
+  },
   },
 };
 
@@ -1022,7 +1027,14 @@ const formatearFecha = (fecha: Date): string =>
 
 const nombreUsuario = (u: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }): string =>
   `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`;
-
+const cargoPorRol = (rol: string): string => {
+  const cargos: Record<string, string> = {
+    ADMIN: "Administrador",
+    ANALISTA: "Analista de Crédito",
+    GESTOR: "Gestor",
+  };
+  return cargos[rol] ?? rol;
+};
 export const mapearSolicitudAPDF = (
   solicitud: Awaited<ReturnType<typeof SolicitudId>>
 ): SolicitudPDFData => {
@@ -1142,6 +1154,74 @@ export const mapearSolicitudAPDF = (
         : null,
   };
 };
+
+export const mapearAcuseEntregaAPDF = (
+  solicitud: Awaited<ReturnType<typeof SolicitudId>>,
+  usuarioActual: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    personal: { rol: string } | null;
+  },
+  comentarios: string | null
+): AcuseEntregaExpedientePDFData => {
+  if (!solicitud.datosSolicitante) {
+    throw new AppError("La solicitud no cuenta con datos del solicitante capturados", 400);
+  }
+
+  if (solicitud.documentos.length === 0) {
+    throw new AppError("La solicitud no tiene documentos activos para generar el acuse", 400);
+  }
+
+  const montoTotal = solicitud.datosCredito
+    ? solicitud.datosCredito.conceptos.reduce((sum, c) => sum + c.monto, 0)
+    : 0;
+
+  const documentoValidado = solicitud.documentos.find((d) => d.validadoPor);
+
+  const entregaInfo = {
+    nombre: nombreUsuario(usuarioActual).toUpperCase(),
+    cargo: cargoPorRol(usuarioActual.personal?.rol ?? ""),
+  };
+
+  return {
+    folio: solicitud.folio,
+    lugar: "Hermosillo, Sonora",
+    fecha: formatearFecha(new Date()),
+    solicitanteNombre: mapearPersona(solicitud.datosSolicitante).nombreCompleto.toUpperCase(),
+    programa: solicitud.programa.nombre,
+    monto: montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }),
+    documentos: solicitud.documentos.map((d) => d.tipoDocumento.nombre),
+    comentarios,
+    entrega: entregaInfo,
+    reviso: documentoValidado?.validadoPor
+      ? {
+          nombre: nombreUsuario(documentoValidado.validadoPor.usuario).toUpperCase(),
+          cargo: cargoPorRol(documentoValidado.validadoPor.rol),
+        }
+      : entregaInfo,
+  };
+};
+
+export const obtenerAcuseEntregaExpediente = async (
+  solicitudId: string,
+  usuarioId: string,
+  rol: string,
+  comentarios?: string | null
+): Promise<AcuseEntregaExpedientePDFData> => {
+  const solicitud = await SolicitudId(solicitudId, usuarioId, rol);
+
+  const usuarioActual = await prisma.usuario.findUnique({
+    where: { id: usuarioId },
+    include: { personal: true },
+  });
+
+  if (!usuarioActual) throw new AppError("Usuario no encontrado", 404);
+  if (!usuarioActual.personal) throw new AppError("El usuario no tiene un perfil de personal asociado", 400);
+
+  return mapearAcuseEntregaAPDF(solicitud, usuarioActual, comentarios ?? null);
+};
+
 export const obtenerCartaRechazo = async (
   solicitudId: string,
   usuarioId: string,

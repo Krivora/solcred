@@ -172,6 +172,16 @@ export interface DocumentoDetalle {
     validadoPor: UsuarioResumen | null
 }
 
+export interface PersonalResumen {
+    id: string
+    usuario: {
+        nombre: string
+        apellidoPaterno: string
+        apellidoMaterno: string
+    }
+}
+
+
 export interface AsignacionDetalle {
     id: string
     solicitudId: string
@@ -182,9 +192,9 @@ export interface AsignacionDetalle {
     fechaAsignacion: string
     fechaReasignacion: string | null
     motivoReasignacion: string | null
-    gestor: UsuarioResumen
+    gestor: PersonalResumen
     grupo: GrupoResumen
-    asignadoPor: UsuarioResumen | null // null = asignación automática
+    asignadoPor: PersonalResumen | null
 }
 
 // ── Eventos del timeline unificado ──────────────────────────────────────────
@@ -201,7 +211,7 @@ export interface TimelineCambioEstatus {
 export interface TimelineAsignacion {
     tipo: 'ASIGNACION'
     fecha: string
-    gestor: UsuarioResumen
+    gestor: PersonalResumen
     grupo: GrupoResumen
     asignadoPor: UsuarioResumen | null
     activa: boolean

@@ -321,7 +321,7 @@ function DocumentoCard({
 
     return (
         <div className="relative rounded-lg border border-border bg-card overflow-hidden">
-            <div className={`absolute left-0 top-0 bottom-0 w-[3px] ${colorAccent}`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-0.75 ${colorAccent}`} />
             <div className="pl-4 pr-3 py-3.5 space-y-3">
                 {/* Título + badges */}
                 <div className="flex items-start justify-between gap-2">
@@ -521,7 +521,7 @@ function DocumentosTablaDesktop({
                                 className="hover:bg-muted/20 transition-colors duration-100"
                             >
                                 <TableCell className="w-1 p-0">
-                                    <div className={`w-[3px] h-full min-h-[52px] rounded-r-full ${colorAccent}`} />
+                                    <div className={`w-0.75 h-full min-h-13 rounded-r-full ${colorAccent}`} />
                                 </TableCell>
 
                                 <TableCell className="pl-4 py-3.5">
@@ -532,7 +532,7 @@ function DocumentosTablaDesktop({
                                         <TipoBadge esObligatorio={esObligatorio} />
                                     </div>
                                     {tipoDocumento.descripcion && (
-                                        <p className="text-xs text-muted-foreground mt-0.5 max-w-[260px] truncate">
+                                        <p className="text-xs text-muted-foreground mt-0.5 max-w-65 truncate">
                                             {tipoDocumento.descripcion}
                                         </p>
                                     )}
@@ -628,10 +628,6 @@ function DocumentosTablaDesktop({
     )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Componente principal
-// ─────────────────────────────────────────────────────────────────────────────
-
 export function TablaDocumentos({
     solicitudId,
     documentos,
@@ -645,7 +641,6 @@ export function TablaDocumentos({
     onVerHistorial,
 }: TablaDocumentosProps) {
     const [dialog, setDialog] = useState<DialogState>(DIALOG_INICIAL)
-
     const esCliente = rolUsuario === 'CLIENTE'
     const esAdmin = rolUsuario === 'ADMIN'
     const esGestorAsignado = rolUsuario === 'GESTOR' && gestorAsignadoId === usuarioId

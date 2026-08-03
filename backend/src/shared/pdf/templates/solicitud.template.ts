@@ -30,8 +30,8 @@ function seccionGeneral(data: SolicitudPDFData): string {
     bar('Datos Generales'),
     row(
       f('Folio', data.folio, 'quarter'),
+      f('Programa', data.programa, 'half'),
       f('Fecha de envío', data.fechaSolicitud, 'quarter'),
-      f('Programa', data.programa, 'half')
     ) +
     row(
       f('Sector', data.sector, 'third'),

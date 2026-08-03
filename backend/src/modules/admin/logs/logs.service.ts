@@ -1,6 +1,6 @@
 import prisma from "@config/db";
 import { FiltrosLogDto } from "./logs.schema";
-
+import { AppError } from "@middlewares/error.middleware";
 export const listarLogs = async (filtros: FiltrosLogDto) => {
   const { accion, modulo, usuarioId, fechaInicio, fechaFin, pagina, limite } =
     filtros;
@@ -33,7 +33,8 @@ export const listarLogs = async (filtros: FiltrosLogDto) => {
           correo: true,
           nombre: true,
           apellidoPaterno: true,
-          rol: true,
+          // ── FIX: rol ya no vive en Usuario, se anida vía Personal ──────
+          personal: { select: { rol: true } },
         },
       },
     },
@@ -58,13 +59,13 @@ export const obtenerLogPorId = async (id: string) => {
           correo: true,
           nombre: true,
           apellidoPaterno: true,
-          rol: true,
+          personal: { select: { rol: true } },
         },
       },
     },
   });
 
-  if (!log) throw new Error("Log no encontrado");
+  if (!log) throw new AppError("Log no encontrado", 404); // ── FIX ──
 
   return log;
 };

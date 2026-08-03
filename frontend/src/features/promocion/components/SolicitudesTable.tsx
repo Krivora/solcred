@@ -9,7 +9,7 @@ import { Skeleton } from '@/shared/components/ui/skeleton'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
-import { FolderOpen, FileText, MoreHorizontal } from 'lucide-react'
+import { FolderOpen, FileText, MoreHorizontal, Loader2 } from 'lucide-react'
 import { Paginacion } from '@/shared/components/ui/Paginacion'
 import {
   ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
@@ -17,14 +17,13 @@ import {
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 import type { ReactNode } from 'react'
+import { useDescargarPDF } from '../hooks/useDescargarPDF'
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
 export interface SolicitudesTableConfig {
   getDetalleUrl?: (id: string) => string
   getExpedienteUrl: (id: string) => string
-  getPdfUrl: (id: string) => string
-
   mostrarColumnaGestor?: boolean
   mostrarColumnaEstatus?: boolean
   mostrarColumnaComentario?: boolean
@@ -99,11 +98,10 @@ function TableVacio({ icon, titulo, descripcion }: { icon: ReactNode; titulo: st
 
 export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, config }: Props) {
   const router = useRouter()
-
+    const { descargar, idDescargando } = useDescargarPDF()
   const {
     getDetalleUrl = (id: string) => `/dashboard/admin/promocion/solicitud/${id}`,
     getExpedienteUrl,
-    getPdfUrl,
     mostrarColumnaGestor = false,
     mostrarColumnaEstatus = true,
     mostrarColumnaComentario = false,
@@ -321,9 +319,18 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                         variant="ghost" size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         title="Generar PDF"
-                        onClick={() => router.push(getPdfUrl(sol.id))}
+                        disabled={idDescargando === sol.id}
+                        onClick={() => descargar(sol.id)}
                       >
-                        <FileText className="h-3.5 w-3.5" />
+                        {idDescargando === sol.id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="h-4 w-4" />
+                          </>
+                        )}
                       </Button>
                     </TableCell>
                   )}

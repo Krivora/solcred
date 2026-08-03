@@ -158,3 +158,15 @@ export interface TarjetaInformativaPDFData {
 
     observaciones: string[];
 }
+export interface AcuseEntregaExpedientePDFData {
+    folio: string;
+    lugar: string;
+    fecha: string;
+    solicitanteNombre: string;
+    programa: string;
+    monto: string;
+    documentos: string[];
+    comentarios: string | null;
+    entrega: { nombre: string; cargo: string };
+    reviso: { nombre: string; cargo: string };
+}

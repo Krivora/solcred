@@ -428,21 +428,11 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         variant="outline"
                         size="sm"
                         className="ml-auto flex items-center gap-2"
-                        title="Generar PDF"
-                        disabled={idDescargando === s.id}
+                        title="Expediente digital"
                         onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
                       >
-                        {idDescargando === s.id ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span>Generando...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>Expediente</span>
-                            <FolderOpen className="h-4 w-4" />
-                          </>
-                        )}
+                        <span>Expediente</span>
+                        <FolderOpen className="h-4 w-4" />
                       </Button>
                     </TableCell>
 

@@ -26,7 +26,6 @@ export function HistoricoTable({ solicitudes, meta, cargando, onPaginar }: Props
         onPaginar={onPaginar}
         config={{
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
-          getPdfUrl: (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
           mostrarColumnaGestor: true,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: false,

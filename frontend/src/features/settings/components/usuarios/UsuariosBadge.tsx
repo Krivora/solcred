@@ -5,24 +5,38 @@ import type { RolAplicacion } from "@/shared/lib/types/auth.types";
 const rolConfig: Record<RolAplicacion, { label: string; className: string }> = {
   ADMIN: {
     label: "Admin",
-    className: ["bg-primary/10 text-primary border-primary/20", "hover:bg-primary/15"].join(" "),
+    className: [
+      "bg-primary text-primary-foreground border-primary",
+      "font-medium shadow-xs hover:bg-primary/90",
+    ].join(" "),
   },
-  ANALISTA: {
-    label: "Analista",
-    className: ["bg-secondary text-secondary-foreground border-border", "hover:bg-secondary"].join(" "),
+  SUPERVISOR: {
+    label: "Supervisor",
+    className: [
+      "bg-primary/10 text-primary border-primary/30",
+      "font-medium hover:bg-primary/15",
+    ].join(" "),
   },
   GESTOR: {
     label: "Gestor",
-    className: ["bg-secondary text-secondary-foreground border-border", "hover:bg-secondary"].join(" "),
+    className: [
+      "bg-info/10 text-info border-info/25",
+      "hover:bg-info/15",
+    ].join(" "),
   },
-  // ── NUEVO: faltaba, Rol ahora incluye SUPERVISOR ────────────────────────
-  SUPERVISOR: {
-    label: "Supervisor",
-    className: ["bg-secondary text-secondary-foreground border-border", "hover:bg-secondary"].join(" "),
+  ANALISTA: {
+    label: "Analista",
+    className: [
+      "bg-secondary text-secondary-foreground border-border",
+      "hover:bg-secondary",
+    ].join(" "),
   },
   CLIENTE: {
     label: "Cliente",
-    className: ["bg-muted text-muted-foreground border-border", "hover:bg-muted"].join(" "),
+    className: [
+      "bg-muted/60 text-muted-foreground border-transparent",
+      "hover:bg-muted",
+    ].join(" "),
   },
 };
 

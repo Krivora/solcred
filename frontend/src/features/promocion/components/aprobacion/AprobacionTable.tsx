@@ -53,7 +53,6 @@ export function AprobacionTable({ solicitudes, meta, cargando, onPaginar, onRefr
         onPaginar={onPaginar}
         config={{
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
-          getPdfUrl:        (id) => `/dashboard/admin/solicitudes/${id}/pdf`,
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: false,
           mostrarColumnaComentario: true,
