@@ -3,6 +3,7 @@ import type {
     Expediente,
     DocumentoActivo,
     ValidarDocumentoDto,
+    DocumentoConValidacionRaw,
 } from '../types/expediente.types'
 
 export const expedienteApi = {
@@ -27,7 +28,7 @@ export const expedienteApi = {
 
     // ─── Historial de versiones ─────────────────────────────────────────────────
     historial: (solicitudId: string, tipoDocumentoId: string) =>
-        apiAuth<DocumentoActivo[]>(
+        apiAuth<DocumentoConValidacionRaw[]>(
             `/expediente/${solicitudId}/documentos/${tipoDocumentoId}/historial`
         ),
 }

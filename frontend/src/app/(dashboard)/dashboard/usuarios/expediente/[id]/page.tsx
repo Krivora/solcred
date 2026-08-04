@@ -100,9 +100,9 @@ export default function ExpedientePage({
     } = useHistorialDocumento()
 
     const backHref =
-        usuario?.rol === 'CLIENTE'
+        usuario?.tipoUsuario === 'CLIENTE'
             ? '/dashboard/usuarios/solicitudes'
-            : usuario?.rol === 'GESTOR'
+            : usuario?.personal?.rol === 'GESTOR'
                 ? '/dashboard/admin/promocion/mis-casos'
                 : '/dashboard/admin/promocion/solicitudes'
 
@@ -186,7 +186,7 @@ export default function ExpedientePage({
                             documentos={expediente.documentos}
                             validando={validando}
                             subiendo={subiendo}
-                            rolUsuario={usuario?.rol ?? ''}
+                            rolUsuario={usuario?.tipoUsuario     ?? ''}
                             gestorAsignadoId={
                                 expediente.gestor?.id ?? null
                             }

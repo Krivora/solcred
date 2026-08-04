@@ -1,7 +1,7 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { ValidarDocumentoDto } from "./expediente.schema";
-import { EstatusDocumento } from "../../../generated/prisma/client";
+import { EstatusDocumento, Prisma } from "../../../generated/prisma/client";
 import fs from "fs";
 import path from "path";
 import { UPLOADS_BASE_DIR } from "@config/multer.config";
@@ -11,9 +11,45 @@ import { UPLOADS_BASE_DIR } from "@config/multer.config";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ROLES_PERMITIDOS = ["CLIENTE", "GESTOR", "ADMIN", "ANALISTA"] as const;
-type RolPermitido = typeof ROLES_PERMITIDOS[number];
+type RolPermitido = (typeof ROLES_PERMITIDOS)[number];
 
-const ESTATUS_PERMITIDOS_PARA_SUBIR = ["BORRADOR", "PENDIENTE", "EN_CORRECION", "NO_SUBIDO", "EN_REVISION"] as const;
+const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "CLIENTE"] as const;
+
+const ESTATUS_PERMITIDOS_PARA_SUBIR = [
+    "BORRADOR",
+    "PENDIENTE",
+    "EN_CORRECION",
+    "NO_SUBIDO",
+    "EN_REVISION",
+] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SELECTS REUTILIZABLES
+// Centralizados para no repetir el shape Personal -> usuario en cada query,
+// y para que un cambio futuro en el schema solo se ajuste en un lugar.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SELECT_TIPO_DOCUMENTO = {
+    id: true,
+    nombre: true,
+} satisfies Prisma.TipoDocumentoSelect;
+
+const SELECT_PERSONAL_BASICO = {
+    id: true,
+    rol: true,
+    usuario: {
+        select: {
+            nombre: true,
+            apellidoPaterno: true,
+            apellidoMaterno: true,
+        },
+    },
+} satisfies Prisma.PersonalSelect;
+
+const INCLUDE_DOCUMENTO_CON_VALIDACION = {
+    tipoDocumento: { select: SELECT_TIPO_DOCUMENTO },
+    validadoPor: { select: SELECT_PERSONAL_BASICO },
+} satisfies Prisma.DocumentoSolicitudInclude;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS
@@ -51,7 +87,7 @@ const verificarGestorAsignado = async (
 ) => {
     const asignacion = await prisma.asignacionSolicitud.findFirst({
         where: { solicitudId, activa: true },
-        select: { gestorId: true, activa: true },
+        select: { gestorId: true },
     });
 
     if (!asignacion) {
@@ -64,7 +100,7 @@ const verificarGestorAsignado = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// EXPEDIENTE — VISTA GENERAL (sin cambios respecto a la versión anterior)
+// EXPEDIENTE — VISTA GENERAL
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const obtenerExpediente = async (
@@ -72,7 +108,7 @@ export const obtenerExpediente = async (
     usuarioId: string,
     rol: string
 ) => {
-    const solicitud = await verificarAcceso(solicitudId, usuarioId, rol);
+    await verificarAcceso(solicitudId, usuarioId, rol);
 
     const expediente = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
@@ -84,7 +120,9 @@ export const obtenerExpediente = async (
                     aval: true,
                     documentosRequeridos: {
                         include: {
-                            tipoDocumento: { select: { id: true, nombre: true, descripcion: true } },
+                            tipoDocumento: {
+                                select: { ...SELECT_TIPO_DOCUMENTO, descripcion: true },
+                            },
                         },
                     },
                 },
@@ -108,8 +146,8 @@ export const obtenerExpediente = async (
                     telefono: true,
                 },
             },
-            // ── FIX: montoSolicitado/plazoSolicitado ya no viven en Solicitud,
-            // ahora se leen desde DatosCredito ────────────────────────────────
+            // montoSolicitado/plazoSolicitado ya no viven en Solicitud,
+            // se derivan desde DatosCredito.
             datosCredito: {
                 select: {
                     plazoMeses: true,
@@ -119,42 +157,14 @@ export const obtenerExpediente = async (
             },
             documentos: {
                 where: { activo: true },
-                include: {
-                    tipoDocumento: { select: { id: true, nombre: true } },
-                    // ── FIX: validadoPor ahora es Personal, sin nombre propio.
-                    // Se anida a través de la relación usuario ─────────────
-                    validadoPor: {
-                        select: {
-                            id: true,
-                            usuario: {
-                                select: {
-                                    nombre: true,
-                                    apellidoPaterno: true,
-                                    apellidoMaterno: true,
-                                },
-                            },
-                        },
-                    },
-                },
+                include: INCLUDE_DOCUMENTO_CON_VALIDACION,
                 orderBy: { subidoEn: "desc" },
             },
             asignaciones: {
                 where: { activa: true },
                 take: 1,
                 select: {
-                    gestor: {
-                        select: {
-                            id: true,
-                            // ── FIX: mismo caso, Personal -> usuario ────────
-                            usuario: {
-                                select: {
-                                    nombre: true,
-                                    apellidoPaterno: true,
-                                    apellidoMaterno: true,
-                                },
-                            },
-                        },
-                    },
+                    gestor: { select: SELECT_PERSONAL_BASICO },
                     fechaAsignacion: true,
                 },
             },
@@ -193,10 +203,21 @@ export const obtenerExpediente = async (
 
     const asignacionActiva = expediente.asignaciones[0] ?? null;
 
-    // ── FIX: monto total = suma de conceptos; plazo = plazoMeses ───────────
     const montoSolicitado =
         expediente.datosCredito?.conceptos.reduce((sum, c) => sum + c.monto, 0) ?? null;
     const plazoSolicitado = expediente.datosCredito?.plazoMeses ?? null;
+
+    // Aplana Personal -> usuario al mismo shape plano que consumía el frontend
+    // antes del refactor, para no romper contratos existentes.
+    const aplanarPersonal = (
+        personal: { id: string; usuario: { nombre: string; apellidoPaterno: string; apellidoMaterno: string } } | null
+    ) =>
+        personal && {
+            id: personal.id,
+            nombre: personal.usuario.nombre,
+            apellidoPaterno: personal.usuario.apellidoPaterno,
+            apellidoMaterno: personal.usuario.apellidoMaterno,
+        };
 
     return {
         id: expediente.id,
@@ -213,15 +234,7 @@ export const obtenerExpediente = async (
         programa: { id: expediente.programa.id, nombre: expediente.programa.nombre },
         solicitante: expediente.solicitante,
         datosSolicitante: expediente.datosSolicitante,
-        // ── FIX: aplanar usuario.nombre... al mismo shape que antes ────────
-        gestor: asignacionActiva?.gestor
-            ? {
-                id: asignacionActiva.gestor.id,
-                nombre: asignacionActiva.gestor.usuario.nombre,
-                apellidoPaterno: asignacionActiva.gestor.usuario.apellidoPaterno,
-                apellidoMaterno: asignacionActiva.gestor.usuario.apellidoMaterno,
-            }
-            : null,
+        gestor: aplanarPersonal(asignacionActiva?.gestor ?? null),
         fechaAsignacion: asignacionActiva?.fechaAsignacion ?? null,
 
         documentos: resumenDocumentos.map((d) => ({
@@ -229,14 +242,7 @@ export const obtenerExpediente = async (
             documentoActivo: d.documentoActivo
                 ? {
                     ...d.documentoActivo,
-                    validadoPor: d.documentoActivo.validadoPor
-                        ? {
-                            id: d.documentoActivo.validadoPor.id,
-                            nombre: d.documentoActivo.validadoPor.usuario.nombre,
-                            apellidoPaterno: d.documentoActivo.validadoPor.usuario.apellidoPaterno,
-                            apellidoMaterno: d.documentoActivo.validadoPor.usuario.apellidoMaterno,
-                        }
-                        : null,
+                    validadoPor: aplanarPersonal(d.documentoActivo.validadoPor),
                 }
                 : null,
         })),
@@ -256,9 +262,9 @@ export const obtenerExpediente = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CREAR VERSIÓN DE DOCUMENTO — usado internamente por uploads.controller
-// NO se expone como ruta propia. `urlArchivo` y `nombreArchivo` los genera
-// el propio servidor (uploads.controller), nunca vienen directo del cliente.
+// CREAR VERSIÓN DE DOCUMENTO — usado internamente por uploads.controller.
+// `urlArchivo` y `nombreArchivo` los genera el propio servidor, nunca vienen
+// directo del cliente.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface CrearVersionDocumentoInput {
@@ -266,8 +272,8 @@ interface CrearVersionDocumentoInput {
     usuarioId: string;
     rol: string;
     tipoDocumentoId: string;
-    urlArchivo: string;      // ruta relativa, generada por el servidor
-    nombreArchivo: string;   // nombre original, solo para mostrar
+    urlArchivo: string;
+    nombreArchivo: string;
 }
 
 export const crearVersionDocumento = async ({
@@ -283,9 +289,7 @@ export const crearVersionDocumento = async ({
         include: {
             programa: {
                 include: {
-                    documentosRequeridos: {
-                        where: { tipoDocumentoId },
-                    },
+                    documentosRequeridos: { where: { tipoDocumentoId } },
                 },
             },
         },
@@ -293,13 +297,17 @@ export const crearVersionDocumento = async ({
 
     if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
 
-    // Permisos: CLIENTE solo en la suya. GESTOR/ANALISTA/ADMIN sin restricción,
-    // confirmado por negocio (pueden subir por cualquier cambio que necesiten).
+    // CLIENTE solo en la suya. GESTOR/ANALISTA/ADMIN sin restricción
+    // (confirmado por negocio: pueden subir por cualquier cambio que necesiten).
     if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
         throw new AppError("No puedes subir documentos a esta solicitud", 403);
     }
 
-    if (!ESTATUS_PERMITIDOS_PARA_SUBIR.includes(solicitud.estatus as typeof ESTATUS_PERMITIDOS_PARA_SUBIR[number])) {
+    if (
+        !ESTATUS_PERMITIDOS_PARA_SUBIR.includes(
+            solicitud.estatus as (typeof ESTATUS_PERMITIDOS_PARA_SUBIR)[number]
+        )
+    ) {
         throw new AppError(
             `No se pueden subir documentos con estatus: ${solicitud.estatus}`,
             422
@@ -354,7 +362,7 @@ export const crearVersionDocumento = async ({
                 estatus: "PENDIENTE",
             },
             include: {
-                tipoDocumento: { select: { id: true, nombre: true } },
+                tipoDocumento: { select: SELECT_TIPO_DOCUMENTO },
             },
         });
 
@@ -362,17 +370,25 @@ export const crearVersionDocumento = async ({
     });
 
     // Limpieza del archivo físico anterior — urlArchivo es SIEMPRE ruta relativa
-    // ("solicitudId/nombre.pdf"), nunca una URL absoluta. No bloqueante.
+    // ("solicitudId/nombre.pdf"), nunca una URL absoluta. No bloqueante:
+    // si falla el borrado físico, no debe tumbar la respuesta al cliente.
     if (resultado.urlArchivoAnterior) {
         const rutaAnterior = path.join(UPLOADS_BASE_DIR, resultado.urlArchivoAnterior);
-        fs.unlink(rutaAnterior, () => { });
+        fs.unlink(rutaAnterior, (err) => {
+            if (err) {
+                console.error(
+                    `No se pudo eliminar el archivo anterior (${rutaAnterior}):`,
+                    err
+                );
+            }
+        });
     }
 
     return resultado.nuevoDocumento;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DOCUMENTOS — GESTOR VALIDA (sin cambios)
+// DOCUMENTOS — GESTOR VALIDA
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const validarDocumento = async (
@@ -383,47 +399,44 @@ export const validarDocumento = async (
 ) => {
     await verificarGestorAsignado(solicitudId, gestorId);
 
-    const documento = await prisma.documentoSolicitud.findFirst({
-        where: { id: documentoId, solicitudId, activo: true },
-    });
+    // Todo dentro de una transacción: sin esto, dos requests casi simultáneos
+    // podrían pasar ambos el chequeo de estatus "PENDIENTE" y sobrescribirse
+    // el uno al otro. El lock implícito de la transacción evita esa condición
+    // de carrera al validar el mismo documento dos veces.
+    const documentoActualizado = await prisma.$transaction(async (tx) => {
+        const documento = await tx.documentoSolicitud.findFirst({
+            where: { id: documentoId, solicitudId, activo: true },
+            select: { id: true, estatus: true },
+        });
 
-    if (!documento) {
-        throw new AppError("Documento no encontrado o no está activo", 404);
-    }
+        if (!documento) {
+            throw new AppError("Documento no encontrado o no está activo", 404);
+        }
 
-    if (documento.estatus !== "PENDIENTE") {
-        throw new AppError(
-            `Este documento ya fue ${documento.estatus.toLowerCase()}. Solo se pueden validar documentos en estado PENDIENTE`,
-            422
-        );
-    }
+        if (documento.estatus !== "PENDIENTE") {
+            throw new AppError(
+                `Este documento ya fue ${documento.estatus.toLowerCase()}. Solo se pueden validar documentos en estado PENDIENTE`,
+                422
+            );
+        }
 
-    const documentoActualizado = await prisma.documentoSolicitud.update({
-        where: { id: documentoId },
-        data: {
-            estatus: dto.estatus as EstatusDocumento,
-            validadoPorId: gestorId,
-            fechaValidacion: new Date(),
-            motivoRechazo: dto.estatus === "RECHAZADO" ? dto.motivoRechazo : null,
-        },
-        include: {
-            tipoDocumento: { select: { id: true, nombre: true } },
-            validadoPor: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    apellidoPaterno: true,
-                    apellidoMaterno: true,
-                },
+        return tx.documentoSolicitud.update({
+            where: { id: documentoId },
+            data: {
+                estatus: dto.estatus as EstatusDocumento,
+                validadoPorId: gestorId,
+                fechaValidacion: new Date(),
+                motivoRechazo: dto.estatus === "RECHAZADO" ? dto.motivoRechazo ?? null : null,
             },
-        },
+            include: INCLUDE_DOCUMENTO_CON_VALIDACION,
+        });
     });
 
     return documentoActualizado;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HISTORIAL DE VERSIONES (sin cambios)
+// HISTORIAL DE VERSIONES
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const obtenerHistorialDocumento = async (
@@ -432,8 +445,7 @@ export const obtenerHistorialDocumento = async (
     usuarioId: string,
     rol: string
 ) => {
-    const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "CLIENTE"];
-    if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol)) {
+    if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol as (typeof ROLES_CON_ACCESO_HISTORIAL)[number])) {
         throw new AppError("No tienes permisos para ver el historial de versiones", 403);
     }
 
@@ -441,17 +453,7 @@ export const obtenerHistorialDocumento = async (
 
     const historial = await prisma.documentoSolicitud.findMany({
         where: { solicitudId, tipoDocumentoId },
-        include: {
-            tipoDocumento: { select: { id: true, nombre: true } },
-            validadoPor: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    apellidoPaterno: true,
-                    apellidoMaterno: true,
-                },
-            },
-        },
+        include: INCLUDE_DOCUMENTO_CON_VALIDACION,
         orderBy: { version: "desc" },
     });
 

@@ -11,13 +11,13 @@ import { Badge } from '@/shared/components/ui/badge'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { EstatusDocumentoBadge } from './Estatusdocumentobadge'
 import { FileText, Clock, User, ExternalLink } from 'lucide-react'
-import type { DocumentoActivo } from '@/shared/lib/types/expediente.types'
+import type { DocumentoConValidacionRaw } from '@/shared/lib/types/expediente.types'
 
 interface HistorialDocumentoSheetProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     tipoNombre: string
-    historial: DocumentoActivo[]
+    historial: DocumentoConValidacionRaw[]
     loading: boolean
 }
 
@@ -103,7 +103,7 @@ export const HistorialDocumentoSheet = ({
                                             <User className="h-3 w-3 shrink-0" />
                                             <span>
                                                 {doc.estatus === 'APROBADO' ? 'Aprobado' : 'Revisado'} por{' '}
-                                                {doc.validadoPor.nombre} {doc.validadoPor.apellidoPaterno} —{' '}
+                                                {doc.validadoPor.usuario.nombre} {doc.validadoPor.usuario.apellidoPaterno} —{' '}
                                                 {formatFecha(doc.fechaValidacion)}
                                             </span>
                                         </div>

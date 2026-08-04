@@ -5,11 +5,13 @@ interface ErrorStateProps {
     icon: LucideIcon;
     title: string;
     description: string;
-    actionHref: string;
+    actionHref?: string;
     actionLabel: string;
     /** Si es true, ocupa toda la pantalla (usar fuera del dashboard). Si es false, solo llena su contenedor padre. */
     fullScreen?: boolean;
 }
+
+const RUTA_FALLBACK = '/login';
 
 export function ErrorState({
     icon: Icon,
@@ -19,6 +21,8 @@ export function ErrorState({
     actionLabel,
     fullScreen = false,
 }: ErrorStateProps) {
+    const href = actionHref && actionHref.trim().length > 0 ? actionHref : RUTA_FALLBACK;
+
     return (
         <div
             className={
@@ -31,7 +35,7 @@ export function ErrorState({
             <h1 className="text-2xl font-semibold">{title}</h1>
             <p className="max-w-md text-sm text-muted-foreground">{description}</p>
             <Link
-                href={actionHref}
+                href={href}
                 className="mt-2 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
             >
                 {actionLabel}

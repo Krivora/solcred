@@ -7,7 +7,14 @@ import { ErrorState } from '@/shared/components/ui/ErrorState';
 
 export default function UnauthorizedPage() {
     const usuario = useAuthStore((state) => state.usuario);
-    const inicioHref = usuario ? getDefaultRouteForRole(usuario.rol) : '/login';
+    const rol = useAuthStore((state) => state.rol);
+    const isLoading = useAuthStore((state) => state.isLoading);
+    console.log('UnauthorizedPage render', { usuario, rol, isLoading });
+    if (isLoading) {
+        return null;
+    }
+
+    const inicioHref = usuario && rol ? getDefaultRouteForRole(rol) : '/login';
 
     return (
         <ErrorState

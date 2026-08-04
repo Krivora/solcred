@@ -1,15 +1,15 @@
-// Helpers mínimos para cookies client-side, sin dependencias extra.
-// Se usan solo para exponer sesión/rol al middleware (Edge Runtime),
-// que no tiene acceso a localStorage. La seguridad real de los datos
-// la sigue dando Express validando el Bearer token en cada request.
+// shared/lib/utils/cookies.ts
+const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 días, ajusta según tu JWT expiry
 
-const MAX_AGE_DAYS = 7;
+export function setCookie(name: string, value: string, maxAge = COOKIE_MAX_AGE_SECONDS): void {
+    if (typeof document === 'undefined') return; // guard SSR
 
-export function setCookie(name: string, value: string): void {
-    const maxAge = MAX_AGE_DAYS * 24 * 60 * 60;
-    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax${secure}`;
 }
 
 export function deleteCookie(name: string): void {
-    document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+    if (typeof document === 'undefined') return;
+
+    document.cookie = `${name}=; path=/; max-age=0`;
 }

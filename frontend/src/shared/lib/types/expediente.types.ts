@@ -1,5 +1,6 @@
 import type { TipoPersona, EstatusSolicitud } from '@/shared/lib/types/solicitudes.types'
-import {EstatusDocumento } from '@/shared/lib/types/documento.types'
+import { EstatusDocumento } from '@/shared/lib/types/documento.types'
+
 // ─── Documento ────────────────────────────────────────────────────────────────
 
 export interface TipoDocumento {
@@ -8,11 +9,24 @@ export interface TipoDocumento {
     descripcion?: string
 }
 
+// Usado en Expediente (obtenerExpediente) — el backend ya lo aplana
 export interface ValidadoPor {
     id: string
     nombre: string
     apellidoPaterno: string
     apellidoMaterno: string
+}
+
+// Usado en validarDocumento / obtenerHistorialDocumento — respuesta cruda de Prisma,
+// validadoPor ahora apunta a Personal, cuyo nombre vive en la relación usuario
+export interface ValidadoPorPersonal {
+    id: string
+    rol: string
+    usuario: {
+        nombre: string
+        apellidoPaterno: string
+        apellidoMaterno: string
+    }
 }
 
 export interface DocumentoActivo {
@@ -26,6 +40,24 @@ export interface DocumentoActivo {
     activo: boolean
     estatus: EstatusDocumento
     validadoPor: ValidadoPor | null
+    fechaValidacion: string | null
+    motivoRechazo: string | null
+    subidoEn: string
+}
+
+// Shape exacto de lo que retorna validarDocumento() y obtenerHistorialDocumento()
+export interface DocumentoConValidacionRaw {
+    id: string
+    solicitudId: string
+    tipoDocumentoId: string
+    tipoDocumento: TipoDocumento
+    urlArchivo: string
+    nombreArchivo: string
+    version: number
+    activo: boolean
+    estatus: EstatusDocumento
+    validadoPor: ValidadoPorPersonal | null
+    validadoPorId: string | null
     fechaValidacion: string | null
     motivoRechazo: string | null
     subidoEn: string
@@ -106,6 +138,7 @@ export interface ValidarDocumentoDto {
     estatus: 'APROBADO' | 'RECHAZADO'
     motivoRechazo?: string
 }
+
 // Solo para el formulario interno del componente
 export interface SubirDocumentoForm {
     tipoDocumentoId: string

@@ -3,6 +3,7 @@ import { expedienteApi } from '../api/expediente.api'
 import { expedienteToast } from '@/shared/lib/utils/toaster'
 import type {
     DocumentoActivo,
+    DocumentoConValidacionRaw,
     Expediente,
     ValidarDocumentoDto,
 } from '../types/expediente.types'
@@ -103,7 +104,7 @@ export const useExpediente = (solicitudId: string) => {
 }
 
 export const useHistorialDocumento = () => {
-    const [historial, setHistorial] = useState<DocumentoActivo[]>([])
+   const [historial, setHistorial] = useState<DocumentoConValidacionRaw[]>([])
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
     const [tipoNombre, setTipoNombre] = useState('')

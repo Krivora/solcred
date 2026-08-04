@@ -6,13 +6,12 @@ import type { Usuario, RolAplicacion } from '../types/auth.types';
 import { obtenerRolEfectivo } from '../types/auth.types';
 import { setCookie, deleteCookie } from '../utils/cookies';
 
-// ── FIX: rol ya no es campo plano de Usuario, ahora viene de "personal" ────
-type UsuarioBasico = Pick <Usuario, 'id' | 'correo' | 'nombre' | 'apellidoPaterno' | 'tipoUsuario' | 'personal'>;
+type UsuarioBasico = Pick<Usuario, 'id' | 'correo' | 'nombre' | 'apellidoPaterno' | 'tipoUsuario' | 'personal'>;
 
 interface AuthStore {
   usuario: UsuarioBasico | null;
   token: string | null;
-  rol: RolAplicacion | null; // ── NUEVO: rol efectivo, calculado una sola vez ──
+  rol: RolAplicacion | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   setAuth: (usuario: UsuarioBasico, token: string) => void;
@@ -29,11 +28,10 @@ export const useAuthStore = create<AuthStore>()(
       isLoading: true,
 
       setAuth: (usuario, token) => {
-        const rolEfectivo = obtenerRolEfectivo(usuario); // ── FIX ──
+        const rolEfectivo = obtenerRolEfectivo(usuario);
 
-        // Cookies para que el middleware (server) pueda validar sesión y rol
         setCookie('sc_token', token);
-        setCookie('sc_role', rolEfectivo); // ── FIX ──
+        setCookie('sc_role', rolEfectivo);
         set({ usuario, token, rol: rolEfectivo, isAuthenticated: true });
       },
 
@@ -53,7 +51,21 @@ export const useAuthStore = create<AuthStore>()(
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
-        if (state) state.isLoading = false;
+        if (!state) return;
+
+        // El localStorage sobrevive a un refresh, pero las cookies (leídas
+        // por el middleware del servidor) no se restauran solas. Sin esto,
+        // cliente y servidor quedan desincronizados y el middleware manda
+        // a /login aunque el usuario siga "logueado" en el store.
+        if (state.token && state.rol) {
+          setCookie('sc_token', state.token);
+          setCookie('sc_role', state.rol);
+        } else {
+          deleteCookie('sc_token');
+          deleteCookie('sc_role');
+        }
+
+        state.isLoading = false;
       },
     },
   ),

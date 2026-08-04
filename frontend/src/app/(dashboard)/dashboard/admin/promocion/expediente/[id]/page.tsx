@@ -80,6 +80,8 @@ export default function ExpedientePage({
         refetch,
         validarDocumento,
     } = useExpediente(solicitudId)
+        console.log("USUARIO",usuario)
+        console.log("EXPEDIENTE",expediente)
     // ─── Uploads ──────────────────────────────────────────────
     const {
         subiendo,
@@ -199,7 +201,7 @@ export default function ExpedientePage({
                             gestorAsignadoId={
                                 expediente.gestor?.id ?? null
                             }
-                            usuarioId={usuario?.id ?? ''}
+                            usuarioId={usuario?.personal?.id ?? ''}
                             onValidar={validarDocumento}
                             onSubir={subirDocumento}
                             onVerHistorial={handleVerHistorial}
