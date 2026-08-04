@@ -47,7 +47,7 @@ export interface SolicitudPromocion {
     }
     comentarioPromotor?: string | null
     gestorAsignado?: {
-        gestor: GestorAsignado
+        gestor: PersonalResumen
         fechaAsignacion: string
     }
     creadoEn: string
@@ -112,15 +112,6 @@ export interface FiltrosAprobacion {
     busqueda?: string
 }
 
-export interface UsuarioResumen {
-    id: string
-    nombre: string
-    apellidoPaterno: string
-    apellidoMaterno: string
-    correo?: string
-    rol?: string
-}
-
 export interface GrupoResumen {
     id: string
     nombre: string
@@ -169,7 +160,7 @@ export interface DocumentoDetalle {
     fechaValidacion: string | null
     subidoEn: string
     tipoDocumento: TipoDocumentoInfo
-    validadoPor: UsuarioResumen | null
+    validadoPor: PersonalResumen | null
 }
 
 export interface PersonalResumen {
@@ -205,7 +196,7 @@ export interface TimelineCambioEstatus {
     estatusAnterior: EstatusSolicitud
     estatusNuevo: EstatusSolicitud
     comentario: string | null
-    realizadoPor: UsuarioResumen
+    realizadoPor: PersonalResumen
 }
 
 export interface TimelineAsignacion {
@@ -213,14 +204,14 @@ export interface TimelineAsignacion {
     fecha: string
     gestor: PersonalResumen
     grupo: GrupoResumen
-    asignadoPor: UsuarioResumen | null
+    asignadoPor: PersonalResumen | null
     activa: boolean
 }
 
 export interface TimelineReasignacion {
     tipo: 'REASIGNACION'
     fecha: string
-    gestorAnterior: UsuarioResumen
+    gestorAnterior: PersonalResumen
     comentario: string | null
 }
 
@@ -255,6 +246,16 @@ export interface DatosPersona {
     aniosDomicilioActual?: number
     aniosDomicilioAnterior?: number
 }
+export interface MetricasDocumentos {
+    totalRequeridos: number
+    totalAprobados: number
+    totalPendientes: number
+    totalRechazados: number
+    totalNoSubidos: number
+    totalSubidos: number
+    porcentajeCompletado: number
+}
+
 export interface SolicitudDetalle {
     id: string
     folio: string
@@ -274,8 +275,8 @@ export interface SolicitudDetalle {
     datosAval: (DatosPersona & { id: string }) | null
     documentos: DocumentoDetalle[]
 
+    metricas: MetricasDocumentos
     gestorAsignado: AsignacionDetalle | null
     historialAsignaciones: AsignacionDetalle[]
     timeline: TimelineEvento[]
 }
-

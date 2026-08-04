@@ -80,8 +80,8 @@ export default function ExpedientePage({
         refetch,
         validarDocumento,
     } = useExpediente(solicitudId)
-        console.log("USUARIO",usuario)
-        console.log("EXPEDIENTE",expediente)
+    console.log("USUARIO", usuario)
+    console.log("EXPEDIENTE", expediente)
     // ─── Uploads ──────────────────────────────────────────────
     const {
         subiendo,
@@ -160,7 +160,25 @@ export default function ExpedientePage({
                         onClick={() => router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)}
                     >
                         <FileText className="h-3.5 w-3.5" />
-                        Detalle de la solicitud
+                        Ver solicitud
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => router.push(`/dashboard/admin/solicitudes/${solicitudId}/pdf`)}
+                    >
+                        <FileText className="h-3.5 w-3.5" />
+                        Generar PDF
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitudId}`)}
+                    >
+                        <FileText className="h-3.5 w-3.5" />
+                        Tarjeta Informativa
                     </Button>
                 </div>
             </div>

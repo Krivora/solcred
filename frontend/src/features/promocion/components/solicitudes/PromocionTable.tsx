@@ -7,6 +7,8 @@ import { SolicitudesTable } from '../SolicitudesTable'
 import { AccionSolicitudDialog, type AccionTipo } from '../AccionSolicitudDialog'
 import { useAccionesSolicitud } from '../../hooks/useAccionesSolicitud'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
+import { DocumentosDropdown } from '../historico/DocumentosDropdown'
+import { useDescargarPDF } from '../../hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefresh }: Props) {
+  const { descargar, idDescargando, error } = useDescargarPDF()
   const [dialogOpen, setDialogOpen]       = useState(false)
   const [accionActiva, setAccionActiva]   = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
@@ -54,12 +57,20 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: true,
+          mostrarColumnaPdf:     false,
           labelFecha: 'Recibida',
           vacioCopy: {
             icon: <Eye className="h-7 w-7" />,
             titulo: 'No se encontraron solicitudes',
             descripcion: 'Intenta ajustar los filtros de búsqueda',
           },
+          renderDocumentos: (solicitudId, estatus) => (
+            <DocumentosDropdown
+              estatus={estatus}
+              disabled={idDescargando === solicitudId}
+              onSeleccionar={(tipo) => descargar(solicitudId, tipo)}
+            />
+          ),
           renderAcciones: (solicitudId) => (
             <>
               <DropdownMenuItem
@@ -106,6 +117,9 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
           ),
         }}
       />
+      {error && (
+        <p className="text-xs text-destructive px-1">{error}</p>
+      )}
     </>
   )
 }

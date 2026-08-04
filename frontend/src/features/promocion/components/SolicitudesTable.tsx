@@ -98,7 +98,7 @@ function TableVacio({ icon, titulo, descripcion }: { icon: ReactNode; titulo: st
 
 export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, config }: Props) {
   const router = useRouter()
-    const { descargar, idDescargando } = useDescargarPDF()
+  const { descargar, idDescargando } = useDescargarPDF()
   const {
     getDetalleUrl = (id: string) => `/dashboard/admin/promocion/solicitud/${id}`,
     getExpedienteUrl,
@@ -132,14 +132,13 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
       />
     )
   }
-
+  console.log('SolicitudesTable - solicitudes:', solicitudes)
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-
               <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-28">
                 Folio
               </TableHead>
@@ -187,13 +186,14 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                 </TableHead>
               )}
               {renderAcciones && (
-                <TableHead className="w-10" />
+                <TableHead className="w-15" />
               )}
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {solicitudes.map((sol) => {
+              console.log('Solicitud:', sol)
               const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
               const monto = formatMonto(sol.montoSolicitado ?? null)
 
@@ -275,7 +275,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                       {sol.gestorAsignado ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-medium text-foreground leading-tight">
-                            {sol.gestorAsignado.gestor.nombre} {sol.gestorAsignado.gestor.apellidoPaterno}
+                            {sol.gestorAsignado.gestor.usuario.nombre} {sol.gestorAsignado.gestor.usuario.apellidoPaterno}
                           </span>
                           <span className="text-[11px] text-muted-foreground">
                             {formatFecha(sol.gestorAsignado.fechaAsignacion)}
@@ -346,7 +346,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost" size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted/60 opacity-0 group-hover:opacity-100 transition-all"
+                            className="h-7 w-7 text-muted-foreground"
                           >
                             <MoreHorizontal className="h-3.5 w-3.5" />
                           </Button>

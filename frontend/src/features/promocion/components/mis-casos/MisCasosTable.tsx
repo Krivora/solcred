@@ -7,6 +7,8 @@ import { SolicitudesTable } from '../SolicitudesTable'
 import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/AccionSolicitudDialog'
 import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
+import { DocumentosDropdown } from '../historico/DocumentosDropdown'
+import { useDescargarPDF } from '../../hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefresh }: Props) {
+  const { descargar, idDescargando, error } = useDescargarPDF()
   const [dialogOpen, setDialogOpen]           = useState(false)
   const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
@@ -54,16 +57,23 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
         onPaginar={onPaginar}
         config={{
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
-          getPdfUrl:        (id) => `/dashboard/gestor/mis-casos/${id}/pdf`,
           mostrarColumnaGestor:  false,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: true,
+          mostrarColumnaPdf:     false,
           labelFecha: 'Asignada',
           vacioCopy: {
             icon: <ClipboardList className="h-7 w-7" />,
             titulo: 'Sin casos asignados',
             descripcion: 'No tienes casos asignados actualmente',
           },
+          renderDocumentos: (solicitudId, estatus) => (
+            <DocumentosDropdown
+              estatus={estatus}
+              disabled={idDescargando === solicitudId}
+              onSeleccionar={(tipo) => descargar(solicitudId, tipo)}
+            />
+          ),
           renderAcciones: (solicitudId) => (
             <>
               <DropdownMenuItem
@@ -75,7 +85,7 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
                 </div>
                 <div className="flex flex-col gap-0">
                   <span className="text-xs font-medium text-foreground leading-tight">Enviar para su Aprobación</span>
-                  <span className="text-[11px] text-muted-foreground leading-tight">Pasar al responsable de promoción</span>
+                  <span className="text-[11px] text-muted-foreground leading-tight">Pasar al responsable de promoción para su revisión</span>
                 </div>
               </DropdownMenuItem>
 

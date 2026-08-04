@@ -11,30 +11,7 @@ import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjet
 import { mapearSolicitudAPDF } from "./promocion.service";
 import { AppError } from "@/middlewares/error.middleware";
 import { acuseEntregaExpedienteTemplate } from "@/shared/pdf/templates/acuse-entrega-expediente.template";
-export const listar = async (
-  req: RequestAutenticado,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const solicitudes = await solicitudesService.listarSolicitudes(
-      req.usuario!.id,
-      req.usuario!.rol
-    );
 
-    await registrarLog({
-      accion: AccionLog.CONSULTAR,
-      modulo: ModuloLog.SOLICITUDES,
-      descripcion: "Listado de solicitudes consultado",
-      usuarioId: req.usuario!.id,
-      req,
-    });
-
-    res.status(200).json(ok("Solicitudes obtenidas", solicitudes));
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const listarPromocion = async (
   req: RequestAutenticado,

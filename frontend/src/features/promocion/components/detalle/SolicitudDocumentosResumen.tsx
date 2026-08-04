@@ -2,19 +2,13 @@
 import { Card } from '@/shared/components/ui/card'
 import { FileCheck, FileClock, FileX, CircleDashed } from 'lucide-react'
 import { formatFecha } from '@/shared/config/solicitudes.config'
-import type { DocumentoDetalle } from '@/features/promocion/types/solicitud.types'
-
-interface DocumentoRequerido {
-    id: string
-    tipoDocumento: {
-        id: string
-        nombre: string
-    }
-}
+import type { DocumentoDetalle, DocumentoRequeridoPrograma } from '@/features/promocion/types/solicitud.types'
+import type { TipoPersona } from '@/shared/lib/types/solicitudes.types'
 
 interface Props {
     documentos: DocumentoDetalle[]
-    documentosRequeridos: DocumentoRequerido[]
+    documentosRequeridos: DocumentoRequeridoPrograma[]
+    tipoPersona: TipoPersona | null
 }
 
 function EstatusIcon({ estatus }: { estatus: DocumentoDetalle['estatus'] }) {
@@ -29,13 +23,20 @@ function estatusClass(estatus: DocumentoDetalle['estatus']) {
     return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
 }
 
-export function SolicitudDocumentosResumen({ documentos, documentosRequeridos }: Props) {
+export function SolicitudDocumentosResumen({ documentos, documentosRequeridos, tipoPersona }: Props) {
+    // ── FIX: filtrar por aplicaA antes de calcular cualquier métrica/lista ──
+    const requeridosAplicables = documentosRequeridos.filter((req) => {
+        if (!req.aplicaA) return true
+        if (!tipoPersona) return true
+        return req.aplicaA === tipoPersona || req.aplicaA === 'AMBOS'
+    })
+
     const tiposSubidosIds = new Set(documentos.map((d) => d.tipoDocumento.id))
-    const faltantes = documentosRequeridos.filter(
+    const faltantes = requeridosAplicables.filter(
         (req) => !tiposSubidosIds.has(req.tipoDocumento.id)
     )
 
-    const totalRequeridos = documentosRequeridos.length
+    const totalRequeridos = requeridosAplicables.length
     const aprobados = documentos.filter((d) => d.estatus === 'APROBADO').length
     const rechazados = documentos.filter((d) => d.estatus === 'RECHAZADO').length
     const pendientes = documentos.length - aprobados - rechazados
@@ -120,7 +121,7 @@ export function SolicitudDocumentosResumen({ documentos, documentosRequeridos }:
                                             </span>
                                             <span className="text-[11px] text-muted-foreground">
                                                 Subido {formatFecha(doc.subidoEn)}
-                                                {doc.validadoPor && ` · Validado por ${doc.validadoPor.nombre} ${doc.validadoPor.apellidoPaterno}`}
+                                                {doc.validadoPor && ` · Validado por ${doc.validadoPor.usuario.nombre} ${doc.validadoPor.usuario.apellidoPaterno}`}
                                             </span>
                                             {doc.estatus === 'RECHAZADO' && doc.motivoRechazo && (
                                                 <span className="text-[11px] text-destructive mt-0.5">
@@ -146,7 +147,7 @@ export function SolicitudDocumentosResumen({ documentos, documentosRequeridos }:
                             )}
                             {faltantes.map((req) => (
                                 <div
-                                    key={req.id}
+                                    key={req.tipoDocumentoId}
                                     className="flex items-center gap-2.5 py-2 px-2 rounded-md border border-dashed border-border/70"
                                 >
                                     <CircleDashed className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />

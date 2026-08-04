@@ -102,6 +102,15 @@ export default function SolicitudDetallePage({ params }: Props) {
                         <FileText className="h-3.5 w-3.5" />
                         Generar PDF
                     </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitud.id}`)}
+                    >
+                        <FileText className="h-3.5 w-3.5" />
+                        Tarjeta Informativa
+                    </Button>
                 </div>
             </div>
 
@@ -113,7 +122,8 @@ export default function SolicitudDetallePage({ params }: Props) {
                     <SolicitudDocumentosResumen
                         documentos={solicitud.documentos}
                         documentosRequeridos={solicitud.programa.documentosRequeridos}
-                    />                </div>
+                        tipoPersona={solicitud.tipoPersona}
+                    />              </div>
 
                 {/* Columna derecha: timeline */}
                 <div className="lg:col-span-1">

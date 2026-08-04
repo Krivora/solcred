@@ -40,6 +40,81 @@ interface FiltrosMisCasos {
   fechaHasta?: string
   busqueda?: string
 }
+const INCLUDE_SOLICITUD_BASE = {
+  programa: {
+    select: {
+      id: true,
+      nombre: true,
+      documentosRequeridos: {
+        where: { esObligatorio: true },
+        select: {
+          tipoDocumentoId: true,
+          esObligatorio: true,
+          aplicaA: true,
+        },
+      },
+    },
+  },
+  datosSolicitante: {
+    select: {
+      id: true,
+      nombre: true,
+      apellidoPaterno: true,
+      apellidoMaterno: true,
+      rfc: true,
+      correo: true,
+      celular: true,
+    },
+  },
+  asignaciones: {
+    where: { activa: true },
+    take: 1,
+    select: {
+      fechaAsignacion: true,
+      gestor: {
+        select: {
+          id: true,
+          usuario: {
+            select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+          },
+        },
+      },
+    },
+  },
+  documentos: {
+    where: { activo: true },
+    select: { tipoDocumentoId: true, estatus: true, activo: true },
+  },
+}
+
+function withHistorial(estatusNuevo: EstatusSolicitud) {
+  return {
+    ...INCLUDE_SOLICITUD_BASE,
+    historialEstatus: {
+      where: { estatusNuevo },
+      orderBy: { creadoEn: "desc" as const },
+      take: 1,
+      select: {
+        motivo: true,
+        creadoEn: true,
+        usuario: {
+          select: { nombre: true, apellidoPaterno: true },
+        },
+      },
+    },
+  }
+}
+
+// ── Overloads: el tipo de retorno depende del argumento ──────
+export function buildIncludeSolicitud(): typeof INCLUDE_SOLICITUD_BASE;
+export function buildIncludeSolicitud(
+  estatusNuevo: EstatusSolicitud
+): ReturnType<typeof withHistorial>;
+export function buildIncludeSolicitud(estatusNuevo?: EstatusSolicitud) {
+  if (!estatusNuevo) return INCLUDE_SOLICITUD_BASE;
+  return withHistorial(estatusNuevo);
+}
+
 const incluyeTodo = {
   programa: {
     include: {
@@ -61,17 +136,31 @@ const incluyeTodo = {
   datosBancarios: true,
   documentos: {
     include: {
-    tipoDocumento: true,
-    validadoPor: {
-      include: { usuario: true },
+      tipoDocumento: true,
+      validadoPor: {
+        include: { usuario: true },
+      },
     },
   },
-  },
 };
+const SELECT_DOCUMENTOS_REQUERIDOS = {
+  where: { esObligatorio: true },
+  select: {
+    tipoDocumentoId: true,
+    esObligatorio: true,
+    aplicaA: true,
+    tipoDocumento: true,
+  },
+}
 
 // helper reutilizable
 function calcularMetricas(solicitud: any) {
-  const requeridos = solicitud.programa?.documentosRequeridos ?? []
+  const tipoPersona = solicitud.tipoPersona
+  const requeridos = (solicitud.programa?.documentosRequeridos ?? []).filter((r: any) => {
+    if (!r.aplicaA) return true
+    if (!tipoPersona) return true
+    return r.aplicaA === tipoPersona || r.aplicaA === 'AMBOS'
+  })
   const documentos = solicitud.documentos ?? []
 
   const totalRequeridos = requeridos.filter((r: any) => r.esObligatorio).length
@@ -145,24 +234,6 @@ const validarTransicion = async (solicitudId: string, estatusPermitidos?: Estatu
   }
   return solicitud;
 };
-export const listarSolicitudes = async (
-  usuarioId: string,
-  rol: string
-) => {
-  // Admin y analista ven todas, cliente solo las suyas
-  const where = rol === "CLIENTE" ? { solicitanteId: usuarioId } : {};
-
-  return prisma.solicitud.findMany({
-    where,
-    include: {
-      programa: { select: { id: true, nombre: true } },
-      datosSolicitante: {
-        select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-      },
-    },
-    orderBy: { creadoEn: "desc" },
-  });
-};
 
 export const obtenerSolicitudPorId = async (
   id: string,
@@ -176,9 +247,7 @@ export const obtenerSolicitudPorId = async (
         select: {
           id: true,
           nombre: true,
-          documentosRequeridos: {
-            include: { tipoDocumento: true },
-          },
+          documentosRequeridos: SELECT_DOCUMENTOS_REQUERIDOS,
         },
       },
       datosSolicitante: {
@@ -195,7 +264,6 @@ export const obtenerSolicitudPorId = async (
         where: { activo: true },
         include: {
           tipoDocumento: true,
-          // ── FIX: Personal -> usuario anidado ──────────────────────────
           validadoPor: {
             select: {
               id: true,
@@ -210,7 +278,6 @@ export const obtenerSolicitudPorId = async (
       asignaciones: {
         orderBy: { fechaAsignacion: "asc" },
         include: {
-          // ── FIX: gestor y asignadoPor ahora son Personal ───────────────
           gestor: {
             select: {
               id: true,
@@ -232,7 +299,6 @@ export const obtenerSolicitudPorId = async (
           },
         },
       },
-      // ── FIX: Usuario ya no tiene "rol" — hay que ir a través de personal ──
       historialEstatus: {
         orderBy: { creadoEn: "asc" },
         include: {
@@ -291,6 +357,7 @@ export const obtenerSolicitudPorId = async (
 
   return {
     ...datosGenerales,
+    metricas: calcularMetricas(solicitud),
     gestorAsignado,
     historialAsignaciones: asignaciones,
     timeline,
@@ -349,7 +416,6 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
       },
     ];
   }
-  // ── FIX: asignacion -> asignaciones, con some/none ──────────────────────
   if (asignacion === 'asignados') {
     where.asignaciones = { some: { activa: true } };
   }
@@ -358,59 +424,16 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
   }
 
   const [solicitudes, total] = await Promise.all([
-    prisma.solicitud.findMany({
+  prisma.solicitud.findMany({
       where,
       skip,
       take: limit,
       orderBy: { creadoEn: "desc" },
-      include: {
-        programa: {
-          select: {
-            id: true,
-            nombre: true,
-            documentosRequeridos: {
-              where: { esObligatorio: true },
-              select: { tipoDocumentoId: true, esObligatorio: true },
-            },
-          },
-        },
-        datosSolicitante: {
-          select: {
-            id: true,
-            nombre: true,
-            apellidoPaterno: true,
-            apellidoMaterno: true,
-            rfc: true,
-            correo: true,
-            celular: true,
-          },
-        },
-        asignaciones: {
-          where: { activa: true },
-          take: 1,
-          select: {
-            fechaAsignacion: true,
-            gestor: {
-              // ── FIX ──────────────────────────────────────────────────
-              select: {
-                id: true,
-                usuario: {
-                  select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-                },
-              },
-            },
-          },
-        },
-        documentos: {
-          where: { activo: true },
-          select: { tipoDocumentoId: true, estatus: true, activo: true },
-        },
-      },
+      include: buildIncludeSolicitud(),
     }),
     prisma.solicitud.count({ where }),
   ]);
 
-  // ── FIX: aplanar asignaciones[] -> gestorAsignado ────────────────────────
   const solicitudesConMetricas = solicitudes.map((s) => {
     const { asignaciones, ...resto } = s;
     return {
@@ -462,7 +485,6 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
 
   const skip = (page - 1) * limit;
   const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION'];
-  // ── FIX: asignacion -> asignaciones, con some ────────────────────────────
   const where: any = {
     asignaciones: {
       some: {
@@ -509,66 +531,12 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   }
 
   const [solicitudes, total] = await Promise.all([
-    prisma.solicitud.findMany({
+  prisma.solicitud.findMany({
       where,
       skip,
       take: limit,
       orderBy: { creadoEn: "desc" },
-      include: {
-        programa: {
-          select: {
-            id: true,
-            nombre: true,
-            documentosRequeridos: {
-              where: { esObligatorio: true },
-              select: { tipoDocumentoId: true, esObligatorio: true },
-            },
-          },
-        },
-        datosSolicitante: {
-          select: {
-            id: true,
-            nombre: true,
-            apellidoPaterno: true,
-            apellidoMaterno: true,
-            rfc: true,
-            correo: true,
-            celular: true,
-          },
-        },
-        asignaciones: {
-          where: { activa: true },
-          take: 1,
-          select: {
-            fechaAsignacion: true,
-            gestor: {
-              // ── FIX ──────────────────────────────────────────────────
-              select: {
-                id: true,
-                usuario: {
-                  select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-                },
-              },
-            },
-          },
-        },
-        documentos: {
-          where: { activo: true },
-          select: { tipoDocumentoId: true, estatus: true, activo: true },
-        },
-        historialEstatus: {
-          where: { estatusNuevo: 'EN_REVISION' },
-          orderBy: { creadoEn: 'desc' },
-          take: 1,
-          select: {
-            motivo: true,
-            creadoEn: true,
-            usuario: {
-              select: { nombre: true, apellidoPaterno: true },
-            },
-          },
-        },
-      },
+      include: buildIncludeSolicitud("EN_REVISION"),
     }),
     prisma.solicitud.count({ where }),
   ]);
@@ -626,64 +594,15 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
   }
 
   const [solicitudes, total] = await Promise.all([
-    prisma.solicitud.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: { creadoEn: "desc" },
-      include: {
-        programa: {
-          select: {
-            id: true,
-            nombre: true,
-            documentosRequeridos: {
-              where: { esObligatorio: true },
-              select: { tipoDocumentoId: true, esObligatorio: true },
-            },
-          },
-        },
-        datosSolicitante: {
-          select: {
-            id: true, nombre: true, apellidoPaterno: true,
-            apellidoMaterno: true, rfc: true, correo: true, celular: true,
-          },
-        },
-        asignaciones: {
-          where: { activa: true },
-          take: 1,
-          select: {
-            fechaAsignacion: true,
-            gestor: {
-              // ── FIX ──────────────────────────────────────────────────
-              select: {
-                id: true,
-                usuario: {
-                  select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-                },
-              },
-            },
-          },
-        },
-        documentos: {
-          where: { activo: true },
-          select: { tipoDocumentoId: true, estatus: true, activo: true },
-        },
-        historialEstatus: {
-          where: { estatusNuevo: 'EN_APROBACION' },
-          orderBy: { creadoEn: 'desc' },
-          take: 1,
-          select: {
-            motivo: true,
-            creadoEn: true,
-            usuario: {
-              select: { nombre: true, apellidoPaterno: true },
-            },
-          },
-        },
-      },
-    }),
-    prisma.solicitud.count({ where }),
-  ]);
+  prisma.solicitud.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { creadoEn: "desc" },
+    include: buildIncludeSolicitud("EN_APROBACION"),
+  }),
+  prisma.solicitud.count({ where }),
+]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
     const { asignaciones, historialEstatus, ...resto } = s;
@@ -733,70 +652,21 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
   }
 
   const [solicitudes, total] = await Promise.all([
-    prisma.solicitud.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: { creadoEn: "desc" },
-      include: {
-        programa: {
-          select: {
-            id: true,
-            nombre: true,
-            documentosRequeridos: {
-              where: { esObligatorio: true },
-              select: { tipoDocumentoId: true, esObligatorio: true },
-            },
-          },
-        },
-        datosSolicitante: {
-          select: {
-            id: true, nombre: true, apellidoPaterno: true,
-            apellidoMaterno: true, rfc: true, correo: true, celular: true,
-          },
-        },
-        asignaciones: {
-          where: { activa: true },
-          take: 1,
-          select: {
-            fechaAsignacion: true,
-            gestor: {
-              // ── FIX ──────────────────────────────────────────────────
-              select: {
-                id: true,
-                usuario: {
-                  select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-                },
-              },
-            },
-          },
-        },
-        documentos: {
-          where: { activo: true },
-          select: { tipoDocumentoId: true, estatus: true, activo: true },
-        },
-        historialEstatus: {
-          orderBy: { creadoEn: 'desc' },
-          take: 1,
-          select: {
-            motivo: true,
-            creadoEn: true,
-            usuario: {
-              select: { nombre: true, apellidoPaterno: true },
-            },
-          },
-        },
-      },
-    }),
-    prisma.solicitud.count({ where }),
-  ]);
+  prisma.solicitud.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { creadoEn: "desc" },
+    include: buildIncludeSolicitud(),
+  }),
+  prisma.solicitud.count({ where }),
+]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
-    const { asignaciones, historialEstatus, ...resto } = s;
+    const { asignaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
-      comentarioPromotor: historialEstatus[0]?.motivo ?? null,
       gestorAsignado: asignaciones[0] ?? null,
     };
   });
@@ -1196,9 +1066,9 @@ export const mapearAcuseEntregaAPDF = (
     entrega: entregaInfo,
     reviso: documentoValidado?.validadoPor
       ? {
-          nombre: nombreUsuario(documentoValidado.validadoPor.usuario).toUpperCase(),
-          cargo: cargoPorRol(documentoValidado.validadoPor.rol),
-        }
+        nombre: nombreUsuario(documentoValidado.validadoPor.usuario).toUpperCase(),
+        cargo: cargoPorRol(documentoValidado.validadoPor.rol),
+      }
       : entregaInfo,
   };
 };

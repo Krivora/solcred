@@ -8,7 +8,8 @@ interface Props {
     gestorAsignado: AsignacionDetalle | null
 }
 
-function nombreCompleto(u: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }) {
+function nombreCompleto(u?: { nombre: string; apellidoPaterno: string; apellidoMaterno: string } | null) {
+    if (!u) return 'Sistema'
     return `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`
 }
 
@@ -51,7 +52,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
                     </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-1">
-                    Por <span className="font-medium text-foreground/70">{nombreCompleto(evento.realizadoPor)}</span>
+                    Por <span className="font-medium text-foreground/70">{nombreCompleto(evento.realizadoPor?.usuario)}</span>
                 </p>
                 {evento.comentario && (
                     <p className="text-[12px] text-foreground/80 mt-2 bg-muted/50 border border-border/40 rounded-md px-2.5 py-2 leading-relaxed">
@@ -71,7 +72,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
                 <p className="text-[11px] text-muted-foreground mt-1">
                     Grupo <span className="font-medium text-foreground/70">{evento.grupo.nombre}</span>
                     {' · '}
-                    {evento.asignadoPor ? `Por ${nombreCompleto(evento.asignadoPor)}` : 'Asignación automática'}
+                    {evento.asignadoPor ? `Por ${nombreCompleto(evento.asignadoPor.usuario)}` : 'Asignación automática'}
                 </p>
             </>
         )
@@ -83,7 +84,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
                 Reasignado
             </p>
             <p className="text-[11px] text-muted-foreground mt-1">
-                Dejó de ser <span className="font-medium text-foreground/70">{nombreCompleto(evento.gestorAnterior)}</span>
+                Dejó de ser <span className="font-medium text-foreground/70">{nombreCompleto(evento.gestorAnterior?.usuario)}</span>
             </p>
             {evento.comentario && (
                 <p className="text-[12px] text-foreground/80 mt-2 bg-muted/50 border border-border/40 rounded-md px-2.5 py-2 leading-relaxed">
@@ -95,7 +96,6 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
 }
 
 export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
-    console.log('SolicitudTimeline render', { timeline, gestorAsignado })
     return (
         <div className="flex flex-col gap-5">
             {/* Gestor actual */}
@@ -106,10 +106,10 @@ export function SolicitudTimeline({ timeline, gestorAsignado }: Props) {
                     </div>
                     <div className="flex flex-col gap-0">
                         <span className="text-xs font-semibold text-foreground leading-tight">
-                            {nombreCompleto(gestorAsignado.gestor.usuario)}
+                            {nombreCompleto(gestorAsignado.gestor?.usuario)}
                         </span>
                         <span className="text-[11px] text-muted-foreground leading-tight">
-                            Gestor actual · {gestorAsignado.gestor.usuario.nombre}
+                            Gestor actual · {gestorAsignado.gestor?.usuario.nombre}
                         </span>
                     </div>
                 </div>
