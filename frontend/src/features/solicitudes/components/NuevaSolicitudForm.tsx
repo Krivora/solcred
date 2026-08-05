@@ -12,7 +12,7 @@ import { MercadoForm } from './form/MercadoForm'
 import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
-
+import { usePerfilUsuario } from '@/features/solicitudes/hooks/usePerfilUsuario'
 export function NuevaSolicitudForm() {
   const router = useRouter()
   const {
@@ -35,6 +35,25 @@ export function NuevaSolicitudForm() {
     skipAval,
   } = useSolicitudForm()
 
+  const esFisica = solicitud?.tipoPersona === 'FISICA'
+  const yaTieneDatosSolicitante = Boolean(solicitud?.datosSolicitante)
+  const debePrecargarPerfil =
+    currentStep === 'solicitante' && esFisica && !yaTieneDatosSolicitante
+
+  const { usuario, isLoading: cargandoPerfil } = usePerfilUsuario(debePrecargarPerfil)
+  console.log('usuario', usuario)
+  const defaultValuesSolicitante = yaTieneDatosSolicitante
+    ? solicitud!.datosSolicitante
+    : esFisica && usuario
+      ? {
+          nombre: usuario.nombre,
+          apellidoPaterno: usuario.apellidoPaterno,
+          apellidoMaterno: usuario.apellidoMaterno,
+          curp: usuario.curp ?? undefined,
+          rfc: usuario.rfc ?? undefined,
+          correo: usuario.correo,
+        }
+      : undefined
   async function handleEnviar() {
     await enviarSolicitud()
     router.push('/dashboard/usuarios/solicitudes')
@@ -64,15 +83,25 @@ export function NuevaSolicitudForm() {
         )}
 
         {currentStep === 'solicitante' && solicitud && (
-          <PersonaForm
-            title="Datos del solicitante"
-            subtitle="Información personal de quien solicita el crédito"
-            defaultValues={solicitud.datosSolicitante}
-            onSubmit={guardarSolicitante}
-            onBack={goBack}
-            loading={loading}
-            error={error}
-          />
+          debePrecargarPerfil && cargandoPerfil ? (
+            <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
+              Cargando tus datos…
+            </div>
+          ) : (
+            <PersonaForm
+              title={esFisica ? 'Datos del solicitante' : 'Datos del representante legal'}
+              subtitle={
+                esFisica
+                  ? 'Información personal de quien solicita el crédito'
+                  : 'Información de quien representa legalmente a la empresa'
+              }
+              defaultValues={defaultValuesSolicitante}
+              onSubmit={guardarSolicitante}
+              onBack={goBack}
+              loading={loading}
+              error={error}
+            />
+          )
         )}
 
         {currentStep === 'aval' && solicitud && (

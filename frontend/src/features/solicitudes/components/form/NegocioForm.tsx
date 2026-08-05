@@ -17,7 +17,7 @@ import {
 import {
     guardarDatosNegocioSchema,
     type GuardarDatosNegocioDto,
-} from '@/shared/lib/schema/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitudes.schema'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosNegocioDto>

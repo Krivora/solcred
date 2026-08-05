@@ -7,6 +7,57 @@ import { ok } from "@utils/response";
 import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
 import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
 import { mapearSolicitudAPDF } from "./solicitudes.service";
+import { AppError } from "@/middlewares/error.middleware";
+
+// ─────────────────────────────────────────
+// FACTORY: sub-formularios de "guardar datos"
+//
+// Los 7 endpoints (solicitante, aval, credito, garantia, negocio,
+// mercado, bancarios) comparten forma exacta: tomar params.id + body,
+// llamar al service con (id, dto, usuarioId), loggear, responder.
+// Un solo punto de mantenimiento en vez de 7 copias divergentes.
+// ─────────────────────────────────────────
+
+type ServicioGuardado<TDto> = (
+    solicitudId: string,
+    dto: TDto,
+    usuarioId: string
+) => Promise<unknown>;
+
+function crearControladorGuardado<TDto>(
+    servicio: ServicioGuardado<TDto>,
+    etiqueta: string,       // ej. "Datos del aval" — para mensajes y logs
+    mensajeExito: string    // ej. "Datos del aval guardados"
+) {
+    return async (
+        req: RequestAutenticado,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
+        try {
+            const solicitudId = req.params.id as string;
+
+            const datos = await servicio(solicitudId, req.body, req.usuario!.id);
+
+            await registrarLog({
+                accion: AccionLog.ACTUALIZAR,
+                modulo: ModuloLog.SOLICITUDES,
+                descripcion: `${etiqueta} guardados en solicitud: ${solicitudId}`,
+                usuarioId: req.usuario!.id,
+                entidadId: solicitudId,
+                req,
+            });
+
+            res.status(200).json(ok(mensajeExito, datos));
+        } catch (error) {
+            next(error);
+        }
+    };
+}
+
+// ─────────────────────────────────────────
+// LECTURA
+// ─────────────────────────────────────────
 
 export const listar = async (
     req: RequestAutenticado,
@@ -14,9 +65,13 @@ export const listar = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const solicitudes = await solicitudesService.listarSolicitudes(
+        const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+        const pageSize = Math.max(1, parseInt(req.query.pageSize as string, 10) || 20);
+
+        const resultado = await solicitudesService.listarSolicitudes(
             req.usuario!.id,
-            req.usuario!.rol
+            req.usuario!.rol,
+            { page, pageSize }
         );
 
         await registrarLog({
@@ -27,7 +82,12 @@ export const listar = async (
             req,
         });
 
-        res.status(200).json(ok("Solicitudes obtenidas", solicitudes));
+        res.status(200).json(
+            ok("Solicitudes obtenidas", {
+                items: resultado.data,
+                pagination: resultado.pagination,
+            })
+        );
     } catch (error) {
         next(error);
     }
@@ -48,9 +108,9 @@ export const obtenerPorId = async (
         await registrarLog({
             accion: AccionLog.CONSULTAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Solicitud consultada: ${solicitud.id}`,
+            descripcion: `Solicitud consultada: ${solicitud!.id}`,
             usuarioId: req.usuario!.id,
-            entidadId: solicitud.id,
+            entidadId: solicitud!.id,
             req,
         });
 
@@ -59,6 +119,10 @@ export const obtenerPorId = async (
         next(error);
     }
 };
+
+// ─────────────────────────────────────────
+// CREACIÓN
+// ─────────────────────────────────────────
 
 export const crear = async (
     req: RequestAutenticado,
@@ -78,6 +142,8 @@ export const crear = async (
             usuarioId: req.usuario!.id,
             entidadId: solicitud.id,
             req,
+            // Nota: req.body aquí ya pasó por Zod (crearSolicitudSchema),
+            // así que solo contiene programaId — seguro para el log.
             metadata: { solicitud: req.body },
         });
 
@@ -87,228 +153,61 @@ export const crear = async (
     }
 };
 
-export const guardarDatosGenerales = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosGenerales(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+// ─────────────────────────────────────────
+// SUB-FORMULARIOS — una línea cada uno gracias a la factory
+// ─────────────────────────────────────────
 
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos generales guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
+export const guardarDatosGenerales = crearControladorGuardado(
+    solicitudesService.guardarDatosGenerales,
+    "Datos generales",
+    "Datos generales guardados"
+);
 
-        res.status(200).json(ok("Datos generales guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
-export const guardarDatosSolicitante = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosSolicitante(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+export const guardarDatosSolicitante = crearControladorGuardado(
+    solicitudesService.guardarDatosSolicitante,
+    "Datos del solicitante",
+    "Datos del solicitante guardados"
+);
 
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos del solicitante guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
+export const guardarDatosAval = crearControladorGuardado(
+    solicitudesService.guardarDatosAval,
+    "Datos del aval",
+    "Datos del aval guardados"
+);
 
-        res.status(200).json(ok("Datos del solicitante guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
+export const guardarDatosCredito = crearControladorGuardado(
+    solicitudesService.guardarDatosCredito,
+    "Datos del crédito",
+    "Datos del crédito guardados"
+);
 
-export const guardarDatosAval = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosAval(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+export const guardarDatosGarantia = crearControladorGuardado(
+    solicitudesService.guardarDatosGarantia,
+    "Datos de garantía",
+    "Datos de garantía guardados"
+);
 
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos del aval guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
+export const guardarDatosNegocio = crearControladorGuardado(
+    solicitudesService.guardarDatosNegocio,
+    "Datos del negocio",
+    "Datos del negocio guardados"
+);
 
-        res.status(200).json(ok("Datos del aval guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
+export const guardarDatosMercado = crearControladorGuardado(
+    solicitudesService.guardarDatosMercado,
+    "Datos de mercado",
+    "Datos de mercado guardados"
+);
 
-export const guardarDatosCredito = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosCredito(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
+export const guardarDatosBancarios = crearControladorGuardado(
+    solicitudesService.guardarDatosBancarios,
+    "Datos bancarios",
+    "Datos bancarios guardados"
+);
 
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos del crédito guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
-
-        res.status(200).json(ok("Datos del crédito guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const guardarDatosGarantia = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosGarantia(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
-
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos de garantía guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
-
-        res.status(200).json(ok("Datos de garantía guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const guardarDatosNegocio = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosNegocio(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
-
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos del negocio guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
-
-        res.status(200).json(ok("Datos del negocio guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const guardarDatosMercado = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosMercado(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
-
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos de mercado guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
-
-        res.status(200).json(ok("Datos de mercado guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
-
-export const guardarDatosBancarios = async (
-    req: RequestAutenticado,
-    res: Response,
-    next: NextFunction
-): Promise<void> => {
-    try {
-        const datos = await solicitudesService.guardarDatosBancarios(
-            req.params.id as string,
-            req.body,
-            req.usuario!.id,
-            req.usuario!.rol
-        );
-
-        await registrarLog({
-            accion: AccionLog.ACTUALIZAR,
-            modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Datos bancarios guardados en solicitud: ${req.params.id}`,
-            usuarioId: req.usuario!.id,
-            entidadId: req.params.id as string,
-            req,
-        });
-
-        res.status(200).json(ok("Datos bancarios guardados", datos));
-    } catch (error) {
-        next(error);
-    }
-};
+// ─────────────────────────────────────────
+// ENVÍO Y CAMBIO DE ESTATUS
+// ─────────────────────────────────────────
 
 export const enviar = async (
     req: RequestAutenticado,
@@ -318,9 +217,9 @@ export const enviar = async (
     try {
         const solicitud = await solicitudesService.enviarSolicitud(
             req.params.id as string,
-            req.usuario!.id,
-            req.usuario!.rol
+            req.usuario!.id
         );
+
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,
@@ -336,7 +235,6 @@ export const enviar = async (
     }
 };
 
-
 export const cambiarEstatus = async (
     req: RequestAutenticado,
     res: Response,
@@ -345,7 +243,8 @@ export const cambiarEstatus = async (
     try {
         const solicitud = await solicitudesService.cambiarEstatus(
             req.params.id as string,
-            req.body
+            req.body,
+            req.usuario!.id // requerido por HistorialEstatus.usuarioId (no-nullable)
         );
 
         await registrarLog({
@@ -364,6 +263,10 @@ export const cambiarEstatus = async (
     }
 };
 
+// ─────────────────────────────────────────
+// PDF
+// ─────────────────────────────────────────
+
 export const descargarPDF = async (
     req: RequestAutenticado,
     res: Response,
@@ -375,7 +278,9 @@ export const descargarPDF = async (
             req.usuario!.id,
             req.usuario!.rol
         );
-
+        if (!solicitud) {
+            throw new AppError("Solicitud no encontrada", 404);
+        }
         const data = mapearSolicitudAPDF(solicitud);
         const html = solicitudTemplate(data);
         const pdfBuffer = await generarPDFDesdeHTML(html);

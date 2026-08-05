@@ -121,8 +121,10 @@ export const obtenerPerfil = async (usuarioId: string) => {
           departamento: true,
           extension: true,
           fechaIngreso: true,
+          activo: true,
         },
       },
+      
     },
   });
 

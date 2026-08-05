@@ -1,4 +1,3 @@
-
 import {
   CategoriaCredito,
   EstadoCivil,
@@ -7,10 +6,13 @@ import {
   Sector,
   TamanoEmpresa,
   TipoGarantia,
+  TipoLocal,
   TipoPersona,
-  TipoVivienda} from '@/shared/lib/types/solicitudes.types'
+  TipoVivienda,
+} from '@/shared/lib/types/solicitudes.types'
 
 import { Programa } from '@/shared/lib/types/programa'
+
 // Step: Programa
 export interface CrearSolicitudDto {
   programaId: string
@@ -111,7 +113,7 @@ export interface DatosNegocio {
   empleosNuevos?: number
   fechaInicioOperaciones?: string
   antiguedadNegocio?: number
-  tipoLocal?: 'PROPIO' | 'RENTADO' | 'FAMILIAR' | 'OTRO'
+  tipoLocal?: TipoLocal
   experienciaActividadSolicitante?: number
   experienciaEmpresarioSolicitante?: number
   actualExporta?: boolean
@@ -141,7 +143,6 @@ export interface DatosBancarios {
   clabe: string
 }
 
-
 export interface Solicitud {
   id: string
   folio: string
@@ -149,11 +150,13 @@ export interface Solicitud {
   programa: Pick<Programa, 'id' | 'nombre'>
   solicitanteId: string
   estatus: EstatusSolicitud
-  tipoPersona?: TipoPersona        // ← opcional
-  sector: Sector                  // ← opcional
+  tipoPersona?: TipoPersona
+  sector?: Sector          // ← corregido: opcional hasta guardar datosGenerales
   tamanoEmpresa?: TamanoEmpresa
-  montoSolicitado?: number         // ← opcional
-  plazoSolicitado?: number         // ← opcional
+  // montoSolicitado / plazoSolicitado eliminados: no existen en el backend.
+  // El monto real se calcula desde datosCredito.conceptos (suma de montos);
+  // el plazo real es datosCredito.plazoMeses. Derívalos en el frontend
+  // con un selector/helper en vez de esperarlos del API.
   datosSolicitante?: DatosPersona & { id: string }
   datosAval?: DatosPersona & { id: string }
   datosCredito?: DatosCredito & { id: string }
@@ -164,7 +167,20 @@ export interface Solicitud {
   creadoEn: string
   actualizadoEn: string
   gestorAsignado?: {
-    id: string;
-    nombre: string;
-  } | null;
+    id: string
+    nombre: string
+  } | null
+}
+
+// Shape exacto de la respuesta de GET /solicitudes (paginada)
+export interface SolicitudesPaginadas {
+  items: Solicitud[]
+  pagination: PaginacionMeta
+}
+
+export interface PaginacionMeta {
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
 }

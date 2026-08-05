@@ -1,9 +1,9 @@
 import { Response, NextFunction } from "express";
 import { RequestAutenticado } from "./auth.middleware";
 import { AppError } from "./error.middleware";
-import { Rol } from "../../generated/prisma/client";
+import { RolAplicacion } from "../utils/jwt"; // ajustar ruta relativa si difiere
 
-export type RolAplicacion = Rol | "CLIENTE";
+export type { RolAplicacion };
 
 export const autorizar =
   (...roles: RolAplicacion[]) =>
@@ -12,7 +12,7 @@ export const autorizar =
       throw new AppError("No autorizado", 401);
     }
 
-    if (!roles.includes(req.usuario.rol as RolAplicacion)) {
+    if (!roles.includes(req.usuario.rol)) {
       throw new AppError("No tienes permisos para esta acción", 403);
     }
 

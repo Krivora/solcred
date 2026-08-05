@@ -7,11 +7,11 @@ import { z } from 'zod'
 const garantiaSchema = z
     .object({
         tipo: z.enum(['PRENDARIA', 'HIPOTECARIA'], {
-            message: 'El tipo de garantía es requerido',
+            error: 'El tipo de garantía es requerido',
         }),
 
         nombrePropietario: z
-            .string({ message: 'El nombre del propietario es requerido' })
+            .string({ error: 'El nombre del propietario es requerido' })
             .min(2, 'El nombre debe tener al menos 2 caracteres')
             .trim(),
 
@@ -225,9 +225,9 @@ export type GuardarDatosMercadoDto = z.infer<typeof guardarDatosMercadoSchema>
 // ─────────────────────────────────────────
 export const guardarDatosBancariosSchema = z.object({
     banco: z
-        .string({ message: 'El banco es requerido' })
-        .max(255, 'El banco no puede exceder 255 caracteres')
-        .trim(),
+    .string({ error: 'El banco es requerido' })
+    .max(255, 'El banco no puede exceder 255 caracteres')
+    .trim(),
 
     numeroCuenta: z
         .string()
@@ -235,9 +235,9 @@ export const guardarDatosBancariosSchema = z.object({
         .optional(),
 
     clabe: z
-        .string({ message: 'La CLABE es requerida' })
-        .length(18, 'La CLABE debe tener exactamente 18 dígitos')
-        .regex(/^\d+$/, 'La CLABE debe ser numérica'),
+    .string({ error: 'La CLABE es requerida' })
+    .length(18, 'La CLABE debe tener exactamente 18 dígitos')
+    .regex(/^\d+$/, 'La CLABE debe ser numérica'),
 })
 
 export type GuardarDatosBancariosDto = z.infer<typeof guardarDatosBancariosSchema>

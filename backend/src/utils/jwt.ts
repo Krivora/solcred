@@ -1,12 +1,16 @@
 import jwt from "jsonwebtoken";
+import { Rol } from "../../generated/prisma/client";
 
 const SECRET = process.env.JWT_SECRET as string;
 const EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? "8h";
 
+/** Roles que puede traer un token válido: los de staff (Prisma) + CLIENTE. */
+export type RolAplicacion = Rol | "CLIENTE";
+
 export interface JwtPayload {
   id: string;
   personalId?: string;
-  rol: string;
+  rol: RolAplicacion;
   tipoUsuario: "CLIENTE" | "PERSONAL";
 }
 

@@ -275,4 +275,54 @@ export const usuarioToast = {
     desactivarError: () =>
         toast.error('Error al desactivar el usuario'),
 }
+const POSICION_FORM = 'top-center' as const
 
+export const solicitudesToast = {
+  creada: () =>
+    toast.success('Solicitud creada', {
+      description: 'Continuemos con los datos generales',
+      position: POSICION_FORM,
+    }),
+
+  generalesGuardados: () =>
+    toast.success('Datos generales guardados', { position: POSICION_FORM }),
+
+  solicitanteGuardado: () =>
+    toast.success('Datos del solicitante guardados', { position: POSICION_FORM }),
+
+  avalGuardado: () =>
+    toast.success('Datos del aval guardados', { position: POSICION_FORM }),
+
+  avalOmitido: () =>
+    toast.info('Aval omitido', {
+      description: 'Podrás agregarlo más adelante',
+      position: POSICION_FORM,
+    }),
+
+  creditoGuardado: () =>
+    toast.success('Datos del crédito guardados', { position: POSICION_FORM }),
+
+  garantiaGuardada: () =>
+    toast.success('Datos de garantía guardados', { position: POSICION_FORM }),
+
+  negocioGuardado: () =>
+    toast.success('Datos del negocio guardados', { position: POSICION_FORM }),
+
+  mercadoGuardado: () =>
+    toast.success('Datos de mercado guardados', { position: POSICION_FORM }),
+
+  bancariosGuardados: () =>
+    toast.success('Datos bancarios guardados', { position: POSICION_FORM }),
+
+  solicitudEnviada: () =>
+    toast.success('Solicitud enviada', {
+      description: 'Te notificaremos sobre el avance',
+      position: POSICION_FORM,
+    }),
+
+  error: (titulo: string, message?: string) =>
+    toast.error(titulo, {
+      description: message,
+      position: POSICION_FORM,
+    }),
+}

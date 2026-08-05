@@ -1,390 +1,414 @@
 import { z } from "zod";
+import {
+  EstatusSolicitud,
+  TipoPersona,
+  Sector,
+  TamanoEmpresa,
+  NivelEstudio,
+  EstadoCivil,
+  TipoVivienda,
+  CategoriaCredito,
+  TipoGarantia,
+  TipoLocal,
+} from "../../../../generated/prisma/client";
+
+// ─────────────────────────────────────────
+// PRIMITIVOS COMPARTIDOS
+// Única fuente de verdad para reglas repetidas.
+// Cambiar una regla aquí la cambia en todos los formularios.
+// ─────────────────────────────────────────
+
+/** Texto corto obligatorio: recorta ANTES de validar longitud. */
+const textoRequerido = (min = 2, max = 100, label = "Este campo") =>
+  z
+    .string({ message: `${label} es requerido` })
+    .trim()
+    .min(min, `${label} debe tener al menos ${min} caracteres`)
+    .max(max, `${label} no puede exceder ${max} caracteres`);
+
+/** Texto corto opcional. "" y solo-espacios se normalizan a undefined. */
+const textoOpcional = (max = 100) =>
+  z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().trim().max(max, `No puede exceder ${max} caracteres`).optional()
+  );
+
+/** Texto libre largo (direcciones, descripciones) con tope anti-DoS. */
+const textoLargoOpcional = (max = 500) => textoOpcional(max);
+
+const curpSchema = z.preprocess(
+  (v) => (typeof v === "string" ? v.trim().toUpperCase() : v),
+  z
+    .string()
+    .length(18, "La CURP debe tener 18 caracteres")
+    .regex(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/, "CURP inválida")
+    .optional()
+);
+
+const rfcSchema = z.preprocess(
+  (v) => (typeof v === "string" ? v.trim().toUpperCase() : v),
+  z
+    .string()
+    .regex(/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/, "RFC inválido")
+    .optional()
+);
+
+/** Acepta formatos humanos (555-123-4567, (555) 123 4567) y limpia a 10 dígitos. */
+const telefonoSchema = z.preprocess(
+  (v) => (typeof v === "string" ? v.replace(/[\s\-().]/g, "") : v),
+  z.string().regex(/^[0-9]{10}$/, "Debe tener 10 dígitos").optional()
+);
+
+const correoSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(255, "El correo no puede exceder 255 caracteres")
+  .email("Correo inválido")
+  .optional();
+
+const codigoPostalSchema = z
+  .string()
+  .trim()
+  .regex(/^[0-9]{5}$/, "El código postal debe tener 5 dígitos")
+  .optional();
+
+/** Dinero: finito, positivo y con tope razonable contra overflow/errores de captura. */
+const montoSchema = (max = 100_000_000) =>
+  z
+    .number({ error: "Debe ser un número" })
+    .finite("El valor debe ser un número válido")
+    .positive("Debe ser mayor a 0")
+    .max(max, `No puede exceder ${max.toLocaleString("es-MX")}`);
+
+const enteroNoNegativo = (max = 200) =>
+  z
+    .number({ error: "Debe ser un número entero" })
+    .int("Debe ser un número entero")
+    .min(0, "No puede ser negativo")
+    .max(max, `No puede exceder ${max}`)
+    .optional();
+
+/** Valida el dígito verificador real del algoritmo CLABE (18 posiciones). */
+function clabeChecksumValido(clabe: string): boolean {
+  const pesos = [3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7];
+  const digitos = clabe.split("").map(Number);
+  const suma = digitos
+    .slice(0, 17)
+    .reduce((acc, d, i) => acc + ((d * pesos[i]) % 10), 0);
+  const digitoVerificador = (10 - (suma % 10)) % 10;
+  return digitoVerificador === digitos[17];
+}
+
+// ─────────────────────────────────────────
+// SOLICITUD / DATOS GENERALES
+// ─────────────────────────────────────────
 
 export const crearSolicitudSchema = z.object({
-    programaId: z
-        .string({ message: "El programa es requerido" })
-        .uuid("ID de programa inválido"),
+  programaId: z
+    .string({ message: "El programa es requerido" })
+    .uuid("ID de programa inválido"),
 });
 
 export const guardarDatosGeneralesSchema = z.object({
-    tipoPersona: z.enum(['FISICA', 'MORAL']),
-    sector: z.enum(['AGROPECUARIO', 'INDUSTRIAL', 'COMERCIAL', 'SERVICIOS', 'TECNOLOGIA', 'OTRO']),
-    tamanoEmpresa: z.enum(['MICRO', 'PEQUENA', 'MEDIANA', 'GRANDE']).optional(),
-})
+  tipoPersona: z.nativeEnum(TipoPersona, {
+    message: "Tipo de persona inválido",
+  }),
+  sector: z.nativeEnum(Sector, { message: "Sector inválido" }),
+  tamanoEmpresa: z.nativeEnum(TamanoEmpresa).optional(),
+});
 
+// ─────────────────────────────────────────
+// DATOS PERSONA (SOLICITANTE / AVAL)
+// ─────────────────────────────────────────
 
 const datosPersonaSchema = z.object({
-    nombre: z
-        .string({ message: "El nombre es requerido" })
-        .min(2, "El nombre debe tener al menos 2 caracteres")
-        .trim(),
+  nombre: textoRequerido(2, 100, "El nombre"),
+  apellidoPaterno: textoRequerido(2, 100, "El apellido paterno"),
+  apellidoMaterno: textoRequerido(2, 100, "El apellido materno"),
 
-    apellidoPaterno: z
-        .string({ message: "El apellido paterno es requerido" })
-        .min(2, "Debe tener al menos 2 caracteres")
-        .trim(),
+  curp: curpSchema,
+  rfc: rfcSchema,
 
-    apellidoMaterno: z
-        .string({ message: "El apellido materno es requerido" })
-        .min(2, "Debe tener al menos 2 caracteres")
-        .trim(),
+  telefono: telefonoSchema,
+  celular: telefonoSchema,
+  correo: correoSchema,
 
-    curp: z
-        .string()
-        .length(18, "La CURP debe tener 18 caracteres")
-        .regex(
-            /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/,
-            "CURP inválida"
-        )
-        .optional(),
+  calle: textoOpcional(150),
+  numeroExterior: textoOpcional(20),
+  numeroInterior: textoOpcional(20),
+  colonia: textoOpcional(100),
+  ciudad: textoOpcional(100),
+  estado: textoOpcional(100),
+  codigoPostal: codigoPostalSchema,
 
-    rfc: z
-        .string()
-        .regex(
-            /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/,
-            "RFC inválido"
-        )
-        .optional(),
+  nivelEstudio: z.nativeEnum(NivelEstudio).optional(),
+  universidad: textoOpcional(150),
+  estadoCivil: z.nativeEnum(EstadoCivil).optional(),
 
-    telefono: z
-        .string()
-        .regex(/^[0-9]{10}$/, "El teléfono debe tener 10 dígitos")
-        .optional(),
+  nombreConyuge: textoOpcional(150),
+  numeroINE: textoOpcional(30),
 
-    celular: z
-        .string()
-        .regex(/^[0-9]{10}$/, "El celular debe tener 10 dígitos")
-        .optional(),
+  tipoVivienda: z.nativeEnum(TipoVivienda).optional(),
 
-    correo: z
-        .string()
-        .email("Correo inválido")
-        .optional(),
+  aniosDomicilioActual: enteroNoNegativo(100),
+  aniosDomicilioAnterior: enteroNoNegativo(100),
+})
+  // RFC: 13 posiciones para persona física, 12 para moral.
+  .superRefine((data, ctx) => {
+    if (data.rfc) {
+      const esFisica = /^[A-ZÑ&]{4}/.test(data.rfc) && data.rfc.length === 13;
+      const esMoral = /^[A-ZÑ&]{3}/.test(data.rfc) && data.rfc.length === 12;
+      if (!esFisica && !esMoral) {
+        ctx.addIssue({
+          code: "custom",
+          message: "El RFC no corresponde a un formato válido de persona física o moral",
+          path: ["rfc"],
+        });
+      }
+    }
+  });
 
-    calle: z.string().trim().optional(),
-    numeroExterior: z.string().trim().optional(),
-    numeroInterior: z.string().trim().optional(),
-    colonia: z.string().trim().optional(),
-    ciudad: z.string().trim().optional(),
-    estado: z.string().trim().optional(),
-
-    codigoPostal: z
-        .string()
-        .regex(/^[0-9]{5}$/, "El código postal debe tener 5 dígitos")
-        .optional(),
-
-    nivelEstudio: z
-        .enum(["PRIMARIA", "SECUNDARIA", "PREPARATORIA", "TECNICO", "LICENCIATURA", "MAESTRIA", "DOCTORADO",])
-        .optional(),
-
-    universidad: z.string().trim().optional(),
-
-    estadoCivil: z
-        .enum(["SOLTERO", "CASADO", "DIVORCIADO", "VIUDO", "UNION_LIBRE",])
-        .optional(),
-
-    // nuevos campos
-    nombreConyuge: z
-        .string()
-        .trim()
-        .optional(),
-
-    numeroINE: z
-        .string()
-        .trim()
-        .optional(),
-
-    tipoVivienda: z
-        .enum(["PROPIA", "RENTADA", "PAGANDO",])
-        .optional(),
-
-    aniosDomicilioActual: z
-        .number({
-            error: "Debe ser un número",
-        })
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
-
-    aniosDomicilioAnterior: z
-        .number({
-            error: "Debe ser un número",
-        })
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
-});
-
-const conceptoCreditoSchema = z.object({
-    categoria: z.enum(["CAPITAL", "MAQUINARIA_EQUIPO", "REMODELACION"], {
-        message: "La categoría es requerida",
-    }),
-
-    concepto: z
-        .string({ message: "El concepto es requerido" })
-        .min(2, "El concepto debe tener al menos 2 caracteres")
-        .trim(),
-
-    monto: z
-        .number({ error: "El monto debe ser un número" })
-        .positive("El monto debe ser mayor a 0"),
-});
 export const guardarDatosSolicitanteSchema = datosPersonaSchema;
 export const guardarDatosAvalSchema = datosPersonaSchema;
 
+// ─────────────────────────────────────────
+// ESTATUS
+// Derivado del enum de Prisma: nunca hay drift entre schema de validación
+// y el schema de base de datos.
+// ─────────────────────────────────────────
+
 export const cambiarEstatusSchema = z.object({
-    estatus: z.enum(["PENDIENTE", "EN_REVISION", "APROBADO", "RECHAZADO"], {
-        message: "Estatus inválido",
-    }),
-    motivo: z.string().trim().optional(),
+  estatus: z.nativeEnum(EstatusSolicitud, { message: "Estatus inválido" }),
+  motivo: textoOpcional(500),
+});
+
+// ─────────────────────────────────────────
+// DATOS DE CRÉDITO
+// ─────────────────────────────────────────
+
+const conceptoCreditoSchema = z.object({
+  categoria: z.nativeEnum(CategoriaCredito, {
+    message: "La categoría es requerida",
+  }),
+  concepto: textoRequerido(2, 200, "El concepto"),
+  monto: montoSchema(),
 });
 
 export const guardarDatosCreditoSchema = z
-    .object({
-        plazoMeses: z
-            .number({ error: "El plazo debe ser un número" })
-            .int("El plazo debe ser un número entero")
-            .positive("El plazo debe ser mayor a 0"),
+  .object({
+    plazoMeses: z
+      .number({ error: "El plazo debe ser un número" })
+      .int("El plazo debe ser un número entero")
+      .positive("El plazo debe ser mayor a 0")
+      .max(360, "El plazo no puede exceder 360 meses"),
 
-        mesesGracia: z
-            .number({ error: "Los meses de gracia deben ser un número" })
-            .int("Los meses de gracia deben ser un número entero")
-            .min(0, "No puede ser negativo")
-            .default(0),
+    mesesGracia: z
+      .number({ error: "Los meses de gracia deben ser un número" })
+      .int("Los meses de gracia deben ser un número entero")
+      .min(0, "No puede ser negativo")
+      .default(0),
 
-        conceptos: z
-            .array(conceptoCreditoSchema)
-            .min(1, "Debe agregar al menos un concepto"),
-    })
-    .refine((data) => data.mesesGracia <= data.plazoMeses, {
-        message: "El periodo de gracia no puede ser mayor al plazo total",
-        path: ["mesesGracia"],
-    });
+    conceptos: z
+      .array(conceptoCreditoSchema)
+      .min(1, "Debe agregar al menos un concepto")
+      .max(50, "No puede agregar más de 50 conceptos"),
+  })
+  .refine((data) => data.mesesGracia <= data.plazoMeses, {
+    message: "El periodo de gracia no puede ser mayor al plazo total",
+    path: ["mesesGracia"],
+  });
+
+// ─────────────────────────────────────────
+// GARANTÍAS
+// ─────────────────────────────────────────
 
 const garantiaSchema = z
-    .object({
-        tipo: z.enum(["PRENDARIA", "HIPOTECARIA"], {
-            message: "El tipo de garantía es requerido",
-        }),
+  .object({
+    tipo: z.nativeEnum(TipoGarantia, {
+      message: "El tipo de garantía es requerido",
+    }),
+    nombrePropietario: textoRequerido(2, 150, "El nombre del propietario"),
+    valor: montoSchema(),
+    descripcion: textoLargoOpcional(500),
 
-        nombrePropietario: z
-            .string({ message: "El nombre del propietario es requerido" })
-            .min(2, "El nombre debe tener al menos 2 caracteres")
-            .trim(),
+    // ── Solo PRENDARIA ──
+    marca: textoOpcional(100),
+    modelo: textoOpcional(100),
+    anio: z
+      .number()
+      .int("El año debe ser un número entero")
+      .min(1900, "Año inválido")
+      .max(new Date().getFullYear() + 1, "Año inválido")
+      .optional(),
+    numeroSerie: textoOpcional(50),
 
-        valor: z
-            .number({ error: "El valor debe ser un número" })
-            .positive("El valor debe ser mayor a 0"),
-
-        descripcion: z.string().trim().optional(),
-
-        // ── Solo PRENDARIA ──
-        marca: z.string().trim().optional(),
-        modelo: z.string().trim().optional(),
-        anio: z
-            .number()
-            .int("El año debe ser un número entero")
-            .min(1900, "Año inválido")
-            .max(new Date().getFullYear() + 1, "Año inválido")
-            .optional(),
-        numeroSerie: z.string().trim().optional(),
-
-        // ── Solo HIPOTECARIA ──
-        calle: z.string().trim().optional(),
-        numeroExterior: z.string().trim().optional(),
-        numeroInterior: z.string().trim().optional(),
-        colonia: z.string().trim().optional(),
-        ciudad: z.string().trim().optional(),
-        estado: z.string().trim().optional(),
-        codigoPostal: z.string().trim().optional(),
-        numeroEscritura: z.string().trim().optional(),
-        folioReal: z.string().trim().optional(),
-    })
-    .superRefine((data, ctx) => {
-        if (data.tipo === "PRENDARIA") {
-            if (!data.marca) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "La marca es requerida para garantías prendarias",
-                    path: ["marca"],
-                });
-            }
-            if (!data.numeroSerie) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "El número de serie es requerido para garantías prendarias",
-                    path: ["numeroSerie"],
-                });
-            }
-        }
-
-        if (data.tipo === "HIPOTECARIA") {
-            if (!data.calle) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "La calle es requerida para garantías hipotecarias",
-                    path: ["calle"],
-                });
-            }
-            if (!data.ciudad) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "La ciudad es requerida para garantías hipotecarias",
-                    path: ["ciudad"],
-                });
-            }
-            if (!data.estado) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "El estado es requerido para garantías hipotecarias",
-                    path: ["estado"],
-                });
-            }
-            if (!data.numeroEscritura) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: "El número de escritura es requerido para garantías hipotecarias",
-                    path: ["numeroEscritura"],
-                });
-            }
-        }
-    });
+    // ── Solo HIPOTECARIA ──
+    calle: textoOpcional(150),
+    numeroExterior: textoOpcional(20),
+    numeroInterior: textoOpcional(20),
+    colonia: textoOpcional(100),
+    ciudad: textoOpcional(100),
+    estado: textoOpcional(100),
+    codigoPostal: codigoPostalSchema,
+    numeroEscritura: textoOpcional(50),
+    folioReal: textoOpcional(50),
+  })
+  .superRefine((data, ctx) => {
+    if (data.tipo === "PRENDARIA") {
+      if (!data.marca) {
+        ctx.addIssue({ code: "custom", message: "La marca es requerida para garantías prendarias", path: ["marca"] });
+      }
+      if (!data.numeroSerie) {
+        ctx.addIssue({ code: "custom", message: "El número de serie es requerido para garantías prendarias", path: ["numeroSerie"] });
+      }
+    }
+    if (data.tipo === "HIPOTECARIA") {
+      if (!data.calle) {
+        ctx.addIssue({ code: "custom", message: "La calle es requerida para garantías hipotecarias", path: ["calle"] });
+      }
+      if (!data.ciudad) {
+        ctx.addIssue({ code: "custom", message: "La ciudad es requerida para garantías hipotecarias", path: ["ciudad"] });
+      }
+      if (!data.estado) {
+        ctx.addIssue({ code: "custom", message: "El estado es requerido para garantías hipotecarias", path: ["estado"] });
+      }
+      if (!data.numeroEscritura) {
+        ctx.addIssue({ code: "custom", message: "El número de escritura es requerido para garantías hipotecarias", path: ["numeroEscritura"] });
+      }
+    }
+  });
 
 export const guardarDatosGarantiaSchema = z.object({
-    garantias: z
-        .array(garantiaSchema)
-        .min(1, "Debe agregar al menos una garantía"),
+  garantias: z
+    .array(garantiaSchema)
+    .min(1, "Debe agregar al menos una garantía")
+    .max(20, "No puede agregar más de 20 garantías"),
 });
+
+// ─────────────────────────────────────────
+// NEGOCIO
+// ─────────────────────────────────────────
+
 export const guardarDatosNegocioSchema = z.object({
-    razonSocial: z.string().trim().optional(),
-    rfcNegocio: z.string().trim().optional(),
-    nombreNegocio: z.string().trim().optional(),
+  razonSocial: textoOpcional(200),
+  rfcNegocio: rfcSchema,
+  nombreNegocio: textoOpcional(200),
 
-    domicilioNegocio: z.string().trim().optional(),
-    numeroExteriorNegocio: z.string().trim().optional(),
-    numeroInteriorNegocio: z.string().trim().optional(),
-    coloniaLocal: z.string().trim().optional(),
-    codigoPostalLocal: z
-        .string()
-        .length(5, "El código postal debe tener 5 dígitos")
-        .regex(/^\d+$/, "El código postal debe ser numérico")
-        .optional(),
-    municipioLocal: z.string().trim().optional(),
-    estadoLocal: z.string().trim().optional(),
+  domicilioNegocio: textoOpcional(150),
+  numeroExteriorNegocio: textoOpcional(20),
+  numeroInteriorNegocio: textoOpcional(20),
+  coloniaLocal: textoOpcional(100),
+  codigoPostalLocal: codigoPostalSchema,
+  municipioLocal: textoOpcional(100),
+  estadoLocal: textoOpcional(100),
 
-    actividadNegocio: z.string().trim().optional(),
-    areaNegocio: z.string().trim().optional(),
+  actividadNegocio: textoOpcional(200),
+  areaNegocio: textoOpcional(200),
 
-    empleosConservados: z
-        .number()
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
-    empleosNuevos: z
-        .number()
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
+  empleosConservados: enteroNoNegativo(100_000),
+  empleosNuevos: enteroNoNegativo(100_000),
 
-    fechaInicioOperaciones: z.coerce.date().optional(),
-    antiguedadNegocio: z
-        .number()
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
+  fechaInicioOperaciones: z.coerce
+    .date()
+    .max(new Date(), "La fecha no puede ser futura")
+    .optional(),
+  antiguedadNegocio: enteroNoNegativo(150),
 
-    tipoLocal: z.enum(["PROPIO", "RENTADO", "FAMILIAR", "OTRO"]).optional(),
+  tipoLocal: z.nativeEnum(TipoLocal).optional(),
 
-    experienciaActividadSolicitante: z
-        .number()
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
-    experienciaEmpresarioSolicitante: z
-        .number()
-        .int("Debe ser un número entero")
-        .min(0, "No puede ser negativo")
-        .optional(),
+  experienciaActividadSolicitante: enteroNoNegativo(80),
+  experienciaEmpresarioSolicitante: enteroNoNegativo(80),
 
-    actualExporta: z.boolean().optional(),
-    obtuvoExperiencia: z.boolean().optional(),
-    negocioConsidera: z.string().trim().optional(),
+  actualExporta: z.boolean().optional(),
+  obtuvoExperiencia: z.boolean().optional(),
+  negocioConsidera: textoLargoOpcional(1000),
 
-    telefonoRecadosNegocio: z.string().trim().optional(),
-    telefonoFijoNegocio: z.string().trim().optional(),
+  telefonoRecadosNegocio: telefonoSchema,
+  telefonoFijoNegocio: telefonoSchema,
 });
+
+// ─────────────────────────────────────────
+// MERCADO
+// ─────────────────────────────────────────
+
+const porcentaje = () => z.number().min(0).max(100).optional();
+
 export const guardarDatosMercadoSchema = z
-    .object({
-        principalesProductos: z.string().trim().optional(),
+  .object({
+    principalesProductos: textoLargoOpcional(1000),
 
-        porcentajeMayoristas: z.number().min(0).max(100).optional(),
-        porcentajeDetallistas: z.number().min(0).max(100).optional(),
-        porcentajeClienteFinal: z.number().min(0).max(100).optional(),
+    porcentajeMayoristas: porcentaje(),
+    porcentajeDetallistas: porcentaje(),
+    porcentajeClienteFinal: porcentaje(),
 
-        coberturaLocal: z.number().min(0).max(100).optional(),
-        coberturaRegional: z.number().min(0).max(100).optional(),
-        coberturaEstatal: z.number().min(0).max(100).optional(),
-        coberturaNacional: z.number().min(0).max(100).optional(),
-        coberturaExportacion: z.number().min(0).max(100).optional(),
-    })
-    .superRefine((data, ctx) => {
-        const clientes = [
-            data.porcentajeMayoristas,
-            data.porcentajeDetallistas,
-            data.porcentajeClienteFinal,
-        ].filter((v) => v !== undefined) as number[];
+    coberturaLocal: porcentaje(),
+    coberturaRegional: porcentaje(),
+    coberturaEstatal: porcentaje(),
+    coberturaNacional: porcentaje(),
+    coberturaExportacion: porcentaje(),
+  })
+  .superRefine((data, ctx) => {
+    const clientes = [
+      data.porcentajeMayoristas,
+      data.porcentajeDetallistas,
+      data.porcentajeClienteFinal,
+    ].filter((v): v is number => v !== undefined);
 
-        if (clientes.length > 0) {
-            const total = clientes.reduce((sum, v) => sum + v, 0);
-            if (Math.round(total) !== 100) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: `La distribución de clientes debe sumar 100% (actual: ${total}%)`,
-                    path: ["porcentajeMayoristas"],
-                });
-            }
-        }
+    if (clientes.length > 0) {
+      const total = clientes.reduce((sum, v) => sum + v, 0);
+      if (Math.round(total) !== 100) {
+        ctx.addIssue({
+          code: "custom",
+          message: `La distribución de clientes debe sumar 100% (actual: ${total}%)`,
+          path: ["porcentajeMayoristas"],
+        });
+      }
+    }
 
-        const cobertura = [
-            data.coberturaLocal,
-            data.coberturaRegional,
-            data.coberturaEstatal,
-            data.coberturaNacional,
-            data.coberturaExportacion,
-        ].filter((v) => v !== undefined) as number[];
+    const cobertura = [
+      data.coberturaLocal,
+      data.coberturaRegional,
+      data.coberturaEstatal,
+      data.coberturaNacional,
+      data.coberturaExportacion,
+    ].filter((v): v is number => v !== undefined);
 
-        if (cobertura.length > 0) {
-            const total = cobertura.reduce((sum, v) => sum + v, 0);
-            if (Math.round(total) !== 100) {
-                ctx.addIssue({
-                    code: "custom",
-                    message: `La cobertura geográfica debe sumar 100% (actual: ${total}%)`,
-                    path: ["coberturaLocal"],
-                });
-            }
-        }
-    });
+    if (cobertura.length > 0) {
+      const total = cobertura.reduce((sum, v) => sum + v, 0);
+      if (Math.round(total) !== 100) {
+        ctx.addIssue({
+          code: "custom",
+          message: `La cobertura geográfica debe sumar 100% (actual: ${total}%)`,
+          path: ["coberturaLocal"],
+        });
+      }
+    }
+  });
+
+// ─────────────────────────────────────────
+// DATOS BANCARIOS
+// ─────────────────────────────────────────
 
 export const guardarDatosBancariosSchema = z.object({
-    banco: z
-        .string({ message: "El banco es requerido" })
-        .max(255, "El banco no puede exceder 255 caracteres")
-        .trim(),
+  banco: textoRequerido(2, 255, "El banco"),
 
-    numeroCuenta: z
-        .string()
-        .regex(/^\d{10,18}$/, "El número de cuenta debe tener entre 10 y 18 dígitos")
-        .optional(),
+  numeroCuenta: z
+    .string()
+    .regex(/^\d{10,18}$/, "El número de cuenta debe tener entre 10 y 18 dígitos")
+    .optional(),
 
-    clabe: z
-        .string({ message: "La CLABE es requerida" })
-        .length(18, "La CLABE debe tener exactamente 18 dígitos")
-        .regex(/^\d+$/, "La CLABE debe ser numérica"),
+  clabe: z
+    .string({ message: "La CLABE es requerida" })
+    .length(18, "La CLABE debe tener exactamente 18 dígitos")
+    .regex(/^\d+$/, "La CLABE debe ser numérica")
+    .refine(clabeChecksumValido, "CLABE inválida (dígito verificador incorrecto)"),
 });
 
-export type GuardarDatosBancariosDto = z.infer<typeof guardarDatosBancariosSchema>;
-export type GuardarDatosMercadoDto = z.infer<typeof guardarDatosMercadoSchema>;
-export type GuardarDatosNegocioDto = z.infer<typeof guardarDatosNegocioSchema>;
+// ─────────────────────────────────────────
+// TIPOS INFERIDOS
+// ─────────────────────────────────────────
+
 export type CrearSolicitudDto = z.infer<typeof crearSolicitudSchema>;
 export type GuardarDatosGeneralesDto = z.infer<typeof guardarDatosGeneralesSchema>;
 export type GuardarDatosSolicitanteDto = z.infer<typeof guardarDatosSolicitanteSchema>;
@@ -392,3 +416,6 @@ export type GuardarDatosAvalDto = z.infer<typeof guardarDatosAvalSchema>;
 export type CambiarEstatusDto = z.infer<typeof cambiarEstatusSchema>;
 export type GuardarDatosCreditoDto = z.infer<typeof guardarDatosCreditoSchema>;
 export type GuardarDatosGarantiaDto = z.infer<typeof guardarDatosGarantiaSchema>;
+export type GuardarDatosNegocioDto = z.infer<typeof guardarDatosNegocioSchema>;
+export type GuardarDatosMercadoDto = z.infer<typeof guardarDatosMercadoSchema>;
+export type GuardarDatosBancariosDto = z.infer<typeof guardarDatosBancariosSchema>;

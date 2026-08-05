@@ -20,5 +20,5 @@ export const authApi = {
     }),
 
   perfil: (token: string) =>
-    apiRequest<{ usuario: Usuario }>('/auth/perfil', { token }),
+  apiRequest<Usuario>('/auth/perfil', { token }),
 };

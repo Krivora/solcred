@@ -9,11 +9,11 @@ import type {
   DatosNegocio,
   DatosPersona,
   Solicitud,
+  SolicitudesPaginadas,
 } from '@/features/solicitudes/types/solicitud.types'
 
 export const solicitudesApi = {
-  listar: () => apiAuth<Solicitud[]>('/clientes/solicitudes'),
-  obtener: (id: string) => apiAuth<Solicitud>(`/clientes/solicitudes/${id}`),
+  listar: (signal?: AbortSignal) =>apiAuth<SolicitudesPaginadas>('/clientes/solicitudes', { signal }),
   crear: (dto: CrearSolicitudDto) =>
     apiAuth<Solicitud>('/clientes/solicitudes', {
       method: 'POST',
@@ -90,6 +90,5 @@ export const solicitudesApi = {
         method: 'PATCH',
       }
     ),
-    descargarPDF: (id: string) =>
-    apiAuth<Blob>(`/clientes/solicitudes/${id}/pdf`),
+    descargarPDF: (id: string) => apiAuth<Blob>(`/clientes/solicitudes/${id}/pdf`),
 }

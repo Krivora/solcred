@@ -6,6 +6,7 @@ interface RequestOptions {
   method?: HttpMethod;
   body?: unknown;
   token?: string;
+  signal?: AbortSignal;
 }
 
 export class ApiError extends Error {
@@ -37,7 +38,7 @@ export async function apiRequest<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const { method = 'GET', body, token } = options;
+  const { method = 'GET', body, token, signal } = options;
 
   const isFormData = body instanceof FormData;
 
@@ -55,6 +56,7 @@ export async function apiRequest<T>(
     method,
     headers,
     body: isFormData ? (body as FormData) : body ? JSON.stringify(body) : undefined,
+    signal,
   });
 
   if (!response.ok) {

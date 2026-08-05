@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { solicitudesApi } from '../api/solicitudes.api'
+import { solicitudesToast } from '@/shared/lib/utils/toaster'
 import type {
   CrearSolicitudDto,
   DatosBancarios,
@@ -25,20 +26,20 @@ export type Step =
   | 'resumen'
 
 const STEPS: Step[] = [
-  'programa',
-  'general',
-  'solicitante',
-  'aval',
-  'credito',
-  'garantia',
-  'negocio',
-  'mercado',
-  'bancarios',
-  'resumen',
+  'programa', 'general', 'solicitante', 'aval', 'credito',
+  'garantia', 'negocio', 'mercado', 'bancarios', 'resumen',
 ]
 
 interface UseSolicitudFormOptions {
   solicitudIdExistente?: string
+}
+
+// Opciones para el helper genérico de guardado por step.
+interface GuardarPasoOpciones<T> {
+  accion: () => Promise<T>
+  aplicarResultado?: (data: T) => void
+  mensajeErrorFallback: string
+  onExito: () => void // toast específico del step
 }
 
 export function useSolicitudForm(options?: UseSolicitudFormOptions) {
@@ -55,10 +56,8 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
 
   const stepIndex = STEPS.indexOf(currentStep)
 
-  // Carga inicial de la solicitud existente en modo edición
   useEffect(() => {
     if (!solicitudIdExistente) return
-
     let cancelado = false
 
     async function cargar() {
@@ -69,7 +68,9 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
         if (!cancelado) setSolicitud(data)
       } catch (e: unknown) {
         if (!cancelado) {
-          setError(e instanceof Error ? e.message : 'Error al cargar la solicitud')
+          const msg = e instanceof Error ? e.message : 'Error al cargar la solicitud'
+          setError(msg)
+          solicitudesToast.error('No se pudo cargar la solicitud', msg)
         }
       } finally {
         if (!cancelado) setLoading(false)
@@ -77,9 +78,7 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
     }
 
     cargar()
-    return () => {
-      cancelado = true
-    }
+    return () => { cancelado = true }
   }, [solicitudIdExistente])
 
   const goNext = () => {
@@ -97,136 +96,110 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
     setTimeout(() => setGuardadoOk(false), 2000)
   }
 
+  // ── Helper genérico: centraliza loading/error/toast/avance ──
+  // Elimina la duplicación de las 9 funciones guardarX que antes
+  // repetían el mismo bloque try/catch/finally casi idéntico.
+  async function guardarPaso<T>({
+    accion,
+    aplicarResultado,
+    mensajeErrorFallback,
+    onExito,
+  }: GuardarPasoOpciones<T>) {
+    if (!solicitud) return
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await accion()
+      aplicarResultado?.(data)
+      onExito()
+      esEdicion ? marcarGuardado() : goNext()
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : mensajeErrorFallback
+      setError(msg)
+      solicitudesToast.error(mensajeErrorFallback, msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   async function crearSolicitud(dto: CrearSolicitudDto) {
     setLoading(true)
     setError(null)
     try {
       const data = await solicitudesApi.crear(dto)
       setSolicitud(data)
+      solicitudesToast.creada()
       goNext()
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al crear la solicitud')
+      const msg = e instanceof Error ? e.message : 'Error al crear la solicitud'
+      setError(msg)
+      solicitudesToast.error('Error al crear la solicitud', msg)
     } finally {
       setLoading(false)
     }
   }
 
-  async function guardarGenerales(dto: DatosGenerales) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      const data = await solicitudesApi.guardarGenerales(solicitud.id, dto)
-      setSolicitud(data)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos generales')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarGenerales = (dto: DatosGenerales) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarGenerales(solicitud!.id, dto),
+      aplicarResultado: setSolicitud,
+      mensajeErrorFallback: 'Error al guardar datos generales',
+      onExito: solicitudesToast.generalesGuardados,
+    })
 
-  async function guardarSolicitante(dto: DatosPersona) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarSolicitante(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos del solicitante')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarSolicitante = (dto: DatosPersona) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarSolicitante(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos del solicitante',
+      onExito: solicitudesToast.solicitanteGuardado,
+    })
 
-  async function guardarAval(dto: DatosPersona) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarAval(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos del aval')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarAval = (dto: DatosPersona) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarAval(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos del aval',
+      onExito: solicitudesToast.avalGuardado,
+    })
 
   function skipAval() {
+    solicitudesToast.avalOmitido()
     goTo('credito')
   }
 
-  async function guardarCredito(dto: DatosCredito) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarCredito(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos del crédito')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarCredito = (dto: DatosCredito) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarCredito(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos del crédito',
+      onExito: solicitudesToast.creditoGuardado,
+    })
 
-  async function guardarGarantia(dto: DatosGarantia) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarGarantia(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos de garantía')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarGarantia = (dto: DatosGarantia) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarGarantia(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos de garantía',
+      onExito: solicitudesToast.garantiaGuardada,
+    })
 
-  async function guardarNegocio(dto: DatosNegocio) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarNegocio(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos del negocio')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarNegocio = (dto: DatosNegocio) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarNegocio(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos del negocio',
+      onExito: solicitudesToast.negocioGuardado,
+    })
 
-  async function guardarMercado(dto: DatosMercado) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarMercado(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos de mercado')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarMercado = (dto: DatosMercado) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarMercado(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos de mercado',
+      onExito: solicitudesToast.mercadoGuardado,
+    })
 
-  async function guardarBancarios(dto: DatosBancarios) {
-    if (!solicitud) return
-    setLoading(true)
-    setError(null)
-    try {
-      await solicitudesApi.guardarBancarios(solicitud.id, dto)
-      esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al guardar datos bancarios')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const guardarBancarios = (dto: DatosBancarios) =>
+    guardarPaso({
+      accion: () => solicitudesApi.guardarBancarios(solicitud!.id, dto),
+      mensajeErrorFallback: 'Error al guardar datos bancarios',
+      onExito: solicitudesToast.bancariosGuardados,
+    })
 
   async function enviarSolicitud() {
     if (!solicitud) return
@@ -235,35 +208,22 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
     try {
       const data = await solicitudesApi.enviar(solicitud.id)
       setSolicitud(data)
+      solicitudesToast.solicitudEnviada()
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error al enviar la solicitud')
+      const msg = e instanceof Error ? e.message : 'Error al enviar la solicitud'
+      setError(msg)
+      solicitudesToast.error('Error al enviar la solicitud', msg)
     } finally {
       setLoading(false)
     }
   }
 
   return {
-    currentStep,
-    stepIndex,
-    totalSteps: STEPS.length,
-    solicitud,
-    loading,
-    error,
-    esEdicion,
-    guardadoOk,
-    goNext,
-    goBack,
-    goTo,
-    crearSolicitud,
-    guardarGenerales,
-    guardarSolicitante,
-    guardarAval,
-    guardarCredito,
-    guardarGarantia,
-    guardarNegocio,
-    guardarMercado,
-    guardarBancarios,
-    enviarSolicitud,
-    skipAval,
+    currentStep, stepIndex, totalSteps: STEPS.length,
+    solicitud, loading, error, esEdicion, guardadoOk,
+    goNext, goBack, goTo,
+    crearSolicitud, guardarGenerales, guardarSolicitante, guardarAval,
+    guardarCredito, guardarGarantia, guardarNegocio, guardarMercado,
+    guardarBancarios, enviarSolicitud, skipAval,
   }
 }

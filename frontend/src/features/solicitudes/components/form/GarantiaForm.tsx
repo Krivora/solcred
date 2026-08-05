@@ -28,7 +28,7 @@ import { cn } from "@/shared/lib/utils/cn"
 import {
     guardarDatosGarantiaSchema,
     type GuardarDatosGarantiaDto,
-} from '@/shared/lib/schema/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitudes.schema'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosGarantiaDto>
