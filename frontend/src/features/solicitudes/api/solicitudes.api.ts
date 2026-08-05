@@ -14,6 +14,7 @@ import type {
 
 export const solicitudesApi = {
   listar: (signal?: AbortSignal) =>apiAuth<SolicitudesPaginadas>('/clientes/solicitudes', { signal }),
+  obtener: (id: string) => apiAuth<Solicitud>(`/clientes/solicitudes/${id}`),
   crear: (dto: CrearSolicitudDto) =>
     apiAuth<Solicitud>('/clientes/solicitudes', {
       method: 'POST',

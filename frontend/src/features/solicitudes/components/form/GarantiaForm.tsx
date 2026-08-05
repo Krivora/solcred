@@ -2,18 +2,11 @@
 
 import { useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus, Trash2, Home, Package, AlertCircle } from 'lucide-react'
+import { Plus, Trash2, Home, Package, AlertCircle, ShieldCheck, Wallet } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/shared/components/ui/select'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -58,12 +51,49 @@ const GARANTIA_VACIA = {
 }
 
 function formatoMoneda(valor: number) {
-    if (!valor) return ''
+    if (!valor) return '$0'
     return new Intl.NumberFormat('es-MX', {
         style: 'currency',
         currency: 'MXN',
         maximumFractionDigits: 0,
     }).format(valor)
+}
+
+// Input de moneda "vivo": muestra el formato mientras se escribe,
+// pero guarda el número puro en el form.
+function CampoMoneda({
+    value,
+    onChange,
+    placeholder = '0.00',
+}: {
+    value: number
+    onChange: (v: number) => void
+    placeholder?: string
+}) {
+    const [texto, setTexto] = useState(value ? String(value) : '')
+
+    return (
+        <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                $
+            </span>
+            <Input
+                type="text"
+                inputMode="decimal"
+                placeholder={placeholder}
+                className="pl-6"
+                value={texto}
+                onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9.]/g, '')
+                    setTexto(raw)
+                    onChange(raw ? parseFloat(raw) : 0)
+                }}
+                onBlur={() => {
+                    if (value) setTexto(String(value))
+                }}
+            />
+        </div>
+    )
 }
 
 export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props) {
@@ -92,6 +122,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
     })
 
     const garantiasValores = watch('garantias')
+    const valorTotal = (garantiasValores ?? []).reduce((acc, g) => acc + (g?.valor || 0), 0)
 
     const confirmarEliminacion = () => {
         if (indexAEliminar !== null) {
@@ -103,11 +134,18 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-1">
-                    <h2 className="text-lg font-semibold text-foreground">Garantías del crédito</h2>
-                    <p className="text-sm text-muted-foreground">
-                        Registra los bienes que respaldan tu solicitud. Puedes agregar más de uno.
-                    </p>
+                {/* Encabezado con contexto — reduce la sensación de "trámite" */}
+                <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
+                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+                        <ShieldCheck className="w-4.5 h-4.5 text-primary" />
+                    </div>
+                    <div className="space-y-0.5">
+                        <h2 className="text-base font-semibold text-foreground">Garantías del crédito</h2>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            Cuéntanos qué bienes respaldan tu solicitud — un vehículo, maquinaria
+                            o una propiedad. Puedes agregar más de uno si lo necesitas.
+                        </p>
+                    </div>
                 </div>
 
                 {fields.map((field, index) => {
@@ -119,54 +157,26 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                         <div
                             key={field.id}
                             className={cn(
-                                'relative rounded-xl border border-border bg-card shadow-sm overflow-hidden',
+                                'relative rounded-2xl border border-border bg-card',
+                                'shadow-[0_1px_2px_rgba(0,0,0,0.04)]',
                                 'animate-in fade-in slide-in-from-top-2 duration-300',
-                                'border-l-4',
-                                esHipotecaria ? 'border-l-primary' : 'border-l-warning'
+                                'overflow-hidden'
                             )}
                         >
-                            {/* Header de tarjeta con fondo tenue diferenciado */}
-                            <div
-                                className={cn(
-                                    'flex items-center justify-between px-4 sm:px-5 py-3.5',
-                                    esHipotecaria ? 'bg-primary/5' : 'bg-warning/10'
-                                )}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className={cn(
-                                            'flex items-center justify-center w-10 h-10 rounded-lg shrink-0',
-                                            esHipotecaria ? 'bg-primary/15' : 'bg-warning/20'
-                                        )}
-                                    >
-                                        {esHipotecaria ? (
-                                            <Home className="w-5 h-5 text-primary" />
-                                        ) : (
-                                            <Package className="w-5 h-5 text-warning-foreground" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-sm font-semibold text-foreground">
-                                                Garantía {index + 1}
-                                            </p>
-                                            <span
-                                                className={cn(
-                                                    'text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded',
-                                                    esHipotecaria
-                                                        ? 'bg-primary/15 text-primary'
-                                                        : 'bg-warning/25 text-warning-foreground'
-                                                )}
-                                            >
-                                                {esHipotecaria ? 'Inmueble' : 'Mueble'}
-                                            </span>
-                                        </div>
-                                        {garantiasValores?.[index]?.valor ? (
-                                            <p className="text-xs text-muted-foreground mt-0.5">
-                                                {formatoMoneda(garantiasValores[index].valor)}
-                                            </p>
-                                        ) : null}
-                                    </div>
+                            {/* Header de tarjeta */}
+                            <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-border/70">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-foreground/5 text-xs font-semibold text-muted-foreground">
+                                        {index + 1}
+                                    </span>
+                                    <p className="text-sm font-semibold text-foreground">
+                                        Garantía {index + 1}
+                                    </p>
+                                    {garantiasValores?.[index]?.valor ? (
+                                        <span className="text-xs font-medium text-muted-foreground">
+                                            · {formatoMoneda(garantiasValores[index].valor)}
+                                        </span>
+                                    ) : null}
                                 </div>
 
                                 {fields.length > 1 && (
@@ -174,7 +184,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                         type="button"
                                         variant="ghost"
                                         size="icon"
-                                        className="h-11 w-11 hover:bg-destructive/10 hover:text-destructive"
+                                        className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
                                         onClick={() => setIndexAEliminar(index)}
                                         aria-label={`Eliminar garantía ${index + 1}`}
                                     >
@@ -184,77 +194,101 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                             </div>
 
                             <div className="p-4 sm:p-5 space-y-5">
-                                {/* Tipo */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-1.5">
-                                        <Label>Tipo de garantía</Label>
-                                        <Select
-                                            value={tipo}
-                                            onValueChange={(v) =>
-                                                setValue(`garantias.${index}.tipo`, v as 'PRENDARIA' | 'HIPOTECARIA', {
-                                                    shouldValidate: true,
-                                                })
+                                {/* Selector de tipo como tarjetas grandes, no dropdown */}
+                                <div className="space-y-1.5">
+                                    <Label>Tipo de garantía</Label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setValue(`garantias.${index}.tipo`, 'PRENDARIA', { shouldValidate: true })
                                             }
+                                            className={cn(
+                                                'flex flex-col items-start gap-2 rounded-xl border p-3.5 text-left transition-all',
+                                                !esHipotecaria
+                                                    ? 'border-warning bg-warning/10 ring-1 ring-warning'
+                                                    : 'border-border hover:border-warning/50 hover:bg-warning/5'
+                                            )}
                                         >
-                                            <SelectTrigger className="h-11">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="PRENDARIA">Prendaria (vehículo, maquinaria, etc.)</SelectItem>
-                                                <SelectItem value="HIPOTECARIA">Hipotecaria (inmueble)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                            <Package className={cn('w-5 h-5', !esHipotecaria ? 'text-warning-foreground' : 'text-muted-foreground')} />
+                                            <div>
+                                                <p className="text-sm font-medium text-foreground">Bien mueble</p>
+                                                <p className="text-xs text-muted-foreground">Vehículo, maquinaria, equipo</p>
+                                            </div>
+                                        </button>
 
-                                    <div className="space-y-1.5">
-                                        <Label>Valor comercial</Label>
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            inputMode="decimal"
-                                            className="h-11"
-                                            placeholder="0.00"
-                                            {...register(`garantias.${index}.valor`, { valueAsNumber: true })}
-                                        />
-                                        {erroresItem?.valor && (
-                                            <p className="flex items-center gap-1 text-xs text-destructive">
-                                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                                {erroresItem.valor.message}
-                                            </p>
-                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setValue(`garantias.${index}.tipo`, 'HIPOTECARIA', { shouldValidate: true })
+                                            }
+                                            className={cn(
+                                                'flex flex-col items-start gap-2 rounded-xl border p-3.5 text-left transition-all',
+                                                esHipotecaria
+                                                    ? 'border-primary bg-primary/10 ring-1 ring-primary'
+                                                    : 'border-border hover:border-primary/50 hover:bg-primary/5'
+                                            )}
+                                        >
+                                            <Home className={cn('w-5 h-5', esHipotecaria ? 'text-primary' : 'text-muted-foreground')} />
+                                            <div>
+                                                <p className="text-sm font-medium text-foreground">Inmueble</p>
+                                                <p className="text-xs text-muted-foreground">Casa, terreno, local</p>
+                                            </div>
+                                        </button>
                                     </div>
                                 </div>
 
-                                {/* Comunes */}
+                                {/* Valor comercial — ahora con formato de moneda en vivo */}
                                 <div className="space-y-1.5">
-                                    <Label>Nombre del propietario</Label>
-                                    <Input className="h-11" {...register(`garantias.${index}.nombrePropietario`)} />
-                                    {erroresItem?.nombrePropietario && (
+                                    <Label className="flex items-center gap-1.5">
+                                        <Wallet className="w-3.5 h-3.5 text-muted-foreground" />
+                                        Valor comercial
+                                    </Label>
+                                    <CampoMoneda
+                                        value={garantiasValores?.[index]?.valor ?? 0}
+                                        onChange={(v) =>
+                                            setValue(`garantias.${index}.valor`, v, { shouldValidate: true })
+                                        }
+                                    />
+                                    {erroresItem?.valor && (
                                         <p className="flex items-center gap-1 text-xs text-destructive">
                                             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                            {erroresItem.nombrePropietario.message}
+                                            {erroresItem.valor.message}
                                         </p>
                                     )}
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <Label className="flex items-center gap-1.5">
-                                        Descripción
-                                        <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
-                                    </Label>
-                                    <Input className="h-11" {...register(`garantias.${index}.descripcion`)} />
+                                {/* Comunes */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <Label>Nombre del propietario</Label>
+                                        <Input placeholder="Nombre completo" {...register(`garantias.${index}.nombrePropietario`)} />
+                                        {erroresItem?.nombrePropietario && (
+                                            <p className="flex items-center gap-1 text-xs text-destructive">
+                                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                {erroresItem.nombrePropietario.message}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="flex items-center gap-1.5">
+                                            Descripción
+                                            <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
+                                        </Label>
+                                        <Input placeholder="Estado, características, etc." {...register(`garantias.${index}.descripcion`)} />
+                                    </div>
                                 </div>
 
                                 {/* Campos según tipo */}
                                 {tipo === 'PRENDARIA' && (
-                                    <div className="pt-4 border-t border-border space-y-4">
-                                        <p className="text-xs font-medium text-warning-foreground uppercase tracking-wide">
+                                    <div className="rounded-xl bg-warning/5 border border-warning/20 p-4 space-y-4">
+                                        <p className="text-xs font-semibold text-warning uppercase tracking-wide">
                                             Datos del bien
                                         </p>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div className="space-y-1.5">
                                                 <Label>Marca</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.marca`)} />
+                                                <Input placeholder="Ej. Ford, Caterpillar" {...register(`garantias.${index}.marca`)} />
                                                 {erroresItem?.marca && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -264,20 +298,20 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Modelo</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.modelo`)} />
+                                                <Input placeholder="Ej. F-150, D6" {...register(`garantias.${index}.modelo`)} />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Año</Label>
                                                 <Input
                                                     type="number"
                                                     inputMode="numeric"
-                                                    className="h-11"
+                                                    placeholder="2020"
                                                     {...register(`garantias.${index}.anio`, { valueAsNumber: true })}
                                                 />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Número de serie</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.numeroSerie`)} />
+                                                <Input placeholder="VIN o número de serie" {...register(`garantias.${index}.numeroSerie`)} />
                                                 {erroresItem?.numeroSerie && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -293,14 +327,14 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                 )}
 
                                 {tipo === 'HIPOTECARIA' && (
-                                    <div className="pt-4 border-t border-border space-y-4">
-                                        <p className="text-xs font-medium text-primary uppercase tracking-wide">
+                                    <div className="rounded-xl bg-primary/5 border border-primary/20 p-4 space-y-4">
+                                        <p className="text-xs font-semibold text-primary uppercase tracking-wide">
                                             Ubicación del inmueble
                                         </p>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div className="space-y-1.5 sm:col-span-2">
                                                 <Label>Calle</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.calle`)} />
+                                                <Input placeholder="Nombre de la calle" {...register(`garantias.${index}.calle`)} />
                                                 {erroresItem?.calle && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -310,23 +344,23 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Número exterior</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.numeroExterior`)} />
+                                                <Input {...register(`garantias.${index}.numeroExterior`)} />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Número interior</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.numeroInterior`)} />
+                                                <Input placeholder="Opcional" {...register(`garantias.${index}.numeroInterior`)} />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Colonia</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.colonia`)} />
+                                                <Input {...register(`garantias.${index}.colonia`)} />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Código postal</Label>
-                                                <Input className="h-11" inputMode="numeric" {...register(`garantias.${index}.codigoPostal`)} />
+                                                <Input inputMode="numeric" placeholder="00000" {...register(`garantias.${index}.codigoPostal`)} />
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Ciudad</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.ciudad`)} />
+                                                <Input {...register(`garantias.${index}.ciudad`)} />
                                                 {erroresItem?.ciudad && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -336,7 +370,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Estado</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.estado`)} />
+                                                <Input {...register(`garantias.${index}.estado`)} />
                                                 {erroresItem?.estado && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -346,7 +380,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Número de escritura</Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.numeroEscritura`)} />
+                                                <Input {...register(`garantias.${index}.numeroEscritura`)} />
                                                 {erroresItem?.numeroEscritura && (
                                                     <p className="flex items-center gap-1 text-xs text-destructive">
                                                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -359,7 +393,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                                     Folio real
                                                     <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
                                                 </Label>
-                                                <Input className="h-11" {...register(`garantias.${index}.folioReal`)} />
+                                                <Input {...register(`garantias.${index}.folioReal`)} />
                                             </div>
                                         </div>
                                     </div>
@@ -386,8 +420,20 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                     Agregar otra garantía
                 </Button>
 
+                {/* Resumen de valor total — refuerzo positivo de progreso */}
+                {valorTotal > 0 && (
+                    <div className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3">
+                        <span className="text-sm text-muted-foreground">
+                            Valor total en garantías
+                        </span>
+                        <span className="text-sm font-semibold text-foreground">
+                            {formatoMoneda(valorTotal)}
+                        </span>
+                    </div>
+                )}
+
                 <div className="flex justify-between pt-4 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-1 px-1 py-3 sm:static sm:bg-transparent sm:backdrop-blur-none sm:p-0">
-                    <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
+                    <Button type="button" variant="ghost" onClick={onBack}>
                         Regresar
                     </Button>
                     <Button type="submit" disabled={loading} className="h-11 min-w-30">
