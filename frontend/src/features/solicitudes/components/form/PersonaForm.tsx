@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import type { EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/lib/types/solicitudes.types'
 import {DatosPersona} from '@/features/solicitudes/types/solicitud.types'
 import { Input } from '@/shared/components/ui/input'
@@ -10,6 +10,7 @@ import { Button } from '@/shared/components/ui/button'
 import { FormError } from '@/shared/components/ui/FormError'
 import { Separator } from '@/shared/components/ui/separator'
 import { ChevronLeft, ChevronRight, User, Phone, MapPin } from 'lucide-react'
+import { TelefonoInput, CodigoPostalInput, CorreoInput } from '@/shared/components/ui/inputs'
 
 interface Props {
   title: string
@@ -108,6 +109,7 @@ export function PersonaForm({
 }: Props) {
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     watch,
@@ -150,7 +152,7 @@ export function PersonaForm({
 
           {/* CURP + RFC + INE */}
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="CURP" error={errors.curp?.message} optional className="sm:col-span-2">
+            <Field label="CURP" error={errors.curp?.message}  className="sm:col-span-2">
               <Input
                 {...register('curp', {
                   pattern: { value: /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/, message: 'CURP inválida' },
@@ -160,7 +162,7 @@ export function PersonaForm({
                 maxLength={18}
               />
             </Field>
-            <Field label="RFC" error={errors.rfc?.message} optional className="sm:col-span-2">
+            <Field label="RFC" error={errors.rfc?.message}  className="sm:col-span-2">
               <Input
                 {...register('rfc', {
                   pattern: { value: /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/, message: 'RFC inválido' },
@@ -170,14 +172,14 @@ export function PersonaForm({
                 maxLength={13}
               />
             </Field>
-            <Field label="Número de INE" error={errors.numeroINE?.message} optional className="sm:col-span-2">
+            <Field label="Número de INE" error={errors.numeroINE?.message}  className="sm:col-span-2">
               <Input {...register('numeroINE')} placeholder="0000000000000" maxLength={13} />
             </Field>
           </div>
 
           {/* Estado civil + Cónyuge + Nivel estudios */}
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="Estado civil" optional className="sm:col-span-2">
+            <Field label="Estado civil"  className="sm:col-span-2">
               <Select
                 value={estadoCivil ?? ''}
                 onValueChange={(v) => setValue('estadoCivil', v as EstadoCivil)}
@@ -190,7 +192,7 @@ export function PersonaForm({
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Nombre del cónyuge" optional className="sm:col-span-2">
+            <Field label="Nombre del cónyuge" className="sm:col-span-2">
               <Input
                 {...register('nombreConyuge')}
                 placeholder="Nombre completo"
@@ -198,7 +200,7 @@ export function PersonaForm({
                 className="disabled:opacity-40"
               />
             </Field>
-            <Field label="Nivel de estudios" optional className="sm:col-span-2">
+            <Field label="Nivel de estudios" className="sm:col-span-2">
               <Select
                 value={nivelEstudio ?? ''}
                 onValueChange={(v) => setValue('nivelEstudio', v as NivelEstudio)}
@@ -215,7 +217,7 @@ export function PersonaForm({
 
           {/* Universidad */}
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="Institución educativa" optional className="sm:col-span-4">
+            <Field label="Institución educativa"  className="sm:col-span-4">
               <Input
                 {...register('universidad')}
                 placeholder="Universidad de Sonora"
@@ -236,14 +238,14 @@ export function PersonaForm({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* IZQUIERDA */}
           <div className="lg:col-span-7 space-y-4">
-            <Field label="Calle" optional>
+            <Field label="Calle">
               <Input
                 {...register('calle')}
                 placeholder="Av. Rodríguez"
               />
             </Field>
 
-            <Field label="Colonia" optional>
+            <Field label="Colonia">
               <Input
                 {...register('colonia')}
                 placeholder="Centro"
@@ -253,7 +255,6 @@ export function PersonaForm({
             <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
               <Field
                 label="Ciudad / Municipio"
-                optional
                 className="sm:col-span-3"
               >
                 <Input
@@ -264,7 +265,6 @@ export function PersonaForm({
 
               <Field
                 label="Estado"
-                optional
                 className="sm:col-span-3"
               >
                 <Select
@@ -290,14 +290,14 @@ export function PersonaForm({
           {/* DERECHA */}
           <div className="lg:col-span-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Núm. ext." optional>
+              <Field label="Núm. ext.">
                 <Input
                   {...register('numeroExterior')}
                   placeholder="123"
                 />
               </Field>
 
-              <Field label="Núm. int." optional>
+              <Field label="Núm. int.">
                 <Input
                   {...register('numeroInterior')}
                   placeholder="4B"
@@ -306,24 +306,29 @@ export function PersonaForm({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+              {/* C.P. — máscara: máximo 5 dígitos, no deja escribir más */}
               <Field
                 label="C.P."
                 error={errors.codigoPostal?.message}
-                optional
               >
-                <Input
-                  {...register('codigoPostal', {
-                    pattern: {
-                      value: /^[0-9]{5}$/,
-                      message: '5 dígitos',
-                    },
-                  })}
-                  placeholder="83000"
-                  maxLength={5}
+                <Controller
+                  name="codigoPostal"
+                  control={control}
+                  rules={{
+                    validate: (v) =>
+                      !v || /^[0-9]{5}$/.test(v) || '5 dígitos',
+                  }}
+                  render={({ field }) => (
+                    <CodigoPostalInput
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
                 />
               </Field>
 
-              <Field label="Tipo de vivienda" optional>
+              <Field label="Tipo de vivienda">
                 <Select
                   value={tipoVivienda ?? ''}
                   onValueChange={(v) =>
@@ -351,7 +356,6 @@ export function PersonaForm({
               <Field
                 label="Años actual"
                 error={errors.aniosDomicilioActual?.message}
-                optional
               >
                 <Input
                   {...register('aniosDomicilioActual', {
@@ -367,7 +371,6 @@ export function PersonaForm({
               <Field
                 label="Años anterior"
                 error={errors.aniosDomicilioAnterior?.message}
-                optional
               >
                 <Input
                   {...register('aniosDomicilioAnterior', {
@@ -388,25 +391,58 @@ export function PersonaForm({
       <section>
         <SectionHeader icon={Phone} label="Información de contacto" />
         <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-          <Field label="Teléfono fijo" error={errors.telefono?.message} optional className="sm:col-span-2">
-            <Input
-              {...register('telefono', { pattern: { value: /^[0-9]{10}$/, message: '10 dígitos' } })}
-              placeholder="6441234567"
-              maxLength={10}
+          {/* Teléfono fijo — máscara (XXX) XXX-XXXX, solo dígitos, máx 10 */}
+          <Field label="Teléfono fijo" error={errors.telefono?.message} className="sm:col-span-2">
+            <Controller
+              name="telefono"
+              control={control}
+              rules={{
+                validate: (v) => !v || /^[0-9]{10}$/.test(v) || '10 dígitos',
+              }}
+              render={({ field }) => (
+                <TelefonoInput
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
             />
           </Field>
-          <Field label="Celular" error={errors.celular?.message} optional className="sm:col-span-2">
-            <Input
-              {...register('celular', { pattern: { value: /^[0-9]{10}$/, message: '10 dígitos' } })}
-              placeholder="6441234567"
-              maxLength={10}
+
+          {/* Celular — misma máscara que teléfono fijo */}
+          <Field label="Celular" error={errors.celular?.message} className="sm:col-span-2">
+            <Controller
+              name="celular"
+              control={control}
+              rules={{
+                validate: (v) => !v || /^[0-9]{10}$/.test(v) || '10 dígitos',
+              }}
+              render={({ field }) => (
+                <TelefonoInput
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
             />
           </Field>
-          <Field label="Correo electrónico" error={errors.correo?.message} optional className="sm:col-span-2">
-            <Input
-              {...register('correo', { pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Correo inválido' } })}
-              type="email"
-              placeholder="juan@ejemplo.com"
+
+          {/* Correo — sin máscara de tecleo, normaliza trim/lowercase en blur */}
+          <Field label="Correo electrónico" error={errors.correo?.message} className="sm:col-span-2">
+            <Controller
+              name="correo"
+              control={control}
+              rules={{
+                validate: (v) =>
+                  !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Correo inválido',
+              }}
+              render={({ field }) => (
+                <CorreoInput
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
             />
           </Field>
         </div>

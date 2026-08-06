@@ -1,6 +1,6 @@
 'use client'
 
-import { useFieldArray, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2, Home, Package, AlertCircle, ShieldCheck, Wallet } from 'lucide-react'
 import { useState } from 'react'
@@ -22,6 +22,8 @@ import {
     guardarDatosGarantiaSchema,
     type GuardarDatosGarantiaDto,
 } from '@/features/solicitudes/schemas/solicitudes.schema'
+import { MontoInput, CodigoPostalInput } from '@/shared/components/ui/inputs'
+import { montoAFloat } from '@/shared/lib/utils/masks'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosGarantiaDto>
@@ -61,40 +63,7 @@ function formatoMoneda(valor: number) {
 
 // Input de moneda "vivo": muestra el formato mientras se escribe,
 // pero guarda el número puro en el form.
-function CampoMoneda({
-    value,
-    onChange,
-    placeholder = '0.00',
-}: {
-    value: number
-    onChange: (v: number) => void
-    placeholder?: string
-}) {
-    const [texto, setTexto] = useState(value ? String(value) : '')
 
-    return (
-        <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-                $
-            </span>
-            <Input
-                type="text"
-                inputMode="decimal"
-                placeholder={placeholder}
-                className="pl-6"
-                value={texto}
-                onChange={(e) => {
-                    const raw = e.target.value.replace(/[^0-9.]/g, '')
-                    setTexto(raw)
-                    onChange(raw ? parseFloat(raw) : 0)
-                }}
-                onBlur={() => {
-                    if (value) setTexto(String(value))
-                }}
-            />
-        </div>
-    )
-}
 
 export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props) {
     const [indexAEliminar, setIndexAEliminar] = useState<number | null>(null)
@@ -237,29 +206,8 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                         </button>
                                     </div>
                                 </div>
-
-                                {/* Valor comercial — ahora con formato de moneda en vivo */}
-                                <div className="space-y-1.5">
-                                    <Label className="flex items-center gap-1.5">
-                                        <Wallet className="w-3.5 h-3.5 text-muted-foreground" />
-                                        Valor comercial
-                                    </Label>
-                                    <CampoMoneda
-                                        value={garantiasValores?.[index]?.valor ?? 0}
-                                        onChange={(v) =>
-                                            setValue(`garantias.${index}.valor`, v, { shouldValidate: true })
-                                        }
-                                    />
-                                    {erroresItem?.valor && (
-                                        <p className="flex items-center gap-1 text-xs text-destructive">
-                                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                            {erroresItem.valor.message}
-                                        </p>
-                                    )}
-                                </div>
-
                                 {/* Comunes */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div className="space-y-1.5">
                                         <Label>Nombre del propietario</Label>
                                         <Input placeholder="Nombre completo" {...register(`garantias.${index}.nombrePropietario`)} />
@@ -276,6 +224,26 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
                                         </Label>
                                         <Input placeholder="Estado, características, etc." {...register(`garantias.${index}.descripcion`)} />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="flex items-center gap-1.5">
+                                            <Wallet className="w-3.5 h-3.5 text-muted-foreground" />
+                                            Valor comercial
+                                        </Label>
+                                        <MontoInput
+                                            value={garantiasValores?.[index]?.valor ? String(garantiasValores[index].valor) : ''}
+                                            onChange={(valorCrudo) =>
+                                                setValue(`garantias.${index}.valor`, montoAFloat(valorCrudo) ?? 0, {
+                                                    shouldValidate: true,
+                                                })
+                                            }
+                                        />
+                                        {erroresItem?.valor && (
+                                            <p className="flex items-center gap-1 text-xs text-destructive">
+                                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                {erroresItem.valor.message}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -356,8 +324,20 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Código postal</Label>
-                                                <Input inputMode="numeric" placeholder="00000" {...register(`garantias.${index}.codigoPostal`)} />
-                                            </div>
+                                                <Controller
+                                                    name={`garantias.${index}.codigoPostal`}
+                                                    control={control}
+                                                    rules={{
+                                                        validate: (v) => !v || /^[0-9]{5}$/.test(v) || '5 dígitos',
+                                                    }}
+                                                    render={({ field }) => (
+                                                        <CodigoPostalInput
+                                                            value={field.value ?? ''}
+                                                            onChange={field.onChange}
+                                                            onBlur={field.onBlur}
+                                                        />
+                                                    )}
+                                                />                                            </div>
                                             <div className="space-y-1.5">
                                                 <Label>Ciudad</Label>
                                                 <Input {...register(`garantias.${index}.ciudad`)} />

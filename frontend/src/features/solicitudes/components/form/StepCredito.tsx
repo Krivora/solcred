@@ -19,6 +19,9 @@ import type {
     DatosCredito,
 } from '@/features/solicitudes/types/solicitud.types'
 import { CategoriaCredito } from '@/shared/lib/types/solicitudes.types'
+import { MontoInput } from '@/shared/components/ui/inputs'
+import { montoAFloat } from '@/shared/lib/utils/masks'
+
 interface StepCreditoProps {
     defaultValues?: DatosCredito
     onSubmit: (dto: DatosCredito) => void
@@ -284,20 +287,18 @@ export function StepCredito({
                                                         <Trash2 className="h-3.5 w-3.5" />
                                                     </Button>
                                                 </div>
-                                                <Input
-                                                    type="number"
-                                                    min={0}
+                                                <MontoInput
                                                     placeholder="Monto"
-                                                    value={concepto.monto || ''}
-                                                    onChange={(e) =>
+                                                    value={concepto.monto ? String(concepto.monto) : ''}
+                                                    onChange={(valorCrudo) =>
                                                         actualizarConcepto(
-                                                            concepto.index,
-                                                            'monto',
-                                                            Number(e.target.value)
+                                                        concepto.index,
+                                                        'monto',
+                                                        montoAFloat(valorCrudo) ?? 0
                                                         )
                                                     }
-                                                    className="text-sm h-9"
-                                                />
+                                                    className="text-sm h-9 text-right"
+                                                    />
                                             </div>
                                         ))}
                                     </div>

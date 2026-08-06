@@ -12,6 +12,7 @@ import {
     guardarDatosNegocioSchema,
     type GuardarDatosNegocioDto,
 } from '@/features/solicitudes/schemas/solicitudes.schema'
+import { CodigoPostalInput, TelefonoInput } from '@/shared/components/ui/inputs'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosNegocioDto>
@@ -130,8 +131,21 @@ export function NegocioForm({ defaultValues, onSubmit, onBack, loading }: Props)
                     </div>
                     <div className="space-y-1.5">
                         <Label>Código postal</Label>
-                        <Input className="h-11" inputMode="numeric" placeholder="00000" {...register('codigoPostalLocal')} />
-                        {errors.codigoPostalLocal && (
+                        <Controller
+                            name="codigoPostalLocal"
+                            control={control}
+                            rules={{
+                                validate: (v) => !v || /^[0-9]{5}$/.test(v) || '5 dígitos',
+                            }}
+                            render={({ field }) => (
+                                <CodigoPostalInput
+                                    className="h-11"
+                                    value={field.value ?? ''}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
+                        />                        {errors.codigoPostalLocal && (
                             <p className="flex items-center gap-1 text-xs text-destructive">
                                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                                 {errors.codigoPostalLocal.message}
@@ -254,11 +268,39 @@ export function NegocioForm({ defaultValues, onSubmit, onBack, loading }: Props)
                 <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                         <Label>Teléfono de recados</Label>
-                        <Input className="h-11" type="tel" placeholder="10 dígitos" {...register('telefonoRecadosNegocio')} />
+                        <Controller
+                            name="telefonoRecadosNegocio"
+                            control={control}
+                            rules={{
+                                validate: (v) => !v || /^[0-9]{10}$/.test(v) || '10 dígitos',
+                            }}
+                            render={({ field }) => (
+                                <TelefonoInput
+                                    className="h-11"
+                                    value={field.value ?? ''}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
+                        />
                     </div>
                     <div className="space-y-1.5">
                         <Label>Teléfono fijo</Label>
-                        <Input className="h-11" type="tel" placeholder="10 dígitos" {...register('telefonoFijoNegocio')} />
+                        <Controller
+                            name="telefonoFijoNegocio"
+                            control={control}
+                            rules={{
+                                validate: (v) => !v || /^[0-9]{10}$/.test(v) || '10 dígitos',
+                            }}
+                            render={({ field }) => (
+                                <TelefonoInput
+                                    className="h-11"
+                                    value={field.value ?? ''}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
+                        />
                     </div>
                 </div>
             </div>
