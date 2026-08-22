@@ -27,7 +27,7 @@ const garantiaSchema = z
         anio: z
             .number()
             .int('El año debe ser un número entero')
-            .min(1900, 'Año inválido')
+            .min(2015, 'El año debe ser 2015 o posterior')
             .max(new Date().getFullYear() + 1, 'Año inválido')
             .optional(),
         numeroSerie: z.string().trim().optional(),
@@ -81,6 +81,13 @@ const garantiaSchema = z
                     code: 'custom',
                     message: 'El estado es requerido para garantías hipotecarias',
                     path: ['estado'],
+                })
+            }
+            if (!data.codigoPostal) {
+                ctx.addIssue({
+                    code: 'custom',
+                    message: 'El código postal es requerido para garantías hipotecarias',
+                    path: ['codigoPostal'],
                 })
             }
             if (!data.numeroEscritura) {
@@ -225,9 +232,9 @@ export type GuardarDatosMercadoDto = z.infer<typeof guardarDatosMercadoSchema>
 // ─────────────────────────────────────────
 export const guardarDatosBancariosSchema = z.object({
     banco: z
-    .string({ error: 'El banco es requerido' })
-    .max(255, 'El banco no puede exceder 255 caracteres')
-    .trim(),
+        .string({ error: 'El banco es requerido' })
+        .max(255, 'El banco no puede exceder 255 caracteres')
+        .trim(),
 
     numeroCuenta: z
         .string()
@@ -235,9 +242,9 @@ export const guardarDatosBancariosSchema = z.object({
         .optional(),
 
     clabe: z
-    .string({ error: 'La CLABE es requerida' })
-    .length(18, 'La CLABE debe tener exactamente 18 dígitos')
-    .regex(/^\d+$/, 'La CLABE debe ser numérica'),
+        .string({ error: 'La CLABE es requerida' })
+        .length(18, 'La CLABE debe tener exactamente 18 dígitos')
+        .regex(/^\d+$/, 'La CLABE debe ser numérica'),
 })
 
 export type GuardarDatosBancariosDto = z.infer<typeof guardarDatosBancariosSchema>

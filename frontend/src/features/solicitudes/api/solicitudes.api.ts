@@ -29,7 +29,7 @@ export const solicitudesApi = {
       }
     ),
   guardarSolicitante: (id: string, dto: DatosPersona) =>
-    apiAuth<DatosPersona>(
+    apiAuth<DatosPersona & { id: string }>(
       `/clientes/solicitudes/${id}/solicitante`,
       {
         method: 'PUT',
@@ -37,7 +37,7 @@ export const solicitudesApi = {
       }
     ),
   guardarAval: (id: string, dto: DatosPersona) =>
-    apiAuth<DatosPersona>(
+    apiAuth<DatosPersona & { id: string }>(
       `/clientes/solicitudes/${id}/aval`,
       {
         method: 'PUT',
@@ -45,7 +45,7 @@ export const solicitudesApi = {
       }
     ),
   guardarCredito: (id: string, dto: DatosCredito) =>
-    apiAuth<DatosCredito>(
+    apiAuth<DatosCredito & { id: string }>(
       `/clientes/solicitudes/${id}/credito`,
       {
         method: 'PUT',
@@ -53,7 +53,7 @@ export const solicitudesApi = {
       }
     ),
   guardarGarantia: (id: string, dto: DatosGarantia) =>
-    apiAuth<DatosGarantia>(
+    apiAuth<DatosGarantia & { id: string }>(
       `/clientes/solicitudes/${id}/garantia`,
       {
         method: 'PUT',
@@ -61,7 +61,7 @@ export const solicitudesApi = {
       }
     ),
   guardarNegocio: (id: string, dto: DatosNegocio) =>
-    apiAuth<DatosNegocio>(
+    apiAuth<DatosNegocio & { id: string }>(
       `/clientes/solicitudes/${id}/negocio`,
       {
         method: 'PUT',
@@ -69,7 +69,7 @@ export const solicitudesApi = {
       }
     ),
   guardarMercado: (id: string, dto: DatosMercado) =>
-    apiAuth<DatosMercado>(
+    apiAuth<DatosMercado & { id: string }>(
       `/clientes/solicitudes/${id}/mercado`,
       {
         method: 'PUT',
@@ -77,7 +77,7 @@ export const solicitudesApi = {
       }
     ),
   guardarBancarios: (id: string, dto: DatosBancarios) =>
-    apiAuth<DatosBancarios>(
+    apiAuth<DatosBancarios & { id: string }>(
       `/clientes/solicitudes/${id}/bancarios`,
       {
         method: 'PUT',

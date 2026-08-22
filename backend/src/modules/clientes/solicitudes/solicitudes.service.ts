@@ -214,6 +214,9 @@ export const listarSolicitudes = async (
                 datosSolicitante: {
                     select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
                 },
+                datosCredito: {
+                    include: { conceptos: true },
+                },
             },
             orderBy: { creadoEn: "desc" },
             take,
@@ -494,29 +497,6 @@ export const enviarSolicitud = async (
     }
     if (s.programa.garantia === "OBLIGATORIO" && (!s.datosGarantia || s.datosGarantia.garantias.length === 0)) {
         throw new AppError("Este programa requiere al menos una garantía antes de enviar", 400);
-    }
-
-    // Documentos obligatorios: filtra por el tipo de persona de la solicitud
-    // (aplicaA null = aplica a ambos tipos).
-    const documentosObligatorios = s.programa.documentosRequeridos.filter(
-        (req) =>
-            req.esObligatorio &&
-            (req.aplicaA === s.tipoPersona || req.aplicaA === "AMBOS")
-    );
-
-    const tiposSubidos = new Set(
-        s.documentos.filter((d) => d.activo).map((d) => d.tipoDocumentoId)
-    );
-
-    const faltantes = documentosObligatorios.filter(
-        (req) => !tiposSubidos.has(req.tipoDocumentoId)
-    );
-
-    if (faltantes.length > 0) {
-        throw new AppError(
-            `Faltan documentos obligatorios por subir (${faltantes.length} pendiente(s))`,
-            400
-        );
     }
 
     return prisma.$transaction(async (tx) => {

@@ -22,6 +22,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 import { useDescargarPDF } from '../hooks/useDescargarPDF'
+import { solicitudesToast } from '@/shared/lib/utils/toaster'
 
 const SECTOR_LABELS: Record<string, string> = {
   AGROPECUARIO: 'Agropecuario',
@@ -104,7 +105,8 @@ function SolicitudCard({
   router: ReturnType<typeof useRouter>
 }) {
   const editable = s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION'
-
+  const montoTotal = (s: Solicitud) =>
+  s.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0) ?? 0
   return (
     <div className="rounded-lg border border-border bg-card p-4 active:bg-muted/30 transition-colors">
       {/* Top row: folio + estatus */}
@@ -121,10 +123,10 @@ function SolicitudCard({
       {/* Programa + monto */}
       <div className="mb-3">
         <p className="text-sm font-medium text-foreground">{s.programa.nombre}</p>
-        {s.montoSolicitado ? (
+        {montoTotal(s) > 0 ? (
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            {currency(s.montoSolicitado)}
-            {s.plazoSolicitado ? ` · ${s.plazoSolicitado} meses` : ''}
+            {currency(montoTotal(s))}
+            {s.datosCredito?.plazoMeses ? ` · ${s.datosCredito.plazoMeses} meses` : ''}
           </p>
         ) : null}
       </div>
@@ -236,7 +238,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selected, setSelected] = useState<Solicitud | null>(null)
   const { descargar, idDescargando } = useDescargarPDF()
-
+  console.log(solicitudes)
   function handleEnviarClick(s: Solicitud) {
     setSelected(s)
     setDialogOpen(true)
@@ -246,14 +248,17 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
     try {
       await solicitudesApi.enviar(id)
       onEnviada()
+      solicitudesToast.solicitudEnviada()
       return true
-    } catch {
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Error al enviar la solicitud'
+      solicitudesToast.error('Error al enviar la solicitud', msg)
       return false
     }
   }
-
   const isEmpty = !isLoading && solicitudes.length === 0
-
+  const montoTotal = (s: Solicitud) =>
+    s.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0) ?? 0
   return (
     <>
       {/* ── MOBILE / TABLET: cards (< md) ─────────────────────── */}
@@ -281,39 +286,39 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
       </div>
 
       {/* ── DESKTOP: tabla (>= md) ─────────────────────────────── */}
-      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden">
+            <div className="hidden md:block rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-border bg-muted/50 hover:bg-muted/50">
-                <TableHead className="py-2.5 pl-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-20">
+              <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-28">
                   Folio
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-80">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-80">
                   Solicitante
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-50">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
                   Programa
                 </TableHead>
-                <TableHead className="hidden lg:table-cell py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-20">
+                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
                   Sector
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-45">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
                   Estatus
                 </TableHead>
-                <TableHead className="hidden lg:table-cell py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-35">
+                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
                   Fecha
                 </TableHead>
-                <TableHead className="hidden xl:table-cell py-2.5 pl-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-60">
-                  Gestor Asignado
+                <TableHead className="hidden xl:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
+                  Gestor
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-left w-10">
-                  Solicitud
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                  Exp.
                 </TableHead>
-                <TableHead className="py-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-left w-15">
-                  Expediente
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                  PDF
                 </TableHead>
-                <TableHead className="py-2.5 pr-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground text-right">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-right pr-4">
                   Acciones
                 </TableHead>
               </TableRow>
@@ -334,13 +339,13 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                 solicitudes.map((s) => (
                   <TableRow
                     key={s.id}
-                    className="border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors"
+                    className="cursor-pointer hover:bg-accent/40 transition-colors duration-100 border-b border-border/40 last:border-0 group"
                   >
                     {/* Folio */}
-                    <TableCell className="py-3 pl-4">
-                      <p className="font-mono text-xs font-semibold text-primary">
-                        #{s.folio}
-                      </p>
+                    <TableCell className="py-3">
+                      <span className="text-xs font-mono font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
+                        {s.folio}
+                      </span>
                     </TableCell>
 
                     {/* Solicitante */}
@@ -350,20 +355,23 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
 
                     {/* Programa */}
                     <TableCell className="py-3">
-                      <p className="text-sm font-medium text-foreground">{s.programa.nombre}</p>
-                      {s.montoSolicitado ? (
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
-                          {currency(s.montoSolicitado)}
-                          {s.plazoSolicitado ? ` · ${s.plazoSolicitado} meses` : ''}
-                        </p>
-                      ) : null}
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm text-foreground font-medium leading-tight">
+                          {s.programa.nombre}
+                        </span>
+                        {montoTotal(s) > 0
+                          ? <span className="text-xs text-muted-foreground tabular-nums">{currency(montoTotal(s))}</span>
+                          : <span className="text-xs text-muted-foreground/40">Sin monto</span>
+                        }
+                      </div>
                     </TableCell>
 
                     {/* Sector */}
                     <TableCell className="hidden lg:table-cell py-3">
-                      <span className="text-sm text-muted-foreground">
-                        {s.sector ? SECTOR_LABELS[s.sector] : '—'}
-                      </span>
+                      {s.sector
+                        ? <span className="text-xs font-medium text-foreground">{SECTOR_LABELS[s.sector]}</span>
+                        : <span className="text-xs text-muted-foreground/40">—</span>
+                      }
                     </TableCell>
 
                     {/* Estatus */}
@@ -373,7 +381,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
 
                     {/* Fecha */}
                     <TableCell className="hidden lg:table-cell py-3">
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                         {format(new Date(s.creadoEn), "d MMM, yyyy", { locale: es })}
                       </span>
                     </TableCell>
@@ -381,69 +389,53 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     {/* Gestor Asignado */}
                     <TableCell className="hidden xl:table-cell py-3">
                       {s.gestorAsignado ? (
-                        <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                            <User className="h-3 w-3 text-primary" />
-                          </div>
-                          <span className="text-sm text-foreground truncate">
-                            {s.gestorAsignado.nombre}
-                          </span>
-                        </div>
+                        <span className="text-xs font-medium text-foreground leading-tight">
+                          {s.gestorAsignado.nombre}
+                        </span>
                       ) : (
-                        <span className="text-sm text-center text-muted-foreground">Sin asignar</span>
+                        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
+                          Sin asignar
+                        </span>
                       )}
                     </TableCell>
 
-                    {/* PDF */}
-                    <TableCell
-                      className="py-3 text-right"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    {/* Expediente */}
+                    <TableCell className="py-3 text-center" onClick={(e) => e.stopPropagation()}>
                       <Button
-                        variant="outline"
-                        size="sm"
-                        className="ml-auto flex items-center gap-2"
+                        variant="ghost" size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        title="Ver expediente digital"
+                        onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+                      >
+                        <FolderOpen className="h-3.5 w-3.5" />
+                      </Button>
+                    </TableCell>
+
+                    {/* PDF */}
+                    <TableCell className="py-3 text-center" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         title="Generar PDF"
                         disabled={idDescargando === s.id}
                         onClick={() => descargar(s.id, s.folio)}
                       >
                         {idDescargando === s.id ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span>Generando...</span>
-                          </>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          <>
-                            <span>Solicitud</span>
-                            <FileText className="h-4 w-4" />
-                          </>
+                          <FileText className="h-3.5 w-3.5" />
                         )}
-                      </Button>
-                    </TableCell>
-                    <TableCell
-                      className="py-3 text-right"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="ml-auto flex items-center gap-2"
-                        title="Expediente digital"
-                        onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
-                      >
-                        <span>Expediente</span>
-                        <FolderOpen className="h-4 w-4" />
                       </Button>
                     </TableCell>
 
                     {/* Acciones */}
-                    <TableCell className="py-3 pr-4">
+                    <TableCell className="py-3 pr-4" onClick={(e) => e.stopPropagation()}>
                       {s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION' ? (
                         <div className="flex items-center justify-end gap-1.5">
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-8 gap-1.5 text-xs rounded-full"
+                            className="h-7 gap-1.5 text-xs rounded-full"
                             onClick={() => router.push(`/dashboard/usuarios/solicitudes/${s.id}/editar`)}
                           >
                             <Pencil className="w-3.5 h-3.5" />
@@ -451,17 +443,14 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                           </Button>
                           <Button
                             size="sm"
-                            className="h-8 gap-1.5 text-xs rounded-full"
+                            className="h-7 gap-1.5 text-xs rounded-full"
                             onClick={() => handleEnviarClick(s)}
                           >
                             <Send className="w-3.5 h-3.5" />
                             Enviar
                           </Button>
                         </div>
-                      ) : (
-                        <div className="flex items-center justify-end gap-1.5">
-                        </div>
-                      )}
+                      ) : null}
                     </TableCell>
                   </TableRow>
                 ))}

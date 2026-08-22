@@ -21,6 +21,7 @@ import type {
 import { CategoriaCredito } from '@/shared/lib/types/solicitudes.types'
 import { MontoInput } from '@/shared/components/ui/inputs'
 import { montoAFloat } from '@/shared/lib/utils/masks'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 
 interface StepCreditoProps {
     defaultValues?: DatosCredito
@@ -164,29 +165,41 @@ export function StepCredito({
                                 <Label htmlFor="plazoMeses" className="text-xs text-muted-foreground">
                                     Plazo (meses)
                                 </Label>
-                                <Input
-                                    id="plazoMeses"
-                                    type="number"
-                                    min={1}
-                                    value={plazoMeses || ''}
-                                    onChange={(e) => setPlazoMeses(Number(e.target.value))}
-                                    placeholder="24"
-                                    className="text-base font-medium"
-                                />
+                                <Select
+                                    value={plazoMeses ? String(plazoMeses) : ''}
+                                    onValueChange={(v) => setPlazoMeses(Number(v))}
+                                >
+                                    <SelectTrigger id="plazoMeses" className="text-base font-medium">
+                                        <SelectValue placeholder="Selecciona" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {[6, 12, 18, 24, 30, 36].map((meses) => (
+                                            <SelectItem key={meses} value={String(meses)}>
+                                                {meses} meses
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="space-y-1.5">
                                 <Label htmlFor="mesesGracia" className="text-xs text-muted-foreground">
                                     Meses de gracia
                                 </Label>
-                                <Input
-                                    id="mesesGracia"
-                                    type="number"
-                                    min={0}
-                                    value={mesesGracia || ''}
-                                    onChange={(e) => setMesesGracia(Number(e.target.value))}
-                                    placeholder="0"
-                                    className="text-base font-medium"
-                                />
+                                <Select
+                                    value={mesesGracia ? String(mesesGracia) : ''}
+                                    onValueChange={(v) => setMesesGracia(Number(v))}
+                                >
+                                    <SelectTrigger id="mesesGracia" className="text-base font-medium">
+                                        <SelectValue placeholder="Selecciona" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {[1, 2, 3, 4, 5, 6].map((meses) => (
+                                            <SelectItem key={meses} value={String(meses)}>
+                                                {meses} {meses === 1 ? 'mes' : 'meses'}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
                     </CardContent>
@@ -292,13 +305,13 @@ export function StepCredito({
                                                     value={concepto.monto ? String(concepto.monto) : ''}
                                                     onChange={(valorCrudo) =>
                                                         actualizarConcepto(
-                                                        concepto.index,
-                                                        'monto',
-                                                        montoAFloat(valorCrudo) ?? 0
+                                                            concepto.index,
+                                                            'monto',
+                                                            montoAFloat(valorCrudo) ?? 0
                                                         )
                                                     }
                                                     className="text-sm h-9 text-right"
-                                                    />
+                                                />
                                             </div>
                                         ))}
                                     </div>

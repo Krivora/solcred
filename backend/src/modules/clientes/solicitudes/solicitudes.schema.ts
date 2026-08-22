@@ -238,7 +238,7 @@ const garantiaSchema = z
     anio: z
       .number()
       .int("El año debe ser un número entero")
-      .min(1900, "Año inválido")
+      .min(2015, "El año debe ser 2015 o posterior")
       .max(new Date().getFullYear() + 1, "Año inválido")
       .optional(),
     numeroSerie: textoOpcional(50),
@@ -250,7 +250,10 @@ const garantiaSchema = z
     colonia: textoOpcional(100),
     ciudad: textoOpcional(100),
     estado: textoOpcional(100),
-    codigoPostal: codigoPostalSchema,
+    codigoPostal: z.preprocess(
+  (v) => (v === '' ? undefined : v),
+  codigoPostalSchema.optional()
+),
     numeroEscritura: textoOpcional(50),
     folioReal: textoOpcional(50),
   })
@@ -272,6 +275,9 @@ const garantiaSchema = z
       }
       if (!data.estado) {
         ctx.addIssue({ code: "custom", message: "El estado es requerido para garantías hipotecarias", path: ["estado"] });
+      }
+      if (!data.codigoPostal) {
+        ctx.addIssue({ code: "custom", message: "El código postal es requerido para garantías hipotecarias", path: ["codigoPostal"] });
       }
       if (!data.numeroEscritura) {
         ctx.addIssue({ code: "custom", message: "El número de escritura es requerido para garantías hipotecarias", path: ["numeroEscritura"] });

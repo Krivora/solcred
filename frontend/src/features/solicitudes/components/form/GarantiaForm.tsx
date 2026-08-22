@@ -102,8 +102,19 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Encabezado con contexto — reduce la sensación de "trámite" */}
+            <form
+                onSubmit={handleSubmit(onSubmit, (errores) => {
+                    const resumen = Object.entries(errores.garantias ?? {}).map(([index, err]: [string, any]) => {
+                        const campos = Object.fromEntries(
+                            Object.entries(err ?? {})
+                                .filter(([k]) => k !== 'ref')
+                                .map(([k, v]: [string, any]) => [k, v?.message])
+                        )
+                        return { garantia: index, campos }
+                    })
+                })}
+                className="space-y-6"
+            >              {/* Encabezado con contexto — reduce la sensación de "trámite" */}
                 <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
                     <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
                         <ShieldCheck className="w-4.5 h-4.5 text-primary" />
@@ -274,8 +285,22 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                                                     type="number"
                                                     inputMode="numeric"
                                                     placeholder="2020"
-                                                    {...register(`garantias.${index}.anio`, { valueAsNumber: true })}
+                                                    onInput={(e) => {
+                                                        const input = e.currentTarget
+                                                        if (input.value.length > 4) {
+                                                            input.value = input.value.slice(0, 4)
+                                                        }
+                                                    }}
+                                                    {...register(`garantias.${index}.anio`, {
+                                                        setValueAs: (v) => (v === '' || v === null ? undefined : Number(v)),
+                                                    })}
                                                 />
+                                                {erroresItem?.anio && (
+                                                    <p className="flex items-center gap-1 text-xs text-destructive">
+                                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                        {erroresItem.anio.message}
+                                                    </p>
+                                                )}
                                             </div>
                                             <div className="space-y-1.5">
                                                 <Label>Número de serie</Label>

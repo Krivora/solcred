@@ -2,7 +2,7 @@
 
 import { Controller, useForm } from 'react-hook-form'
 import type { EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/lib/types/solicitudes.types'
-import {DatosPersona} from '@/features/solicitudes/types/solicitud.types'
+import { DatosPersona } from '@/features/solicitudes/types/solicitud.types'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
@@ -152,7 +152,7 @@ export function PersonaForm({
 
           {/* CURP + RFC + INE */}
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="CURP" error={errors.curp?.message}  className="sm:col-span-2">
+            <Field label="CURP" error={errors.curp?.message} className="sm:col-span-2">
               <Input
                 {...register('curp', {
                   pattern: { value: /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/, message: 'CURP inválida' },
@@ -162,7 +162,7 @@ export function PersonaForm({
                 maxLength={18}
               />
             </Field>
-            <Field label="RFC" error={errors.rfc?.message}  className="sm:col-span-2">
+            <Field label="RFC" error={errors.rfc?.message} className="sm:col-span-2">
               <Input
                 {...register('rfc', {
                   pattern: { value: /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/, message: 'RFC inválido' },
@@ -172,14 +172,14 @@ export function PersonaForm({
                 maxLength={13}
               />
             </Field>
-            <Field label="Número de INE" error={errors.numeroINE?.message}  className="sm:col-span-2">
+            <Field label="Número de INE" error={errors.numeroINE?.message} className="sm:col-span-2">
               <Input {...register('numeroINE')} placeholder="0000000000000" maxLength={13} />
             </Field>
           </div>
 
           {/* Estado civil + Cónyuge + Nivel estudios */}
           <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="Estado civil"  className="sm:col-span-2">
+            <Field label="Estado civil" className="sm:col-span-2">
               <Select
                 value={estadoCivil ?? ''}
                 onValueChange={(v) => setValue('estadoCivil', v as EstadoCivil)}
@@ -192,14 +192,16 @@ export function PersonaForm({
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Nombre del cónyuge" className="sm:col-span-2">
-              <Input
-                {...register('nombreConyuge')}
-                placeholder="Nombre completo"
-                disabled={estadoCivil !== 'CASADO' && estadoCivil !== 'UNION_LIBRE'}
-                className="disabled:opacity-40"
-              />
-            </Field>
+
+            {(estadoCivil === 'CASADO' || estadoCivil === 'UNION_LIBRE') && (
+              <Field label="Nombre del cónyuge" className="sm:col-span-2">
+                <Input
+                  {...register('nombreConyuge')}
+                  placeholder="Nombre completo"
+                />
+              </Field>
+            )}
+
             <Field label="Nivel de estudios" className="sm:col-span-2">
               <Select
                 value={nivelEstudio ?? ''}
@@ -216,16 +218,16 @@ export function PersonaForm({
           </div>
 
           {/* Universidad */}
-          <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
-            <Field label="Institución educativa"  className="sm:col-span-4">
-              <Input
-                {...register('universidad')}
-                placeholder="Universidad de Sonora"
-                disabled={!nivelEstudio || nivelEstudio === 'PRIMARIA' || nivelEstudio === 'SECUNDARIA'}
-                className="disabled:opacity-40"
-              />
-            </Field>
-          </div>
+          {['TECNICO', 'LICENCIATURA', 'MAESTRIA', 'DOCTORADO'].includes(nivelEstudio ?? '') && (
+            <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
+              <Field label="Institución educativa" className="sm:col-span-4">
+                <Input
+                  {...register('universidad')}
+                  placeholder="Universidad de Sonora"
+                />
+              </Field>
+            </div>
+          )}
 
         </div>
       </section>

@@ -12,6 +12,7 @@ import type {
   DatosPersona,
   Solicitud,
 } from '@/features/solicitudes/types/solicitud.types'
+import { ApiError } from '@/shared/lib/client'
 
 export type Step =
   | 'programa'
@@ -39,7 +40,7 @@ interface GuardarPasoOpciones<T> {
   accion: () => Promise<T>
   aplicarResultado?: (data: T) => void
   mensajeErrorFallback: string
-  onExito: () => void // toast específico del step
+  onExito: () => void
 }
 
 export function useSolicitudForm(options?: UseSolicitudFormOptions) {
@@ -113,7 +114,13 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       aplicarResultado?.(data)
       onExito()
       esEdicion ? marcarGuardado() : goNext()
-    } catch (e: unknown) {
+        } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        console.error('ApiError:', e.status, e.message)
+        console.error('Detalle de validación:', e.errors)
+      } else {
+        console.error('Error desconocido:', e)
+      }
       const msg = e instanceof Error ? e.message : mensajeErrorFallback
       setError(msg)
       solicitudesToast.error(mensajeErrorFallback, msg)
@@ -147,9 +154,10 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       onExito: solicitudesToast.generalesGuardados,
     })
 
-  const guardarSolicitante = (dto: DatosPersona) =>
+    const guardarSolicitante = (dto: DatosPersona) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarSolicitante(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosSolicitante: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos del solicitante',
       onExito: solicitudesToast.solicitanteGuardado,
     })
@@ -157,32 +165,32 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   const guardarAval = (dto: DatosPersona) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarAval(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosAval: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos del aval',
       onExito: solicitudesToast.avalGuardado,
     })
 
-  function skipAval() {
-    solicitudesToast.avalOmitido()
-    goTo('credito')
-  }
-
   const guardarCredito = (dto: DatosCredito) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarCredito(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosCredito: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos del crédito',
       onExito: solicitudesToast.creditoGuardado,
     })
 
-  const guardarGarantia = (dto: DatosGarantia) =>
-    guardarPaso({
+  const guardarGarantia = (dto: DatosGarantia) => {
+    return guardarPaso({
       accion: () => solicitudesApi.guardarGarantia(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosGarantia: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos de garantía',
       onExito: solicitudesToast.garantiaGuardada,
     })
+  }
 
   const guardarNegocio = (dto: DatosNegocio) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarNegocio(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosNegocio: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos del negocio',
       onExito: solicitudesToast.negocioGuardado,
     })
@@ -190,6 +198,7 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   const guardarMercado = (dto: DatosMercado) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarMercado(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosMercado: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos de mercado',
       onExito: solicitudesToast.mercadoGuardado,
     })
@@ -197,6 +206,7 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   const guardarBancarios = (dto: DatosBancarios) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarBancarios(solicitud!.id, dto),
+      aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosBancarios: data } : prev),
       mensajeErrorFallback: 'Error al guardar datos bancarios',
       onExito: solicitudesToast.bancariosGuardados,
     })
@@ -224,6 +234,6 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
     goNext, goBack, goTo,
     crearSolicitud, guardarGenerales, guardarSolicitante, guardarAval,
     guardarCredito, guardarGarantia, guardarNegocio, guardarMercado,
-    guardarBancarios, enviarSolicitud, skipAval,
+    guardarBancarios, enviarSolicitud,
   }
 }

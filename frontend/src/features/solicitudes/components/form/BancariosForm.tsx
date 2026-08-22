@@ -32,6 +32,7 @@ export function BancariosForm({ defaultValues, onSubmit, onBack, loading }: Prop
     })
 
     const clabe = watch('clabe') || ''
+    const numeroCuenta = watch('numeroCuenta') || ''
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -71,13 +72,31 @@ export function BancariosForm({ defaultValues, onSubmit, onBack, loading }: Prop
                                 Número de cuenta
                                 <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
                             </Label>
-                            <Input className="h-11" inputMode="numeric" {...register('numeroCuenta')} />
-                            {errors.numeroCuenta && (
-                                <p className="flex items-center gap-1 text-xs text-destructive">
-                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                                    {errors.numeroCuenta.message}
-                                </p>
-                            )}
+                            <Input
+                                className="h-11 font-mono tracking-wide"
+                                maxLength={10}
+                                inputMode="numeric"
+                                placeholder="10 dígitos"
+                                {...register('numeroCuenta')}
+                            />
+                            <div className="flex items-center justify-between">
+                                {errors.numeroCuenta ? (
+                                    <p className="flex items-center gap-1 text-xs text-destructive">
+                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                        {errors.numeroCuenta.message}
+                                    </p>
+                                ) : (
+                                    <span />
+                                )}
+                                <span
+                                    className={cn(
+                                        'text-xs shrink-0',
+                                        numeroCuenta.length === 10 ? 'text-success' : 'text-muted-foreground'
+                                    )}
+                                >
+                                    {numeroCuenta.length}/10
+                                </span>
+                            </div>
                         </div>
 
                         <div className="space-y-1.5">
