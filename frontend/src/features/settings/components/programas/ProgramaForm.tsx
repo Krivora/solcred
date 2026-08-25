@@ -18,14 +18,21 @@ import { Card } from "./form/Card";
 import { Divider } from "./form/Divider";
 import { FieldRow } from "./form/FieldRow";
 import { NumberInput } from "./form/NumberInput";
-import { RequerimientoSelector } from "./form/RequerimientoSelector";
+import { SeccionesSelector, ORDEN_SECCIONES } from "./form/SeccionesSelector";
 import { SectionHeading } from "./form/SectionHeading";
 import { ToggleCard } from "./form/ToggleCard";
 
 import { crearPrograma, actualizarPrograma } from "@/features/settings/api/programas";
-import { Requerimiento, type Programa, type ProgramaFormData } from "../../types/programa.types";
+import {
+    Requerimiento,
+    type Programa,
+    type ProgramaFormData,
+} from "../../types/programa.types";
 
-interface ProgramaFormProps { programa?: Programa; }
+interface ProgramaFormProps {
+    programa?: Programa;
+    documentosSlot?: React.ReactNode;
+}
 
 const defaultValues: ProgramaFormData = {
     nombre: "", descripcion: "", objetivo: "",
@@ -33,12 +40,14 @@ const defaultValues: ProgramaFormData = {
     montoMinimo: 0, montoMaximo: 0,
     tasaOrdinaria: 0, tasaMoratoria: 0, tasaAnual: 0,
     plazoMinimoMeses: 1, plazoMaximoMeses: 12,
-    aval: Requerimiento.NO_REQUIERE,
-    garantia: Requerimiento.NO_REQUIERE,
     datosFinancierosCompletos: false,
+    secciones: ORDEN_SECCIONES.map((seccion) => ({
+        seccion,
+        requerimiento: Requerimiento.NO_REQUIERE,
+    })),
 };
 
-export function ProgramaForm({ programa }: ProgramaFormProps) {
+export function ProgramaForm({ programa, documentosSlot }: ProgramaFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -239,24 +248,22 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                 </div>
             </Card>
 
-            {/* Row 3: Requisitos */}
-            <Card>
-                <SectionHeading icon={ShieldCheck} title="Requisitos" description="Garantías, aval e información requerida del solicitante" />
-                <div className="space-y-5">
-                    <RequerimientoSelector
-                        label="Aval"
-                        icon={BadgeCheck}
-                        value={watch("aval")}
-                        onChange={(v) => setValue("aval", v)}
-                    />
-                    <RequerimientoSelector
-                        label="Garantía"
-                        icon={ShieldCheck}
-                        value={watch("garantia")}
-                        onChange={(v) => setValue("garantia", v)}
-                    />
+            {/* Row 3: Secciones + Documentos, lado a lado */}
+                <div className={cn("grid grid-cols-1 gap-6", documentosSlot && "lg:grid-cols-2")}>
+                    <Card>
+                        <SectionHeading
+                            icon={ShieldCheck}
+                            title="Secciones de la Solicitud"
+                            description="Define qué pestañas debe llenar el solicitante y si son obligatorias u opcionales"
+                        />
+                        <SeccionesSelector
+                            value={watch("secciones")}
+                            onChange={(secciones) => setValue("secciones", secciones)}
+                        />
+                    </Card>
+
+                    {documentosSlot}
                 </div>
-            </Card>
 
             {/* Actions */}
             <div className="flex items-center justify-between border-t border-border pt-5">

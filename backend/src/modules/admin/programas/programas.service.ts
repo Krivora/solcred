@@ -27,14 +27,17 @@ export const crearTipoDocumento = async (dto: CrearTipoDocumentoDto) => {
 
 // ── Programas ──────────────────────────────────────────────
 
+const includePrograma = {
+  documentosRequeridos: {
+    include: { tipoDocumento: true },
+  },
+  secciones: true,
+} as const;
+
 export const listarProgramas = async (soloActivos: boolean = true) => {
   return prisma.programa.findMany({
     where: soloActivos ? { activo: true } : undefined,
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
-      },
-    },
+    include: includePrograma,
     orderBy: { creadoEn: "desc" },
   });
 };
@@ -42,11 +45,7 @@ export const listarProgramas = async (soloActivos: boolean = true) => {
 export const obtenerProgramaPorId = async (id: string) => {
   const programa = await prisma.programa.findUnique({
     where: { id },
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
-      },
-    },
+    include: includePrograma,
   });
 
   if (!programa) throw new AppError("Programa no encontrado", 404);
@@ -55,13 +54,19 @@ export const obtenerProgramaPorId = async (id: string) => {
 };
 
 export const crearPrograma = async (dto: CrearProgramaDto) => {
+  const { secciones, ...programaData } = dto;
+
   return prisma.programa.create({
-    data: dto,
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
+    data: {
+      ...programaData,
+      secciones: {
+        create: secciones.map((s) => ({
+          seccion: s.seccion,
+          requerimiento: s.requerimiento,
+        })),
       },
     },
+    include: includePrograma,
   });
 };
 
@@ -73,14 +78,30 @@ export const actualizarPrograma = async (
 
   if (!programa) throw new AppError("Programa no encontrado", 404);
 
-  return prisma.programa.update({
-    where: { id },
-    data: dto,
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
-      },
-    },
+  const { secciones, ...programaData } = dto;
+
+  return prisma.$transaction(async (tx) => {
+    await tx.programa.update({
+      where: { id },
+      data: programaData,
+    });
+
+    // si mandan secciones, se reemplaza el set completo
+    if (secciones) {
+      await tx.programaSeccion.deleteMany({ where: { programaId: id } });
+      await tx.programaSeccion.createMany({
+        data: secciones.map((s) => ({
+          programaId: id,
+          seccion: s.seccion,
+          requerimiento: s.requerimiento,
+        })),
+      });
+    }
+
+    return tx.programa.findUnique({
+      where: { id },
+      include: includePrograma,
+    });
   });
 };
 

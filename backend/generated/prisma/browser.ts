@@ -58,6 +58,11 @@ export type Personal = Prisma.PersonalModel
  */
 export type Programa = Prisma.ProgramaModel
 /**
+ * Model ProgramaSeccion
+ * 
+ */
+export type ProgramaSeccion = Prisma.ProgramaSeccionModel
+/**
  * Model TipoDocumento
  * 
  */

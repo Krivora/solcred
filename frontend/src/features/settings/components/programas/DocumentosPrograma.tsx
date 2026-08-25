@@ -143,6 +143,7 @@ function ListaDocumentos({
                         {/* Quitar */}
                         {onQuitar && (
                             <Button
+                                type="button"
                                 variant="ghost"
                                 size="icon"
                                 className={cn(
@@ -325,6 +326,7 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
 
                         {/* Botón */}
                         <Button
+                            type="button"
                             size="sm"
                             className="h-8 gap-1.5 text-xs shrink-0"
                             disabled={!tipoSeleccionado || agregando}

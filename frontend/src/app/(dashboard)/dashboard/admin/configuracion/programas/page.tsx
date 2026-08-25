@@ -24,7 +24,6 @@ export default function ProgramasPage() {
     const [search, setSearch] = useState("");
     const [filtro, setFiltro] = useState<"todos" | "activos" | "inactivos">("todos");
     const [toggling, setToggling] = useState<string | null>(null);
-
     const cargar = useCallback(async () => {
         try {
             setLoading(true);
@@ -37,9 +36,7 @@ export default function ProgramasPage() {
         }
     }, []);
 
-    useEffect(() => {
-        cargar();
-    }, [cargar]);
+    useEffect(() => {cargar();}, [cargar]);
 
     const handleToggleActivo = async (id: string, activo: boolean) => {
         setToggling(id);

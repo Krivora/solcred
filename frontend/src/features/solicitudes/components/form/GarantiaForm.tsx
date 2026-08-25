@@ -30,6 +30,8 @@ interface Props {
     onSubmit: (dto: GuardarDatosGarantiaDto) => void
     onBack: () => void
     loading: boolean
+    skipLabel?: string
+    onSkip?: () => void
 }
 
 const GARANTIA_VACIA = {
@@ -65,7 +67,7 @@ function formatoMoneda(valor: number) {
 // pero guarda el número puro en el form.
 
 
-export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props) {
+export function GarantiaForm({ defaultValues, onSubmit, onBack, loading, skipLabel, onSkip }: Props) {
     const [indexAEliminar, setIndexAEliminar] = useState<number | null>(null)
 
     const {
@@ -437,13 +439,20 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading }: Props
                     </div>
                 )}
 
-                <div className="flex justify-between pt-4 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-1 px-1 py-3 sm:static sm:bg-transparent sm:backdrop-blur-none sm:p-0">
-                    <Button type="button" variant="ghost" onClick={onBack}>
+                <div className="flex justify-between pt-2 sticky bottom-0 bg-background/95 backdrop-blur-sm -mx-1 px-1 py-3 sm:static sm:bg-transparent sm:backdrop-blur-none sm:p-0">
+                    <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
                         Regresar
                     </Button>
-                    <Button type="submit" disabled={loading} className="h-11 min-w-30">
-                        {loading ? 'Guardando...' : 'Continuar'}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        {onSkip && (
+                            <Button type="button" variant="outline" className="h-11" onClick={onSkip} disabled={loading}>
+                                {skipLabel ?? 'Omitir'}
+                            </Button>
+                        )}
+                        <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
+                            {loading ? 'Guardando...' : 'Continuar'}
+                        </Button>
+                    </div>
                 </div>
             </form>
 

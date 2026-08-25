@@ -19,6 +19,8 @@ interface Props {
     onSubmit: (dto: GuardarDatosNegocioDto) => void
     onBack: () => void
     loading: boolean
+    skipLabel?: string
+    onSkip?: () => void
 }
 
 function SeccionHeader({
@@ -50,7 +52,7 @@ const TIPOS_LOCAL = [
     { value: 'OTRO', label: 'Otro', icon: HelpCircle },
 ] as const
 
-export function NegocioForm({ defaultValues, onSubmit, onBack, loading }: Props) {
+export function NegocioForm({ defaultValues, onSubmit, onBack, loading, skipLabel, onSkip }: Props) {
     const {
         register,
         control,
@@ -309,9 +311,16 @@ export function NegocioForm({ defaultValues, onSubmit, onBack, loading }: Props)
                 <Button type="button" variant="ghost" className="h-11" onClick={onBack}>
                     Regresar
                 </Button>
-                <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
-                    {loading ? 'Guardando...' : 'Continuar'}
-                </Button>
+                <div className="flex items-center gap-2">
+                    {onSkip && (
+                        <Button type="button" variant="outline" className="h-11" onClick={onSkip} disabled={loading}>
+                            {skipLabel ?? 'Omitir'}
+                        </Button>
+                    )}
+                    <Button type="submit" disabled={loading} className="h-11 min-w-[120px]">
+                        {loading ? 'Guardando...' : 'Continuar'}
+                    </Button>
+                </div>
             </div>
         </form>
     )

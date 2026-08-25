@@ -12,11 +12,20 @@ import {
 } from '@/shared/lib/types/solicitudes.types'
 
 import { Programa } from '@/shared/lib/types/programa'
+export type SeccionSolicitud =
+  | 'SOLICITANTE' | 'AVAL' | 'CREDITO' | 'GARANTIA'
+  | 'NEGOCIO' | 'MERCADO' | 'BANCARIOS'
 
+export type Requerimiento = 'NO_REQUIERE' | 'OPCIONAL' | 'OBLIGATORIO'
+export interface ProgramaSeccion {
+  seccion: SeccionSolicitud
+  requerimiento: Requerimiento
+}
 // Step: Programa
 export interface CrearSolicitudDto {
   programaId: string
 }
+
 
 // Step: Generales
 export interface DatosGenerales {
@@ -147,7 +156,7 @@ export interface Solicitud {
   id: string
   folio: string
   programaId: string
-  programa: Pick<Programa, 'id' | 'nombre'>
+  programa: Pick<Programa, 'id' | 'nombre'> & { secciones: ProgramaSeccion[] }
   solicitanteId: string
   estatus: EstatusSolicitud
   tipoPersona?: TipoPersona

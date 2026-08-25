@@ -392,6 +392,7 @@ export const ModelName = {
   Usuario: 'Usuario',
   Personal: 'Personal',
   Programa: 'Programa',
+  ProgramaSeccion: 'ProgramaSeccion',
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
   Solicitud: 'Solicitud',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "personal" | "programa" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1014,6 +1015,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProgramaCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProgramaCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProgramaSeccion: {
+      payload: Prisma.$ProgramaSeccionPayload<ExtArgs>
+      fields: Prisma.ProgramaSeccionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProgramaSeccionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProgramaSeccionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        findFirst: {
+          args: Prisma.ProgramaSeccionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProgramaSeccionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        findMany: {
+          args: Prisma.ProgramaSeccionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>[]
+        }
+        create: {
+          args: Prisma.ProgramaSeccionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        createMany: {
+          args: Prisma.ProgramaSeccionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProgramaSeccionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>[]
+        }
+        delete: {
+          args: Prisma.ProgramaSeccionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        update: {
+          args: Prisma.ProgramaSeccionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProgramaSeccionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProgramaSeccionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProgramaSeccionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProgramaSeccionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProgramaSeccionPayload>
+        }
+        aggregate: {
+          args: Prisma.ProgramaSeccionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProgramaSeccion>
+        }
+        groupBy: {
+          args: Prisma.ProgramaSeccionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProgramaSeccionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProgramaSeccionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProgramaSeccionCountAggregateOutputType> | number
         }
       }
     }
@@ -2204,8 +2279,6 @@ export const ProgramaScalarFieldEnum = {
   tasaAnual: 'tasaAnual',
   plazoMinimoMeses: 'plazoMinimoMeses',
   plazoMaximoMeses: 'plazoMaximoMeses',
-  aval: 'aval',
-  garantia: 'garantia',
   datosFinancierosCompletos: 'datosFinancierosCompletos',
   activo: 'activo',
   creadoEn: 'creadoEn',
@@ -2213,6 +2286,18 @@ export const ProgramaScalarFieldEnum = {
 } as const
 
 export type ProgramaScalarFieldEnum = (typeof ProgramaScalarFieldEnum)[keyof typeof ProgramaScalarFieldEnum]
+
+
+export const ProgramaSeccionScalarFieldEnum = {
+  id: 'id',
+  programaId: 'programaId',
+  seccion: 'seccion',
+  requerimiento: 'requerimiento',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type ProgramaSeccionScalarFieldEnum = (typeof ProgramaSeccionScalarFieldEnum)[keyof typeof ProgramaSeccionScalarFieldEnum]
 
 
 export const TipoDocumentoScalarFieldEnum = {
@@ -2675,6 +2760,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'SeccionSolicitud'
+ */
+export type EnumSeccionSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeccionSolicitud'>
+    
+
+
+/**
+ * Reference to a field of type 'SeccionSolicitud[]'
+ */
+export type ListEnumSeccionSolicitudFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeccionSolicitud[]'>
+    
+
+
+/**
  * Reference to a field of type 'Requerimiento'
  */
 export type EnumRequerimientoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Requerimiento'>
@@ -2987,6 +3086,7 @@ export type GlobalOmitConfig = {
   usuario?: Prisma.UsuarioOmit
   personal?: Prisma.PersonalOmit
   programa?: Prisma.ProgramaOmit
+  programaSeccion?: Prisma.ProgramaSeccionOmit
   tipoDocumento?: Prisma.TipoDocumentoOmit
   programaDocumento?: Prisma.ProgramaDocumentoOmit
   solicitud?: Prisma.SolicitudOmit

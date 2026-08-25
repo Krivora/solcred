@@ -18,6 +18,9 @@ export function NuevaSolicitudForm() {
   const {
     currentStep,
     stepIndex,
+    pasosActivos,
+    pasoOmitible,
+    omitirPaso,
     solicitud,
     loading,
     error,
@@ -32,7 +35,6 @@ export function NuevaSolicitudForm() {
     guardarMercado,
     guardarBancarios,
     enviarSolicitud,
-    skipAval,
   } = useSolicitudForm()
 
   const esFisica = solicitud?.tipoPersona === 'FISICA'
@@ -46,13 +48,13 @@ export function NuevaSolicitudForm() {
     ? solicitud!.datosSolicitante
     : esFisica && usuario
       ? {
-          nombre: usuario.nombre,
-          apellidoPaterno: usuario.apellidoPaterno,
-          apellidoMaterno: usuario.apellidoMaterno,
-          curp: usuario.curp ?? undefined,
-          rfc: usuario.rfc ?? undefined,
-          correo: usuario.correo,
-        }
+        nombre: usuario.nombre,
+        apellidoPaterno: usuario.apellidoPaterno,
+        apellidoMaterno: usuario.apellidoMaterno,
+        curp: usuario.curp ?? undefined,
+        rfc: usuario.rfc ?? undefined,
+        correo: usuario.correo,
+      }
       : undefined
   async function handleEnviar() {
     await enviarSolicitud()
@@ -61,7 +63,7 @@ export function NuevaSolicitudForm() {
 
   return (
     <div className="max-w-8xl mx-auto space-y-8">
-      <StepIndicator currentIndex={stepIndex} />
+      <StepIndicator pasos={pasosActivos} currentIndex={stepIndex} />
 
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
         {currentStep === 'programa' && (
@@ -100,6 +102,8 @@ export function NuevaSolicitudForm() {
               onBack={goBack}
               loading={loading}
               error={error}
+              skipLabel={pasoOmitible ? 'Omitir solicitante' : undefined}
+              onSkip={pasoOmitible ? omitirPaso : undefined}
             />
           )
         )}
@@ -113,8 +117,8 @@ export function NuevaSolicitudForm() {
             onBack={goBack}
             loading={loading}
             error={error}
-            skipLabel="Omitir aval"
-            onSkip={skipAval}
+            skipLabel={pasoOmitible ? 'Omitir aval' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 
@@ -125,6 +129,8 @@ export function NuevaSolicitudForm() {
             onBack={goBack}
             loading={loading}
             error={error}
+            skipLabel={pasoOmitible ? 'Omitir crédito' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 
@@ -134,6 +140,8 @@ export function NuevaSolicitudForm() {
             onSubmit={guardarGarantia}
             onBack={goBack}
             loading={loading}
+            skipLabel={pasoOmitible ? 'Omitir garantía' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 
@@ -143,6 +151,8 @@ export function NuevaSolicitudForm() {
             onSubmit={guardarNegocio}
             onBack={goBack}
             loading={loading}
+            skipLabel={pasoOmitible ? 'Omitir negocio' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 
@@ -152,6 +162,8 @@ export function NuevaSolicitudForm() {
             onSubmit={guardarMercado}
             onBack={goBack}
             loading={loading}
+            skipLabel={pasoOmitible ? 'Omitir mercado' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 
@@ -161,6 +173,8 @@ export function NuevaSolicitudForm() {
             onSubmit={guardarBancarios}
             onBack={goBack}
             loading={loading}
+            skipLabel={pasoOmitible ? 'Omitir bancarios' : undefined}
+            onSkip={pasoOmitible ? omitirPaso : undefined}
           />
         )}
 

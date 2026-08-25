@@ -54,12 +54,16 @@ export default function EditarProgramaPage() {
                 <p className="text-sm text-destructive">{error}</p>
             ) : programa ? (
                 <>
-                    <ProgramaForm programa={programa} />
-                    <DocumentosPrograma
-                        key={programa.id}                              // solo remonta si cambia el programa
-                        programaId={programa.id}
-                        documentos={programa.documentosRequeridos ?? []}
-                        onCambio={() => {}}
+                    <ProgramaForm
+                        programa={programa}
+                        documentosSlot={
+                            <DocumentosPrograma
+                                key={programa.id}
+                                programaId={programa.id}
+                                documentos={programa.documentosRequeridos ?? []}
+                                onCambio={() => {}}
+                            />
+                        }
                     />
                 </>
             ) : null}

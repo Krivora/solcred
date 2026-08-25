@@ -183,6 +183,19 @@ export const TipoLocal = {
 export type TipoLocal = (typeof TipoLocal)[keyof typeof TipoLocal]
 
 
+export const SeccionSolicitud = {
+  SOLICITANTE: 'SOLICITANTE',
+  AVAL: 'AVAL',
+  CREDITO: 'CREDITO',
+  GARANTIA: 'GARANTIA',
+  NEGOCIO: 'NEGOCIO',
+  MERCADO: 'MERCADO',
+  BANCARIOS: 'BANCARIOS'
+} as const
+
+export type SeccionSolicitud = (typeof SeccionSolicitud)[keyof typeof SeccionSolicitud]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',

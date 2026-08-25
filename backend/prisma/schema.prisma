@@ -128,6 +128,16 @@ enum TipoLocal {
   OTRO
 }
 
+enum SeccionSolicitud {
+  SOLICITANTE
+  AVAL
+  CREDITO
+  GARANTIA
+  NEGOCIO
+  MERCADO
+  BANCARIOS
+}
+
 model HistorialEstatus {
   id          String           @id @default(uuid())
   solicitud   Solicitud        @relation(fields: [solicitudId], references: [id])
@@ -272,34 +282,42 @@ model Programa {
   descripcion           String
   objetivo              String
 
-  // Tipos de persona permitidos
   permitePersonaFisica  Boolean     @default(true)
   permitePersonaMoral   Boolean     @default(true)
 
-  // Montos
   montoMinimo           Float
   montoMaximo           Float
 
-  // Tasas (%)
   tasaOrdinaria         Float
   tasaMoratoria         Float
   tasaAnual             Float
 
-  // Plazo en meses
   plazoMinimoMeses      Int
   plazoMaximoMeses      Int
 
-  // Configuración de campos requeridos
-  aval                Requerimiento @default(NO_REQUIERE)
-  garantia            Requerimiento @default(NO_REQUIERE)
   datosFinancierosCompletos Boolean @default(false)
   activo                Boolean     @default(true)
   creadoEn              DateTime    @default(now())
   actualizadoEn         DateTime    @updatedAt
+
   documentosRequeridos  ProgramaDocumento[]
-  solicitudes  Solicitud[]
+  secciones             ProgramaSeccion[]
+  solicitudes           Solicitud[]
 }
 
+model ProgramaSeccion {
+  id            String           @id @default(uuid())
+  programa      Programa         @relation(fields: [programaId], references: [id], onDelete: Cascade)
+  programaId    String
+  seccion       SeccionSolicitud
+  requerimiento Requerimiento    @default(NO_REQUIERE)
+
+  creadoEn      DateTime         @default(now())
+  actualizadoEn DateTime         @updatedAt
+
+  @@unique([programaId, seccion])
+  @@index([programaId])
+}
 // ─────────────────────────────────────────
 // TIPOS DE DOCUMENTO
 // ─────────────────────────────────────────

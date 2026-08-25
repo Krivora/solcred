@@ -60,8 +60,6 @@ export type ProgramaMinAggregateOutputType = {
   tasaAnual: number | null
   plazoMinimoMeses: number | null
   plazoMaximoMeses: number | null
-  aval: $Enums.Requerimiento | null
-  garantia: $Enums.Requerimiento | null
   datosFinancierosCompletos: boolean | null
   activo: boolean | null
   creadoEn: Date | null
@@ -82,8 +80,6 @@ export type ProgramaMaxAggregateOutputType = {
   tasaAnual: number | null
   plazoMinimoMeses: number | null
   plazoMaximoMeses: number | null
-  aval: $Enums.Requerimiento | null
-  garantia: $Enums.Requerimiento | null
   datosFinancierosCompletos: boolean | null
   activo: boolean | null
   creadoEn: Date | null
@@ -104,8 +100,6 @@ export type ProgramaCountAggregateOutputType = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval: number
-  garantia: number
   datosFinancierosCompletos: number
   activo: number
   creadoEn: number
@@ -148,8 +142,6 @@ export type ProgramaMinAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  aval?: true
-  garantia?: true
   datosFinancierosCompletos?: true
   activo?: true
   creadoEn?: true
@@ -170,8 +162,6 @@ export type ProgramaMaxAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  aval?: true
-  garantia?: true
   datosFinancierosCompletos?: true
   activo?: true
   creadoEn?: true
@@ -192,8 +182,6 @@ export type ProgramaCountAggregateInputType = {
   tasaAnual?: true
   plazoMinimoMeses?: true
   plazoMaximoMeses?: true
-  aval?: true
-  garantia?: true
   datosFinancierosCompletos?: true
   activo?: true
   creadoEn?: true
@@ -301,8 +289,6 @@ export type ProgramaGroupByOutputType = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval: $Enums.Requerimiento
-  garantia: $Enums.Requerimiento
   datosFinancierosCompletos: boolean
   activo: boolean
   creadoEn: Date
@@ -346,13 +332,12 @@ export type ProgramaWhereInput = {
   tasaAnual?: Prisma.FloatFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntFilter<"Programa"> | number
-  aval?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFilter<"Programa"> | boolean
   activo?: Prisma.BoolFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoListRelationFilter
+  secciones?: Prisma.ProgramaSeccionListRelationFilter
   solicitudes?: Prisma.SolicitudListRelationFilter
 }
 
@@ -370,13 +355,12 @@ export type ProgramaOrderByWithRelationInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  aval?: Prisma.SortOrder
-  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   documentosRequeridos?: Prisma.ProgramaDocumentoOrderByRelationAggregateInput
+  secciones?: Prisma.ProgramaSeccionOrderByRelationAggregateInput
   solicitudes?: Prisma.SolicitudOrderByRelationAggregateInput
 }
 
@@ -397,13 +381,12 @@ export type ProgramaWhereUniqueInput = Prisma.AtLeast<{
   tasaAnual?: Prisma.FloatFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntFilter<"Programa"> | number
-  aval?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFilter<"Programa"> | boolean
   activo?: Prisma.BoolFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Programa"> | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoListRelationFilter
+  secciones?: Prisma.ProgramaSeccionListRelationFilter
   solicitudes?: Prisma.SolicitudListRelationFilter
 }, "id">
 
@@ -421,8 +404,6 @@ export type ProgramaOrderByWithAggregationInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  aval?: Prisma.SortOrder
-  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -451,8 +432,6 @@ export type ProgramaScalarWhereWithAggregatesInput = {
   tasaAnual?: Prisma.FloatWithAggregatesFilter<"Programa"> | number
   plazoMinimoMeses?: Prisma.IntWithAggregatesFilter<"Programa"> | number
   plazoMaximoMeses?: Prisma.IntWithAggregatesFilter<"Programa"> | number
-  aval?: Prisma.EnumRequerimientoWithAggregatesFilter<"Programa"> | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoWithAggregatesFilter<"Programa"> | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
   activo?: Prisma.BoolWithAggregatesFilter<"Programa"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Programa"> | Date | string
@@ -473,13 +452,12 @@ export type ProgramaCreateInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoCreateNestedManyWithoutProgramaInput
+  secciones?: Prisma.ProgramaSeccionCreateNestedManyWithoutProgramaInput
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutProgramaInput
 }
 
@@ -497,13 +475,12 @@ export type ProgramaUncheckedCreateInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedCreateNestedManyWithoutProgramaInput
+  secciones?: Prisma.ProgramaSeccionUncheckedCreateNestedManyWithoutProgramaInput
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutProgramaInput
 }
 
@@ -521,13 +498,12 @@ export type ProgramaUpdateInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUpdateManyWithoutProgramaNestedInput
+  secciones?: Prisma.ProgramaSeccionUpdateManyWithoutProgramaNestedInput
   solicitudes?: Prisma.SolicitudUpdateManyWithoutProgramaNestedInput
 }
 
@@ -545,13 +521,12 @@ export type ProgramaUncheckedUpdateInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedUpdateManyWithoutProgramaNestedInput
+  secciones?: Prisma.ProgramaSeccionUncheckedUpdateManyWithoutProgramaNestedInput
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutProgramaNestedInput
 }
 
@@ -569,8 +544,6 @@ export type ProgramaCreateManyInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
@@ -591,8 +564,6 @@ export type ProgramaUpdateManyMutationInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -613,8 +584,6 @@ export type ProgramaUncheckedUpdateManyInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -635,8 +604,6 @@ export type ProgramaCountOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  aval?: Prisma.SortOrder
-  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -667,8 +634,6 @@ export type ProgramaMaxOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  aval?: Prisma.SortOrder
-  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -689,8 +654,6 @@ export type ProgramaMinOrderByAggregateInput = {
   tasaAnual?: Prisma.SortOrder
   plazoMinimoMeses?: Prisma.SortOrder
   plazoMaximoMeses?: Prisma.SortOrder
-  aval?: Prisma.SortOrder
-  garantia?: Prisma.SortOrder
   datosFinancierosCompletos?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -720,8 +683,18 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type EnumRequerimientoFieldUpdateOperationsInput = {
-  set?: $Enums.Requerimiento
+export type ProgramaCreateNestedOneWithoutSeccionesInput = {
+  create?: Prisma.XOR<Prisma.ProgramaCreateWithoutSeccionesInput, Prisma.ProgramaUncheckedCreateWithoutSeccionesInput>
+  connectOrCreate?: Prisma.ProgramaCreateOrConnectWithoutSeccionesInput
+  connect?: Prisma.ProgramaWhereUniqueInput
+}
+
+export type ProgramaUpdateOneRequiredWithoutSeccionesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgramaCreateWithoutSeccionesInput, Prisma.ProgramaUncheckedCreateWithoutSeccionesInput>
+  connectOrCreate?: Prisma.ProgramaCreateOrConnectWithoutSeccionesInput
+  upsert?: Prisma.ProgramaUpsertWithoutSeccionesInput
+  connect?: Prisma.ProgramaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProgramaUpdateToOneWithWhereWithoutSeccionesInput, Prisma.ProgramaUpdateWithoutSeccionesInput>, Prisma.ProgramaUncheckedUpdateWithoutSeccionesInput>
 }
 
 export type ProgramaCreateNestedOneWithoutDocumentosRequeridosInput = {
@@ -752,6 +725,110 @@ export type ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProgramaUpdateToOneWithWhereWithoutSolicitudesInput, Prisma.ProgramaUpdateWithoutSolicitudesInput>, Prisma.ProgramaUncheckedUpdateWithoutSolicitudesInput>
 }
 
+export type ProgramaCreateWithoutSeccionesInput = {
+  id?: string
+  nombre: string
+  descripcion: string
+  objetivo: string
+  permitePersonaFisica?: boolean
+  permitePersonaMoral?: boolean
+  montoMinimo: number
+  montoMaximo: number
+  tasaOrdinaria: number
+  tasaMoratoria: number
+  tasaAnual: number
+  plazoMinimoMeses: number
+  plazoMaximoMeses: number
+  datosFinancierosCompletos?: boolean
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  documentosRequeridos?: Prisma.ProgramaDocumentoCreateNestedManyWithoutProgramaInput
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutProgramaInput
+}
+
+export type ProgramaUncheckedCreateWithoutSeccionesInput = {
+  id?: string
+  nombre: string
+  descripcion: string
+  objetivo: string
+  permitePersonaFisica?: boolean
+  permitePersonaMoral?: boolean
+  montoMinimo: number
+  montoMaximo: number
+  tasaOrdinaria: number
+  tasaMoratoria: number
+  tasaAnual: number
+  plazoMinimoMeses: number
+  plazoMaximoMeses: number
+  datosFinancierosCompletos?: boolean
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedCreateNestedManyWithoutProgramaInput
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutProgramaInput
+}
+
+export type ProgramaCreateOrConnectWithoutSeccionesInput = {
+  where: Prisma.ProgramaWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProgramaCreateWithoutSeccionesInput, Prisma.ProgramaUncheckedCreateWithoutSeccionesInput>
+}
+
+export type ProgramaUpsertWithoutSeccionesInput = {
+  update: Prisma.XOR<Prisma.ProgramaUpdateWithoutSeccionesInput, Prisma.ProgramaUncheckedUpdateWithoutSeccionesInput>
+  create: Prisma.XOR<Prisma.ProgramaCreateWithoutSeccionesInput, Prisma.ProgramaUncheckedCreateWithoutSeccionesInput>
+  where?: Prisma.ProgramaWhereInput
+}
+
+export type ProgramaUpdateToOneWithWhereWithoutSeccionesInput = {
+  where?: Prisma.ProgramaWhereInput
+  data: Prisma.XOR<Prisma.ProgramaUpdateWithoutSeccionesInput, Prisma.ProgramaUncheckedUpdateWithoutSeccionesInput>
+}
+
+export type ProgramaUpdateWithoutSeccionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  descripcion?: Prisma.StringFieldUpdateOperationsInput | string
+  objetivo?: Prisma.StringFieldUpdateOperationsInput | string
+  permitePersonaFisica?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permitePersonaMoral?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  montoMinimo?: Prisma.FloatFieldUpdateOperationsInput | number
+  montoMaximo?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaOrdinaria?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaMoratoria?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
+  plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
+  plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
+  datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  documentosRequeridos?: Prisma.ProgramaDocumentoUpdateManyWithoutProgramaNestedInput
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutProgramaNestedInput
+}
+
+export type ProgramaUncheckedUpdateWithoutSeccionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  descripcion?: Prisma.StringFieldUpdateOperationsInput | string
+  objetivo?: Prisma.StringFieldUpdateOperationsInput | string
+  permitePersonaFisica?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  permitePersonaMoral?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  montoMinimo?: Prisma.FloatFieldUpdateOperationsInput | number
+  montoMaximo?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaOrdinaria?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaMoratoria?: Prisma.FloatFieldUpdateOperationsInput | number
+  tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
+  plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
+  plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
+  datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedUpdateManyWithoutProgramaNestedInput
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutProgramaNestedInput
+}
+
 export type ProgramaCreateWithoutDocumentosRequeridosInput = {
   id?: string
   nombre: string
@@ -766,12 +843,11 @@ export type ProgramaCreateWithoutDocumentosRequeridosInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  secciones?: Prisma.ProgramaSeccionCreateNestedManyWithoutProgramaInput
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutProgramaInput
 }
 
@@ -789,12 +865,11 @@ export type ProgramaUncheckedCreateWithoutDocumentosRequeridosInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  secciones?: Prisma.ProgramaSeccionUncheckedCreateNestedManyWithoutProgramaInput
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutProgramaInput
 }
 
@@ -828,12 +903,11 @@ export type ProgramaUpdateWithoutDocumentosRequeridosInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  secciones?: Prisma.ProgramaSeccionUpdateManyWithoutProgramaNestedInput
   solicitudes?: Prisma.SolicitudUpdateManyWithoutProgramaNestedInput
 }
 
@@ -851,12 +925,11 @@ export type ProgramaUncheckedUpdateWithoutDocumentosRequeridosInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  secciones?: Prisma.ProgramaSeccionUncheckedUpdateManyWithoutProgramaNestedInput
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutProgramaNestedInput
 }
 
@@ -874,13 +947,12 @@ export type ProgramaCreateWithoutSolicitudesInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoCreateNestedManyWithoutProgramaInput
+  secciones?: Prisma.ProgramaSeccionCreateNestedManyWithoutProgramaInput
 }
 
 export type ProgramaUncheckedCreateWithoutSolicitudesInput = {
@@ -897,13 +969,12 @@ export type ProgramaUncheckedCreateWithoutSolicitudesInput = {
   tasaAnual: number
   plazoMinimoMeses: number
   plazoMaximoMeses: number
-  aval?: $Enums.Requerimiento
-  garantia?: $Enums.Requerimiento
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedCreateNestedManyWithoutProgramaInput
+  secciones?: Prisma.ProgramaSeccionUncheckedCreateNestedManyWithoutProgramaInput
 }
 
 export type ProgramaCreateOrConnectWithoutSolicitudesInput = {
@@ -936,13 +1007,12 @@ export type ProgramaUpdateWithoutSolicitudesInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUpdateManyWithoutProgramaNestedInput
+  secciones?: Prisma.ProgramaSeccionUpdateManyWithoutProgramaNestedInput
 }
 
 export type ProgramaUncheckedUpdateWithoutSolicitudesInput = {
@@ -959,13 +1029,12 @@ export type ProgramaUncheckedUpdateWithoutSolicitudesInput = {
   tasaAnual?: Prisma.FloatFieldUpdateOperationsInput | number
   plazoMinimoMeses?: Prisma.IntFieldUpdateOperationsInput | number
   plazoMaximoMeses?: Prisma.IntFieldUpdateOperationsInput | number
-  aval?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
-  garantia?: Prisma.EnumRequerimientoFieldUpdateOperationsInput | $Enums.Requerimiento
   datosFinancierosCompletos?: Prisma.BoolFieldUpdateOperationsInput | boolean
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documentosRequeridos?: Prisma.ProgramaDocumentoUncheckedUpdateManyWithoutProgramaNestedInput
+  secciones?: Prisma.ProgramaSeccionUncheckedUpdateManyWithoutProgramaNestedInput
 }
 
 
@@ -975,11 +1044,13 @@ export type ProgramaUncheckedUpdateWithoutSolicitudesInput = {
 
 export type ProgramaCountOutputType = {
   documentosRequeridos: number
+  secciones: number
   solicitudes: number
 }
 
 export type ProgramaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documentosRequeridos?: boolean | ProgramaCountOutputTypeCountDocumentosRequeridosArgs
+  secciones?: boolean | ProgramaCountOutputTypeCountSeccionesArgs
   solicitudes?: boolean | ProgramaCountOutputTypeCountSolicitudesArgs
 }
 
@@ -998,6 +1069,13 @@ export type ProgramaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
  */
 export type ProgramaCountOutputTypeCountDocumentosRequeridosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProgramaDocumentoWhereInput
+}
+
+/**
+ * ProgramaCountOutputType without action
+ */
+export type ProgramaCountOutputTypeCountSeccionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProgramaSeccionWhereInput
 }
 
 /**
@@ -1022,13 +1100,12 @@ export type ProgramaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  aval?: boolean
-  garantia?: boolean
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   documentosRequeridos?: boolean | Prisma.Programa$documentosRequeridosArgs<ExtArgs>
+  secciones?: boolean | Prisma.Programa$seccionesArgs<ExtArgs>
   solicitudes?: boolean | Prisma.Programa$solicitudesArgs<ExtArgs>
   _count?: boolean | Prisma.ProgramaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["programa"]>
@@ -1047,8 +1124,6 @@ export type ProgramaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  aval?: boolean
-  garantia?: boolean
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: boolean
@@ -1069,8 +1144,6 @@ export type ProgramaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  aval?: boolean
-  garantia?: boolean
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: boolean
@@ -1091,17 +1164,16 @@ export type ProgramaSelectScalar = {
   tasaAnual?: boolean
   plazoMinimoMeses?: boolean
   plazoMaximoMeses?: boolean
-  aval?: boolean
-  garantia?: boolean
   datosFinancierosCompletos?: boolean
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type ProgramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "objetivo" | "permitePersonaFisica" | "permitePersonaMoral" | "montoMinimo" | "montoMaximo" | "tasaOrdinaria" | "tasaMoratoria" | "tasaAnual" | "plazoMinimoMeses" | "plazoMaximoMeses" | "aval" | "garantia" | "datosFinancierosCompletos" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["programa"]>
+export type ProgramaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "descripcion" | "objetivo" | "permitePersonaFisica" | "permitePersonaMoral" | "montoMinimo" | "montoMaximo" | "tasaOrdinaria" | "tasaMoratoria" | "tasaAnual" | "plazoMinimoMeses" | "plazoMaximoMeses" | "datosFinancierosCompletos" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["programa"]>
 export type ProgramaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   documentosRequeridos?: boolean | Prisma.Programa$documentosRequeridosArgs<ExtArgs>
+  secciones?: boolean | Prisma.Programa$seccionesArgs<ExtArgs>
   solicitudes?: boolean | Prisma.Programa$solicitudesArgs<ExtArgs>
   _count?: boolean | Prisma.ProgramaCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1112,6 +1184,7 @@ export type $ProgramaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Programa"
   objects: {
     documentosRequeridos: Prisma.$ProgramaDocumentoPayload<ExtArgs>[]
+    secciones: Prisma.$ProgramaSeccionPayload<ExtArgs>[]
     solicitudes: Prisma.$SolicitudPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1128,8 +1201,6 @@ export type $ProgramaPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     tasaAnual: number
     plazoMinimoMeses: number
     plazoMaximoMeses: number
-    aval: $Enums.Requerimiento
-    garantia: $Enums.Requerimiento
     datosFinancierosCompletos: boolean
     activo: boolean
     creadoEn: Date
@@ -1529,6 +1600,7 @@ readonly fields: ProgramaFieldRefs;
 export interface Prisma__ProgramaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   documentosRequeridos<T extends Prisma.Programa$documentosRequeridosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Programa$documentosRequeridosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProgramaDocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  secciones<T extends Prisma.Programa$seccionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Programa$seccionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProgramaSeccionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   solicitudes<T extends Prisma.Programa$solicitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Programa$solicitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1572,8 +1644,6 @@ export interface ProgramaFieldRefs {
   readonly tasaAnual: Prisma.FieldRef<"Programa", 'Float'>
   readonly plazoMinimoMeses: Prisma.FieldRef<"Programa", 'Int'>
   readonly plazoMaximoMeses: Prisma.FieldRef<"Programa", 'Int'>
-  readonly aval: Prisma.FieldRef<"Programa", 'Requerimiento'>
-  readonly garantia: Prisma.FieldRef<"Programa", 'Requerimiento'>
   readonly datosFinancierosCompletos: Prisma.FieldRef<"Programa", 'Boolean'>
   readonly activo: Prisma.FieldRef<"Programa", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"Programa", 'DateTime'>
@@ -1992,6 +2062,30 @@ export type Programa$documentosRequeridosArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.ProgramaDocumentoScalarFieldEnum | Prisma.ProgramaDocumentoScalarFieldEnum[]
+}
+
+/**
+ * Programa.secciones
+ */
+export type Programa$seccionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgramaSeccion
+   */
+  select?: Prisma.ProgramaSeccionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProgramaSeccion
+   */
+  omit?: Prisma.ProgramaSeccionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgramaSeccionInclude<ExtArgs> | null
+  where?: Prisma.ProgramaSeccionWhereInput
+  orderBy?: Prisma.ProgramaSeccionOrderByWithRelationInput | Prisma.ProgramaSeccionOrderByWithRelationInput[]
+  cursor?: Prisma.ProgramaSeccionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProgramaSeccionScalarFieldEnum | Prisma.ProgramaSeccionScalarFieldEnum[]
 }
 
 /**

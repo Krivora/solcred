@@ -2,27 +2,29 @@
 
 import { Check } from 'lucide-react'
 import { cn } from "@/shared/lib/utils/cn"
+import type { Step } from '../../hooks/useSolicitudForm'
 
-const STEPS = [
-    { id: 'programa', label: 'Programa' },
-    { id: 'general', label: 'Generales' },
-    { id: 'solicitante', label: 'Solicitante' },
-    { id: 'aval', label: 'Aval' },
-    { id: 'credito', label: 'Crédito' },
-    { id: 'garantia', label: 'Garantía' },
-    { id: 'negocio', label: 'Negocio' },
-    { id: 'mercado', label: 'Mercado' },
-    { id: 'bancarios', label: 'Bancarios' },
-    { id: 'resumen', label: 'Resumen' },
-]
+const LABELS: Record<Step, string> = {
+    programa: 'Programa',
+    general: 'Generales',
+    solicitante: 'Solicitante',
+    aval: 'Aval',
+    credito: 'Crédito',
+    garantia: 'Garantía',
+    negocio: 'Negocio',
+    mercado: 'Mercado',
+    bancarios: 'Bancarios',
+    resumen: 'Resumen',
+}
 
 interface Props {
+    pasos: Step[]
     currentIndex: number
 }
 
-export function StepIndicator({ currentIndex }: Props) {
-    const total = STEPS.length
-    const currentLabel = STEPS[currentIndex]?.label ?? ''
+export function StepIndicator({ pasos, currentIndex }: Props) {
+    const total = pasos.length
+    const currentLabel = LABELS[pasos[currentIndex]] ?? ''
 
     return (
         <div className="w-full">
@@ -40,14 +42,13 @@ export function StepIndicator({ currentIndex }: Props) {
                 />
             </div>
 
-            {/* Puntos desktop — escala mejor que 10 círculos con texto */}
             <div className="hidden md:flex items-center justify-between mt-3">
-                {STEPS.map((step, index) => {
+                {pasos.map((step, index) => {
                     const isCompleted = index < currentIndex
                     const isCurrent = index === currentIndex
 
                     return (
-                        <div key={step.id} className="flex flex-col items-center gap-1.5 flex-1 group">
+                        <div key={step} className="flex flex-col items-center gap-1.5 flex-1 group">
                             <div
                                 className={cn(
                                     'flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-semibold transition-colors duration-200 shrink-0',
@@ -64,7 +65,7 @@ export function StepIndicator({ currentIndex }: Props) {
                                     isCurrent ? 'text-foreground font-medium' : 'text-muted-foreground'
                                 )}
                             >
-                                {step.label}
+                                {LABELS[step]}
                             </span>
                         </div>
                     )

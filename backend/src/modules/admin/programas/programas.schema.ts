@@ -1,4 +1,22 @@
 import { z } from "zod";
+
+const requerimientoEnum = z.enum(["NO_REQUIERE", "OPCIONAL", "OBLIGATORIO"]);
+
+const seccionSolicitudEnum = z.enum([
+  "SOLICITANTE",
+  "AVAL",
+  "CREDITO",
+  "GARANTIA",
+  "NEGOCIO",
+  "MERCADO",
+  "BANCARIOS",
+]);
+
+const seccionProgramaSchema = z.object({
+  seccion: seccionSolicitudEnum,
+  requerimiento: requerimientoEnum.default("NO_REQUIERE"),
+});
+
 const programaBaseSchema = z.object({
   nombre: z
     .string({ message: "El nombre es requerido" })
@@ -35,9 +53,17 @@ const programaBaseSchema = z.object({
   plazoMaximoMeses: z
     .number({ message: "El plazo máximo es requerido" })
     .int().positive(),
-  aval: z.enum(["NO_REQUIERE", "OPCIONAL", "OBLIGATORIO"]).default("NO_REQUIERE"),
-  garantia: z.enum(["NO_REQUIERE", "OPCIONAL", "OBLIGATORIO"]).default("NO_REQUIERE"),
   datosFinancierosCompletos: z.boolean().default(false),
+  secciones: z
+    .array(seccionProgramaSchema)
+    .min(1, "Selecciona al menos una sección para el programa")
+    .refine(
+      (secciones) => {
+        const valores = secciones.map((s) => s.seccion);
+        return new Set(valores).size === valores.length;
+      },
+      { message: "No puedes repetir la misma sección" }
+    ),
 });
 
 export const crearProgramaSchema = programaBaseSchema

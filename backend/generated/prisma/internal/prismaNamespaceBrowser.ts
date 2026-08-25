@@ -59,6 +59,7 @@ export const ModelName = {
   Usuario: 'Usuario',
   Personal: 'Personal',
   Programa: 'Programa',
+  ProgramaSeccion: 'ProgramaSeccion',
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
   Solicitud: 'Solicitud',
@@ -203,8 +204,6 @@ export const ProgramaScalarFieldEnum = {
   tasaAnual: 'tasaAnual',
   plazoMinimoMeses: 'plazoMinimoMeses',
   plazoMaximoMeses: 'plazoMaximoMeses',
-  aval: 'aval',
-  garantia: 'garantia',
   datosFinancierosCompletos: 'datosFinancierosCompletos',
   activo: 'activo',
   creadoEn: 'creadoEn',
@@ -212,6 +211,18 @@ export const ProgramaScalarFieldEnum = {
 } as const
 
 export type ProgramaScalarFieldEnum = (typeof ProgramaScalarFieldEnum)[keyof typeof ProgramaScalarFieldEnum]
+
+
+export const ProgramaSeccionScalarFieldEnum = {
+  id: 'id',
+  programaId: 'programaId',
+  seccion: 'seccion',
+  requerimiento: 'requerimiento',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type ProgramaSeccionScalarFieldEnum = (typeof ProgramaSeccionScalarFieldEnum)[keyof typeof ProgramaSeccionScalarFieldEnum]
 
 
 export const TipoDocumentoScalarFieldEnum = {

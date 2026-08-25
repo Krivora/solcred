@@ -9,8 +9,16 @@ import {
     Banknote,
     Clock,
     Percent,
+    ClipboardList,
+    User,
+    BadgeCheck,
+    DollarSign,
     ShieldCheck,
+    Building2,
+    LineChart,
+    Landmark,
 } from "lucide-react";
+import type { ElementType } from "react";
 
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -25,7 +33,14 @@ import {
 import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas";
 import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
-import { Requerimiento, type Programa } from "@/features/settings/types/programa.types";
+import { ORDEN_SECCIONES } from "@/features/settings/components/programas/form/SeccionesSelector";
+import {
+    Requerimiento,
+    SeccionSolicitud,
+    SECCION_LABELS,
+    REQUERIMIENTO_LABELS,
+    type Programa,
+} from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/utils/cn";
 
 const fmt = (n: number) =>
@@ -35,29 +50,21 @@ const fmt = (n: number) =>
         maximumFractionDigits: 0,
     }).format(n);
 
-function RequerimientoRow({ label, value }: { label: string; value: Requerimiento }) {
-    const colorMap: Record<Requerimiento, string> = {
-        [Requerimiento.OBLIGATORIO]: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-        [Requerimiento.OPCIONAL]: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-        [Requerimiento.NO_REQUIERE]: "bg-muted text-muted-foreground",
-    };
-    const labelMap: Record<Requerimiento, string> = {
-        [Requerimiento.OBLIGATORIO]: "Obligatorio",
-        [Requerimiento.OPCIONAL]: "Opcional",
-        [Requerimiento.NO_REQUIERE]: "No requiere",
-    };
-    return (
-        <div className="flex items-center justify-between py-2.5">
-            <span className="text-sm text-muted-foreground">{label}</span>
-            <span className={cn(
-                "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                colorMap[value]
-            )}>
-                {labelMap[value]}
-            </span>
-        </div>
-    );
-}
+const SECCION_ICONS: Record<SeccionSolicitud, ElementType> = {
+    [SeccionSolicitud.SOLICITANTE]: User,
+    [SeccionSolicitud.AVAL]: BadgeCheck,
+    [SeccionSolicitud.CREDITO]: DollarSign,
+    [SeccionSolicitud.GARANTIA]: ShieldCheck,
+    [SeccionSolicitud.NEGOCIO]: Building2,
+    [SeccionSolicitud.MERCADO]: LineChart,
+    [SeccionSolicitud.BANCARIOS]: Landmark,
+};
+
+const REQUERIMIENTO_COLOR: Record<Requerimiento, string> = {
+    [Requerimiento.OBLIGATORIO]: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    [Requerimiento.OPCIONAL]: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    [Requerimiento.NO_REQUIERE]: "bg-muted text-muted-foreground",
+};
 
 export default function DetalleProgramaPage() {
     const { id } = useParams<{ id: string }>();
@@ -77,9 +84,7 @@ export default function DetalleProgramaPage() {
         }
     };
 
-    useEffect(() => {
-        cargar();
-    }, [id]);
+    useEffect(() => { cargar()});
 
     const handleToggle = async () => {
         if (!programa) return;
@@ -95,7 +100,6 @@ export default function DetalleProgramaPage() {
             setToggling(false);
         }
     };
-
 
     if (loading) {
         return (
@@ -113,8 +117,11 @@ export default function DetalleProgramaPage() {
 
     if (!programa) return null;
 
-    return (
+    const getRequerimiento = (seccion: SeccionSolicitud): Requerimiento =>
+        programa.secciones?.find((s) => s.seccion === seccion)?.requerimiento ??
+        Requerimiento.NO_REQUIERE;
 
+    return (
         <div className="mx-auto max-w-8xl space-y-6">
             {/* ── Breadcrumb ───────────────────────────────────── */}
             <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" asChild>
@@ -211,17 +218,48 @@ export default function DetalleProgramaPage() {
                     </CardContent>
                 </Card>
 
-                {/* ── Garantías y Aval ──────────────────────── */}
+                {/* ── Secciones de la solicitud ─────────────── */}
                 <Card>
                     <CardHeader className="pb-3">
                         <CardTitle className="text-sm flex items-center gap-2">
-                            <ShieldCheck className="h-4 w-4 text-primary" />
-                            Garantías y Aval
+                            <ClipboardList className="h-4 w-4 text-primary" />
+                            Secciones de la Solicitud
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="divide-y">
-                        <RequerimientoRow label="Aval" value={programa.aval} />
-                        <RequerimientoRow label="Garantía" value={programa.garantia} />
+                        {ORDEN_SECCIONES.map((seccion) => {
+                            const Icon = SECCION_ICONS[seccion];
+                            const requerimiento = getRequerimiento(seccion);
+                            const activa = requerimiento !== Requerimiento.NO_REQUIERE;
+
+                            return (
+                                <div
+                                    key={seccion}
+                                    className="flex items-center justify-between py-2.5"
+                                >
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                        <div className={cn(
+                                            "flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
+                                            activa ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
+                                        )}>
+                                            <Icon className="h-3.5 w-3.5" />
+                                        </div>
+                                        <span className={cn(
+                                            "text-sm truncate",
+                                            activa ? "text-foreground" : "text-muted-foreground"
+                                        )}>
+                                            {SECCION_LABELS[seccion]}
+                                        </span>
+                                    </div>
+                                    <span className={cn(
+                                        "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                                        REQUERIMIENTO_COLOR[requerimiento]
+                                    )}>
+                                        {REQUERIMIENTO_LABELS[requerimiento]}
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </CardContent>
                 </Card>
 

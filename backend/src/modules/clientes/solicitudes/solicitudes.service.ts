@@ -14,7 +14,7 @@ import {
     GuardarDatosMercadoDto,
     GuardarDatosBancariosDto,
 } from "./solicitudes.schema";
-import { EstatusSolicitud, Prisma } from "../../../../generated/prisma/client";
+import { EstatusSolicitud, Prisma, Requerimiento, SeccionSolicitud } from "../../../../generated/prisma/client";
 import { SolicitudPDFData, DatosPersonaPDF } from "../../../shared/pdf/pdf.types";
 
 // Agregar al incluyeTodo existente:
@@ -22,8 +22,10 @@ const incluyeTodo = {
     programa: {
         include: {
             documentosRequeridos: {
-                include: { tipoDocumento: true },
+                include: { tipoDocumento: true, },
+
             },
+            secciones: true,
         },
     },
     datosSolicitante: true,
@@ -42,7 +44,7 @@ const incluyeTodo = {
     },
     // Solo la asignación activa; una solicitud no debería tener más de una,
     // pero take:1 protege el shape aunque la regla de negocio falle algún día.
-     asignaciones: {
+    asignaciones: {
         where: { activa: true },
         take: 1,
         include: {
@@ -139,7 +141,11 @@ const obtenerSolicitudEditableConPrograma = async (
 ) => {
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
-        include: { programa: true },
+        include: {
+            programa: {
+                include: { secciones: true },
+            },
+        },
     });
 
     validarPropiedadYEstatus(solicitud, usuarioId);
@@ -156,6 +162,30 @@ const obtenerSolicitudEditable = async (solicitudId: string, usuarioId: string) 
     return solicitud!;
 };
 
+type ProgramaConSecciones = {
+    secciones: { seccion: SeccionSolicitud; requerimiento: Requerimiento }[];
+};
+
+const obtenerRequerimiento = (
+    programa: ProgramaConSecciones,
+    seccion: SeccionSolicitud
+): Requerimiento => {
+    return (
+        programa.secciones.find((s) => s.seccion === seccion)?.requerimiento ??
+        "NO_REQUIERE"
+    );
+};
+
+const validarSeccionRequerida = (
+    programa: ProgramaConSecciones,
+    seccion: SeccionSolicitud,
+    mensaje: string
+) => {
+    if (obtenerRequerimiento(programa, seccion) === "NO_REQUIERE") {
+        throw new AppError(mensaje, 400);
+    }
+};
+
 /**
  * Factory para sub-formularios de upsert plano (1 a 1 con Solicitud):
  * datosSolicitante, datosAval, datosNegocio, datosMercado, datosBancarios.
@@ -169,14 +199,17 @@ function crearGuardadorSubrecurso<TDto extends Record<string, unknown>>(
             create: any;
             update: any;
         }) => Promise<any>;
-    }
+    },
+    seccion: SeccionSolicitud,
+    mensajeNoRequerido: string
 ) {
     return async (
         solicitudId: string,
         dto: TDto,
         usuarioId: string
     ) => {
-        await obtenerSolicitudEditable(solicitudId, usuarioId);
+        const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
+        validarSeccionRequerida(solicitud.programa, seccion, mensajeNoRequerido);
 
         return delegate.upsert({
             where: { solicitudId },
@@ -259,10 +292,6 @@ export const crearSolicitud = async (
     if (!programa) throw new AppError('Programa no encontrado', 404);
     if (!programa.activo) throw new AppError('El programa no está disponible', 400);
 
-    // Chequeo optimista para dar mensaje claro en el caso normal (UX).
-    // No es la fuente de verdad: dos requests simultáneos pueden pasar
-    // ambos este check (TOCTOU). La garantía real es el índice único
-    // parcial en Postgres — ver migración recomendada más abajo.
     const solicitudActiva = await prisma.solicitud.findFirst({
         where: {
             solicitanteId,
@@ -286,10 +315,17 @@ export const crearSolicitud = async (
                 programaId: dto.programaId,
                 solicitanteId,
             },
+            include: {
+                programa: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        secciones: true,
+                    },
+                },
+            },
         });
     } catch (err) {
-        // P2002 = violación de constraint único → alguien ganó la carrera.
-        // Aplica una vez creada la migración de abajo.
         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
             throw new AppError("Ya tienes una solicitud activa. Intenta de nuevo.", 409);
         }
@@ -315,7 +351,9 @@ export const guardarDatosGenerales = async (
 };
 
 export const guardarDatosSolicitante = crearGuardadorSubrecurso<GuardarDatosSolicitanteDto>(
-    prisma.datosSolicitante
+    prisma.datosSolicitante,
+    "SOLICITANTE",
+    "Este programa no requiere datos del solicitante"
 );
 
 export const guardarDatosAval = async (
@@ -324,10 +362,7 @@ export const guardarDatosAval = async (
     usuarioId: string
 ) => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
-
-    if (solicitud.programa.aval === "NO_REQUIERE") {
-        throw new AppError("Este programa no requiere aval", 400);
-    }
+    validarSeccionRequerida(solicitud.programa, "AVAL", "Este programa no requiere aval");
 
     return prisma.datosAval.upsert({
         where: { solicitudId },
@@ -342,6 +377,7 @@ export const guardarDatosCredito = async (
     usuarioId: string
 ) => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
+    validarSeccionRequerida(solicitud.programa, "CREDITO", "Este programa no requiere datos de crédito");
 
     if (
         dto.plazoMeses < solicitud.programa.plazoMinimoMeses ||
@@ -405,10 +441,7 @@ export const guardarDatosGarantia = async (
     usuarioId: string
 ) => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
-
-    if (solicitud.programa.garantia === "NO_REQUIERE") {
-        throw new AppError("Este programa no requiere garantía", 400);
-    }
+    validarSeccionRequerida(solicitud.programa, "GARANTIA", "Este programa no requiere garantía");
 
     return prisma.$transaction(async (tx) => {
         const datosGarantia = await tx.datosGarantia.upsert({
@@ -452,15 +485,21 @@ export const guardarDatosGarantia = async (
 };
 
 export const guardarDatosNegocio = crearGuardadorSubrecurso<GuardarDatosNegocioDto>(
-    prisma.datosNegocio
+    prisma.datosNegocio,
+    "NEGOCIO",
+    "Este programa no requiere datos del negocio"
 );
 
 export const guardarDatosMercado = crearGuardadorSubrecurso<GuardarDatosMercadoDto>(
-    prisma.datosMercado
+    prisma.datosMercado,
+    "MERCADO",
+    "Este programa no requiere datos de mercado"
 );
 
 export const guardarDatosBancarios = crearGuardadorSubrecurso<GuardarDatosBancariosDto>(
-    prisma.datosBancarios
+    prisma.datosBancarios,
+    "BANCARIOS",
+    "Este programa no requiere datos bancarios"
 );
 
 // ─────────────────────────────────────────
@@ -491,12 +530,6 @@ export const enviarSolicitud = async (
     }
     if (!s.datosCredito) {
         throw new AppError("Debes completar los datos del crédito antes de enviar", 400);
-    }
-    if (s.programa.aval === "OBLIGATORIO" && !s.datosAval) {
-        throw new AppError("Este programa requiere datos del aval antes de enviar", 400);
-    }
-    if (s.programa.garantia === "OBLIGATORIO" && (!s.datosGarantia || s.datosGarantia.garantias.length === 0)) {
-        throw new AppError("Este programa requiere al menos una garantía antes de enviar", 400);
     }
 
     return prisma.$transaction(async (tx) => {

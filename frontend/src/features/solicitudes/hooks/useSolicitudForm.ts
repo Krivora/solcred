@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { solicitudesApi } from '../api/solicitudes.api'
 import { solicitudesToast } from '@/shared/lib/utils/toaster'
+import { obtenerPasosActivos, esPasoOmitible } from '../lib/pasos'
+import { useMemo } from 'react'
 import type {
   CrearSolicitudDto,
   DatosBancarios,
@@ -55,8 +57,33 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   const [error, setError] = useState<string | null>(null)
   const [guardadoOk, setGuardadoOk] = useState(false)
 
-  const stepIndex = STEPS.indexOf(currentStep)
+  const pasosActivos = useMemo(
+    () => obtenerPasosActivos(solicitud?.programa.secciones),
+    [solicitud?.programa.secciones]
+  )
 
+  const stepIndex = pasosActivos.indexOf(currentStep)
+  const totalSteps = pasosActivos.length
+
+  const goNext = () => {
+    if (stepIndex >= 0 && stepIndex < pasosActivos.length - 1) {
+      setCurrentStep(pasosActivos[stepIndex + 1])
+    }
+  }
+
+  const goBack = () => {
+    if (stepIndex > 0) setCurrentStep(pasosActivos[stepIndex - 1])
+  }
+
+  const goTo = (step: Step) => setCurrentStep(step)
+
+  const pasoOmitible = esPasoOmitible(solicitud?.programa.secciones, currentStep)
+
+  // Omitir: no llama al backend, solo avanza. Válido para pasos OPCIONAL.
+  const omitirPaso = () => {
+    if (!pasoOmitible) return
+    esEdicion ? marcarGuardado() : goNext()
+  }
   useEffect(() => {
     if (!solicitudIdExistente) return
     let cancelado = false
@@ -82,15 +109,6 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
     return () => { cancelado = true }
   }, [solicitudIdExistente])
 
-  const goNext = () => {
-    if (stepIndex < STEPS.length - 1) setCurrentStep(STEPS[stepIndex + 1])
-  }
-
-  const goBack = () => {
-    if (stepIndex > 0) setCurrentStep(STEPS[stepIndex - 1])
-  }
-
-  const goTo = (step: Step) => setCurrentStep(step)
 
   const marcarGuardado = () => {
     setGuardadoOk(true)
@@ -114,7 +132,7 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       aplicarResultado?.(data)
       onExito()
       esEdicion ? marcarGuardado() : goNext()
-        } catch (e: unknown) {
+    } catch (e: unknown) {
       if (e instanceof ApiError) {
         console.error('ApiError:', e.status, e.message)
         console.error('Detalle de validación:', e.errors)
@@ -154,7 +172,7 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       onExito: solicitudesToast.generalesGuardados,
     })
 
-    const guardarSolicitante = (dto: DatosPersona) =>
+  const guardarSolicitante = (dto: DatosPersona) =>
     guardarPaso({
       accion: () => solicitudesApi.guardarSolicitante(solicitud!.id, dto),
       aplicarResultado: (data) => setSolicitud((prev) => prev ? { ...prev, datosSolicitante: data } : prev),
@@ -229,7 +247,8 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   }
 
   return {
-    currentStep, stepIndex, totalSteps: STEPS.length,
+    currentStep, stepIndex, totalSteps,
+    pasosActivos, pasoOmitible, omitirPaso,
     solicitud, loading, error, esEdicion, guardadoOk,
     goNext, goBack, goTo,
     crearSolicitud, guardarGenerales, guardarSolicitante, guardarAval,
