@@ -1,12 +1,5 @@
 'use client'
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FilterBar — Componente reutilizable de filtros
-//
-// Uso declarativo: define los campos como configuración y el componente
-// se encarga del render, sin repetir lógica ni markup en cada módulo.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { Search, X, SlidersHorizontal } from 'lucide-react'
 import { Input } from '@/shared/components/ui/input'
 import { Button } from '@/shared/components/ui/button'
@@ -29,11 +22,26 @@ import type {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-/** Convierte valor de Select a filtro: "todos" → "" */
 const toFilterValue = (val: string): string => (val === 'todos' ? '' : val)
-
-/** Convierte valor de filtro a Select: "" / undefined → "todos" */
 const toSelectValue = (val?: string): string => (!val ? 'todos' : val)
+
+/** Envuelve cualquier campo con un label opcional arriba, alineado a los demás */
+function FieldShell({
+  label,
+  children,
+}: {
+  label?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[11px] font-medium text-muted-foreground h-4 leading-4">
+        {label ?? '\u00A0'}
+      </span>
+      {children}
+    </div>
+  )
+}
 
 // ── Sub-renders ───────────────────────────────────────────────────────────────
 
@@ -49,29 +57,31 @@ function SearchFilterField({
   const value = values[field.key] ?? ''
 
   return (
-    <div className="relative">
-      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-      <Input
-        placeholder={field.placeholder ?? 'Buscar...'}
-        value={value}
-        onChange={e => onChange({ [field.key]: e.target.value })}
-        className={cn(
-          'pl-8 h-8 text-xs border-border/60',
-          'focus-visible:border-primary/50 focus-visible:ring-primary/20',
-          field.width ?? 'w-45',
+    <FieldShell label={field.label}>
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+        <Input
+          placeholder={field.placeholder ?? 'Buscar...'}
+          value={value}
+          onChange={e => onChange({ [field.key]: e.target.value })}
+          className={cn(
+            'pl-8 h-8 text-xs border-border/60',
+            'focus-visible:border-primary/50 focus-visible:ring-primary/20',
+            field.width ?? 'w-75',
+          )}
+        />
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange({ [field.key]: '' })}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Limpiar búsqueda"
+          >
+            <X className="h-3 w-3" />
+          </button>
         )}
-      />
-      {value && (
-        <button
-          type="button"
-          onClick={() => onChange({ [field.key]: '' })}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Limpiar búsqueda"
-        >
-          <X className="h-3 w-3" />
-        </button>
-      )}
-    </div>
+      </div>
+    </FieldShell>
   )
 }
 
@@ -85,40 +95,41 @@ function SelectFilterField({
   onChange: (patch: FilterBarValues) => void
 }) {
   return (
-    <Select
-      value={toSelectValue(values[field.key])}
-      onValueChange={v => onChange({ [field.key]: toFilterValue(v) })}
-    >
-      <SelectTrigger
-        className={cn(
-          'h-8 w-auto text-xs border-border/60 data-[state=open]:border-primary/50',
-          field.minWidth ?? 'min-w-32',
-        )}
+    <FieldShell label={field.label}>
+      <Select
+        value={toSelectValue(values[field.key])}
+        onValueChange={v => onChange({ [field.key]: toFilterValue(v) })}
       >
-        <SelectValue placeholder={field.placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {/* Opción "todos" */}
-        <SelectItem value="todos">
-          {field.allLabel ?? field.placeholder}
-        </SelectItem>
-
-        {field.options.map(opt => (
-          <SelectItem key={opt.value} value={opt.value}>
-            {opt.dotColor ? (
-              <span className="flex items-center gap-1.5">
-                <span
-                  className={cn('w-1.5 h-1.5 rounded-full inline-block', opt.dotColor)}
-                />
-                {opt.label}
-              </span>
-            ) : (
-              opt.label
-            )}
+        <SelectTrigger
+          className={cn(
+            'h-8 w-auto text-xs border-border/60 data-[state=open]:border-primary/50',
+            field.minWidth ?? 'min-w-32',
+          )}
+        >
+          <SelectValue placeholder={field.placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="todos">
+            {field.allLabel ?? field.placeholder}
           </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+
+          {field.options.map(opt => (
+            <SelectItem key={opt.value} value={opt.value}>
+              {opt.dotColor ? (
+                <span className="flex items-center gap-1.5">
+                  <span
+                    className={cn('w-1.5 h-1.5 rounded-full inline-block', opt.dotColor)}
+                  />
+                  {opt.label}
+                </span>
+              ) : (
+                opt.label
+              )}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FieldShell>
   )
 }
 
@@ -136,42 +147,38 @@ function DateRangeFilterField({
   const hasValue = from || to
 
   return (
-    <>
-      {field.label && (
-        <span className="text-xs font-medium text-muted-foreground shrink-0">
-          {field.label}
-        </span>
-      )}
+    <FieldShell label={field.label}>
+      <div className="flex items-center gap-2">
+        <Input
+          type="date"
+          value={from}
+          onChange={e => onChange({ [field.fromKey]: e.target.value })}
+          title="Desde"
+          className="h-8 w-auto text-xs border-border/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
+        />
 
-      <Input
-        type="date"
-        value={from}
-        onChange={e => onChange({ [field.fromKey]: e.target.value })}
-        title="Desde"
-        className="h-8 w-auto text-xs border-border/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
-      />
+        <span className="text-muted-foreground/50 text-xs font-light" aria-hidden>—</span>
 
-      <span className="text-muted-foreground/50 text-xs font-light" aria-hidden>—</span>
+        <Input
+          type="date"
+          value={to}
+          onChange={e => onChange({ [field.toKey]: e.target.value })}
+          title="Hasta"
+          className="h-8 w-auto text-xs border-border/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
+        />
 
-      <Input
-        type="date"
-        value={to}
-        onChange={e => onChange({ [field.toKey]: e.target.value })}
-        title="Hasta"
-        className="h-8 w-auto text-xs border-border/60 focus-visible:border-primary/50 focus-visible:ring-primary/20"
-      />
-
-      {hasValue && (
-        <button
-          type="button"
-          onClick={() => onChange({ [field.fromKey]: '', [field.toKey]: '' })}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Limpiar rango de fechas"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      )}
-    </>
+        {hasValue && (
+          <button
+            type="button"
+            onClick={() => onChange({ [field.fromKey]: '', [field.toKey]: '' })}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Limpiar rango de fechas"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+    </FieldShell>
   )
 }
 
@@ -223,7 +230,7 @@ export function FilterBar({
       </div>
 
       {/* Campos */}
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex flex-wrap gap-2 items-end">
         {fields.map((field) => (
           <FilterFieldRenderer
             key={field.type === 'daterange' ? `${field.fromKey}-${field.toKey}` : field.key}

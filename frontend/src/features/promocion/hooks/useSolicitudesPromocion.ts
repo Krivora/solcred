@@ -9,6 +9,7 @@ import type {
   FiltrosPromocion,
   SolicitudDetalle
 } from '@/features/promocion/types/solicitud.types'
+
 const FILTROS_INICIALES: FiltrosPromocion = {
   page: 1,
   limit: 10,
@@ -61,11 +62,16 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     }
   }, [])
 
+  // Stats: solo al montar. No depende de filtros.
   useEffect(() => {
     cargarStats()
-    cargarSolicitudes(filtros)
-  }, [cargarStats,filtros, cargarSolicitudes])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
+  // Tabla: cada vez que cambian los filtros (incluye la carga inicial).
+  useEffect(() => {
+    cargarSolicitudes(filtros)
+  }, [filtros, cargarSolicitudes])
 
   const actualizarFiltros = useCallback((nuevos: Partial<FiltrosPromocion>) => {
     setFiltros(prev => ({ ...prev, ...nuevos, page: 1 }))
@@ -79,6 +85,7 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     setFiltros({ ...FILTROS_INICIALES, ...filtrosIniciales })
   }, [filtrosIniciales])
 
+  // Recargar manual: sí refresca ambos (botón "Actualizar" explícito).
   const recargar = useCallback(() => {
     cargarStats()
     cargarSolicitudes(filtros)

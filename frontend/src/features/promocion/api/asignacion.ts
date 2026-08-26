@@ -9,7 +9,11 @@ import type {
 
 const BASE = '/admin/asignacion'
 
-
+export interface ResultadoAsignacion {
+    solicitudId: string
+    exito: boolean
+    mensaje?: string
+}
 export const listarSolicitudesAsignacion = (
     filtros: FiltrosAsignacion
 ): Promise<PaginatedResponse<SolicitudAsignacion>> => {
@@ -29,8 +33,11 @@ export const obtenerCargaGestores = (grupoId?: string): Promise<GestorConCarga[]
     return apiAuth(`${BASE}/gestores/carga${params}`)
 }
 
-export const asignarAutomaticamente = (solicitudId: string): Promise<void> =>
-    apiAuth(`${BASE}/solicitudes/${solicitudId}/automatica`, { method: 'POST' })
+export const asignarAutomaticamente = (solicitudIds: string[]): Promise<ResultadoAsignacion[]> =>
+    apiAuth(`${BASE}/solicitudes/automatica`, {
+        method: 'POST',
+        body: { solicitudIds },
+    })
 
 export const asignarManualmente = (
     solicitudId: string,

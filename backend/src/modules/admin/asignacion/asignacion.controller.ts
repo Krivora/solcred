@@ -35,25 +35,30 @@ export const asignarAutomaticamente = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const { solicitudId } = req.params as { solicitudId: string };
+        const { solicitudIds } = req.body as { solicitudIds: string[] };
 
-        await asignacionService.asignarAutomaticamente(solicitudId);
+        if (!Array.isArray(solicitudIds) || solicitudIds.length === 0) {
+            throw new AppError("Debe enviar al menos una solicitud", 400);
+        }
+
+        const resultados = await asignacionService.asignarAutomaticamente(solicitudIds);
+
+        const exitosas = resultados.filter((r) => r.exito).length;
+        const fallidas = resultados.filter((r) => !r.exito).length;
 
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Solicitud asignada automáticamente: ${solicitudId}`,
+            descripcion: `Asignación automática: ${exitosas} exitosas, ${fallidas} fallidas de ${solicitudIds.length} solicitudes`,
             usuarioId: req.usuario!.id,
-            entidadId: solicitudId,
             req,
         });
 
-        res.status(200).json(ok("Solicitud asignada automáticamente"));
+        res.status(200).json(ok("Proceso de asignación automática completado", resultados));
     } catch (error) {
         next(error);
     }
 };
-
 export const asignarManualmente = async (
     req: RequestAutenticado,
     res: Response,

@@ -10,12 +10,14 @@ import type { FilterField as FilterFieldConfig } from './Filterbar.types'
 export const SEARCH_SOLICITANTE_FIELD: FilterFieldConfig = {
   type: 'search',
   key: 'busqueda',
+  label: 'Buscar',
   placeholder: 'Nombre o RFC...',
 }
 
 export const TIPO_PERSONA_FIELD: FilterFieldConfig = {
   type: 'select',
   key: 'tipoPersona',
+  label: 'Tipo de persona',
   placeholder: 'Tipo persona',
   options: [
     { value: 'FISICA', label: 'Persona Física' },
@@ -26,6 +28,7 @@ export const TIPO_PERSONA_FIELD: FilterFieldConfig = {
 export const SECTOR_FIELD: FilterFieldConfig = {
   type: 'select',
   key: 'sector',
+  label: 'Sector',
   placeholder: 'Sector',
   allLabel: 'Todos los sectores',
   options: [
@@ -41,6 +44,7 @@ export const SECTOR_FIELD: FilterFieldConfig = {
 export const TAMANO_EMPRESA_FIELD: FilterFieldConfig = {
   type: 'select',
   key: 'tamanoEmpresa',
+  label: 'Tamaño',
   placeholder: 'Tamaño',
   allLabel: 'Tamaño empresa',
   minWidth: 'min-w-30',
@@ -56,5 +60,5 @@ export const PERIODO_FIELD: FilterFieldConfig = {
   type: 'daterange',
   fromKey: 'fechaDesde',
   toKey: 'fechaHasta',
-  label: 'Período:',
+  label: 'Período',
 }

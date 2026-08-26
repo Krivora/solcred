@@ -7,7 +7,24 @@ import type {
     FiltrosAsignacion,
     PaginatedResponse,
 } from '../types/asignacion.types'
+import type { ResultadoAsignacion } from '../api/asignacion'
 import { solicitudToast } from '@/shared/lib/utils/toaster'
+
+interface EstadoAsignacionAutomatica {
+    total: number
+    exitosas: number
+    fallidas: ResultadoAsignacion[]
+    enProceso: boolean
+    finalizado: boolean
+}
+
+const estadoAsignacionInicial: EstadoAsignacionAutomatica = {
+    total: 0,
+    exitosas: 0,
+    fallidas: [],
+    enProceso: false,
+    finalizado: false,
+}
 
 export function useAsignacion() {
     const [gestores, setGestores] = useState<GestorConCarga[]>([])
@@ -69,23 +86,60 @@ export function useAsignacion() {
         }
     }
 
+    // ── Asignación automática (ahora masiva) ────────────────────────────────
+    const [estadoAsignacion, setEstadoAsignacion] = useState<EstadoAsignacionAutomatica>(
+        estadoAsignacionInicial
+    )
+
     const asignarAutomaticamente = async (
-        solicitudId: string,
+        solicitudIds: string[],
         onSuccess?: () => void
     ): Promise<boolean> => {
         try {
             setAsignando(true)
-            await asignacionApi.asignarAutomaticamente(solicitudId)
-            solicitudToast.asignadaAutomaticamente()
+            setEstadoAsignacion({ ...estadoAsignacionInicial, total: solicitudIds.length, enProceso: true })
+
+            const resultados = await asignacionApi.asignarAutomaticamente(solicitudIds)
+
+            const fallidas = resultados.filter((r) => !r.exito)
+            const exitosas = resultados.filter((r) => r.exito).length
+
+            setEstadoAsignacion({
+                total: solicitudIds.length,
+                exitosas,
+                fallidas,
+                enProceso: false,
+                finalizado: true,
+            })
+
+            if (fallidas.length === 0) {
+                solicitudToast.asignadaAutomaticamente()
+            }
+
             onSuccess?.()
-            return true
+            return fallidas.length === 0
         } catch (err: any) {
+            // fallo general de red/servidor, no de solicitudes individuales
+            setEstadoAsignacion((prev) => ({
+                ...prev,
+                enProceso: false,
+                finalizado: true,
+                fallidas: solicitudIds.map((id) => ({
+                    solicitudId: id,
+                    exito: false,
+                    mensaje: err.message ?? 'Error de conexión con el servidor',
+                })),
+            }))
             solicitudToast.asignarError(err.message)
             return false
         } finally {
             setAsignando(false)
         }
     }
+
+    const reiniciarEstadoAsignacion = useCallback(() => {
+        setEstadoAsignacion(estadoAsignacionInicial)
+    }, [])
 
     return {
         solicitudes,
@@ -98,5 +152,7 @@ export function useAsignacion() {
         asignando,
         asignarManualmente,
         asignarAutomaticamente,
+        estadoAsignacion,
+        reiniciarEstadoAsignacion,
     }
 }

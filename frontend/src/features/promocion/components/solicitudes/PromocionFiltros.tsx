@@ -19,6 +19,7 @@ const FIELDS: FilterFieldConfig[] = [
   {
     type: 'select',
     key: 'estatus',
+    label: 'Estatus',
     placeholder: 'Estatus',
     allLabel: 'Todos los estatus',
     options: [
@@ -33,6 +34,7 @@ const FIELDS: FilterFieldConfig[] = [
   {
     type: 'select',
     key: 'asignacion',
+    label: 'Asignación',
     placeholder: 'Asignación',
     allLabel: 'Todas las solicitudes',
     minWidth: 'min-w-36',

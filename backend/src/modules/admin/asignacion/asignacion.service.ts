@@ -29,6 +29,12 @@ interface FiltrosAsignacion {
     gestorId?: string;   // filtrar por gestor específico
     grupoId?: string;    // filtrar por grupo específico
 }
+
+export interface ResultadoAsignacion {
+    solicitudId: string;
+    exito: boolean;
+    mensaje?: string;
+}
 export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
     const {
         page,
@@ -288,43 +294,71 @@ const elegirGestor = async (grupoId: string): Promise<string | null> => {
 
 // ─── Casos de uso ─────────────────────────────────────────────────────────────
 
+
 export const asignarAutomaticamente = async (
-    solicitudId: string
-): Promise<void> => {
-    const solicitud = await prisma.solicitud.findUnique({
-        where: { id: solicitudId },
-        select: {
-            id: true,
-            tipoPersona: true,
-            sector: true,
-            tamanoEmpresa: true,
-            programaId: true,
-            asignaciones: { where: { activa: true } }, // ← cambio aquí
-        },
-    });
+    solicitudIds: string[]
+): Promise<ResultadoAsignacion[]> => {
+    const resultados: ResultadoAsignacion[] = [];
 
-    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
-    if (solicitud.asignaciones.length > 0) return; // ya tiene asignación activa
+    for (const solicitudId of solicitudIds) {
+        try {
+            const solicitud = await prisma.solicitud.findUnique({
+                where: { id: solicitudId },
+                select: {
+                    id: true,
+                    tipoPersona: true,
+                    sector: true,
+                    tamanoEmpresa: true,
+                    programaId: true,
+                    asignaciones: { where: { activa: true } },
+                },
+            });
 
-    const grupoId = await encontrarGrupo(solicitud as SolicitudParaEvaluar);
-    if (!grupoId)
-        throw new AppError("No hay grupo disponible para esta solicitud", 422);
+            if (!solicitud) {
+                throw new AppError("Solicitud no encontrada", 404);
+            }
+            if (solicitud.asignaciones.length > 0) {
+                // ya tiene asignación activa, no es error, simplemente se omite
+                resultados.push({ solicitudId, exito: true, mensaje: "Ya tenía asignación activa" });
+                continue;
+            }
 
-    const gestorId = await elegirGestor(grupoId);
-    if (!gestorId)
-        throw new AppError("No hay gestores disponibles en el grupo", 422);
+            const grupoId = await encontrarGrupo(solicitud as SolicitudParaEvaluar);
+            if (!grupoId) {
+                throw new AppError("No hay grupo disponible para esta solicitud", 422);
+            }
 
-    await prisma.$transaction([
-        prisma.asignacionSolicitud.create({
-            data: { solicitudId, gestorId, grupoId, asignadoPorId: null },
-        }),
-        prisma.solicitud.update({
-            where: { id: solicitudId },
-            data: { estatus: "EN_REVISION" },
-        }),
-    ]);
+            const gestorId = await elegirGestor(grupoId);
+            if (!gestorId) {
+                throw new AppError("No hay gestores disponibles en el grupo", 422);
+            }
+
+            await prisma.$transaction([
+                prisma.asignacionSolicitud.create({
+                    data: { solicitudId, gestorId, grupoId, asignadoPorId: null },
+                }),
+                prisma.solicitud.update({
+                    where: { id: solicitudId },
+                    data: { estatus: "EN_REVISION" },
+                }),
+            ]);
+
+            resultados.push({ solicitudId, exito: true });
+        } catch (error) {
+            resultados.push({
+                solicitudId,
+                exito: false,
+                mensaje:
+                    error instanceof AppError
+                        ? error.message
+                        : "Error desconocido al asignar",
+            });
+            // no hace throw, sigue con la siguiente solicitud del array
+        }
+    }
+
+    return resultados;
 };
-
 export const asignarManualmente = async (
     solicitudId: string,
     dto: AsignarManualDto,

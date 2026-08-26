@@ -13,6 +13,7 @@ interface FilterFieldBase {
 
 export interface SearchField extends FilterFieldBase {
     type: 'search'
+    label?: string
     placeholder?: string
     /** Ancho en clases de Tailwind. Default: "w-45" */
     width?: string
@@ -20,6 +21,7 @@ export interface SearchField extends FilterFieldBase {
 
 export interface SelectField extends FilterFieldBase {
     type: 'select'
+    label?: string
     placeholder: string
     /** Label por defecto (opción "todos"). Default: igual que placeholder */
     allLabel?: string

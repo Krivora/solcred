@@ -6,6 +6,7 @@ import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { GestorCard } from '@/features/promocion/components/asignacion/GestorCard'
 import { AsignacionSheet } from '@/features/promocion/components/asignacion/AsignacionSheet'
+import { AsignacionMasivaDialog } from '@/features/promocion/components/asignacion/AsignacionMasivaDialog' // ← nuevo
 import { useAsignacion } from '@/features/promocion/hooks/useAsignacion'
 import { useGrupos } from '@/features/settings/hooks/useGrupos'
 import { cn } from '@/shared/lib/utils/cn'
@@ -59,10 +60,10 @@ function CargaDistribucion({ gestores }: { gestores: GestorConCarga[] }) {
 }
 
 const FILTROS_INICIALES: FiltrosAsignacion = {
-        page: 1,
-        limit: 50,
-        estatus: 'PENDIENTE,EN_REVISION',
-    }
+    page: 1,
+    limit: 50,
+    estatus: 'PENDIENTE,EN_REVISION',
+}
 export default function AsignacionPage() {
     const {
         solicitudes,
@@ -71,6 +72,8 @@ export default function AsignacionPage() {
         gestores,
         cargandoGestores,
         asignarAutomaticamente,
+        estadoAsignacion,
+        reiniciarEstadoAsignacion,
         cargarGestores,
     } = useAsignacion()
 
@@ -81,11 +84,12 @@ export default function AsignacionPage() {
     const [asignandoId, setAsignandoId] = useState<string | null>(null)
     const [asignandoLote, setAsignandoLote] = useState(false)
     const [sheetData, setSheetData] = useState<SheetData | null>(null)
+    const [dialogAsignacionOpen, setDialogAsignacionOpen] = useState(false)
     const [error] = useState<string | null>(null)
 
     const [filtros, setFiltros] = useState<FiltrosAsignacion>(FILTROS_INICIALES)
     const cargar = useCallback(() => {
-    cargarSolicitudes(filtros)
+        cargarSolicitudes(filtros)
     }, [cargarSolicitudes, filtros])
 
     useEffect(() => {
@@ -114,12 +118,12 @@ export default function AsignacionPage() {
     const handleFiltrar = (parcial: Partial<FiltrosAsignacion>) => {
         const nuevos = { ...filtros, ...parcial, page: 1 }
         setFiltros(nuevos)
-        cargarSolicitudes(nuevos)  // ← directo con los nuevos filtros, no cargar()
+        cargarSolicitudes(nuevos)
     }
 
     const handleLimpiarFiltros = () => {
         setFiltros(FILTROS_INICIALES)
-        cargarSolicitudes(FILTROS_INICIALES)  // ← igual
+        cargarSolicitudes(FILTROS_INICIALES)
     }
 
     const hayFiltrosActivos =
@@ -133,7 +137,7 @@ export default function AsignacionPage() {
 
     const handleAsignarRapido = async (solicitudId: string) => {
         setAsignandoId(solicitudId)
-        await asignarAutomaticamente(solicitudId, () => {
+        await asignarAutomaticamente([solicitudId], () => {
             cargar()
             setSeleccionadas(prev => {
                 const next = new Set(prev)
@@ -143,15 +147,16 @@ export default function AsignacionPage() {
         })
         setAsignandoId(null)
     }
-
     const handleAsignarLote = async () => {
         if (!seleccionadas.size) return
         setAsignandoLote(true)
-        for (const id of [...seleccionadas]) {
-            await asignarAutomaticamente(id, () => { })
-        }
+        setDialogAsignacionOpen(true)
+
+        await asignarAutomaticamente([...seleccionadas], () => {
+            cargar()
+        })
+
         setSeleccionadas(new Set())
-        cargar()
         setAsignandoLote(false)
     }
 
@@ -278,6 +283,23 @@ export default function AsignacionPage() {
                     }}
                 />
             )}
+            <AsignacionMasivaDialog
+                open={dialogAsignacionOpen}
+                onOpenChange={(open) => {
+                    setDialogAsignacionOpen(open)
+                    if (!open) reiniciarEstadoAsignacion()
+                }}
+                estado={estadoAsignacion}
+                folioPorId={Object.fromEntries(solicitudes.map(s => [s.id, s.folio]))}
+            /><AsignacionMasivaDialog
+                open={dialogAsignacionOpen}
+                onOpenChange={(open) => {
+                    setDialogAsignacionOpen(open)
+                    if (!open) reiniciarEstadoAsignacion()
+                }}
+                estado={estadoAsignacion}
+                folioPorId={Object.fromEntries(solicitudes.map(s => [s.id, s.folio]))}
+            />
         </div>
     )
 }

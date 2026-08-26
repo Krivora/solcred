@@ -14,7 +14,7 @@ router.get("/solicitudes", asignacionController.listarSolicitudesAsignacion);
 router.get("/gestores/carga", asignacionController.obtenerCargaGestores);
 
 router.post(
-    "/solicitudes/:solicitudId/automatica",
+    "/solicitudes/automatica",
     asignacionController.asignarAutomaticamente
 );
 
