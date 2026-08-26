@@ -360,22 +360,21 @@ export const asignarAutomaticamente = async (
     return resultados;
 };
 export const asignarManualmente = async (
-    solicitudId: string,
+    solicitudIds: string[],
     dto: AsignarManualDto,
-    supervisorId: string
-): Promise<void> => {
-    const solicitud = await prisma.solicitud.findUnique({
-        where: { id: solicitudId },
-        include: {
-            asignaciones: { where: { activa: true } },
-        },
+    usuarioIdSupervisor: string // ← renombrado para claridad: esto es Usuario.id
+): Promise<ResultadoAsignacion[]> => {
+    // Resolver el Personal.id del supervisor que hace la asignación
+    const personalSupervisor = await prisma.personal.findUnique({
+        where: { userId: usuarioIdSupervisor },
     });
 
-    if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+    if (!personalSupervisor) {
+        throw new AppError("El usuario autenticado no tiene un perfil de Personal asociado", 400);
+    }
 
-    const asignacionActiva = solicitud.asignaciones[0];
+    const supervisorId = personalSupervisor.id; // ← este sí es Personal.id, válido para la FK
 
-    // ── FIX: dto.gestorId es Personal.id, no Usuario.id ──────────────────
     const gestor = await prisma.personal.findUnique({
         where: { id: dto.gestorId },
         include: { gruposGestion: { where: { activo: true } } },
@@ -390,32 +389,64 @@ export const asignarManualmente = async (
 
     const grupoId = gestor.gruposGestion[0].grupoId;
 
-    await prisma.$transaction(async (tx) => {
-        if (asignacionActiva) {
-            await tx.asignacionSolicitud.update({
-                where: { id: asignacionActiva.id },
-                data: {
-                    activa: false,
-                    fechaReasignacion: new Date(),
-                    motivoReasignacion: dto.motivo ?? "Reasignación manual",
+    const resultados: ResultadoAsignacion[] = [];
+
+    for (const solicitudId of solicitudIds) {
+        try {
+            const solicitud = await prisma.solicitud.findUnique({
+                where: { id: solicitudId },
+                include: {
+                    asignaciones: { where: { activa: true } },
                 },
             });
-        }
 
-        await tx.asignacionSolicitud.create({
-            data: {
+            if (!solicitud) {
+                throw new AppError("Solicitud no encontrada", 404);
+            }
+
+            const asignacionActiva = solicitud.asignaciones[0];
+
+            await prisma.$transaction(async (tx) => {
+                if (asignacionActiva) {
+                    await tx.asignacionSolicitud.update({
+                        where: { id: asignacionActiva.id },
+                        data: {
+                            activa: false,
+                            fechaReasignacion: new Date(),
+                            motivoReasignacion: dto.motivo ?? "Reasignación manual",
+                        },
+                    });
+                }
+
+                await tx.asignacionSolicitud.create({
+                    data: {
+                        solicitudId,
+                        gestorId: dto.gestorId,
+                        grupoId,
+                        asignadoPorId: supervisorId, // ← ahora sí es Personal.id
+                    },
+                });
+
+                await tx.solicitud.update({
+                    where: { id: solicitudId },
+                    data: { estatus: "EN_REVISION" },
+                });
+            });
+
+            resultados.push({ solicitudId, exito: true });
+        } catch (error) {
+            resultados.push({
                 solicitudId,
-                gestorId: dto.gestorId,
-                grupoId,
-                asignadoPorId: supervisorId,
-            },
-        });
+                exito: false,
+                mensaje:
+                    error instanceof AppError
+                        ? error.message
+                        : "Error desconocido al asignar",
+            });
+        }
+    }
 
-        await tx.solicitud.update({
-            where: { id: solicitudId },
-            data: { estatus: "EN_REVISION" },
-        });
-    });
+    return resultados;
 };
 
 export const obtenerCargaGestores = async (grupoId?: string) => {

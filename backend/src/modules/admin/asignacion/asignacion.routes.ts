@@ -19,9 +19,8 @@ router.post(
 );
 
 router.post(
-    "/solicitudes/:solicitudId/manual",
+    "/solicitudes/manual",
     validate(asignarManualSchema),
     asignacionController.asignarManualmente
 );
-
 export default router;

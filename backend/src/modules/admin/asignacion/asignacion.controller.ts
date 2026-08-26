@@ -65,26 +65,30 @@ export const asignarManualmente = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const { solicitudId } = req.params as { solicitudId: string };
-        const { id: usuarioId, personalId } = req.usuario!;
+        const { solicitudIds, ...dto } = req.body as AsignarManualDto & { solicitudIds: string[] };
 
-        if (!personalId) {
-            throw new AppError("Este usuario no tiene un perfil de Personal asociado", 403);
+        if (!Array.isArray(solicitudIds) || solicitudIds.length === 0) {
+            throw new AppError("Debe enviar al menos una solicitud", 400);
         }
 
-        await asignacionService.asignarManualmente(solicitudId, req.body, personalId);
+        const resultados = await asignacionService.asignarManualmente(
+            solicitudIds,
+            dto as AsignarManualDto,
+            req.usuario!.id
+        );
+
+        const exitosas = resultados.filter((r) => r.exito).length;
+        const fallidas = resultados.filter((r) => !r.exito).length;
 
         await registrarLog({
             accion: AccionLog.ACTUALIZAR,
             modulo: ModuloLog.SOLICITUDES,
-            descripcion: `Solicitud asignada manualmente a gestor ${req.body.gestorId}: ${solicitudId}`,
-            usuarioId,
-            entidadId: solicitudId,
+            descripcion: `Asignación manual: ${exitosas} exitosas, ${fallidas} fallidas de ${solicitudIds.length} solicitudes`,
+            usuarioId: req.usuario!.id,
             req,
-            metadata: { gestorId: req.body.gestorId, motivo: req.body.motivo },
         });
 
-        res.status(200).json(ok("Solicitud asignada correctamente"));
+        res.status(200).json(ok("Proceso de asignación manual completado", resultados));
     } catch (error) {
         next(error);
     }

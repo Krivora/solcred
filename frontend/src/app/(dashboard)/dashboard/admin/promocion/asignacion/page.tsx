@@ -16,8 +16,8 @@ import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
 
 
 interface SheetData {
-    solicitudId: string
-    folio: string
+    solicitudIds: string[]
+    folio?: string
     gestorActualId?: string
 }
 
@@ -161,9 +161,21 @@ export default function AsignacionPage() {
     }
 
     const handleAsignarManual = () => {
-        const primera = [...seleccionadas][0]
-        const sol = solicitudes.find(s => s.id === primera)
-        if (sol) setSheetData({ solicitudId: sol.id, folio: sol.folio })
+        if (seleccionadas.size === 0) return
+
+        const ids = [...seleccionadas]
+
+        if (ids.length === 1) {
+            const sol = solicitudes.find(s => s.id === ids[0])
+            setSheetData({
+                solicitudIds: ids,
+                folio: sol?.folio,
+                // si tu SolicitudAsignacion trae el gestor actual, pásalo aquí
+                // gestorActualId: sol?.gestorActualId,
+            })
+        } else {
+            setSheetData({ solicitudIds: ids })
+        }
     }
 
     // ── Filtrado ───────────────────────────────────────────────────────────────
@@ -272,7 +284,7 @@ export default function AsignacionPage() {
                 <AsignacionSheet
                     open={!!sheetData}
                     onOpenChange={(v) => { if (!v) setSheetData(null) }}
-                    solicitudId={sheetData.solicitudId}
+                    solicitudIds={sheetData.solicitudIds}
                     folio={sheetData.folio}
                     gestorActualId={sheetData.gestorActualId}
                     onAsignado={() => {

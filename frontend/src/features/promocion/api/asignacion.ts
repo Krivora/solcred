@@ -40,10 +40,10 @@ export const asignarAutomaticamente = (solicitudIds: string[]): Promise<Resultad
     })
 
 export const asignarManualmente = (
-    solicitudId: string,
+    solicitudIds: string[],
     dto: AsignarManualDto
-): Promise<void> =>
-    apiAuth(`${BASE}/solicitudes/${solicitudId}/manual`, {
+): Promise<ResultadoAsignacion[]> =>
+    apiAuth(`${BASE}/solicitudes/manual`, {
         method: 'POST',
-        body: dto,
+        body: { solicitudIds, ...dto },
     })

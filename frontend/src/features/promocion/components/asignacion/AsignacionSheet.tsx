@@ -21,9 +21,9 @@ import type { GestorConCarga } from '../../types/asignacion.types'
 interface Props {
     open: boolean
     onOpenChange: (open: boolean) => void
-    solicitudId: string
-    folio: string
-    gestorActualId?: string
+    solicitudIds: string[]
+    folio?: string // solo aplica cuando solicitudIds.length === 1
+    gestorActualId?: string // solo aplica cuando solicitudIds.length === 1
     onAsignado?: () => void
 }
 
@@ -73,7 +73,7 @@ function GestorCard({
 export function AsignacionSheet({
     open,
     onOpenChange,
-    solicitudId,
+    solicitudIds,
     folio,
     gestorActualId,
     onAsignado,
@@ -84,6 +84,10 @@ export function AsignacionSheet({
     const [gestorSeleccionado, setGestorSeleccionado] = useState<string | null>(null)
     const [motivo, setMotivo] = useState('')
 
+    const esLote = solicitudIds.length > 1
+    // "reasignación" solo tiene sentido con una sola solicitud, donde sabemos el gestor actual
+    const esReasignacion = !esLote && !!gestorActualId
+
     // Cargar gestores cuando abre el sheet
     useEffect(() => {
         if (open) {
@@ -93,15 +97,16 @@ export function AsignacionSheet({
         }
     }, [open, cargarGestores])
 
-    const esReasignacion = !!gestorActualId
     const puedeConfirmar =
-        !!gestorSeleccionado && gestorSeleccionado !== gestorActualId
+        !!gestorSeleccionado &&
+        solicitudIds.length > 0 &&
+        (esLote || gestorSeleccionado !== gestorActualId)
 
     const handleConfirmar = async () => {
-        if (!gestorSeleccionado) return
+        if (!gestorSeleccionado || solicitudIds.length === 0) return
 
-        const ok = await asignarManualmente(
-            solicitudId,
+        await asignarManualmente(
+            solicitudIds,
             {
                 gestorId: gestorSeleccionado,
                 motivo: motivo.trim() || undefined,
@@ -124,13 +129,28 @@ export function AsignacionSheet({
                         </div>
                         <div>
                             <SheetTitle className="text-base">
-                                {esReasignacion ? 'Reasignar solicitud' : 'Asignar solicitud'}
+                                {esLote
+                                    ? 'Asignar solicitudes'
+                                    : esReasignacion
+                                        ? 'Reasignar solicitud'
+                                        : 'Asignar solicitud'}
                             </SheetTitle>
                             <SheetDescription className="text-xs mt-0.5">
-                                Folio{' '}
-                                <span className="font-mono font-semibold text-foreground">
-                                    {folio}
-                                </span>
+                                {esLote ? (
+                                    <>
+                                        <span className="font-semibold text-foreground">
+                                            {solicitudIds.length}
+                                        </span>{' '}
+                                        solicitudes seleccionadas
+                                    </>
+                                ) : (
+                                    <>
+                                        Folio{' '}
+                                        <span className="font-mono font-semibold text-foreground">
+                                            {folio}
+                                        </span>
+                                    </>
+                                )}
                             </SheetDescription>
                         </div>
                     </div>
@@ -193,7 +213,9 @@ export function AsignacionSheet({
                                 placeholder={
                                     esReasignacion
                                         ? 'Indica el motivo de la reasignación...'
-                                        : 'Algún comentario sobre esta asignación...'
+                                        : esLote
+                                            ? 'Algún comentario sobre esta asignación masiva...'
+                                            : 'Algún comentario sobre esta asignación...'
                                 }
                                 value={motivo}
                                 onChange={(e) => setMotivo(e.target.value)}
@@ -232,6 +254,8 @@ export function AsignacionSheet({
                             </>
                         ) : esReasignacion ? (
                             'Reasignar'
+                        ) : esLote ? (
+                            `Asignar ${solicitudIds.length} solicitudes`
                         ) : (
                             'Asignar'
                         )}

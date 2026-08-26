@@ -68,17 +68,44 @@ export function useAsignacion() {
     }, [])
 
     const asignarManualmente = async (
-        solicitudId: string,
+        solicitudIds: string[],
         dto: AsignarManualDto,
         onSuccess?: () => void
     ): Promise<boolean> => {
         try {
             setAsignando(true)
-            await asignacionApi.asignarManualmente(solicitudId, dto)
-            solicitudToast.asignadaManualmente()
+            setEstadoAsignacion({ ...estadoAsignacionInicial, total: solicitudIds.length, enProceso: true })
+
+            const resultados = await asignacionApi.asignarManualmente(solicitudIds, dto)
+
+            const fallidas = resultados.filter((r) => !r.exito)
+            const exitosas = resultados.filter((r) => r.exito).length
+
+            setEstadoAsignacion({
+                total: solicitudIds.length,
+                exitosas,
+                fallidas,
+                enProceso: false,
+                finalizado: true,
+            })
+
+            if (fallidas.length === 0) {
+                solicitudToast.asignadaManualmente()
+            }
+
             onSuccess?.()
-            return true
+            return fallidas.length === 0
         } catch (err: any) {
+            setEstadoAsignacion((prev) => ({
+                ...prev,
+                enProceso: false,
+                finalizado: true,
+                fallidas: solicitudIds.map((id) => ({
+                    solicitudId: id,
+                    exito: false,
+                    mensaje: err.message ?? 'Error de conexión con el servidor',
+                })),
+            }))
             solicitudToast.asignarError(err.message)
             return false
         } finally {

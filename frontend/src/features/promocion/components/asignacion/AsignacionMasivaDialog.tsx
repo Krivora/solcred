@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog'
 import { Button } from '@/shared/components/ui/button'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
@@ -34,11 +34,16 @@ interface Props {
     folioPorId?: Record<string, string>
 }
 
+// Techo hasta donde llega el progreso simulado mientras esperamos al servidor.
+// Nunca toca 100% por sí solo — eso solo pasa cuando la respuesta real llega.
+const TECHO_SIMULADO = 92
+
 export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId }: Props) {
     const [erroresAbiertos, setErroresAbiertos] = useState(false)
+    const [progresoSimulado, setProgresoSimulado] = useState(0)
+    const intervaloRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
     const procesadas = estado.exitosas + estado.fallidas.length
-    const porcentaje = estado.total > 0 ? Math.round((procesadas / estado.total) * 100) : 0
     const sinErrores = estado.finalizado && estado.fallidas.length === 0
     const conErrores = estado.finalizado && estado.fallidas.length > 0
 
@@ -46,6 +51,37 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
     useEffect(() => {
         if (open) setErroresAbiertos(false)
     }, [open])
+
+    // ── Progreso simulado: sube rápido al inicio, se frena según se acerca al techo ──
+    useEffect(() => {
+        if (estado.enProceso) {
+            setProgresoSimulado(0)
+
+            intervaloRef.current = setInterval(() => {
+                setProgresoSimulado((prev) => {
+                    if (prev >= TECHO_SIMULADO) return prev
+                    // easing: entre más cerca del techo, pasos más pequeños
+                    const distanciaRestante = TECHO_SIMULADO - prev
+                    const incremento = Math.max(0.4, distanciaRestante * 0.06)
+                    return Math.min(TECHO_SIMULADO, prev + incremento)
+                })
+            }, 120)
+        } else {
+            if (intervaloRef.current) clearInterval(intervaloRef.current)
+            // al terminar (con o sin errores), completa la barra de una vez
+            if (estado.finalizado) setProgresoSimulado(100)
+        }
+
+        return () => {
+            if (intervaloRef.current) clearInterval(intervaloRef.current)
+        }
+    }, [estado.enProceso, estado.finalizado])
+
+    const porcentajeMostrado = estado.enProceso
+        ? Math.round(progresoSimulado)
+        : estado.finalizado
+            ? 100
+            : 0
 
     return (
         <Dialog open={open} onOpenChange={estado.enProceso ? undefined : onOpenChange}>
@@ -98,12 +134,13 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
                     <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                         <div
                             className={cn(
-                                'h-full rounded-full transition-[width] duration-500 ease-out',
-                                estado.enProceso && 'bg-primary',
+                                'h-full rounded-full',
+                                estado.enProceso && 'bg-primary transition-[width] duration-150 ease-linear',
+                                (sinErrores || conErrores) && 'transition-[width] duration-500 ease-out',
                                 sinErrores && 'bg-emerald-500',
                                 conErrores && 'bg-amber-500'
                             )}
-                            style={{ width: `${estado.enProceso ? porcentaje : 100}%` }}
+                            style={{ width: `${porcentajeMostrado}%` }}
                         />
                     </div>
                 </div>
@@ -201,7 +238,7 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
                 <div className="px-6 py-4 mt-2 border-t border-border/60 bg-muted/20">
                     {estado.enProceso ? (
                         <p className="text-center text-xs text-muted-foreground tabular-nums">
-                            {procesadas} de {estado.total} procesadas · {porcentaje}%
+                            {porcentajeMostrado}%
                         </p>
                     ) : (
                         <Button onClick={() => onOpenChange(false)} className="w-full" size="sm">

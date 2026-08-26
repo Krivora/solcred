@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const asignarManualSchema = z.object({
+    solicitudIds: z.array(z.string().uuid("ID de solicitud inválido")).min(1, "Debe asignar al menos una solicitud"),
     gestorId: z.string().uuid("ID de gestor inválido"),
     motivo: z.string().max(500).optional(),
 });
