@@ -114,19 +114,19 @@ export const obtenerExpediente = async (
         where: { id: solicitudId },
         include: {
             programa: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    aval: true,
-                    documentosRequeridos: {
-                        include: {
-                            tipoDocumento: {
-                                select: { ...SELECT_TIPO_DOCUMENTO, descripcion: true },
-                            },
+            select: {
+                id: true,
+                nombre: true,
+                secciones: true,
+                documentosRequeridos: {
+                    include: {
+                        tipoDocumento: {
+                            select: { ...SELECT_TIPO_DOCUMENTO, descripcion: true },
                         },
                     },
                 },
             },
+        },
             solicitante: {
                 select: {
                     id: true,

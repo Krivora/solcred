@@ -9,6 +9,7 @@ import {
     Hammer,
     AlertCircle,
     CalendarClock,
+    Clock,
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
@@ -22,6 +23,7 @@ import { CategoriaCredito } from '@/shared/lib/types/solicitudes.types'
 import { MontoInput } from '@/shared/components/ui/inputs'
 import { montoAFloat } from '@/shared/lib/utils/masks'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
+import { cn } from '@/shared/lib/utils/cn'
 
 interface StepCreditoProps {
     defaultValues?: DatosCredito
@@ -79,7 +81,6 @@ export function StepCredito({
     loading,
     error,
     skipLabel, onSkip
-
 }: StepCreditoProps) {
     const [plazoMeses, setPlazoMeses] = useState(defaultValues?.plazoMeses ?? 0)
     const [mesesGracia, setMesesGracia] = useState(defaultValues?.mesesGracia ?? 0)
@@ -97,6 +98,7 @@ export function StepCredito({
         conceptosPorCategoria(categoria).reduce((sum, c) => sum + (c.monto || 0), 0)
 
     const totalGeneral = conceptos.reduce((sum, c) => sum + (c.monto || 0), 0)
+    const conceptosCapturados = conceptos.filter((c) => c.concepto.trim() && c.monto > 0).length
 
     function agregarConcepto(categoria: CategoriaCredito) {
         setConceptos((prev) => [...prev, crearConceptoVacio(categoria)])
@@ -141,149 +143,154 @@ export function StepCredito({
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Encabezado */}
-            <div className="flex items-center gap-3">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Encabezado + resumen del total, en una sola franja fija arriba */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-primary/20 bg-primary/5 px-5 py-4">
                 <div>
                     <h2 className="text-lg font-semibold text-foreground leading-tight">
                         Datos del crédito
                     </h2>
-                    <p className="text-sm text-muted-foreground">
-                        Plazo, gracia y destino de los recursos solicitados
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                        Define plazo, gracia y el destino de los recursos
                     </p>
+                </div>
+                <div className="flex items-center gap-3 sm:text-right">
+                    <div className="flex flex-col">
+                        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            Monto total solicitado
+                        </span>
+                        <span className="text-2xl font-bold tabular-nums text-primary">
+                            {formatoMoneda(totalGeneral)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                            {conceptosCapturados}{' '}
+                            {conceptosCapturados === 1 ? 'concepto capturado' : 'conceptos capturados'}
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            {/* Condiciones + Total en una sola franja */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-                <Card className="lg:col-span-3">
-                    <CardContent className="pt-5 pb-5">
-                        <div className="flex items-center gap-2 mb-4">
-                            <CalendarClock className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium text-foreground">
-                                Condiciones
+            {/* Condiciones — ancho completo, campos con espacio real */}
+            <Card>
+                <CardContent className="pt-5 pb-5">
+                    <div className="flex items-center gap-2 mb-4">
+                        <CalendarClock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-foreground">
+                            Condiciones del crédito
+                        </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:max-w-xl">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="plazoMeses" className="text-xs text-muted-foreground">
+                                Plazo (meses)
+                            </Label>
+                            <Select
+                                value={plazoMeses ? String(plazoMeses) : ''}
+                                onValueChange={(v) => setPlazoMeses(Number(v))}
+                            >
+                                <SelectTrigger id="plazoMeses" className="w-full h-12 text-base font-medium">
+                                    <SelectValue placeholder="Selecciona" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {[6, 12, 18, 24, 30, 36].map((meses) => (
+                                        <SelectItem key={meses} value={String(meses)}>
+                                            {meses} meses
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="mesesGracia" className="text-xs text-muted-foreground">
+                                Meses de gracia
+                            </Label>
+                            <Select
+                                value={mesesGracia ? String(mesesGracia) : ''}
+                                onValueChange={(v) => setMesesGracia(Number(v))}
+                            >
+                                <SelectTrigger id="mesesGracia" className="w-full h-12 text-base font-medium">
+                                    <SelectValue placeholder="Selecciona" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {[1, 2, 3, 4, 5, 6].map((meses) => (
+                                        <SelectItem key={meses} value={String(meses)}>
+                                            {meses} {meses === 1 ? 'mes' : 'meses'}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    {mesesGracia > 0 && plazoMeses > 0 && (
+                        <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                            <Clock className="h-3.5 w-3.5" />
+                            <span>
+                                Pagarás intereses ordinarios los primeros {mesesGracia}{' '}
+                                {mesesGracia === 1 ? 'mes' : 'meses'} y comenzarás a amortizar capital
+                                a partir del mes {mesesGracia + 1} de {plazoMeses}.
                             </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <Label htmlFor="plazoMeses" className="text-xs text-muted-foreground">
-                                    Plazo (meses)
-                                </Label>
-                                <Select
-                                    value={plazoMeses ? String(plazoMeses) : ''}
-                                    onValueChange={(v) => setPlazoMeses(Number(v))}
-                                >
-                                    <SelectTrigger id="plazoMeses" className="text-base font-medium">
-                                        <SelectValue placeholder="Selecciona" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {[6, 12, 18, 24, 30, 36].map((meses) => (
-                                            <SelectItem key={meses} value={String(meses)}>
-                                                {meses} meses
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="mesesGracia" className="text-xs text-muted-foreground">
-                                    Meses de gracia
-                                </Label>
-                                <Select
-                                    value={mesesGracia ? String(mesesGracia) : ''}
-                                    onValueChange={(v) => setMesesGracia(Number(v))}
-                                >
-                                    <SelectTrigger id="mesesGracia" className="text-base font-medium">
-                                        <SelectValue placeholder="Selecciona" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {[1, 2, 3, 4, 5, 6].map((meses) => (
-                                            <SelectItem key={meses} value={String(meses)}>
-                                                {meses} {meses === 1 ? 'mes' : 'meses'}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                    )}
+                </CardContent>
+            </Card>
 
-                <Card className="lg:col-span-2 bg-primary text-primary-foreground border-primary overflow-hidden relative">
-                    <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-primary-foreground/10" />
-                    <CardContent className="pt-5 pb-5 relative flex flex-col justify-center h-full">
-                        <span className="text-xs font-medium uppercase tracking-wide text-primary-foreground/70">
-                            Monto total solicitado
-                        </span>
-                        <span className="text-3xl font-bold tabular-nums mt-1.5">
-                            {formatoMoneda(totalGeneral)}
-                        </span>
-                        <span className="text-xs text-primary-foreground/70 mt-1.5">
-                            {conceptos.filter((c) => c.concepto.trim() && c.monto > 0).length}{' '}
-                            {conceptos.filter((c) => c.concepto.trim() && c.monto > 0).length === 1
-                                ? 'concepto capturado'
-                                : 'conceptos capturados'}
-                        </span>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Destino del crédito — grid horizontal */}
-            <div>
-                <h3 className="text-sm font-semibold text-foreground mb-3">
+            {/* Destino del crédito — lista vertical, una sección por categoría */}
+            <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground">
                     Destino del crédito
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {CATEGORIAS.map(({ key, label, descripcion, icon: Icon }) => {
-                        const items = conceptos
-                            .map((c, i) => ({ ...c, index: i }))
-                            .filter((c) => c.categoria === key)
-                        const subtotal = subtotalPorCategoria(key)
 
-                        return (
-                            <Card
-                                key={key}
-                                className="flex flex-col overflow-hidden border-t-2 border-t-primary"
-                            >
-                                <CardContent className="pt-4 pb-4 flex flex-col gap-3 flex-1">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
-                                                <Icon className="h-4 w-4 text-foreground" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-semibold text-foreground leading-tight">
-                                                    {label}
-                                                </p>
-                                                <p className="text-[11px] text-muted-foreground">
-                                                    {descripcion}
-                                                </p>
-                                            </div>
+                {CATEGORIAS.map(({ key, label, descripcion, icon: Icon }) => {
+                    const items = conceptos
+                        .map((c, i) => ({ ...c, index: i }))
+                        .filter((c) => c.categoria === key)
+                    const subtotal = subtotalPorCategoria(key)
+
+                    return (
+                        <Card key={key} className="overflow-hidden">
+                            <CardContent className="p-0">
+                                {/* Encabezado de la sección */}
+                                <div className="flex items-center justify-between gap-3 px-5 py-4 bg-accent/30 border-b border-border">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                            <Icon className="h-4 w-4 text-primary" />
                                         </div>
-                                        {items.length > 0 && (
-                                            <span className="text-[11px] font-medium text-muted-foreground bg-muted rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shrink-0">
-                                                {items.length}
-                                            </span>
-                                        )}
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground leading-tight">
+                                                {label}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {descripcion}
+                                            </p>
+                                        </div>
                                     </div>
+                                    {subtotal > 0 && (
+                                        <span className="text-sm font-semibold tabular-nums text-foreground shrink-0">
+                                            {formatoMoneda(subtotal)}
+                                        </span>
+                                    )}
+                                </div>
 
-                                    <div className="flex-1 space-y-2">
-                                        {items.length === 0 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => agregarConcepto(key)}
-                                                className="w-full border border-dashed border-border rounded-md py-5 text-center text-xs text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors"
-                                            >
-                                                <Plus className="h-4 w-4 mx-auto mb-1" />
-                                                Agregar concepto
-                                            </button>
-                                        )}
-
-                                        {items.map((concepto) => (
-                                            <div key={concepto.index} className="space-y-1.5">
-                                                <div className="flex gap-1.5">
+                                {/* Contenido: conceptos o estado vacío */}
+                                <div className="p-5">
+                                    {items.length === 0 ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => agregarConcepto(key)}
+                                            className="w-full border border-dashed border-border rounded-lg py-6 text-center text-sm text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors"
+                                        >
+                                            <Plus className="h-4 w-4 mx-auto mb-1.5" />
+                                            Agregar concepto
+                                        </button>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {items.map((concepto) => (
+                                                <div
+                                                    key={concepto.index}
+                                                    className="flex flex-col sm:flex-row gap-2.5 sm:items-center"
+                                                >
                                                     <Input
-                                                        placeholder="Concepto"
+                                                        placeholder="Concepto (ej. Compra de torno CNC)"
                                                         value={concepto.concepto}
                                                         onChange={(e) =>
                                                             actualizarConcepto(
@@ -292,60 +299,47 @@ export function StepCredito({
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="text-sm h-9"
+                                                        className="h-11 sm:flex-1"
+                                                    />
+                                                    <MontoInput
+                                                        placeholder="Monto"
+                                                        value={concepto.monto ? String(concepto.monto) : ''}
+                                                        onChange={(valorCrudo) =>
+                                                            actualizarConcepto(
+                                                                concepto.index,
+                                                                'monto',
+                                                                montoAFloat(valorCrudo) ?? 0
+                                                            )
+                                                        }
+                                                        className="h-11 sm:w-44 text-right"
                                                     />
                                                     <Button
                                                         type="button"
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => eliminarConcepto(concepto.index)}
-                                                        className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                        className="h-11 w-11 shrink-0 self-end sm:self-auto text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                                                     >
-                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                        <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
-                                                <MontoInput
-                                                    placeholder="Monto"
-                                                    value={concepto.monto ? String(concepto.monto) : ''}
-                                                    onChange={(valorCrudo) =>
-                                                        actualizarConcepto(
-                                                            concepto.index,
-                                                            'monto',
-                                                            montoAFloat(valorCrudo) ?? 0
-                                                        )
-                                                    }
-                                                    className="text-sm h-9 text-right"
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
 
-                                    {items.length > 0 && (
-                                        <>
                                             <button
                                                 type="button"
                                                 onClick={() => agregarConcepto(key)}
-                                                className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                                                className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors pt-1"
                                             >
                                                 <Plus className="h-3.5 w-3.5" />
-                                                Agregar otro
+                                                Agregar otro concepto
                                             </button>
-
-                                            <div className="pt-3 border-t border-border flex items-center justify-between">
-                                                <span className="text-[11px] text-muted-foreground">
-                                                    Subtotal
-                                                </span>
-                                                <span className="text-sm font-semibold tabular-nums text-foreground">
-                                                    {formatoMoneda(subtotal)}
-                                                </span>
-                                            </div>
-                                        </>
+                                        </div>
                                     )}
-                                </CardContent>
-                            </Card>
-                        )
-                    })}
-                </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )
+                })}
             </div>
 
             {(formError || error) && (

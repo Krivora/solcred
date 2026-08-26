@@ -408,7 +408,6 @@ export const guardarDatosBancariosSchema = z.object({
     .string({ message: "La CLABE es requerida" })
     .length(18, "La CLABE debe tener exactamente 18 dígitos")
     .regex(/^\d+$/, "La CLABE debe ser numérica")
-    .refine(clabeChecksumValido, "CLABE inválida (dígito verificador incorrecto)"),
 });
 
 // ─────────────────────────────────────────

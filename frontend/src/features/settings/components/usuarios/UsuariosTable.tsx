@@ -89,7 +89,8 @@ export function UsuariosTable({
       const nombre = `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`.toLowerCase();
       const busqueda = filtros.busqueda?.toLowerCase() ?? "";
       if (busqueda && !nombre.includes(busqueda) && !u.correo.toLowerCase().includes(busqueda)) return false;
-      if (filtros.rol !== "TODOS" && obtenerRolEfectivo(u) !== filtros.rol) return false; // ── FIX ──      if (filtros.tipoPersona !== "TODOS" && u.tipoPersona !== filtros.tipoPersona) return false;
+      if (filtros.rol !== "TODOS" && obtenerRolEfectivo(u) !== filtros.rol) return false;
+      if (filtros.tipoPersona !== "TODOS" && u.tipoPersona !== filtros.tipoPersona) return false;
       if (filtros.activo !== "TODOS" && u.activo !== filtros.activo) return false;
       return true;
     })

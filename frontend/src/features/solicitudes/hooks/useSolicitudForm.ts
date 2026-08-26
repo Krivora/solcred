@@ -133,12 +133,6 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       onExito()
       esEdicion ? marcarGuardado() : goNext()
     } catch (e: unknown) {
-      if (e instanceof ApiError) {
-        console.error('ApiError:', e.status, e.message)
-        console.error('Detalle de validación:', e.errors)
-      } else {
-        console.error('Error desconocido:', e)
-      }
       const msg = e instanceof Error ? e.message : mensajeErrorFallback
       setError(msg)
       solicitudesToast.error(mensajeErrorFallback, msg)

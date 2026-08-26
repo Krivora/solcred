@@ -347,9 +347,17 @@ export const guardarDatosGenerales = async (
     return prisma.solicitud.update({
         where: { id: solicitudId },
         data: dto,
+        include: {
+            programa: {
+                select: {
+                    id: true,
+                    nombre: true,
+                    secciones: true,
+                },
+            },
+        },
     });
 };
-
 export const guardarDatosSolicitante = crearGuardadorSubrecurso<GuardarDatosSolicitanteDto>(
     prisma.datosSolicitante,
     "SOLICITANTE",

@@ -1,4 +1,3 @@
-// EditarSolicitudForm.tsx
 'use client'
 
 import { useSolicitudForm } from '../../hooks/useSolicitudForm'
@@ -22,6 +21,9 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
     const router = useRouter()
     const {
         currentStep,
+        pasosActivos,
+        pasoOmitible,
+        omitirPaso,
         solicitud,
         loading,
         error,
@@ -37,7 +39,6 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
         guardarMercado,
         guardarBancarios,
         enviarSolicitud,
-        skipAval,
     } = useSolicitudForm({ solicitudIdExistente: solicitudId })
 
     async function handleEnviar() {
@@ -83,9 +84,10 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
             <div className="flex gap-6">
                 <EditarSolicitudSidebar
                     currentStep={currentStep}
+                    pasosActivos={pasosActivos}
                     onSelect={goTo}
                     solicitud={solicitud}
-                    />
+                />
 
                 <div className="flex-1 bg-card rounded-xl border border-border p-6 shadow-sm">
                     {currentStep === 'general' && (
@@ -107,6 +109,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onBack={goBack}
                             loading={loading}
                             error={error}
+                            skipLabel={pasoOmitible ? 'Omitir solicitante' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -119,8 +123,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onBack={goBack}
                             loading={loading}
                             error={error}
-                            skipLabel="Omitir aval"
-                            onSkip={skipAval}
+                            skipLabel={pasoOmitible ? 'Omitir aval' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -131,6 +135,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onBack={goBack}
                             loading={loading}
                             error={error}
+                            skipLabel={pasoOmitible ? 'Omitir crédito' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -140,6 +146,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onSubmit={guardarGarantia}
                             onBack={goBack}
                             loading={loading}
+                            skipLabel={pasoOmitible ? 'Omitir garantía' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -149,6 +157,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onSubmit={guardarNegocio}
                             onBack={goBack}
                             loading={loading}
+                            skipLabel={pasoOmitible ? 'Omitir negocio' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -158,6 +168,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onSubmit={guardarMercado}
                             onBack={goBack}
                             loading={loading}
+                            skipLabel={pasoOmitible ? 'Omitir mercado' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 
@@ -167,6 +179,8 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             onSubmit={guardarBancarios}
                             onBack={goBack}
                             loading={loading}
+                            skipLabel={pasoOmitible ? 'Omitir bancarios' : undefined}
+                            onSkip={pasoOmitible ? omitirPaso : undefined}
                         />
                     )}
 

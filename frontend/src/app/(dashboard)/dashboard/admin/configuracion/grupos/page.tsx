@@ -231,16 +231,16 @@ export default function GruposPage() {
     const [guardando, setGuardando] = useState(false)
     const [eliminando, setEliminando] = useState(false)
 
-    const gestoresDisponibles: GestorResumen[] = usuarios
-        .filter(u => obtenerRolEfectivo(u) === 'GESTOR' && u.activo) // ── FIX ──
-        .map(u => ({
-            id: u.id,
-            nombre: u.nombre,
-            apellidoPaterno: u.apellidoPaterno,
-            apellidoMaterno: u.apellidoMaterno,
-            correo: u.correo,
-            activo: u.activo,
-        }))
+   const gestoresDisponibles: GestorResumen[] = usuarios
+    .filter(u => obtenerRolEfectivo(u) === 'GESTOR' && u.activo && u.personal)
+    .map(u => ({
+        id: u.personal!.id,
+        nombre: u.nombre,
+        apellidoPaterno: u.apellidoPaterno,
+        apellidoMaterno: u.apellidoMaterno,
+        correo: u.correo,
+        activo: u.activo,
+    }))
     const abrirNuevo = () => {
         setGrupoEditando(null)
         setSheetAbierto(true)

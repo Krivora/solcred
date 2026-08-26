@@ -892,8 +892,12 @@ const formatearFechaHora = (fecha: Date): string =>
     year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
   });
 
-const formatearFecha = (fecha: Date): string =>
-  fecha.toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" });
+function formatearFecha(fecha: Date | string | null | undefined): string | null {
+  if (!fecha) return null;
+  const d = fecha instanceof Date ? fecha : new Date(fecha);
+  if (isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+}
 
 const nombreUsuario = (u: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }): string =>
   `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`;
