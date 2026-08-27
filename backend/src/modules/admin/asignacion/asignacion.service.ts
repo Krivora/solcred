@@ -362,9 +362,8 @@ export const asignarAutomaticamente = async (
 export const asignarManualmente = async (
     solicitudIds: string[],
     dto: AsignarManualDto,
-    usuarioIdSupervisor: string // ← renombrado para claridad: esto es Usuario.id
+    usuarioIdSupervisor: string
 ): Promise<ResultadoAsignacion[]> => {
-    // Resolver el Personal.id del supervisor que hace la asignación
     const personalSupervisor = await prisma.personal.findUnique({
         where: { userId: usuarioIdSupervisor },
     });
@@ -373,7 +372,7 @@ export const asignarManualmente = async (
         throw new AppError("El usuario autenticado no tiene un perfil de Personal asociado", 400);
     }
 
-    const supervisorId = personalSupervisor.id; // ← este sí es Personal.id, válido para la FK
+    const supervisorId = personalSupervisor.id; 
 
     const gestor = await prisma.personal.findUnique({
         where: { id: dto.gestorId },
@@ -423,7 +422,7 @@ export const asignarManualmente = async (
                         solicitudId,
                         gestorId: dto.gestorId,
                         grupoId,
-                        asignadoPorId: supervisorId, // ← ahora sí es Personal.id
+                        asignadoPorId: supervisorId,
                     },
                 });
 

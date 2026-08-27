@@ -7,7 +7,8 @@ import type {
   PaginacionMeta,
   StatsPromocion,
   FiltrosPromocion,
-  SolicitudDetalle
+  SolicitudDetalle,
+  PersonalResumen
 } from '@/features/promocion/types/solicitud.types'
 
 const FILTROS_INICIALES: FiltrosPromocion = {
@@ -21,13 +22,14 @@ const FILTROS_INICIALES: FiltrosPromocion = {
   fechaDesde: '',
   fechaHasta: '',
   busqueda: '',
-  asignacion: '',
+  gestorId: '',
 }
 
 export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromocion>) {
   const [solicitudes, setSolicitudes] = useState<SolicitudPromocion[]>([])
   const [meta, setMeta] = useState<PaginacionMeta>({ total: 0, page: 1, limit: 20, totalPages: 0 })
   const [stats, setStats] = useState<StatsPromocion | null>(null)
+  const [gestores, setGestores] = useState<PersonalResumen[]>([])
   const [filtros, setFiltros] = useState<FiltrosPromocion>({
     ...FILTROS_INICIALES,
     ...filtrosIniciales,
@@ -48,6 +50,15 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     }
   }, [])
 
+  const cargarGestores = useCallback(async () => {
+    try {
+      const data = await solicitudesApi.gestoresPromocion()
+      setGestores(data)
+    } catch {
+      // silencioso — el filtro de gestor simplemente queda vacío
+    }
+  }, [])
+
   const cargarSolicitudes = useCallback(async (f: FiltrosPromocion) => {
     setCargando(true)
     setError(null)
@@ -62,9 +73,10 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     }
   }, [])
 
-  // Stats: solo al montar. No depende de filtros.
+  // Stats y gestores: solo al montar. No dependen de filtros.
   useEffect(() => {
     cargarStats()
+    cargarGestores()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -85,11 +97,12 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     setFiltros({ ...FILTROS_INICIALES, ...filtrosIniciales })
   }, [filtrosIniciales])
 
-  // Recargar manual: sí refresca ambos (botón "Actualizar" explícito).
+  // Recargar manual: sí refresca todo (botón "Actualizar" explícito).
   const recargar = useCallback(() => {
     cargarStats()
+    cargarGestores()
     cargarSolicitudes(filtros)
-  }, [filtros, cargarStats, cargarSolicitudes])
+  }, [filtros, cargarStats, cargarGestores, cargarSolicitudes])
 
   const hayFiltrosActivos = Object.entries(filtros).some(
     ([key, value]) =>
@@ -100,6 +113,7 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     solicitudes,
     meta,
     stats,
+    gestores,
     filtros,
     cargando,
     cargandoStats,

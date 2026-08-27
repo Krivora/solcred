@@ -82,7 +82,7 @@ export interface FiltrosPromocion {
     tipoPersona?: TipoPersona | ''
     sector?: Sector | ''
     tamanoEmpresa?: TamanoEmpresa | ''
-    asignacion?: 'todos' | 'asignados' | 'sin_asignar' | ''
+    gestorId?: string
     programaId?: string
     fechaDesde?: string
     fechaHasta?: string
