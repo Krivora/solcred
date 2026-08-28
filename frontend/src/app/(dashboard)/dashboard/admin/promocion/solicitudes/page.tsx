@@ -14,6 +14,7 @@ export default function SolicitudesPromocionPage() {
     solicitudes,
     meta,
     stats,
+    gestores,
     filtros,
     cargando,
     cargandoStats,
@@ -39,6 +40,7 @@ export default function SolicitudesPromocionPage() {
       <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
         <PromocionFiltros
           filtros={filtros}
+          gestores={gestores}
           onFiltrar={actualizarFiltros}
           onLimpiar={limpiarFiltros}
           hayFiltrosActivos={hayFiltrosActivos}

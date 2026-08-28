@@ -6,6 +6,7 @@ import type {
   FiltrosMisCasos,
   FiltrosAprobacion,
   SolicitudDetalle,
+  PersonalResumen,
 } from '@/features/promocion/types/solicitud.types'
 import type { DocumentoTipo } from '@/shared/config/documentos.config'
 const DOCUMENTO_ENDPOINT: Record<DocumentoTipo, string> = {
@@ -41,7 +42,8 @@ export const solicitudesApi = {
       `/admin/promocion/promocion${query ? `?${query}` : ''}`
     )
   },
-
+  gestoresPromocion: () =>
+    apiAuth<PersonalResumen[]>('/admin/promocion/promocion/gestores'),
   statsPromocion: () =>
     apiAuth<StatsPromocion>('/admin/promocion/promocion/stats'),
 

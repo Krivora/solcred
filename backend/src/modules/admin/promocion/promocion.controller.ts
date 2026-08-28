@@ -13,6 +13,20 @@ import { AppError } from "@/middlewares/error.middleware";
 import { acuseEntregaExpedienteTemplate } from "@/shared/pdf/templates/acuse-entrega-expediente.template";
 
 
+export const gestoresPromocion = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const resultado = await solicitudesService.gestoresPromocion();
+
+    res.status(200).json(ok("Gestores de promoción obtenidos", resultado));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const listarPromocion = async (
   req: RequestAutenticado,
   res: Response,
@@ -30,7 +44,7 @@ export const listarPromocion = async (
       fechaDesde,
       fechaHasta,
       busqueda,
-      asignacion,
+      gestorId,
     } = req.query;
 
     const filtros = {
@@ -44,7 +58,7 @@ export const listarPromocion = async (
       fechaDesde: fechaDesde as string | undefined,
       fechaHasta: fechaHasta as string | undefined,
       busqueda: busqueda as string | undefined,
-      asignacion: asignacion as string | undefined,
+      gestorId: gestorId as string | undefined,
     };
 
     const resultado = await solicitudesService.listarPromocion(filtros);
@@ -62,7 +76,6 @@ export const listarPromocion = async (
     next(error);
   }
 };
-
 export const listarMisCasos = async (
   req: RequestAutenticado,
   res: Response,

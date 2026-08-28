@@ -25,7 +25,7 @@ interface FiltrosPromocion {
   fechaDesde?: string
   fechaHasta?: string
   busqueda?: string
-  asignacion?: string
+  gestorId?: string
 }
 interface FiltrosMisCasos {
   gestorId: string
@@ -364,6 +364,36 @@ export const obtenerSolicitudPorId = async (
   };
 };
 
+export const gestoresPromocion = async () => {
+  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
+
+  const asignaciones = await prisma.asignacionSolicitud.findMany({
+    where: {
+      activa: true,
+      solicitud: { estatus: { in: ESTATUS_PRICIPAL_PROMOCION } },
+    },
+    distinct: ['gestorId'],
+    select: {
+      gestor: {
+        select: {
+          id: true,
+          usuario: {
+            select: {
+              nombre: true,
+              apellidoPaterno: true,
+              apellidoMaterno: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return asignaciones
+    .map((a) => a.gestor)
+    .sort((a, b) => a.usuario.nombre.localeCompare(b.usuario.nombre));
+};
+
 export const listarPromocion = async (filtros: FiltrosPromocion) => {
   const {
     page,
@@ -376,7 +406,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     fechaDesde,
     fechaHasta,
     busqueda,
-    asignacion
+    gestorId, // ← reemplaza a `asignacion`
   } = filtros;
 
   const skip = (page - 1) * limit;
@@ -416,11 +446,9 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
       },
     ];
   }
-  if (asignacion === 'asignados') {
-    where.asignaciones = { some: { activa: true } };
-  }
-  if (asignacion === 'sin_asignar') {
-    where.asignaciones = { none: { activa: true } };
+
+  if (gestorId) {
+    where.asignaciones = { some: { gestorId, activa: true } };
   }
 
   const [solicitudes, total] = await Promise.all([
@@ -453,7 +481,6 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     },
   };
 };
-
 export const statsPromocion = async () => {
   const [total, borrador, pendiente, enRevision, aprobado, rechazado] =
     await Promise.all([
