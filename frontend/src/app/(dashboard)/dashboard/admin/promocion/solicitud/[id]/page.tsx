@@ -21,13 +21,23 @@ export default function SolicitudDetallePage({ params }: Props) {
     const { id } = use(params)
     const router = useRouter()
     const { solicitud, cargando, error } = useSolicitudDetalle(id)
-    console.log('solicitud', solicitud)
     if (cargando) {
         return (
             <div className="flex flex-col gap-6 p-6">
                 <Skeleton className="h-10 w-64 rounded-lg" />
-                <Skeleton className="h-40 w-full rounded-xl" />
-                <Skeleton className="h-96 w-full rounded-xl" />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Columna izquierda: 2 bloques horizontales apilados */}
+                    <div className="lg:col-span-2 flex flex-col gap-6">
+                        <Skeleton className="h-40 w-full rounded-xl" />
+                        <Skeleton className="h-40 w-full rounded-xl" />
+                    </div>
+
+                    {/* Columna derecha: 1 bloque vertical */}
+                    <div className="lg:col-span-1">
+                        <Skeleton className="h-full min-h-40 w-full rounded-xl" />
+                    </div>
+                </div>
             </div>
         )
     }

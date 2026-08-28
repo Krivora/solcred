@@ -193,7 +193,6 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
 
           <TableBody>
             {solicitudes.map((sol) => {
-              console.log('Solicitud:', sol)
               const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
               const monto = formatMonto(sol.montoSolicitado ?? null)
 
@@ -364,7 +363,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
         </Table>
       </div>
 
-      <Paginacion meta={meta} onPaginar={onPaginar} />
+      <Paginacion meta={{ ...meta, pageSize: 10 }} onPaginar={onPaginar} />
     </div>
   )
 }
