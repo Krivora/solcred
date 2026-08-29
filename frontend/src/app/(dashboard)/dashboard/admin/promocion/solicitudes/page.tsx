@@ -8,6 +8,7 @@ import { PromocionFiltros } from '@/features/promocion/components/solicitudes/Pr
 import { PromocionTable } from '@/features/promocion/components/solicitudes/PromocionTable'
 import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
 import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { useNavAnimation } from '@/shared/lib/hooks/useNavAnimation'
 
 export default function SolicitudesPromocionPage() {
   const {
@@ -26,8 +27,10 @@ export default function SolicitudesPromocionPage() {
     recargar,
   } = useSolicitudesPromocion()
 
+  const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que vengas del detalle
+
   return (
-    <div className="mx-auto max-w-8xl space-y-6">
+    <div className={`${claseAnimacion} mx-auto max-w-8xl space-y-6`}>
 
       <PageHeader
         title="Solicitudes de Promoción"

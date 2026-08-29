@@ -41,14 +41,14 @@ const CONFIG: Record<AccionTipo, ConfigAccion> = {
   aprobacion: {
     titulo: 'Enviar a Aprobación',
     descripcion: 'La solicitud será enviada al responsable de promocion. Puedes agregar un comentario opcional.',
-    labelBoton: 'Enviar a Aprobación',
+    labelBoton: 'Enviar',
     variante: 'default',
     requiereMotivo: false,
   },
   financiamiento: {
     titulo: 'Enviar a Financiamiento',
     descripcion: 'La solicitud será enviada al area de financiamiento. Puedes agregar un comentario opcional.',
-    labelBoton: 'Enviar a Financiamiento',
+    labelBoton: 'Enviar',
     variante: 'default',
     requiereMotivo: false,
   },

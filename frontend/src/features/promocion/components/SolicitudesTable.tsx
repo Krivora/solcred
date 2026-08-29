@@ -200,7 +200,10 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                 <TableRow
                   key={sol.id}
                   className="cursor-pointer hover:bg-accent/40 transition-colors duration-100 border-b border-border/40 last:border-0 group"
-                  onClick={() => router.push(getDetalleUrl(sol.id))}
+                  onClick={() => {
+                    sessionStorage.setItem('nav-direction', 'adelante')
+                    router.push(getDetalleUrl(sol.id))
+                  }}
                 >
 
                   {/* Folio */}

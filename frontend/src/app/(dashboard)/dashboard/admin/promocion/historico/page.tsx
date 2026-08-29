@@ -6,6 +6,7 @@ import { HistoricoFiltros} from '@/features/promocion/components/historico/Histo
 import { HistoricoTable } from '@/features/promocion/components/historico/HistoricoTable'
 import { useHistorico } from '@/features/promocion/hooks/useHistorico'
 import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { useNavAnimation } from '@/shared/lib/hooks/useNavAnimation'
 
 export default function HistoricoPage() {
     const { 
@@ -14,8 +15,10 @@ export default function HistoricoPage() {
         limpiarFiltros, recargar,
     } = useHistorico()
 
+    const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que vengas del detalle
+
     return (
-        <div className="mx-auto max-w-8xl space-y-6">
+        <div className={`${claseAnimacion} mx-auto max-w-8xl space-y-6`}>
 
             <PageHeader
                 title="Historial de Solicitudes"

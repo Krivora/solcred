@@ -210,3 +210,36 @@
   }
 }
 
+/* ─── Slide transition: nivel padre → nivel hijo ─────────────────── */
+
+@keyframes slide-entrada-derecha {
+  from {
+    transform: translateX(100%);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-entrada {
+  animation: slide-entrada-derecha 320ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* ─── Slide transition: nivel hijo → nivel padre (regreso) ───────── */
+
+@keyframes slide-entrada-izquierda {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-regreso {
+  animation: slide-entrada-izquierda 320ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
