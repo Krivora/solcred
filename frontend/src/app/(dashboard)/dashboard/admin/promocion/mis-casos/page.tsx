@@ -6,6 +6,7 @@ import { MisCasosFiltros } from '@/features/promocion/components/mis-casos/MisCa
 import { MisCasosTable } from '@/features/promocion/components/mis-casos/MisCasosTable'
 import { useMisCasos } from '@/features/promocion/hooks/useMisCasos'
 import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 export default function MisCasosPage() {
     const {
@@ -21,8 +22,10 @@ export default function MisCasosPage() {
         recargar,
     } = useMisCasos()
 
+    const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que vengas del detalle
+
     return (
-        <div className="mx-auto max-w-8xl space-y-6">
+        <div className={`${claseAnimacion} mx-auto max-w-8xl space-y-6`}>
 
             <PageHeader
                 title="Mis Casos"
