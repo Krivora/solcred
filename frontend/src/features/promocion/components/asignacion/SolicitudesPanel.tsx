@@ -6,10 +6,14 @@ import type { SolicitudAsignacion } from '@/features/promocion/types/asignacion.
 import type { GrupoGestion } from '@/features/settings/types/grupos.types'
 import { AsignacionFiltros } from './AsignacionFiltros'
 import type { FiltrosAsignacion } from '@/features/promocion/types/asignacion.types'
+import { Paginacion } from '@/shared/components/common/Paginacion'
+import type { PaginacionMeta } from '@/shared/types/api'
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SolicitudesPanelProps {
     solicitudes: SolicitudAsignacion[]
+    meta: PaginacionMeta
+    onPaginar: (page: number) => void
     cargando: boolean
     error: string | null
     grupos: GrupoGestion[]
@@ -35,6 +39,8 @@ interface SolicitudesPanelProps {
 
 export function SolicitudesPanel({
     solicitudes,
+    meta,
+    onPaginar,
     cargando,
     error,
     grupos,
@@ -80,16 +86,27 @@ export function SolicitudesPanel({
                 onCambiarGrupo={onCambiarGrupo}
             />
 
-            <AsignacionSolicitudesTable
-                solicitudes={solicitudes}
-                seleccionadas={seleccionadas}
-                asignandoId={asignandoId}
-                cargando={cargando}
-                error={error}
-                onSeleccionar={onSeleccionar}
-                onAsignarRapido={onAsignarRapido}
-                onReintentar={onReintentar}
-            />
+            <div className="flex-1 min-h-0 overflow-y-auto p-4">
+                <AsignacionSolicitudesTable
+                    solicitudes={solicitudes}
+                    seleccionadas={seleccionadas}
+                    asignandoId={asignandoId}
+                    cargando={cargando}
+                    error={error}
+                    onSeleccionar={onSeleccionar}
+                    onAsignarRapido={onAsignarRapido}
+                    onReintentar={onReintentar}
+                />
+            </div>
+
+            {!cargando && !error && meta.total > 0 && (
+                <div className="shrink-0 border-t border-border/60 bg-background px-4 py-2.5">
+                    <Paginacion
+                        meta={{ ...meta, pageSize: meta.limit }}
+                        onPaginar={onPaginar}
+                    />
+                </div>
+            )}
         </div>
     )
 }

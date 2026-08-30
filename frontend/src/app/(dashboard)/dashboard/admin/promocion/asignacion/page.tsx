@@ -61,12 +61,13 @@ function CargaDistribucion({ gestores }: { gestores: GestorConCarga[] }) {
 
 const FILTROS_INICIALES: FiltrosAsignacion = {
     page: 1,
-    limit: 50,
+    limit: 20,
     estatus: 'PENDIENTE,EN_REVISION',
 }
 export default function AsignacionPage() {
     const {
         solicitudes,
+        meta,
         cargandoSolicitudes: cargando,
         cargarSolicitudes,
         gestores,
@@ -125,6 +126,12 @@ export default function AsignacionPage() {
     const handleLimpiarFiltros = () => {
         setFiltros(FILTROS_INICIALES)
         cargarSolicitudes(FILTROS_INICIALES)
+    }
+
+    const handlePaginar = (page: number) => {
+        setSeleccionadas(new Set()) // la selección es por página
+        // el useEffect de arriba recarga al cambiar `filtros`
+        setFiltros(prev => ({ ...prev, page }))
     }
 
     const hayFiltrosActivos =
@@ -204,6 +211,8 @@ export default function AsignacionPage() {
                 <div className="flex-1 flex flex-col min-w-0 border-r border-border/60">
                     <SolicitudesPanel
                         solicitudes={solicitudesFiltradas}
+                        meta={meta}
+                        onPaginar={handlePaginar}
                         cargando={cargando}
                         error={error}
                         grupos={grupos}
