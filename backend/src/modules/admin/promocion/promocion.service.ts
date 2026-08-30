@@ -1088,7 +1088,7 @@ export const mapearAcuseEntregaAPDF = (
   return {
     folio: solicitud.folio,
     lugar: "Hermosillo, Sonora",
-    fecha: formatearFecha(new Date()),
+    fecha: formatearFecha(new Date()) ?? "",
     solicitanteNombre: mapearPersona(solicitud.datosSolicitante).nombreCompleto.toUpperCase(),
     programa: solicitud.programa.nombre,
     monto: montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }),
@@ -1257,14 +1257,14 @@ export const obtenerTarjetaInformativa = async (
     ? {
       nombre: nombreUsuario(asignacionActiva.gestor.usuario),
       grupo: asignacionActiva.grupo.nombre,
-      fechaAsignacion: formatearFecha(asignacionActiva.fechaAsignacion),
+      fechaAsignacion: formatearFecha(asignacionActiva.fechaAsignacion) ?? "",
     }
     : null;
 
   const historialAsignaciones = solicitud.asignaciones.map((a) => ({
     gestor: nombreUsuario(a.gestor.usuario),
     grupo: a.grupo.nombre,
-    fechaAsignacion: formatearFecha(a.fechaAsignacion),
+    fechaAsignacion: formatearFecha(a.fechaAsignacion) ?? "",
     fechaReasignacion: a.fechaReasignacion ? formatearFecha(a.fechaReasignacion) : null,
     motivoReasignacion: a.motivoReasignacion,
     asignadoPor: a.asignadoPor ? nombreUsuario(a.asignadoPor.usuario) : null,
@@ -1335,7 +1335,7 @@ export const obtenerTarjetaInformativa = async (
     folio: solicitud.folio,
     solicitanteNombre: nombreUsuario(solicitud.solicitante),
     programa: solicitud.programa.nombre,
-    fechaRegistro: formatearFecha(solicitud.creadoEn),
+    fechaRegistro: formatearFecha(solicitud.creadoEn) ?? "",
     montoSolicitado: montoTotal !== null ? montoTotal.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) : null,
     municipio: solicitud.datosNegocio?.municipioLocal ?? solicitud.datosSolicitante?.ciudad ?? null,
     sector: solicitud.sector,

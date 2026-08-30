@@ -98,7 +98,7 @@ export const actualizarPrograma = async (
       });
     }
 
-    return tx.programa.findUnique({
+    return tx.programa.findUniqueOrThrow({
       where: { id },
       include: includePrograma,
     });
