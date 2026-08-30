@@ -6,30 +6,30 @@ import type { ElementType } from "react";
 import { cn } from "@/shared/lib/cn";
 import { RequerimientoSegmented } from "./RequerimientoSegmented";
 import {
-    Requerimiento,
-    SeccionSolicitud,
     SECCION_LABELS,
+    type Requerimiento,
+    type SeccionSolicitud,
     type SeccionProgramaFormData,
 } from "@/features/settings/types/programa.types";
 
 const SECCION_ICONS: Record<SeccionSolicitud, ElementType> = {
-    [SeccionSolicitud.SOLICITANTE]: User,
-    [SeccionSolicitud.AVAL]: BadgeCheck,
-    [SeccionSolicitud.CREDITO]: DollarSign,
-    [SeccionSolicitud.GARANTIA]: ShieldCheck,
-    [SeccionSolicitud.NEGOCIO]: Building2,
-    [SeccionSolicitud.MERCADO]: LineChart,
-    [SeccionSolicitud.BANCARIOS]: Landmark,
+    SOLICITANTE: User,
+    AVAL: BadgeCheck,
+    CREDITO: DollarSign,
+    GARANTIA: ShieldCheck,
+    NEGOCIO: Building2,
+    MERCADO: LineChart,
+    BANCARIOS: Landmark,
 };
 
 export const ORDEN_SECCIONES: SeccionSolicitud[] = [
-    SeccionSolicitud.SOLICITANTE,
-    SeccionSolicitud.AVAL,
-    SeccionSolicitud.CREDITO,
-    SeccionSolicitud.GARANTIA,
-    SeccionSolicitud.NEGOCIO,
-    SeccionSolicitud.MERCADO,
-    SeccionSolicitud.BANCARIOS,
+    "SOLICITANTE",
+    "AVAL",
+    "CREDITO",
+    "GARANTIA",
+    "NEGOCIO",
+    "MERCADO",
+    "BANCARIOS",
 ];
 
 interface Props {
@@ -39,7 +39,7 @@ interface Props {
 
 export function SeccionesSelector({ value, onChange }: Props) {
     const getRequerimiento = (seccion: SeccionSolicitud): Requerimiento =>
-        value.find((s) => s.seccion === seccion)?.requerimiento ?? Requerimiento.NO_REQUIERE;
+        value.find((s) => s.seccion === seccion)?.requerimiento ?? "NO_REQUIERE";
 
     const setRequerimiento = (seccion: SeccionSolicitud, requerimiento: Requerimiento) => {
         const existe = value.some((s) => s.seccion === seccion);
@@ -54,7 +54,7 @@ export function SeccionesSelector({ value, onChange }: Props) {
             {ORDEN_SECCIONES.map((seccion) => {
                 const Icon = SECCION_ICONS[seccion];
                 const requerimiento = getRequerimiento(seccion);
-                const activa = requerimiento !== Requerimiento.NO_REQUIERE;
+                const activa = requerimiento !== "NO_REQUIERE";
 
                 return (
                     <div

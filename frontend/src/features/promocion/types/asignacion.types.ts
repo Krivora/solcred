@@ -1,23 +1,9 @@
 // lib/types/asignacion.types.ts
+import type { CampoRegla, OperadorRegla, TipoPersona } from '@/shared/types/domain.enums'
 
-// ─── Enums (espejo del backend) ───────────────────────────────────────────────
+// ─── Enums (fuente única: @/shared/types/domain.enums, generados desde Prisma) ──
+export type { CampoRegla, OperadorRegla, TipoPersona }
 
-export type CampoRegla =
-    | 'TIPO_PERSONA'
-    | 'SECTOR'
-    | 'TAMANO_EMPRESA'
-    | 'PROGRAMA_ID'
-    | 'MONTO_SOLICITADO'
-
-export type OperadorRegla =
-    | 'IGUAL'
-    | 'DIFERENTE'
-    | 'EN_LISTA'
-    | 'MAYOR_QUE'
-    | 'MENOR_QUE'
-    | 'MAYOR_IGUAL'
-    | 'MENOR_IGUAL'
-export type TipoPersona = 'FISICA' | 'MORAL'
 // ─── Reglas ───────────────────────────────────────────────────────────────────
 
 export interface ReglaGrupo {
@@ -180,12 +166,5 @@ export interface SolicitudAsignacion {
     } | null
 }
 
-export interface PaginatedResponse<T> {
-    data: T[]
-    meta: {
-        total: number
-        page: number
-        limit: number
-        totalPages: number
-    }
-}
+// `{ data, meta: { limit } }` — estilo admin/promocion. Ver @/shared/types/api.
+export type { RespuestaConMeta as PaginatedResponse } from '@/shared/types/api'

@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "solcred",
+  "description": "Monorepo ligero SIN workspaces: frontend/ y backend/ tienen su propio package.json. Aquí solo viven los scripts de contrato frontend↔backend (usan el toolchain ya instalado en frontend/).",
+  "scripts": {
+    "gen:enums": "npm --prefix frontend run gen:enums",
+    "check:contract": "cd frontend && node_modules/.bin/tsc -p ../scripts/tsconfig.json --noEmit"
+  }
+}

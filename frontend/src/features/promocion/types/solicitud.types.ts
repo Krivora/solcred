@@ -9,6 +9,8 @@ import {
     TipoVivienda
 } from '@/shared/types/solicitudes.types'
 import { EstatusDocumento } from '@/shared/types/documento.types'
+import type { PaginacionMeta, RespuestaConMeta } from '@/shared/types/api'
+export type { PaginacionMeta }
 
 export interface GestorAsignado {
     id: string
@@ -54,17 +56,7 @@ export interface SolicitudPromocion {
     actualizadoEn: string
 }
 
-export interface PaginacionMeta {
-    total: number
-    page: number
-    limit: number
-    totalPages: number
-}
-
-export interface SolicitudesPromocionResponse {
-    data: SolicitudPromocion[]
-    meta: PaginacionMeta
-}
+export type SolicitudesPromocionResponse = RespuestaConMeta<SolicitudPromocion>
 
 export interface StatsPromocion {
     total: number

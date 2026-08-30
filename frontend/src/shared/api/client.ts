@@ -1,3 +1,5 @@
+import type { ApiResponse } from '@/shared/types/api';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -21,7 +23,7 @@ export class ApiError extends Error {
 }
 
 async function parseErrorResponse(response: Response): Promise<never> {
-  let json: { message?: string; errors?: string[] } | null = null;
+  let json: Partial<ApiResponse<unknown>> | null = null;
   try {
     json = await response.json();
   } catch {
@@ -30,7 +32,7 @@ async function parseErrorResponse(response: Response): Promise<never> {
   throw new ApiError(
     response.status,
     json?.message ?? 'Error inesperado',
-    json?.errors,
+    Array.isArray(json?.errors) ? (json.errors as string[]) : undefined,
   );
 }
 
@@ -70,10 +72,14 @@ export async function apiRequest<T>(
     return (await response.blob()) as unknown as T;
   }
 
-  const json = await response.json();
+  const json = (await response.json()) as ApiResponse<T>;
 
   if (!json.success) {
-    throw new ApiError(response.status, json.message ?? 'Error inesperado', json.errors);
+    throw new ApiError(
+      response.status,
+      json.message ?? 'Error inesperado',
+      Array.isArray(json.errors) ? (json.errors as string[]) : undefined,
+    );
   }
 
   return json.data as T;

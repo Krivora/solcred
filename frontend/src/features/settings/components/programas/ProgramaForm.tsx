@@ -23,11 +23,7 @@ import { SectionHeading } from "./form/SectionHeading";
 import { ToggleCard } from "./form/ToggleCard";
 
 import { crearPrograma, actualizarPrograma } from "@/features/settings/api/programas.api";
-import {
-    Requerimiento,
-    type Programa,
-    type ProgramaFormData,
-} from "@/features/settings/types/programa.types";
+import type { Programa, ProgramaFormData } from "@/features/settings/types/programa.types";
 
 interface ProgramaFormProps {
     programa?: Programa;
@@ -43,7 +39,7 @@ const defaultValues: ProgramaFormData = {
     datosFinancierosCompletos: false,
     secciones: ORDEN_SECCIONES.map((seccion) => ({
         seccion,
-        requerimiento: Requerimiento.NO_REQUIERE,
+        requerimiento: "NO_REQUIERE",
     })),
 };
 

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Contrato de tipos frontend <-> backend.
+# Instalar una vez por clon:  git config core.hooksPath githooks
+#
+set -e
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+echo "> pre-push: regenerando enums de dominio..."
+npm run --silent gen:enums
+
+if ! git diff --quiet HEAD -- frontend/src/shared/types/domain.enums.ts; then
+  echo ""
+  echo "x  domain.enums.ts esta desactualizado respecto a schema.prisma."
+  echo "   Se acaba de regenerar. Revisa el diff, haz commit y vuelve a hacer push:"
+  echo ""
+  git --no-pager diff -- frontend/src/shared/types/domain.enums.ts
+  exit 1
+fi
+
+echo "> pre-push: chequeando contrato frontend<->backend..."
+npm run --silent check:contract
+
+echo "> pre-push OK"

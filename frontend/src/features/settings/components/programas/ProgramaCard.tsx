@@ -13,11 +13,11 @@ import {
     DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
-import { Requerimiento, SeccionSolicitud, type Programa } from "@/features/settings/types/programa.types";
+import type { Programa } from "@/features/settings/types/programa.types";
 
 const avalEsObligatorio = (programa: Programa): boolean =>
     !!programa.secciones?.some(
-        (s) => s.seccion === SeccionSolicitud.AVAL && s.requerimiento === Requerimiento.OBLIGATORIO,
+        (s) => s.seccion === "AVAL" && s.requerimiento === "OBLIGATORIO",
     );
 
 interface ProgramaCardProps {

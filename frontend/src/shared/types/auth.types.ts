@@ -1,7 +1,6 @@
-export type Rol = 'ADMIN' | 'ANALISTA' | 'GESTOR' | 'SUPERVISOR';
+import type { Rol, TipoPersona, TipoUsuario } from './domain.enums';
+export type { Rol, TipoPersona, TipoUsuario };
 export type RolAplicacion = Rol | 'CLIENTE';
-export type TipoPersona = 'FISICA' | 'MORAL';
-export type TipoUsuario = 'CLIENTE' | 'PERSONAL';
 
 export interface PersonalInfo {
   id: string;

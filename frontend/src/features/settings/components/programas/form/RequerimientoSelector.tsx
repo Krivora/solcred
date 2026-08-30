@@ -1,12 +1,12 @@
 import { Check } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Requerimiento } from "@/features/settings/types/programa.types";
+import type { Requerimiento } from "@/features/settings/types/programa.types";
 import type { ElementType } from "react";
 
-const options = [
-    { value: Requerimiento.NO_REQUIERE, label: "No requiere", description: "No es necesario para el trámite" },
-    { value: Requerimiento.OPCIONAL,    label: "Opcional",    description: "Puede incluirse voluntariamente" },
-    { value: Requerimiento.OBLIGATORIO, label: "Obligatorio", description: "Requisito indispensable" },
+const options: { value: Requerimiento; label: string; description: string }[] = [
+    { value: "NO_REQUIERE", label: "No requiere", description: "No es necesario para el trámite" },
+    { value: "OPCIONAL",    label: "Opcional",    description: "Puede incluirse voluntariamente" },
+    { value: "OBLIGATORIO", label: "Obligatorio", description: "Requisito indispensable" },
 ];
 
 interface Props {

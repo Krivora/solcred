@@ -1,0 +1,4 @@
+# La raíz no tiene dependencias propias (los scripts usan el toolchain de frontend/).
+# Si alguien corre `npm install` aquí por error, que no se cuele nada.
+/node_modules
+/package-lock.json

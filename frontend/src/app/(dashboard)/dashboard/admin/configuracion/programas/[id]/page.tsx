@@ -35,10 +35,10 @@ import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 import { ORDEN_SECCIONES } from "@/features/settings/components/programas/form/SeccionesSelector";
 import {
-    Requerimiento,
-    SeccionSolicitud,
     SECCION_LABELS,
     REQUERIMIENTO_LABELS,
+    type Requerimiento,
+    type SeccionSolicitud,
 } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/cn";
 
@@ -50,19 +50,19 @@ const fmt = (n: number) =>
     }).format(n);
 
 const SECCION_ICONS: Record<SeccionSolicitud, ElementType> = {
-    [SeccionSolicitud.SOLICITANTE]: User,
-    [SeccionSolicitud.AVAL]: BadgeCheck,
-    [SeccionSolicitud.CREDITO]: DollarSign,
-    [SeccionSolicitud.GARANTIA]: ShieldCheck,
-    [SeccionSolicitud.NEGOCIO]: Building2,
-    [SeccionSolicitud.MERCADO]: LineChart,
-    [SeccionSolicitud.BANCARIOS]: Landmark,
+    SOLICITANTE: User,
+    AVAL: BadgeCheck,
+    CREDITO: DollarSign,
+    GARANTIA: ShieldCheck,
+    NEGOCIO: Building2,
+    MERCADO: LineChart,
+    BANCARIOS: Landmark,
 };
 
 const REQUERIMIENTO_COLOR: Record<Requerimiento, string> = {
-    [Requerimiento.OBLIGATORIO]: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    [Requerimiento.OPCIONAL]: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    [Requerimiento.NO_REQUIERE]: "bg-muted text-muted-foreground",
+    OBLIGATORIO: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    OPCIONAL: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    NO_REQUIERE: "bg-muted text-muted-foreground",
 };
 
 export default function DetalleProgramaPage() {
@@ -94,7 +94,7 @@ export default function DetalleProgramaPage() {
 
     const getRequerimiento = (seccion: SeccionSolicitud): Requerimiento =>
         programa.secciones?.find((s) => s.seccion === seccion)?.requerimiento ??
-        Requerimiento.NO_REQUIERE;
+        "NO_REQUIERE";
 
     return (
         <div className="mx-auto max-w-8xl space-y-6">
@@ -205,7 +205,7 @@ export default function DetalleProgramaPage() {
                         {ORDEN_SECCIONES.map((seccion) => {
                             const Icon = SECCION_ICONS[seccion];
                             const requerimiento = getRequerimiento(seccion);
-                            const activa = requerimiento !== Requerimiento.NO_REQUIERE;
+                            const activa = requerimiento !== "NO_REQUIERE";
 
                             return (
                                 <div

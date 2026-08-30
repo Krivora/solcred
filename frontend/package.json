@@ -3,7 +3,10 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
+        "gen:enums": "tsx ../scripts/gen-domain-enums.ts",
+        "predev": "npm run gen:enums",
         "dev": "next dev",
+        "prebuild": "npm run gen:enums",
         "build": "next build",
         "start": "next start",
         "lint": "eslint"
@@ -37,6 +40,7 @@
         "eslint": "^9",
         "eslint-config-next": "16.2.6",
         "tailwindcss": "^4",
+        "tsx": "^4.22.2",
         "typescript": "^5"
     }
 }
