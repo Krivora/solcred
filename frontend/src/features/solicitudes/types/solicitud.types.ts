@@ -11,12 +11,10 @@ import {
   TipoVivienda,
 } from '@/shared/types/solicitudes.types'
 
-import { Programa } from '@/features/solicitudes/types/programa.types'
-export type SeccionSolicitud =
-  | 'SOLICITANTE' | 'AVAL' | 'CREDITO' | 'GARANTIA'
-  | 'NEGOCIO' | 'MERCADO' | 'BANCARIOS'
+import { Programa } from '@/features/settings/types/programa.types'
+import type { SeccionSolicitud, Requerimiento } from '@/shared/types/domain.enums'
+export type { SeccionSolicitud, Requerimiento }
 
-export type Requerimiento = 'NO_REQUIERE' | 'OPCIONAL' | 'OBLIGATORIO'
 export interface ProgramaSeccion {
   seccion: SeccionSolicitud
   requerimiento: Requerimiento

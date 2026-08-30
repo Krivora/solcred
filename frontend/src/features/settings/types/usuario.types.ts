@@ -1,6 +1,6 @@
 import type { Rol, RolAplicacion } from "@/shared/types/auth.types";
-
-export type TipoPersona = "FISICA" | "MORAL";
+import type { TipoPersona, TipoUsuario } from "@/shared/types/domain.enums";
+export type { TipoPersona };
 
 export interface PersonalInfo {
   id: string;
@@ -14,7 +14,7 @@ export interface PersonalInfo {
 export interface Usuario {
   id: string;
   correo: string;
-  tipoUsuario: "CLIENTE" | "PERSONAL";
+  tipoUsuario: TipoUsuario;
   tipoPersona: TipoPersona;
   nombre: string;
   apellidoPaterno: string;

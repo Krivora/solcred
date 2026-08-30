@@ -1,20 +1,8 @@
-export type AplicaA = "FISICA" | "MORAL" | "AMBOS";
+// Enums de dominio: fuente única generada desde Prisma (`npm run gen:enums`).
+import type { Requerimiento, SeccionSolicitud, TipoPersonaDocumento } from "@/shared/types/domain.enums";
+export type { Requerimiento, SeccionSolicitud };
 
-export enum Requerimiento {
-    NO_REQUIERE = "NO_REQUIERE",
-    OPCIONAL = "OPCIONAL",
-    OBLIGATORIO = "OBLIGATORIO",
-}
-
-export enum SeccionSolicitud {
-    SOLICITANTE = "SOLICITANTE",
-    AVAL = "AVAL",
-    CREDITO = "CREDITO",
-    GARANTIA = "GARANTIA",
-    NEGOCIO = "NEGOCIO",
-    MERCADO = "MERCADO",
-    BANCARIOS = "BANCARIOS",
-}
+export type AplicaA = TipoPersonaDocumento;
 
 export interface TipoDocumento {
     id: string;
@@ -91,17 +79,17 @@ export interface ProgramaFormData {
 
 // Útil para renderizar el checklist en el form (label legible por sección)
 export const SECCION_LABELS: Record<SeccionSolicitud, string> = {
-    [SeccionSolicitud.SOLICITANTE]: "Solicitante",
-    [SeccionSolicitud.AVAL]: "Aval",
-    [SeccionSolicitud.CREDITO]: "Crédito",
-    [SeccionSolicitud.GARANTIA]: "Garantía",
-    [SeccionSolicitud.NEGOCIO]: "Negocio",
-    [SeccionSolicitud.MERCADO]: "Mercado",
-    [SeccionSolicitud.BANCARIOS]: "Bancarios",
+    SOLICITANTE: "Solicitante",
+    AVAL: "Aval",
+    CREDITO: "Crédito",
+    GARANTIA: "Garantía",
+    NEGOCIO: "Negocio",
+    MERCADO: "Mercado",
+    BANCARIOS: "Bancarios",
 };
 
 export const REQUERIMIENTO_LABELS: Record<Requerimiento, string> = {
-    [Requerimiento.NO_REQUIERE]: "No aplica",
-    [Requerimiento.OPCIONAL]: "Opcional",
-    [Requerimiento.OBLIGATORIO]: "Obligatorio",
+    NO_REQUIERE: "No aplica",
+    OPCIONAL: "Opcional",
+    OBLIGATORIO: "Obligatorio",
 };

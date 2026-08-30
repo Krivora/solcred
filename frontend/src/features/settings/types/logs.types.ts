@@ -1,22 +1,9 @@
 // ─────────────────────────────────────────
-// ENUMS
+// ENUMS — fuente única: @/shared/types/domain.enums (generados desde Prisma)
 // ─────────────────────────────────────────
 
-export type AccionLog =
-  | 'CREAR'
-  | 'ACTUALIZAR'
-  | 'ELIMINAR'
-  | 'CONSULTAR'
-  | 'LOGIN'
-  | 'LOGOUT'
-  | 'ERROR';
-
-export type ModuloLog =
-  | 'AUTH'
-  | 'USUARIOS'
-  | 'PROGRAMAS'
-  | 'SOLICITUDES'
-  | 'DOCUMENTOS';
+import type { AccionLog, ModuloLog } from '@/shared/types/domain.enums';
+export type { AccionLog, ModuloLog };
 
 // ─────────────────────────────────────────
 // MODELS

@@ -1,10 +1,10 @@
 import { cn } from "@/shared/lib/cn";
-import { Requerimiento } from "@/features/settings/types/programa.types";
+import type { Requerimiento } from "@/features/settings/types/programa.types";
 
 const options: { value: Requerimiento; label: string }[] = [
-    { value: Requerimiento.NO_REQUIERE, label: "No" },
-    { value: Requerimiento.OPCIONAL, label: "Opcional" },
-    { value: Requerimiento.OBLIGATORIO, label: "Obligatorio" },
+    { value: "NO_REQUIERE", label: "No" },
+    { value: "OPCIONAL", label: "Opcional" },
+    { value: "OBLIGATORIO", label: "Obligatorio" },
 ];
 
 interface Props {
