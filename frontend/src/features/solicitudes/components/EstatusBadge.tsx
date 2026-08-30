@@ -6,6 +6,7 @@ import {
   Search,
   CheckCircle2,
   XCircle,
+  AlertTriangle,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 
@@ -28,10 +29,10 @@ const CONFIG: Record< EstatusSolicitud,
       'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700',
   },
   EN_CORRECCION: {
-    label: 'Corrección',
-    icon: FileEdit,
+    label: 'En corrección',
+    icon: AlertTriangle,
     className:
-      'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700',
+      'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-900',
   },
   PENDIENTE: {
     label: 'Pendiente',

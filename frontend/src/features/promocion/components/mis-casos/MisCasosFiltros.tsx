@@ -23,7 +23,7 @@ const FIELDS: FilterFieldConfig[] = [
     allLabel: 'Todos los estatus',
     options: [
       { value: 'EN_REVISION',  label: 'En revisión',  dotColor: 'bg-primary'    },
-      { value: 'EN_CORRECION', label: 'En corrección', dotColor: 'bg-orange-500' },
+      { value: 'EN_CORRECCION', label: 'En corrección', dotColor: 'bg-orange-500' },
     ],
   },
   TIPO_PERSONA_FIELD,

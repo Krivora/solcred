@@ -12,37 +12,37 @@ const STATS_CONFIG = [
         key: 'totalAprobados' as const,
         icon: CheckCircle2,
         label: 'Aprobados',
-        colorText: 'text-emerald-600',
-        colorBg: 'bg-emerald-50',
-        colorRing: 'ring-emerald-200/80',
+        colorText: 'text-emerald-600 dark:text-emerald-400',
+        colorBg: 'bg-emerald-50 dark:bg-emerald-950/40',
+        colorRing: 'ring-emerald-200/80 dark:ring-emerald-900/70',
         barColor: 'bg-emerald-400',
     },
     {
         key: 'totalPendientes' as const,
         icon: Clock,
         label: 'En revisión',
-        colorText: 'text-amber-600',
-        colorBg: 'bg-amber-50',
-        colorRing: 'ring-amber-200/80',
+        colorText: 'text-amber-600 dark:text-amber-400',
+        colorBg: 'bg-amber-50 dark:bg-amber-950/40',
+        colorRing: 'ring-amber-200/80 dark:ring-amber-900/70',
         barColor: 'bg-amber-400',
     },
     {
         key: 'totalRechazados' as const,
         icon: XCircle,
         label: 'Rechazados',
-        colorText: 'text-red-500',
-        colorBg: 'bg-red-50',
-        colorRing: 'ring-red-200/80',
+        colorText: 'text-red-500 dark:text-red-400',
+        colorBg: 'bg-red-50 dark:bg-red-950/40',
+        colorRing: 'ring-red-200/80 dark:ring-red-900/70',
         barColor: 'bg-red-400',
     },
     {
         key: 'totalNoSubidos' as const,
         icon: Upload,
         label: 'Sin subir',
-        colorText: 'text-slate-500',
-        colorBg: 'bg-slate-50',
-        colorRing: 'ring-slate-200/80',
-        barColor: 'bg-slate-300',
+        colorText: 'text-slate-500 dark:text-slate-400',
+        colorBg: 'bg-slate-50 dark:bg-slate-800/50',
+        colorRing: 'ring-slate-200/80 dark:ring-slate-700/70',
+        barColor: 'bg-slate-300 dark:bg-slate-600',
     },
 ]
 
@@ -157,7 +157,7 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                                 </span>
                             </div>
                             {/* Barra de proporción */}
-                            <div className="h-1 w-full rounded-full bg-black/5 overflow-hidden">
+                            <div className="h-1 w-full rounded-full bg-foreground/10 overflow-hidden">
                                 <div
                                     className={`h-full rounded-full ${barColor} transition-all duration-700`}
                                     style={{ width: `${pct}%` }}

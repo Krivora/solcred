@@ -80,7 +80,7 @@ function MotivoRechazo({ motivo }: { motivo: string }) {
             <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 max-w-full sm:max-w-45 cursor-help group">
                     <XCircle className="h-3 w-3 shrink-0 text-red-400" />
-                    <p className="text-xs text-red-600 truncate group-hover:underline decoration-dashed underline-offset-2">
+                    <p className="text-xs text-red-600 dark:text-red-400 truncate group-hover:underline decoration-dashed underline-offset-2">
                         {motivo}
                     </p>
                 </div>
@@ -167,7 +167,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 dark:border-emerald-900 dark:text-emerald-400 dark:hover:bg-emerald-950/40 dark:hover:border-emerald-800 dark:hover:text-emerald-300 transition-all`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'APROBADO')}
                         aria-label={`Aprobar ${nombreDocumento}`}
@@ -182,7 +182,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:border-red-800 dark:hover:text-red-300 transition-all`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'RECHAZADO')}
                         aria-label={`Rechazar ${nombreDocumento}`}
@@ -253,14 +253,14 @@ function TipoBadge({ esObligatorio }: { esObligatorio: boolean }) {
     return esObligatorio ? (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-red-600 border-red-200 bg-red-50 shrink-0"
+            className="text-[10px] px-1.5 py-0 h-4 text-red-600 border-red-200 bg-red-50 dark:text-red-300 dark:border-red-900 dark:bg-red-950/40 shrink-0"
         >
             Requerido
         </Badge>
     ) : (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-slate-400 border-slate-200 bg-slate-50 shrink-0"
+            className="text-[10px] px-1.5 py-0 h-4 text-slate-400 border-slate-200 bg-slate-50 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800/50 shrink-0"
         >
             Opcional
         </Badge>
