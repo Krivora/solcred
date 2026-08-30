@@ -2,15 +2,15 @@
 
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
-import { useExpediente } from '@/shared/lib/hooks/useExpediente'
-import { useHistorialDocumento } from '@/shared/lib/hooks/useExpediente'
-import { useSubirDocumento } from '@/shared/lib/hooks/useSubirDocumento'
-import { useAuthStore } from '@/shared/lib/store/auth.store'
+import { useExpediente } from '@/features/expediente/hooks/useExpediente'
+import { useHistorialDocumento } from '@/features/expediente/hooks/useExpediente'
+import { useSubirDocumento } from '@/features/expediente/hooks/useSubirDocumento'
+import { useAuthStore } from '@/shared/stores/auth.store'
 
-import { DatosGeneralesCard } from '@/features/expediente/Datosgeneralescard'
-import { MetricasExpedientePanel } from '@/features/expediente/Metricasexpedientebar'
-import { TablaDocumentos } from '@/features/expediente/Tabladocumentos'
-import { HistorialDocumentoSheet } from '@/features/expediente/Historialdocumentosheet'
+import { DatosGeneralesCard } from '@/features/expediente/components/DatosGeneralesCard'
+import { MetricasExpedientePanel } from '@/features/expediente/components/MetricasExpedienteBar'
+import { TablaDocumentos } from '@/features/expediente/components/TablaDocumentos'
+import { HistorialDocumentoSheet } from '@/features/expediente/components/HistorialDocumentoSheet'
 
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
@@ -80,8 +80,6 @@ export default function ExpedientePage({
         refetch,
         validarDocumento,
     } = useExpediente(solicitudId)
-    console.log("USUARIO", usuario)
-    console.log("EXPEDIENTE", expediente)
     // ─── Uploads ──────────────────────────────────────────────
     const {
         subiendo,

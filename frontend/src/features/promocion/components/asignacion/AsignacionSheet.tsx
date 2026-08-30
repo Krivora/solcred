@@ -16,7 +16,7 @@ import { Label } from '@/shared/components/ui/label'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { CargaBadge } from './CargaBadge'
 import { useAsignacion } from '@/features/promocion/hooks/useAsignacion'
-import type { GestorConCarga } from '../../types/asignacion.types'
+import type { GestorConCarga } from '@/features/promocion/types/asignacion.types'
 
 interface Props {
     open: boolean

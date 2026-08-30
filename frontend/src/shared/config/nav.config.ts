@@ -18,7 +18,7 @@ import {
   BadgeDollarSign,
   Settings2,
 } from "lucide-react";
-import { RolAplicacion } from "@/shared/lib/types/auth.types";
+import { RolAplicacion } from "@/shared/types/auth.types";
 
 export interface NavItem {
   label: string;

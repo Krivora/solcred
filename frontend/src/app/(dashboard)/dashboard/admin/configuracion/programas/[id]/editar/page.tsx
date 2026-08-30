@@ -7,7 +7,7 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { ProgramaForm } from "@/features/settings/components/programas/ProgramaForm";
-import { getPrograma } from "@/features/settings/api/programas";
+import { getPrograma } from "@/features/settings/api/programas.api";
 import type { Programa } from "@/features/settings/types/programa.types";
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 

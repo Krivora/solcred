@@ -19,7 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/shared/components/ui/tooltip';
-import type { LogAuditoria } from '../../types/logs.types';
+import type { LogAuditoria } from '@/features/settings/types/logs.types';
 import {
   ACCION_CONFIG,
   MODULO_CONFIG,

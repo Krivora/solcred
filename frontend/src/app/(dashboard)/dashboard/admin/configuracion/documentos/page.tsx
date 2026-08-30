@@ -11,7 +11,7 @@ import {
 } from "@/shared/components/ui/table";
 import { TipoDocumentoDialog } from "@/features/settings/components/programas/TipoDocumentoDialog";
 import { useTiposDocumento } from "@/features/settings/hooks/useProgramas";
-import { PageHeader } from "@/shared/components/ui/PageHeader";
+import { PageHeader } from "@/shared/components/common/PageHeader";
 
 export default function DocumentosPage() {
     const { tipos, cargando, recargar } = useTiposDocumento();

@@ -1,8 +1,8 @@
 import { Users, ShieldCheck, BarChart2, UserX } from "lucide-react";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import type { Usuario } from "../../types/usuario.types";
-import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
+import type { Usuario } from "@/features/settings/types/usuario.types";
+import { obtenerRolEfectivo } from "@/shared/types/auth.types";
 interface UsuariosStatsProps {
   usuarios: Usuario[];
   isLoading: boolean;

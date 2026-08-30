@@ -7,12 +7,12 @@ import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Checkbox } from '@/shared/components/ui/checkbox'
-import { cn } from "@/shared/lib/utils/cn"
+import { cn } from "@/shared/lib/cn"
 import {
     guardarDatosNegocioSchema,
     type GuardarDatosNegocioDto,
-} from '@/features/solicitudes/schemas/solicitudes.schema'
-import { CodigoPostalInput, TelefonoInput } from '@/shared/components/ui/inputs'
+} from '@/features/solicitudes/schemas/solicitud.schema'
+import { CodigoPostalInput, TelefonoInput } from '@/shared/components/common/inputs'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosNegocioDto>

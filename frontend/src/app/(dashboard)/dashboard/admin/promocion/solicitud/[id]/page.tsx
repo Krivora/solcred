@@ -7,13 +7,13 @@ import { ArrowLeft, FolderOpen, FileText, AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Card } from '@/shared/components/ui/card'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import { ErrorState } from '@/shared/components/ui/ErrorState'
+import { ErrorState } from '@/shared/components/common/ErrorState'
 import { useSolicitudDetalle } from '@/features/promocion/hooks/useSolicitudesPromocion'
 import { SolicitudTimeline } from '@/features/promocion/components/detalle/SolicitudTimeline'
 import { SolicitudInfoGeneral } from '@/features/promocion/components/detalle/SolicitudInfoGeneral'
 import { SolicitudDocumentosResumen } from '@/features/promocion/components/detalle/SolicitudDocumentosResumen'
 import { ESTATUS_STYLES } from '@/shared/config/solicitudes.config'
-import { useNavAnimation } from '@/shared/lib/hooks/useNavAnimation'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 interface Props {
     params: Promise<{ id: string }>

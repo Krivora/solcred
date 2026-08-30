@@ -1,15 +1,14 @@
 'use client';
 
 import { ShieldAlert } from 'lucide-react';
-import { useAuthStore } from '@/shared/lib/store/auth.store';
-import { getDefaultRouteForRole } from '@/shared/config/route-permissions';
-import { ErrorState } from '@/shared/components/ui/ErrorState';
+import { useAuthStore } from '@/shared/stores/auth.store';
+import { getDefaultRouteForRole } from '@/shared/config/route-permissions.config';
+import { ErrorState } from '@/shared/components/common/ErrorState';
 
 export default function UnauthorizedPage() {
     const usuario = useAuthStore((state) => state.usuario);
     const rol = useAuthStore((state) => state.rol);
     const isLoading = useAuthStore((state) => state.isLoading);
-    console.log('UnauthorizedPage render', { usuario, rol, isLoading });
     if (isLoading) {
         return null;
     }

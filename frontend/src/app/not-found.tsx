@@ -1,9 +1,9 @@
 'use client';
 
 import { FileQuestion } from 'lucide-react';
-import { useAuthStore } from '@/shared/lib/store/auth.store';
-import { getDefaultRouteForRole } from '@/shared/config/route-permissions';
-import { ErrorState } from '@/shared/components/ui/ErrorState';
+import { useAuthStore } from '@/shared/stores/auth.store';
+import { getDefaultRouteForRole } from '@/shared/config/route-permissions.config';
+import { ErrorState } from '@/shared/components/common/ErrorState';
 
 export default function DashboardNotFound() {
     const usuario = useAuthStore((state) => state.usuario);

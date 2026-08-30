@@ -3,7 +3,7 @@
 import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
-import { cn } from "@/shared/lib/utils/cn"
+import { cn } from "@/shared/lib/cn"
 
 import { Button } from "./button"
 

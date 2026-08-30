@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import * as gruposApi from '../api/grupos.api'
+import * as gruposApi from '@/features/settings/api/grupos.api'
 import type {
     GrupoGestion,
     CrearGrupoDto,
     ActualizarGrupoDto,
-} from '../types/grupos.types'
-import { grupoToast } from '@/shared/lib/utils/toaster'
+} from '@/features/settings/types/grupos.types'
+import { grupoToast } from '@/shared/lib/toaster'
 
 export function useGrupos() {
     const [grupos, setGrupos] = useState<GrupoGestion[]>([])

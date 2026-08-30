@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "@/shared/components/layout/sidebar/Sidebar";
 import { Header } from "@/shared/components/layout/Header";
-import { useAuthStore } from "@/shared/lib/store/auth.store";
-
+import { useAuthStore } from "@/shared/stores/auth.store";
+import { QueryProvider } from '@/shared/providers/QueryProvider'
 export default function DashboardLayout({
   children,
 }: {
@@ -64,9 +64,12 @@ export default function DashboardLayout({
             - Padding responsivo: menos aire en mobile, más en desktop
             - En pantallas grandes podés agregar max-w-screen-xl si querés limitar
           */}
-          <div className="px-3 py-4 sm:px-6 sm:py-6">
-            {children}
-          </div>
+          <QueryProvider>
+            <div className="px-3 py-4 sm:px-6 sm:py-6">
+              {children}
+            </div>
+          </QueryProvider>
+
         </main>
       </div>
     </div>

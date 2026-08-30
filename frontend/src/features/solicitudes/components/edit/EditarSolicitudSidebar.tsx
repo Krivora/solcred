@@ -1,8 +1,8 @@
 'use client'
 
 import { Check, Circle } from 'lucide-react'
-import { cn } from '@/shared/lib/utils/cn'
-import type { Step } from '../../hooks/useSolicitudForm'
+import { cn } from '@/shared/lib/cn'
+import type { Step } from '@/features/solicitudes/hooks/useSolicitudForm'
 import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 
 const LABELS: Record<Step, string> = {

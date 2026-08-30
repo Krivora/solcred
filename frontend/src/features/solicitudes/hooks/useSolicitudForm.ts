@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { solicitudesApi } from '../api/solicitudes.api'
-import { solicitudesToast } from '@/shared/lib/utils/toaster'
-import { obtenerPasosActivos, esPasoOmitible } from '../lib/pasos'
+import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
+import { solicitudesToast } from '@/shared/lib/toaster'
+import { obtenerPasosActivos, esPasoOmitible } from '@/features/solicitudes/lib/pasos'
 import { useMemo } from 'react'
 import type {
   CrearSolicitudDto,
@@ -14,7 +14,7 @@ import type {
   DatosPersona,
   Solicitud,
 } from '@/features/solicitudes/types/solicitud.types'
-import { ApiError } from '@/shared/lib/client'
+import { ApiError } from '@/shared/api/client'
 
 export type Step =
   | 'programa'

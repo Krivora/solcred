@@ -4,7 +4,7 @@ import { useState } from 'react'
 import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 import { Button } from '@/shared/components/ui/button'
 import { Checkbox } from '@/shared/components/ui/checkbox'
-import { FormError } from '@/shared/components/ui/FormError'
+import { FormError } from '@/shared/components/common/FormError'
 import { Separator } from '@/shared/components/ui/separator'
 import { ChevronLeft, Send, User, Users, Briefcase, ShieldCheck } from 'lucide-react'
 

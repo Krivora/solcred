@@ -27,10 +27,10 @@ import { GrupoForm } from '@/features/settings/components/grupos/GrupoForm'
 import { useGrupos } from '@/features/settings/hooks/useGrupos'
 import type { GrupoGestion, CrearGrupoDto, ActualizarGrupoDto, GestorResumen } from '@/features/settings/types/grupos.types'
 import { CAMPO_LABELS, OPERADOR_LABELS } from '@/features/promocion/types/asignacion.types'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import { useUsuarios } from '@/features/settings/hooks/useUsuarios'
-import { PageHeader } from '@/shared/components/ui/PageHeader'
-import { obtenerRolEfectivo } from '@/shared/lib/types/auth.types'
+import { PageHeader } from '@/shared/components/common/PageHeader'
+import { obtenerRolEfectivo } from '@/shared/types/auth.types'
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

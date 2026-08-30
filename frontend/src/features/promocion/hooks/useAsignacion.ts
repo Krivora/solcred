@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react'
-import * as asignacionApi from '../api/asignacion'
+import * as asignacionApi from '@/features/promocion/api/asignacion.api'
 import type {
     GestorConCarga,
     AsignarManualDto,
     SolicitudAsignacion,
     FiltrosAsignacion,
     PaginatedResponse,
-} from '../types/asignacion.types'
-import type { ResultadoAsignacion } from '../api/asignacion'
-import { solicitudToast } from '@/shared/lib/utils/toaster'
+} from '@/features/promocion/types/asignacion.types'
+import type { ResultadoAsignacion } from '@/features/promocion/api/asignacion.api'
+import { solicitudToast } from '@/shared/lib/toaster'
 
 interface EstadoAsignacionAutomatica {
     total: number

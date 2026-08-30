@@ -3,11 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/shared/components/ui/button'
-import { SolicitudesTable } from '@/features/solicitudes/components/Solicitudestable'
-import { useMisSolicitudes } from '@/features/solicitudes/hooks/Usemissolicitudes'
+import { SolicitudesTable } from '@/features/solicitudes/components/SolicitudesTable'
+import { useMisSolicitudes } from '@/features/solicitudes/hooks/useMisSolicitudes'
 import { Plus, RefreshCw, AlertCircle, AlertTriangle } from 'lucide-react'
-import { cn } from '@/shared/lib/utils/cn'
-import { ESTATUS_FINALES } from '@/shared/lib/types/solicitudes.types'
+import { cn } from '@/shared/lib/cn'
+import { ESTATUS_FINALES } from '@/shared/types/solicitudes.types'
 import {
   Dialog,
   DialogContent,

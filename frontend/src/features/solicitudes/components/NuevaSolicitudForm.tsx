@@ -1,6 +1,6 @@
 'use client'
 
-import { useSolicitudForm } from '../hooks/useSolicitudForm'
+import { useSolicitudForm } from '@/features/solicitudes/hooks/useSolicitudForm'
 import { StepIndicator } from './form/StepIndicator'
 import { StepPrograma } from './form/StepPrograma'
 import { StepGeneral } from './form/StepGeneral'
@@ -12,7 +12,7 @@ import { MercadoForm } from './form/MercadoForm'
 import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
-import { usePerfilUsuario } from '@/features/solicitudes/hooks/usePerfilUsuario'
+import { usePerfilUsuario } from '@/features/auth/hooks/usePerfilUsuario'
 export function NuevaSolicitudForm() {
   const router = useRouter()
   const {
@@ -43,7 +43,6 @@ export function NuevaSolicitudForm() {
     currentStep === 'solicitante' && esFisica && !yaTieneDatosSolicitante
 
   const { usuario, isLoading: cargandoPerfil } = usePerfilUsuario(debePrecargarPerfil)
-  console.log('usuario', usuario)
   const defaultValuesSolicitante = yaTieneDatosSolicitante
     ? solicitud!.datosSolicitante
     : esFisica && usuario

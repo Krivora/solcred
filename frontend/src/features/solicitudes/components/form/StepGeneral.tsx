@@ -2,16 +2,16 @@
 
 import { useState } from 'react'
 import type { Solicitud,DatosGenerales } from '@/features/solicitudes/types/solicitud.types'
-import { TipoPersona,Sector, TamanoEmpresa } from '@/shared/lib/types/solicitudes.types'
+import { TipoPersona,Sector, TamanoEmpresa } from '@/shared/types/solicitudes.types'
 import { Button } from '@/shared/components/ui/button'
-import { FormError } from '@/shared/components/ui/FormError'
+import { FormError } from '@/shared/components/common/FormError'
 import {
   ChevronLeft, ChevronRight,
   User, Building2,
   Wheat, Factory, ShoppingBag, Headphones, Cpu, LayoutGrid,
   Store, Landmark, Building, TrendingUp,
 } from 'lucide-react'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 
 interface Props {
   solicitud: Solicitud

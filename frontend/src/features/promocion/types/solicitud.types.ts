@@ -7,8 +7,8 @@ import {
     TamanoEmpresa,
     TipoPersona,
     TipoVivienda
-} from '@/shared/lib/types/solicitudes.types'
-import { EstatusDocumento } from '@/shared/lib/types/documento.types'
+} from '@/shared/types/solicitudes.types'
+import { EstatusDocumento } from '@/shared/types/documento.types'
 
 export interface GestorAsignado {
     id: string

@@ -1,8 +1,8 @@
 'use client'
 
 import { Check } from 'lucide-react'
-import { cn } from "@/shared/lib/utils/cn"
-import type { Step } from '../../hooks/useSolicitudForm'
+import { cn } from "@/shared/lib/cn"
+import type { Step } from '@/features/solicitudes/hooks/useSolicitudForm'
 
 const LABELS: Record<Step, string> = {
     programa: 'Programa',

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import * as programasApi from '../api/programas'
+import * as programasApi from '@/features/settings/api/programas.api'
 import type {
     Programa,
     ProgramaFormData,
     TipoDocumento,
-} from '../types/programa.types'
-import { programaToast } from '@/shared/lib/utils/toaster'
+} from '@/features/settings/types/programa.types'
+import { programaToast } from '@/shared/lib/toaster'
 
 export function useProgramas() {
     const [programas, setProgramas] = useState<Programa[]>([])

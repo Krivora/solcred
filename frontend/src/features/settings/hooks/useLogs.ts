@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs';
+import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs.api';
 import type {
   LogAuditoria,
   LogFilters,
   LogsPaginados,
   ResumenLogs,
-} from '../types/logs.types';
+} from '@/features/settings/types/logs.types';
 
 const DEFAULT_FILTERS: LogFilters = {
   accion: '',

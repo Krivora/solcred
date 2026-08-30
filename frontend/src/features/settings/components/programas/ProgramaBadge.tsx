@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/shared/components/ui/badge";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 interface ProgramaBadgeProps {
     activo: boolean;

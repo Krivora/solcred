@@ -1,7 +1,7 @@
 'use client'
 
 import { CheckSquare } from 'lucide-react'
-import { SolicitudesTable } from '../SolicitudesTable'
+import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 import { DocumentosDropdown } from './DocumentosDropdown'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'

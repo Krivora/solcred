@@ -3,7 +3,7 @@ import { Card } from '@/shared/components/ui/card'
 import { FileCheck, FileClock, FileX, CircleDashed } from 'lucide-react'
 import { formatFecha } from '@/shared/config/solicitudes.config'
 import type { DocumentoDetalle, DocumentoRequeridoPrograma } from '@/features/promocion/types/solicitud.types'
-import type { TipoPersona } from '@/shared/lib/types/solicitudes.types'
+import type { TipoPersona } from '@/shared/types/solicitudes.types'
 
 interface Props {
     documentos: DocumentoDetalle[]

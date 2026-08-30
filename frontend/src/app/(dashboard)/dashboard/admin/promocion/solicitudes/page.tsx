@@ -7,8 +7,8 @@ import { PromocionStats } from '@/features/promocion/components/solicitudes/Prom
 import { PromocionFiltros } from '@/features/promocion/components/solicitudes/PromocionFiltros'
 import { PromocionTable } from '@/features/promocion/components/solicitudes/PromocionTable'
 import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
-import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
-import { useNavAnimation } from '@/shared/lib/hooks/useNavAnimation'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 export default function SolicitudesPromocionPage() {
   const {

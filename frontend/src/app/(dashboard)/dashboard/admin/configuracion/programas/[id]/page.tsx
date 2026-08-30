@@ -30,7 +30,7 @@ import {
     CardTitle,
 } from "@/shared/components/ui/card";
 
-import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas";
+import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas.api";
 import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 import { ORDEN_SECCIONES } from "@/features/settings/components/programas/form/SeccionesSelector";
@@ -41,7 +41,7 @@ import {
     REQUERIMIENTO_LABELS,
     type Programa,
 } from "@/features/settings/types/programa.types";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 const fmt = (n: number) =>
     new Intl.NumberFormat("es-MX", {

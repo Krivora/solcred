@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { ClipboardList, SendHorizonal, RotateCcw, Ban } from 'lucide-react'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/dropdown-menu'
-import { SolicitudesTable } from '../SolicitudesTable'
-import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/AccionSolicitudDialog'
+import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
+import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/common/AccionSolicitudDialog'
 import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
-import { DocumentosDropdown } from '../historico/DocumentosDropdown'
-import { useDescargarPDF } from '../../hooks/useDescargarPDF'
+import { DocumentosDropdown } from '@/features/promocion/components/historico/DocumentosDropdown'
+import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
@@ -23,7 +23,6 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
   const [dialogOpen, setDialogOpen]           = useState(false)
   const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
-  console.log('solicitudes', solicitudes)
   const { loading, devolverAlSolicitante, enviarAAprobacion, cancelar } =
     useAccionesSolicitud({ onSuccess: () => { setDialogOpen(false); onRefresh() } })
 

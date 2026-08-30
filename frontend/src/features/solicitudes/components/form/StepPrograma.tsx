@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getProgramas } from '../../api/programas'
-import type { Programa } from '@/shared/lib/types/programa'
+import { getProgramas } from '@/features/solicitudes/api/programas.api'
+import type { Programa } from '@/features/solicitudes/types/programa.types'
 import type { CrearSolicitudDto } from '@/features/solicitudes/types/solicitud.types'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
-import { FormError } from '@/shared/components/ui/FormError'
-import { cn } from '@/shared/lib/utils/cn'
+import { FormError } from '@/shared/components/common/FormError'
+import { cn } from '@/shared/lib/cn'
 import {
   ChevronRight, Search, Building2, User,
   ArrowDown, ArrowUp,

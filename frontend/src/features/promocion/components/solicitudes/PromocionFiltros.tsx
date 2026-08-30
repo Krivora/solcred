@@ -8,9 +8,9 @@ import {
   SECTOR_FIELD,
   TAMANO_EMPRESA_FIELD,
   PERIODO_FIELD,
-} from '../../types/Filterbar.constants'
-import { FilterBar } from '../Filterbar'
-import type { FilterField as FilterFieldConfig } from '../../types/Filterbar.types'
+} from '@/features/promocion/components/common/filter-bar.constants'
+import { FilterBar } from '@/features/promocion/components/common/FilterBar'
+import type { FilterField as FilterFieldConfig } from '@/features/promocion/components/common/filter-bar.types'
 import type { FiltrosPromocion, PersonalResumen } from '@/features/promocion/types/solicitud.types'
 
 // ── Props ─────────────────────────────────────────────────────────────────────

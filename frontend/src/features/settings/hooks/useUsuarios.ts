@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { usuarioToast } from "@/shared/lib/utils/toaster";
-import { usuariosApi } from "../api/usuarios";
+import { usuarioToast } from "@/shared/lib/toaster";
+import { usuariosApi } from "@/features/settings/api/usuarios.api";
 import type {
   Usuario,
   UsuarioFiltros,
   ActualizarUsuarioDto,
   CambiarRolDto,
-} from "../types/usuario.types";
-import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
+} from "@/features/settings/types/usuario.types";
+import { obtenerRolEfectivo } from "@/shared/types/auth.types";
 
 export function useUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);

@@ -1,10 +1,9 @@
-// src/shared/components/layout/sidebar/NavGroup.tsx
 "use client";
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 import { NavLink } from "./NavLink";
 import type { NavItem } from "@/shared/config/nav.config";
 

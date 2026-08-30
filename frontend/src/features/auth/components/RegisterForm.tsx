@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
-import { registerSchema, type RegisterFormValues } from '@/shared/lib/schema/auth.schemas';
-import { useAuth } from '@/shared/lib/hooks/useAuth';
+import { registerSchema, type RegisterFormValues } from '@/shared/schemas/auth.schema';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
-import { FormError } from '@/shared/components/ui/FormError';
+import { FormError } from '@/shared/components/common/FormError';
 
 export function RegisterForm() {
   const { register: registerUser, isLoading, error } = useAuth();

@@ -9,9 +9,9 @@ import {
   TipoLocal,
   TipoPersona,
   TipoVivienda,
-} from '@/shared/lib/types/solicitudes.types'
+} from '@/shared/types/solicitudes.types'
 
-import { Programa } from '@/shared/lib/types/programa'
+import { Programa } from '@/features/solicitudes/types/programa.types'
 export type SeccionSolicitud =
   | 'SOLICITANTE' | 'AVAL' | 'CREDITO' | 'GARANTIA'
   | 'NEGOCIO' | 'MERCADO' | 'BANCARIOS'
