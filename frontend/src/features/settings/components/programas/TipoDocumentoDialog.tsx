@@ -17,25 +17,37 @@ import type { TipoDocumento } from "@/features/settings/types/programa.types";
 interface Props {
     open: boolean;
     onOpenChange: (v: boolean) => void;
+    /** Si viene, el diálogo entra en modo edición y precarga sus datos. */
+    tipo?: TipoDocumento | null;
+    /** Modo edición: el padre persiste el cambio. */
+    onEditar?: (id: string, data: { nombre?: string; descripcion?: string | null }) => Promise<boolean>;
+    /** Modo alta: el padre persiste la creación. */
     onGuardar?: (data: { nombre: string; descripcion?: string }) => Promise<void>;
+    /** Modo alta: el diálogo persiste y avisa al padre. */
     onSuccess?: (tipo: TipoDocumento) => void;
 }
 
-export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }: Props) {
-    const [nombre, setNombre] = useState("");
-    const [descripcion, setDescripcion] = useState("");
+export function TipoDocumentoDialog({ open, onOpenChange, tipo, onEditar, onGuardar, onSuccess }: Props) {
+    const esEdicion = !!tipo;
+    const [nombre, setNombre] = useState(tipo?.nombre ?? "");
+    const [descripcion, setDescripcion] = useState(tipo?.descripcion ?? "");
     const [guardando, setGuardando] = useState(false);
     const [errorNombre, setErrorNombre] = useState("");
 
-    const reset = () => { setNombre(""); setDescripcion(""); setErrorNombre(""); };
+    const reset = () => { setNombre(tipo?.nombre ?? ""); setDescripcion(tipo?.descripcion ?? ""); setErrorNombre(""); };
 
     const handleGuardar = async () => {
         if (!nombre.trim()) { setErrorNombre("El nombre es requerido"); return; }
 
         setGuardando(true);
         try {
-            if (onGuardar) {
-                // El padre es dueño de la llamada y del feedback de éxito.
+            if (esEdicion && onEditar) {
+                const ok = await onEditar(tipo!.id, {
+                    nombre: nombre.trim(),
+                    descripcion: descripcion.trim() || null,
+                });
+                if (!ok) return; // el hook ya mostró el error
+            } else if (onGuardar) {
                 await onGuardar({ nombre: nombre.trim(), descripcion: descripcion.trim() || undefined });
             } else if (onSuccess) {
                 const nuevo = await crearTipoDocumento({
@@ -45,7 +57,6 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                 onSuccess(nuevo);
                 programaToast.tipoDocumentoCreado();
             }
-            reset();
             onOpenChange(false);
         } catch (e: unknown) {
             programaToast.tipoDocumentoError(e instanceof Error ? e.message : undefined);
@@ -58,9 +69,13 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
         <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); onOpenChange(v); }}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Nuevo tipo de documento</DialogTitle>
+                    <DialogTitle>
+                        {esEdicion ? "Editar tipo de documento" : "Nuevo tipo de documento"}
+                    </DialogTitle>
                     <DialogDescription>
-                        Se agregará al catálogo global y podrás asignarlo a cualquier programa.
+                        {esEdicion
+                            ? "Los cambios aplican al catálogo global y a todos los programas que lo usan."
+                            : "Se agregará al catálogo global y podrás asignarlo a cualquier programa."}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
@@ -94,7 +109,7 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                     </Button>
                     <Button onClick={handleGuardar} disabled={guardando}>
                         {guardando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Guardar
+                        {esEdicion ? "Guardar cambios" : "Guardar"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -119,7 +119,21 @@ export const crearTipoDocumentoSchema = z.object({
   descripcion: z.string().trim().optional(),
 });
 
+export const actualizarTipoDocumentoSchema = z
+  .object({
+    nombre: z
+      .string()
+      .min(2, "El nombre debe tener al menos 2 caracteres")
+      .trim()
+      .optional(),
+    descripcion: z.string().trim().nullish(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "No hay cambios para guardar",
+  });
+
 export type CrearProgramaDto = z.infer<typeof crearProgramaSchema>;
 export type ActualizarProgramaDto = z.infer<typeof actualizarProgramaSchema>;
 export type AgregarDocumentoDto = z.infer<typeof agregarDocumentoSchema>;
 export type CrearTipoDocumentoDto = z.infer<typeof crearTipoDocumentoSchema>;
+export type ActualizarTipoDocumentoDto = z.infer<typeof actualizarTipoDocumentoSchema>;

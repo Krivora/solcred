@@ -7,6 +7,7 @@ import {
   actualizarProgramaSchema,
   agregarDocumentoSchema,
   crearTipoDocumentoSchema,
+  actualizarTipoDocumentoSchema,
 } from "./programas.schema";
 import * as programasController from "./programas.controller";
 
@@ -21,6 +22,17 @@ router.post(
   autorizar("ADMIN"),
   validate(crearTipoDocumentoSchema),
   programasController.crearTipoDocumento
+);
+router.put(
+  "/tipos-documento/:id",
+  autorizar("ADMIN"),
+  validate(actualizarTipoDocumentoSchema),
+  programasController.actualizarTipoDocumento
+);
+router.delete(
+  "/tipos-documento/:id",
+  autorizar("ADMIN"),
+  programasController.eliminarTipoDocumento
 );
 
 // Programas — lectura para todos

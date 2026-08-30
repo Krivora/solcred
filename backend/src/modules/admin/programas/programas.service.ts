@@ -5,6 +5,7 @@ import {
   ActualizarProgramaDto,
   CrearProgramaDto,
   CrearTipoDocumentoDto,
+  ActualizarTipoDocumentoDto,
 } from "./programas.schema";
 
 // ── Tipos de Documento ─────────────────────────────────────
@@ -23,6 +24,58 @@ export const crearTipoDocumento = async (dto: CrearTipoDocumentoDto) => {
   if (existente) throw new AppError("Ya existe un tipo de documento con ese nombre", 409);
 
   return prisma.tipoDocumento.create({ data: dto });
+};
+
+export const actualizarTipoDocumento = async (
+  id: string,
+  dto: ActualizarTipoDocumentoDto
+) => {
+  const tipo = await prisma.tipoDocumento.findUnique({ where: { id } });
+  if (!tipo) throw new AppError("Tipo de documento no encontrado", 404);
+
+  if (dto.nombre && dto.nombre !== tipo.nombre) {
+    const duplicado = await prisma.tipoDocumento.findUnique({
+      where: { nombre: dto.nombre },
+    });
+    if (duplicado) {
+      throw new AppError("Ya existe un tipo de documento con ese nombre", 409);
+    }
+  }
+
+  return prisma.tipoDocumento.update({
+    where: { id },
+    data: {
+      ...(dto.nombre !== undefined && { nombre: dto.nombre }),
+      ...(dto.descripcion !== undefined && {
+        descripcion: dto.descripcion?.trim() ? dto.descripcion.trim() : null,
+      }),
+    },
+  });
+};
+
+export const eliminarTipoDocumento = async (id: string) => {
+  const tipo = await prisma.tipoDocumento.findUnique({
+    where: { id },
+    include: {
+      _count: { select: { programas: true, documentos: true } },
+    },
+  });
+  if (!tipo) throw new AppError("Tipo de documento no encontrado", 404);
+
+  if (tipo._count.programas > 0) {
+    throw new AppError(
+      `No se puede eliminar: está asignado a ${tipo._count.programas} programa(s). Quítalo de esos programas primero.`,
+      409
+    );
+  }
+  if (tipo._count.documentos > 0) {
+    throw new AppError(
+      `No se puede eliminar: ya hay ${tipo._count.documentos} documento(s) subidos de este tipo.`,
+      409
+    );
+  }
+
+  await prisma.tipoDocumento.delete({ where: { id } });
 };
 
 // ── Programas ──────────────────────────────────────────────
