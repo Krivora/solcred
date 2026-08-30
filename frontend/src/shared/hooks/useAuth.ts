@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/shared/stores/auth.store'
-import { authApi } from '@/shared/lib/api/auth'
+import { authApi } from '@/features/auth/api/auth.api'
 import { ApiError } from '@/shared/api/client'
 import type {
     LoginFormValues,

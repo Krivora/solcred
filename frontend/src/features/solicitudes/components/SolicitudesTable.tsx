@@ -12,9 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/components/ui/table'
-import { EstatusBadge } from './Estatusbadge'
+import { EstatusBadge } from './EstatusBadge'
 import { SolicitudesEmptyState } from './SolicitudesEmptyState'
-import { SolicitudEnviarDialog } from './Solicitudenviardialog'
+import { SolicitudEnviarDialog } from './SolicitudEnviarDialog'
 import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 import { Pencil, Send, User, FolderOpen, FileText, Loader2, ChevronRight } from 'lucide-react'

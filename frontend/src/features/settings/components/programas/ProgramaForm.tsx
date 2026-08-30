@@ -22,7 +22,7 @@ import { SeccionesSelector, ORDEN_SECCIONES } from "./form/SeccionesSelector";
 import { SectionHeading } from "./form/SectionHeading";
 import { ToggleCard } from "./form/ToggleCard";
 
-import { crearPrograma, actualizarPrograma } from "@/features/settings/api/programas";
+import { crearPrograma, actualizarPrograma } from "@/features/settings/api/programas.api";
 import {
     Requerimiento,
     type Programa,

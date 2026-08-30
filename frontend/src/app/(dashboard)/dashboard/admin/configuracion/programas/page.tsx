@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from "@/shared/components/ui/select";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas";
+import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas.api";
 import { ProgramaCard } from "@/features/settings/components/programas/ProgramaCard";
 import type { Programa } from "@/features/settings/types/programa.types";
 import { PageHeader } from "@/shared/components/common/PageHeader";

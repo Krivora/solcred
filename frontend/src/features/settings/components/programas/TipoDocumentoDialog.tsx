@@ -10,7 +10,7 @@ import {
     Dialog, DialogContent, DialogDescription,
     DialogFooter, DialogHeader, DialogTitle,
 } from "@/shared/components/ui/dialog";
-import { crearTipoDocumento } from "@/features/settings/api/programas";
+import { crearTipoDocumento } from "@/features/settings/api/programas.api";
 import { programaToast } from "@/shared/lib/toaster";
 import type { TipoDocumento } from "@/features/settings/types/programa.types";
 

@@ -21,7 +21,7 @@ import { cn } from "@/shared/lib/cn"
 import {
     guardarDatosGarantiaSchema,
     type GuardarDatosGarantiaDto,
-} from '@/features/solicitudes/schemas/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitud.schema'
 import { MontoInput, CodigoPostalInput } from '@/shared/components/common/inputs'
 import { montoAFloat } from '@/shared/lib/masks'
 

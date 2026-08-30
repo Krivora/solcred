@@ -11,7 +11,7 @@ import { cn } from '@/shared/lib/cn'
 import {
     guardarDatosMercadoSchema,
     type GuardarDatosMercadoDto,
-} from '@/features/solicitudes/schemas/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitud.schema'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosMercadoDto>

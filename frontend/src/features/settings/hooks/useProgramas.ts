@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import * as programasApi from '@/features/settings/api/programas'
+import * as programasApi from '@/features/settings/api/programas.api'
 import type {
     Programa,
     ProgramaFormData,

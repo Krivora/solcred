@@ -3,8 +3,8 @@
 
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { useState, useCallback } from 'react'
-import { solicitudesApi } from '@/features/promocion/api/promocion'
-import { promocionKeys } from '@/features/promocion/lib/queryKeys'
+import { solicitudesApi } from '@/features/promocion/api/promocion.api'
+import { promocionKeys } from '@/features/promocion/lib/promocion.keys'
 import type { FiltrosPromocion } from '@/features/promocion/types/solicitud.types'
 
 const FILTROS_INICIALES: FiltrosPromocion = {

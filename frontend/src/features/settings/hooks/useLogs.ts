@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs';
+import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs.api';
 import type {
   LogAuditoria,
   LogFilters,

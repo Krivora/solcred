@@ -122,7 +122,7 @@ interface SolicitudesTableProps {
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
-export function SolicitudesTable({
+export function AsignacionSolicitudesTable({
     solicitudes,
     seleccionadas,
     asignandoId,

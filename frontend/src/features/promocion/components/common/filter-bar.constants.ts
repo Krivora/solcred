@@ -5,7 +5,7 @@
 // Importa solo los que necesites y compón el array FIELDS localmente.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { FilterField as FilterFieldConfig } from './Filterbar.types'
+import type { FilterField as FilterFieldConfig } from './filter-bar.types'
 
 export const SEARCH_SOLICITANTE_FIELD: FilterFieldConfig = {
   type: 'search',

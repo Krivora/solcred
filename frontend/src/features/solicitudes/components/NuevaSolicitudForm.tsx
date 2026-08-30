@@ -12,7 +12,7 @@ import { MercadoForm } from './form/MercadoForm'
 import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
-import { usePerfilUsuario } from '@/features/solicitudes/hooks/usePerfilUsuario'
+import { usePerfilUsuario } from '@/features/auth/hooks/usePerfilUsuario'
 export function NuevaSolicitudForm() {
   const router = useRouter()
   const {

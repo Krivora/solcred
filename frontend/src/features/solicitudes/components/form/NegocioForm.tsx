@@ -11,7 +11,7 @@ import { cn } from "@/shared/lib/cn"
 import {
     guardarDatosNegocioSchema,
     type GuardarDatosNegocioDto,
-} from '@/features/solicitudes/schemas/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitud.schema'
 import { CodigoPostalInput, TelefonoInput } from '@/shared/components/common/inputs'
 
 interface Props {

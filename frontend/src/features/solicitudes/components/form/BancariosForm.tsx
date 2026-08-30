@@ -10,7 +10,7 @@ import { cn } from "@/shared/lib/cn"
 import {
     guardarDatosBancariosSchema,
     type GuardarDatosBancariosDto,
-} from '@/features/solicitudes/schemas/solicitudes.schema'
+} from '@/features/solicitudes/schemas/solicitud.schema'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosBancariosDto>

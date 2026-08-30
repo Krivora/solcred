@@ -17,7 +17,7 @@ import { TipoDocumentoDialog } from "./TipoDocumentoDialog";
 import {
     getTiposDocumento, agregarDocumento,
     quitarDocumento, crearTipoDocumento,
-} from "@/features/settings/api/programas";
+} from "@/features/settings/api/programas.api";
 import type { ProgramaDocumento, TipoDocumento, AplicaA } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/cn";
 

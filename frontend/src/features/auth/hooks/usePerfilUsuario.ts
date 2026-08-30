@@ -1,6 +1,6 @@
 // features/auth/hooks/usePerfilUsuario.ts
 import { useEffect, useState, useCallback } from 'react'
-import { authApi } from '@/shared/lib/api/auth'
+import { authApi } from '@/features/auth/api/auth.api'
 import { useAuthStore } from '@/shared/stores/auth.store'
 import type { Usuario } from '@/shared/types/auth.types'
 

@@ -8,7 +8,7 @@ import { UsuarioRolDialog } from "@/features/settings/components/usuarios/Usuari
 import { UsuarioDesactivarDialog } from "@/features/settings/components/usuarios/UsuarioDesactivarDialog";
 import { useUsuarios } from "@/features/settings/hooks/useUsuarios";
 import type { Usuario } from "@/features/settings/types/usuario.types";
-import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
+import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/settings/schemas/usuario.schema";
 import { PageHeader } from "@/shared/components/common/PageHeader";
 import { UsuarioRevocarAccesoDialog } from "@/features/settings/components/usuarios/UsuarioRevocarAccesoDialog";
 
