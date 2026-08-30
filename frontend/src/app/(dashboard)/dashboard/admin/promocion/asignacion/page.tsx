@@ -235,8 +235,8 @@ export default function AsignacionPage() {
                     />
                 </div>
 
-                {/* ── Columna derecha: gestores ──────────────────────────────── */}
-                <div className="w-72 shrink-0 flex flex-col">
+                {/* ── Columna derecha: gestores (altura propia, no se estira con la tabla) ── */}
+                <div className="w-72 shrink-0 flex flex-col self-start max-h-full">
                     <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Users className="h-3.5 w-3.5 text-muted-foreground" />
@@ -268,7 +268,7 @@ export default function AsignacionPage() {
                         ))}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 min-h-0 overflow-y-auto">
                         {cargandoGestores ? (
                             <ListaGestoresSkeleton />
                         ) : gestores.length === 0 ? (
