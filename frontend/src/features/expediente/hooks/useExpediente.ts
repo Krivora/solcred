@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+'use client'
+
+import { useEffect } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { expedienteApi } from '@/features/expediente/api/expediente.api'
+import { expedienteKeys } from '@/features/expediente/lib/expediente.keys'
 import { expedienteToast } from '@/shared/lib/toaster'
 import type {
-    DocumentoActivo,
-    DocumentoConValidacionRaw,
-    Expediente,
     ValidarDocumentoDto,
 } from '@/features/expediente/types/expediente.types'
 
@@ -15,136 +16,52 @@ const getErrorMessage = (err: unknown): string => {
 }
 
 export const useExpediente = (solicitudId: string) => {
-    const [expediente, setExpediente] = useState<Expediente | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-    const [validando, setValidando] = useState<string | null>(null)
+    const qc = useQueryClient()
 
-    // Evita condiciones de carrera si el componente se desmonta o cambia el id
-    const ignoreRef = useRef(false)
+    const {
+        data: expediente = null,
+        isLoading: loading,
+        isError,
+        error: queryError,
+        refetch: refetchQuery,
+    } = useQuery({
+        queryKey: expedienteKeys.detail(solicitudId),
+        queryFn: () => expedienteApi.obtener(solicitudId),
+        enabled: !!solicitudId,
+    })
 
-    const cargar = useCallback(
-        async (esRecarga = false) => {
-            if (!solicitudId) return
-            try {
-                // Solo mostramos el skeleton de página completa en la carga inicial
-                if (!esRecarga) setLoading(true)
-                setError(null)
-
-                const data = await expedienteApi.obtener(solicitudId)
-
-                if (!ignoreRef.current) {
-                    setExpediente(data)
-                }
-            } catch (err: unknown) {
-                const message = getErrorMessage(err)
-                if (!ignoreRef.current) {
-                    setError(message)
-                    expedienteToast.cargaError(message)
-                }
-            } finally {
-                if (!ignoreRef.current && !esRecarga) {
-                    setLoading(false)
-                }
-            }
-        },
-        [solicitudId]
-    )
-
+    // Toast en error de carga (sincroniza con un sistema externo, sin setState)
     useEffect(() => {
-        ignoreRef.current = false
-        const timeoutId = setTimeout(() => {
-            cargar(false)
-        }, 0)
+        if (isError) expedienteToast.cargaError(getErrorMessage(queryError))
+    }, [isError, queryError])
 
-        return () => {
-            ignoreRef.current = true
-            clearTimeout(timeoutId)
-        }
-    }, [cargar])
-
-    const refetch = useCallback(() => cargar(true), [cargar])
-
-    const validarDocumento = useCallback(
-        async (
-            documentoId: string,
-            dto: ValidarDocumentoDto
-        ) => {
-            try {
-                setValidando(documentoId)
-                await expedienteApi.validarDocumento(
-                    solicitudId,
-                    documentoId,
-                    dto
-                )
-                if (dto.estatus === 'APROBADO') {
-                    expedienteToast.documentoAprobado()
-                } else {
-                    expedienteToast.documentoRechazado()
-                }
-                await refetch()
-            } catch (err: unknown) {
-                const message = getErrorMessage(err)
-                expedienteToast.validacionError(message)
-            } finally {
-                setValidando(null)
-            }
+    const validarMut = useMutation({
+        mutationFn: ({ documentoId, dto }: { documentoId: string; dto: ValidarDocumentoDto }) =>
+            expedienteApi.validarDocumento(solicitudId, documentoId, dto),
+        onSuccess: (_data, { dto }) => {
+            if (dto.estatus === 'APROBADO') expedienteToast.documentoAprobado()
+            else expedienteToast.documentoRechazado()
+            qc.invalidateQueries({ queryKey: expedienteKeys.detail(solicitudId) })
         },
-        [solicitudId, refetch]
-    )
+        onError: (err) => expedienteToast.validacionError(getErrorMessage(err)),
+    })
+
+    const validarDocumento = async (documentoId: string, dto: ValidarDocumentoDto) => {
+        try {
+            await validarMut.mutateAsync({ documentoId, dto })
+        } catch {
+            // el toast de error ya lo emite onError
+        }
+    }
 
     return {
         expediente,
         loading,
-        error,
-        validando,
-        refetch,
-        validarDocumento,
-    }
-}
-
-export const useHistorialDocumento = () => {
-   const [historial, setHistorial] = useState<DocumentoConValidacionRaw[]>([])
-    const [loading, setLoading] = useState(false)
-    const [open, setOpen] = useState(false)
-    const [tipoNombre, setTipoNombre] = useState('')
-    const verHistorial = useCallback(
-        async (
-            solicitudId: string,
-            tipoDocumentoId: string,
-            nombre: string
-        ) => {
-            try {
-                setLoading(true)
-                setHistorial([])
-                setTipoNombre(nombre)
-                setOpen(true)
-                const data = await expedienteApi.historial(
-                    solicitudId,
-                    tipoDocumentoId
-                )
-                setHistorial(data)
-            } catch (err: unknown) {
-                const message = getErrorMessage(err)
-                expedienteToast.historialError(message)
-                setOpen(false)
-            } finally {
-                setLoading(false)
-            }
+        error: isError ? getErrorMessage(queryError) : null,
+        validando: validarMut.isPending ? validarMut.variables?.documentoId ?? null : null,
+        refetch: async (): Promise<void> => {
+            await refetchQuery()
         },
-        []
-    )
-    const cerrar = useCallback(() => {
-        setOpen(false)
-        setHistorial([])
-        setTipoNombre('')
-    }, [])
-    return {
-        historial,
-        loading,
-        open,
-        tipoNombre,
-        verHistorial,
-        cerrar,
+        validarDocumento,
     }
 }
