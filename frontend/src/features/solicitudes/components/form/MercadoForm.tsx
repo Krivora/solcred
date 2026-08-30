@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Users, Globe, CheckCircle2, AlertCircle } from 'lucide-react'
+import { StepHeader } from './StepHeader'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
@@ -80,12 +81,11 @@ export function MercadoForm({ defaultValues, onSubmit, onBack, loading, skipLabe
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-foreground">Mercado</h2>
-                <p className="text-sm text-muted-foreground">
-                    Describe a quién le vendes y en qué zonas opera el negocio.
-                </p>
-            </div>
+            <StepHeader
+                icon={Globe}
+                title="Mercado"
+                subtitle="Describe a quién le vendes y en qué zonas opera el negocio."
+            />
 
             <div className="space-y-1.5">
                 <Label>Principales productos o servicios</Label>

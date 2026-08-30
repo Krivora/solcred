@@ -13,6 +13,7 @@ import {
     type GuardarDatosNegocioDto,
 } from '@/features/solicitudes/schemas/solicitud.schema'
 import { CodigoPostalInput, TelefonoInput } from '@/shared/components/common/inputs'
+import { StepHeader } from './StepHeader'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosNegocioDto>
@@ -70,19 +71,11 @@ export function NegocioForm({ defaultValues, onSubmit, onBack, loading, skipLabe
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Encabezado con contexto */}
-            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
-                    <Store className="w-4.5 h-4.5 text-primary" />
-                </div>
-                <div className="space-y-0.5">
-                    <h2 className="text-base font-semibold text-foreground">Datos del negocio</h2>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                        Esta información nos ayuda a entender cómo opera tu negocio.
-                        Solo te tomará unos minutos.
-                    </p>
-                </div>
-            </div>
+            <StepHeader
+                icon={Store}
+                title="Datos del negocio"
+                subtitle="Esta información nos ayuda a entender cómo opera tu negocio. Solo te tomará unos minutos."
+            />
 
             {/* Identificación */}
             <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">

@@ -24,6 +24,7 @@ import {
 } from '@/features/solicitudes/schemas/solicitud.schema'
 import { MontoInput, CodigoPostalInput } from '@/shared/components/common/inputs'
 import { montoAFloat } from '@/shared/lib/masks'
+import { StepHeader } from './StepHeader'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosGarantiaDto>
@@ -107,19 +108,12 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading, skipLab
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="space-y-6"
-            >              {/* Encabezado con contexto — reduce la sensación de "trámite" */}
-                <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
-                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
-                        <ShieldCheck className="w-4.5 h-4.5 text-primary" />
-                    </div>
-                    <div className="space-y-0.5">
-                        <h2 className="text-base font-semibold text-foreground">Garantías del crédito</h2>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Cuéntanos qué bienes respaldan tu solicitud — un vehículo, maquinaria
-                            o una propiedad. Puedes agregar más de uno si lo necesitas.
-                        </p>
-                    </div>
-                </div>
+            >
+                <StepHeader
+                    icon={ShieldCheck}
+                    title="Garantías del crédito"
+                    subtitle="Cuéntanos qué bienes respaldan tu solicitud — un vehículo, maquinaria o una propiedad. Puedes agregar más de uno si lo necesitas."
+                />
 
                 {fields.map((field, index) => {
                     const tipo = garantiasValores?.[index]?.tipo

@@ -11,8 +11,10 @@ import { FormError } from '@/shared/components/common/FormError'
 import { Separator } from '@/shared/components/ui/separator'
 import { ChevronLeft, ChevronRight, User, Phone, MapPin } from 'lucide-react'
 import { TelefonoInput, CodigoPostalInput, CorreoInput } from '@/shared/components/common/inputs'
+import { StepHeader } from './StepHeader'
 
 interface Props {
+  icon: React.ElementType
   title: string
   subtitle: string
   defaultValues?: Partial<DatosPersona>
@@ -97,6 +99,7 @@ function Field({
 }
 
 export function PersonaForm({
+  icon,
   title,
   subtitle,
   defaultValues,
@@ -123,11 +126,7 @@ export function PersonaForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
 
-      {/* Header */}
-      <div>
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
-      </div>
+      <StepHeader icon={icon} title={title} subtitle={subtitle} />
 
       {/* ── DATOS PERSONALES ──────────────────────────────────── */}
       <section>
