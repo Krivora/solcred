@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { usuarioToast } from "@/shared/lib/toaster";
 import { usuariosApi } from "@/features/settings/api/usuarios.api";
+import { usuarioKeys } from "@/features/settings/lib/settings.keys";
 import type {
   Usuario,
   UsuarioFiltros,
@@ -12,92 +13,98 @@ import type {
 import { obtenerRolEfectivo } from "@/shared/types/auth.types";
 
 export function useUsuarios() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const qc = useQueryClient();
 
-  const cargar = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  const {
+    data: usuarios = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: usuarioKeys.list(),
+    queryFn: usuariosApi.listar,
+  });
+
+  const invalidar = () => qc.invalidateQueries({ queryKey: usuarioKeys.all });
+
+  const actualizarMut = useMutation({
+    mutationFn: ({ id, datos }: { id: string; datos: ActualizarUsuarioDto }) =>
+      usuariosApi.actualizar(id, datos),
+    onSuccess: () => {
+      usuarioToast.actualizado();
+      invalidar();
+    },
+    onError: () => usuarioToast.actualizarError(),
+  });
+
+  const cambiarRolMut = useMutation({
+    mutationFn: ({ id, datos }: { id: string; datos: CambiarRolDto }) =>
+      usuariosApi.cambiarRol(id, datos),
+    onSuccess: () => {
+      usuarioToast.rolActualizado();
+      invalidar();
+    },
+    onError: () => usuarioToast.cambiarRolError(),
+  });
+
+  const desactivarMut = useMutation({
+    mutationFn: (id: string) => usuariosApi.desactivar(id),
+    onSuccess: () => {
+      usuarioToast.desactivado();
+      invalidar();
+    },
+    onError: () => usuarioToast.desactivarError(),
+  });
+
+  const revocarAccesoMut = useMutation({
+    mutationFn: (id: string) => usuariosApi.revocarAcceso(id),
+    onSuccess: () => {
+      usuarioToast.accesoRevocado();
+      invalidar();
+    },
+    onError: () => usuarioToast.revocarAccesoError(),
+  });
+
+  const actualizar = async (id: string, datos: ActualizarUsuarioDto): Promise<boolean> => {
     try {
-      const data = await usuariosApi.listar();
-      setUsuarios(data);
-    } catch (err) {
-      setError("No se pudieron cargar los usuarios");
-      usuarioToast.cargarError();
-    } finally {
-      setIsLoading(false);
+      await actualizarMut.mutateAsync({ id, datos });
+      return true;
+    } catch {
+      return false;
     }
-  }, []);
+  };
 
-  useEffect(() => {
-    cargar();
-  }, [cargar]);
+  const cambiarRol = async (id: string, datos: CambiarRolDto): Promise<boolean> => {
+    try {
+      await cambiarRolMut.mutateAsync({ id, datos });
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
-  const actualizar = useCallback(
-    async (id: string, datos: ActualizarUsuarioDto): Promise<boolean> => {
-      try {
-        const usuario = await usuariosApi.actualizar(id, datos);
-        setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        usuarioToast.actualizado();
-        return true;
-      } catch {
-        usuarioToast.actualizarError();
-        return false;
-      }
-    },
-    []
-  );
+  const desactivar = async (id: string): Promise<boolean> => {
+    try {
+      await desactivarMut.mutateAsync(id);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
-  const cambiarRol = useCallback(
-    async (id: string, datos: CambiarRolDto): Promise<boolean> => {
-      try {
-        const usuario = await usuariosApi.cambiarRol(id, datos);
-        setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        usuarioToast.rolActualizado();
-        return true;
-      } catch {
-        usuarioToast.cambiarRolError();
-        return false;
-      }
-    },
-    []
-  );
-
-  const desactivar = useCallback(
-    async (id: string): Promise<boolean> => {
-      try {
-        const usuario = await usuariosApi.desactivar(id);
-        setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        usuarioToast.desactivado();
-        return true;
-      } catch {
-        usuarioToast.desactivarError();
-        return false;
-      }
-    },
-    []
-  );
-  const revocarAcceso = useCallback(
-    async (id: string): Promise<boolean> => {
-      try {
-        const usuario = await usuariosApi.revocarAcceso(id);
-        setUsuarios((prev) => prev.map((u) => (u.id === id ? usuario : u)));
-        usuarioToast.accesoRevocado();
-        return true;
-      } catch {
-        usuarioToast.revocarAccesoError();
-        return false;
-      }
-    },
-    []
-  );
+  const revocarAcceso = async (id: string): Promise<boolean> => {
+    try {
+      await revocarAccesoMut.mutateAsync(id);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   return {
     usuarios,
     isLoading,
-    error,
-    recargar: cargar,
+    error: isError ? "No se pudieron cargar los usuarios" : null,
+    recargar: invalidar,
     actualizar,
     cambiarRol,
     revocarAcceso,
@@ -121,7 +128,7 @@ export function useUsuariosFiltrados(
     ) {
       return false;
     }
-     if (filtros.rol && filtros.rol !== "TODOS" && obtenerRolEfectivo(usuario) !== filtros.rol) {
+    if (filtros.rol && filtros.rol !== "TODOS" && obtenerRolEfectivo(usuario) !== filtros.rol) {
       return false;
     }
     if (

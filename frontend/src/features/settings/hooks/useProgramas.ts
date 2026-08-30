@@ -1,5 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+'use client'
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import * as programasApi from '@/features/settings/api/programas.api'
+import { programaKeys, tipoDocumentoKeys } from '@/features/settings/lib/settings.keys'
 import type {
     Programa,
     ProgramaFormData,
@@ -8,80 +11,87 @@ import type {
 import { programaToast } from '@/shared/lib/toaster'
 
 export function useProgramas() {
-    const [programas, setProgramas] = useState<Programa[]>([])
-    const [cargando, setCargando] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const qc = useQueryClient()
 
-    const cargar = useCallback(async () => {
-        try {
-            setCargando(true)
-            setError(null)
-            const data = await programasApi.getProgramas()
-            setProgramas(data)
-        } catch (err: any) {
-            const message = err?.message ?? 'Error al cargar programas'
-            setError(message)
-            programaToast.cargarError(err?.message)
-        } finally {
-            setCargando(false)
-        }
-    }, [])
+    const {
+        data: programas = [],
+        isLoading: cargando,
+        isError,
+        error: queryError,
+    } = useQuery({
+        queryKey: programaKeys.list(),
+        queryFn: programasApi.getProgramas,
+    })
 
-    useEffect(() => { cargar() }, [cargar])
+    const invalidar = () => qc.invalidateQueries({ queryKey: programaKeys.all })
+
+    const crearMut = useMutation({
+        mutationFn: (data: ProgramaFormData) => programasApi.crearPrograma(data),
+        onSuccess: (nuevo) => {
+            programaToast.creado(nuevo.nombre)
+            invalidar()
+        },
+        onError: (err: unknown) => programaToast.crearError((err as Error)?.message),
+    })
+
+    const actualizarMut = useMutation({
+        mutationFn: ({ id, data }: { id: string; data: ProgramaFormData }) =>
+            programasApi.actualizarPrograma(id, data),
+        onSuccess: (actualizado) => {
+            programaToast.actualizado(actualizado.nombre)
+            invalidar()
+        },
+        onError: (err: unknown) => programaToast.actualizarError((err as Error)?.message),
+    })
+
+    const activarMut = useMutation({
+        mutationFn: (id: string) => programasApi.activarPrograma(id),
+        onSuccess: () => {
+            programaToast.activado()
+            invalidar()
+        },
+        onError: (err: unknown) => programaToast.cambiarEstadoError((err as Error)?.message),
+    })
+
+    const desactivarMut = useMutation({
+        mutationFn: (id: string) => programasApi.desactivarPrograma(id),
+        onSuccess: () => {
+            programaToast.desactivado()
+            invalidar()
+        },
+        onError: (err: unknown) => programaToast.cambiarEstadoError((err as Error)?.message),
+    })
 
     const crear = async (data: ProgramaFormData): Promise<Programa | null> => {
         try {
-            const nuevo = await programasApi.crearPrograma(data)
-            setProgramas(prev => [nuevo, ...prev])
-            programaToast.creado(nuevo.nombre)
-            return nuevo
-        } catch (err: any) {
-            programaToast.crearError(err?.message)
+            return await crearMut.mutateAsync(data)
+        } catch {
             return null
         }
     }
 
-    const actualizar = async (
-        id: string,
-        data: ProgramaFormData
-    ): Promise<Programa | null> => {
+    const actualizar = async (id: string, data: ProgramaFormData): Promise<Programa | null> => {
         try {
-            const actualizado = await programasApi.actualizarPrograma(id, data)
-            setProgramas(prev =>
-                prev.map(p => (p.id === id ? actualizado : p))
-            )
-            programaToast.actualizado(actualizado.nombre)
-            return actualizado
-        } catch (err: any) {
-            programaToast.actualizarError(err?.message)
+            return await actualizarMut.mutateAsync({ id, data })
+        } catch {
             return null
         }
     }
 
     const activar = async (id: string): Promise<boolean> => {
         try {
-            const actualizado = await programasApi.activarPrograma(id)
-            setProgramas(prev =>
-                prev.map(p => (p.id === id ? actualizado : p))
-            )
-            programaToast.activado()
+            await activarMut.mutateAsync(id)
             return true
-        } catch (err: any) {
-            programaToast.cambiarEstadoError(err?.message)
+        } catch {
             return false
         }
     }
 
     const desactivar = async (id: string): Promise<boolean> => {
         try {
-            const actualizado = await programasApi.desactivarPrograma(id)
-            setProgramas(prev =>
-                prev.map(p => (p.id === id ? actualizado : p))
-            )
-            programaToast.desactivado()
+            await desactivarMut.mutateAsync(id)
             return true
-        } catch (err: any) {
-            programaToast.cambiarEstadoError(err?.message)
+        } catch {
             return false
         }
     }
@@ -89,8 +99,8 @@ export function useProgramas() {
     return {
         programas,
         cargando,
-        error,
-        recargar: cargar,
+        error: isError ? ((queryError as Error)?.message ?? 'Error al cargar programas') : null,
+        recargar: invalidar,
         crear,
         actualizar,
         activar,
@@ -100,31 +110,30 @@ export function useProgramas() {
 
 // ── Hook independiente para tipos de documento ──────────────────────────────
 export function useTiposDocumento() {
-    const [tipos, setTipos] = useState<TipoDocumento[]>([])
-    const [cargando, setCargando] = useState(true)
+    const qc = useQueryClient()
 
-    const cargar = useCallback(async () => {
-        try {
-            setCargando(true)
-            const data = await programasApi.getTiposDocumento()
-            setTipos(data)
-        } catch (err: any) {
-            programaToast.cargarError(err?.message)
-        } finally {
-            setCargando(false)
-        }
-    }, [])
+    const { data: tipos = [], isLoading: cargando } = useQuery({
+        queryKey: tipoDocumentoKeys.list(),
+        queryFn: programasApi.getTiposDocumento,
+    })
 
-    useEffect(() => { cargar() }, [cargar])
-
-    const crear = async (data: { nombre: string; descripcion?: string }): Promise<TipoDocumento | null> => {
-        try {
-            const nuevo = await programasApi.crearTipoDocumento(data)
-            setTipos(prev => [...prev, nuevo])
+    const crearMut = useMutation({
+        mutationFn: (data: { nombre: string; descripcion?: string }) =>
+            programasApi.crearTipoDocumento(data),
+        onSuccess: () => {
             programaToast.tipoDocumentoCreado()
-            return nuevo
-        } catch (err: any) {
-            programaToast.tipoDocumentoError(err?.message)
+            qc.invalidateQueries({ queryKey: tipoDocumentoKeys.all })
+        },
+        onError: (err: unknown) => programaToast.tipoDocumentoError((err as Error)?.message),
+    })
+
+    const crear = async (data: {
+        nombre: string
+        descripcion?: string
+    }): Promise<TipoDocumento | null> => {
+        try {
+            return await crearMut.mutateAsync(data)
+        } catch {
             return null
         }
     }
@@ -132,53 +141,71 @@ export function useTiposDocumento() {
     return {
         tipos,
         cargando,
-        recargar: cargar,
+        recargar: () => qc.invalidateQueries({ queryKey: tipoDocumentoKeys.all }),
         crear,
     }
 }
 
 // ── Documentos por programa ──────────────────────────────────────────────────
 export function useDocumentosPrograma(programaId: string) {
-    const [procesando, setProcesando] = useState(false)
+    const qc = useQueryClient()
+
+    const invalidarPrograma = () => {
+        qc.invalidateQueries({ queryKey: programaKeys.detail(programaId) })
+        qc.invalidateQueries({ queryKey: programaKeys.lists() })
+    }
+
+    const agregarMut = useMutation({
+        mutationFn: (data: {
+            tipoDocumentoId: string
+            esObligatorio: boolean
+            aplicaA?: 'FISICA' | 'MORAL' | 'AMBOS'
+        }) => programasApi.agregarDocumento(programaId, data),
+        onSuccess: () => {
+            programaToast.documentoAgregado()
+            invalidarPrograma()
+        },
+        onError: (err: unknown) => programaToast.documentoAgregarError((err as Error)?.message),
+    })
+
+    const quitarMut = useMutation({
+        mutationFn: (tipoDocumentoId: string) =>
+            programasApi.quitarDocumento(programaId, tipoDocumentoId),
+        onSuccess: () => {
+            programaToast.documentoQuitado()
+            invalidarPrograma()
+        },
+        onError: (err: unknown) => programaToast.documentoQuitarError((err as Error)?.message),
+    })
 
     const agregar = async (
         data: { tipoDocumentoId: string; esObligatorio: boolean; aplicaA?: 'FISICA' | 'MORAL' | 'AMBOS' },
-        onSuccess?: () => void
+        onSuccess?: () => void,
     ): Promise<boolean> => {
         try {
-            setProcesando(true)
-            await programasApi.agregarDocumento(programaId, data)
-            programaToast.documentoAgregado()
+            await agregarMut.mutateAsync(data)
             onSuccess?.()
             return true
-        } catch (err: any) {
-            programaToast.documentoAgregarError(err?.message)
+        } catch {
             return false
-        } finally {
-            setProcesando(false)
         }
     }
 
     const quitar = async (
         tipoDocumentoId: string,
-        onSuccess?: () => void
+        onSuccess?: () => void,
     ): Promise<boolean> => {
         try {
-            setProcesando(true)
-            await programasApi.quitarDocumento(programaId, tipoDocumentoId)
-            programaToast.documentoQuitado()
+            await quitarMut.mutateAsync(tipoDocumentoId)
             onSuccess?.()
             return true
-        } catch (err: any) {
-            programaToast.documentoQuitarError(err?.message)
+        } catch {
             return false
-        } finally {
-            setProcesando(false)
         }
     }
 
     return {
-        procesando,
+        procesando: agregarMut.isPending || quitarMut.isPending,
         agregar,
         quitar,
     }
