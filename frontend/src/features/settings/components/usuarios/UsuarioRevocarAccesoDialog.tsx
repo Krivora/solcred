@@ -12,7 +12,7 @@ import {
   DialogFooter,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
-import type { Usuario } from "../../types/usuario.types";
+import type { Usuario } from "@/features/settings/types/usuario.types";
 
 interface UsuarioRevocarAccesoDialogProps {
   usuario: Usuario | null;

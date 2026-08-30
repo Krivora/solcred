@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { uploadsApi } from '../api/uploads.api'
+import { uploadsApi } from '@/shared/lib/api/uploads.api'
 import { documentoToast } from '@/shared/lib/utils/toaster'
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof Error) return err.message

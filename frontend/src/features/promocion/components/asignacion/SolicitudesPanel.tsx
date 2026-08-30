@@ -2,10 +2,10 @@
 
 import { SolicitudesToolbar } from './SolicitudesToolbar'
 import { SolicitudesTable } from './SolicitudesTable'
-import type { SolicitudAsignacion } from '../../types/asignacion.types'
+import type { SolicitudAsignacion } from '@/features/promocion/types/asignacion.types'
 import type { GrupoGestion } from '@/features/settings/types/grupos.types'
 import { AsignacionFiltros } from './AsignacionFiltros'
-import type { FiltrosAsignacion } from '../../types/asignacion.types'
+import type { FiltrosAsignacion } from '@/features/promocion/types/asignacion.types'
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SolicitudesPanelProps {

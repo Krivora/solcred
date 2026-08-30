@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { solicitudesApi } from '../api/solicitudes.api'
+import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import type {
   Solicitud,
   PaginacionMeta,

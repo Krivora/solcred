@@ -1,5 +1,5 @@
-import type { Step } from '../hooks/useSolicitudForm'
-import type { ProgramaSeccion, SeccionSolicitud } from '../types/solicitud.types'
+import type { Step } from '@/features/solicitudes/hooks/useSolicitudForm'
+import type { ProgramaSeccion, SeccionSolicitud } from '@/features/solicitudes/types/solicitud.types'
 
 // Pasos que no dependen de una sección del programa (siempre presentes).
 const PASOS_FIJOS_INICIO: Step[] = ['programa', 'general']
@@ -27,7 +27,7 @@ function obtenerRequerimiento(
     return secciones.find((s) => s.seccion === seccionEnum)?.requerimiento
 }
 
-import type { Requerimiento } from '../types/solicitud.types'
+import type { Requerimiento } from '@/features/solicitudes/types/solicitud.types'
 
 /** Lista ordenada de pasos activos según lo que el programa requiere/permite. */
 export function obtenerPasosActivos(secciones: ProgramaSeccion[] | undefined): Step[] {

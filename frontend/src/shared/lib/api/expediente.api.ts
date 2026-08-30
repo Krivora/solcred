@@ -4,7 +4,7 @@ import type {
     DocumentoActivo,
     ValidarDocumentoDto,
     DocumentoConValidacionRaw,
-} from '../types/expediente.types'
+} from '@/shared/lib/types/expediente.types'
 
 export const expedienteApi = {
     // ─── Vista general del expediente ──────────────────────────────────────────

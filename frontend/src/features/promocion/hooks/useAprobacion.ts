@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { solicitudesApi } from '../api/promocion'
+import { solicitudesApi } from '@/features/promocion/api/promocion'
 import type {
   SolicitudPromocion,
   PaginacionMeta,

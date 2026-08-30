@@ -4,7 +4,7 @@ import type {
   LogsPaginados,
   LogsQueryParams,
   ResumenLogs,
-} from '../types/logs.types';
+} from '@/features/settings/types/logs.types';
 
 // ─────────────────────────────────────────
 // HELPERS

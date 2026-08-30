@@ -3,15 +3,15 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/shared/lib/store/auth.store'
-import { authApi } from '../api/auth'
+import { authApi } from '@/shared/lib/api/auth'
 import { ApiError } from '@/shared/lib/client'
 import type {
     LoginFormValues,
     RegisterFormValues,
-} from '../schema/auth.schemas'
+} from '@/shared/lib/schema/auth.schemas'
 import { authToast } from '@/shared/lib/utils/toaster'
 import { getDefaultRouteForRole } from '@/shared/config/route-permissions'
-import { obtenerRolEfectivo } from '../types/auth.types'
+import { obtenerRolEfectivo } from '@/shared/lib/types/auth.types'
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof ApiError) return err.message
     if (err instanceof Error) return err.message

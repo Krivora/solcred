@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import * as programasApi from '../api/programas'
+import * as programasApi from '@/features/settings/api/programas'
 import type {
     Programa,
     ProgramaFormData,
     TipoDocumento,
-} from '../types/programa.types'
+} from '@/features/settings/types/programa.types'
 import { programaToast } from '@/shared/lib/utils/toaster'
 
 export function useProgramas() {

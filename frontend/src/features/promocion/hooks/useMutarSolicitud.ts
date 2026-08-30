@@ -2,8 +2,8 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { solicitudesApi } from '../api/promocion'
-import { promocionKeys } from '../lib/queryKeys'
+import { solicitudesApi } from '@/features/promocion/api/promocion'
+import { promocionKeys } from '@/features/promocion/lib/queryKeys'
 
 // Ejemplo: mutación de asignación (ajusta a tu endpoint real)
 export function useAsignarSolicitud() {

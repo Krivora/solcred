@@ -21,8 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
-import { cambiarRolSchema, type CambiarRolForm } from "../../schema/usuario.schemas";
-import type { Usuario } from "../../types/usuario.types";
+import { cambiarRolSchema, type CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
+import type { Usuario } from "@/features/settings/types/usuario.types";
 import type { RolAplicacion } from "@/shared/lib/types/auth.types";
 import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 

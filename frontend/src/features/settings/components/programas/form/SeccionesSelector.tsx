@@ -10,7 +10,7 @@ import {
     SeccionSolicitud,
     SECCION_LABELS,
     type SeccionProgramaFormData,
-} from "../../../types/programa.types";
+} from "@/features/settings/types/programa.types";
 
 const SECCION_ICONS: Record<SeccionSolicitud, ElementType> = {
     [SeccionSolicitud.SOLICITANTE]: User,

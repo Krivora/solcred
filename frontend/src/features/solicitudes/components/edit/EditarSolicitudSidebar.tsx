@@ -2,7 +2,7 @@
 
 import { Check, Circle } from 'lucide-react'
 import { cn } from '@/shared/lib/utils/cn'
-import type { Step } from '../../hooks/useSolicitudForm'
+import type { Step } from '@/features/solicitudes/hooks/useSolicitudForm'
 import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 
 const LABELS: Record<Step, string> = {

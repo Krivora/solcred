@@ -3,7 +3,7 @@ import type {
     Programa,
     ProgramaFormData,
     TipoDocumento,
-} from "../types/programa.types";
+} from "@/features/settings/types/programa.types";
 
 export async function getProgramas(): Promise<Programa[]> {
     return apiAuth<Programa[]>("/admin/programas");

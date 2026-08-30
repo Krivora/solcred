@@ -7,7 +7,7 @@ import type {
   LogFilters,
   LogsPaginados,
   ResumenLogs,
-} from '../types/logs.types';
+} from '@/features/settings/types/logs.types';
 
 const DEFAULT_FILTERS: LogFilters = {
   accion: '',

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { solicitudesApi } from '../api/solicitudes.api'
+import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import { solicitudesToast } from '@/shared/lib/utils/toaster'
-import { obtenerPasosActivos, esPasoOmitible } from '../lib/pasos'
+import { obtenerPasosActivos, esPasoOmitible } from '@/features/solicitudes/lib/pasos'
 import { useMemo } from 'react'
 import type {
   CrearSolicitudDto,

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { solicitudesApi } from '../api/solicitudes.api'
+import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import { ApiError } from '@/shared/lib/client'
 
 interface UseDescargarPDFReturn {

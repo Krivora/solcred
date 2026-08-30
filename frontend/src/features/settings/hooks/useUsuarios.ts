@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { usuarioToast } from "@/shared/lib/utils/toaster";
-import { usuariosApi } from "../api/usuarios";
+import { usuariosApi } from "@/features/settings/api/usuarios";
 import type {
   Usuario,
   UsuarioFiltros,
   ActualizarUsuarioDto,
   CambiarRolDto,
-} from "../types/usuario.types";
+} from "@/features/settings/types/usuario.types";
 import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 
 export function useUsuarios() {

@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils/cn'
 import { CargaBadge } from './CargaBadge'
-import type { GestorConCarga } from '../../types/asignacion.types'
+import type { GestorConCarga } from '@/features/promocion/types/asignacion.types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

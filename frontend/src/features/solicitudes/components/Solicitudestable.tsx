@@ -15,13 +15,13 @@ import {
 import { EstatusBadge } from './Estatusbadge'
 import { SolicitudesEmptyState } from './SolicitudesEmptyState'
 import { SolicitudEnviarDialog } from './Solicitudenviardialog'
-import { solicitudesApi } from '../api/solicitudes.api'
+import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 import { Pencil, Send, User, FolderOpen, FileText, Loader2, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
-import { useDescargarPDF } from '../hooks/useDescargarPDF'
+import { useDescargarPDF } from '@/features/solicitudes/hooks/useDescargarPDF'
 import { solicitudesToast } from '@/shared/lib/utils/toaster'
 
 const SECTOR_LABELS: Record<string, string> = {

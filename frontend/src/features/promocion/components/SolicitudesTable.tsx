@@ -17,7 +17,7 @@ import {
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 import type { ReactNode } from 'react'
-import { useDescargarPDF } from '../hooks/useDescargarPDF'
+import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 

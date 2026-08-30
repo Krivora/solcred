@@ -7,9 +7,9 @@ import {
   SECTOR_FIELD,
   TAMANO_EMPRESA_FIELD,
   PERIODO_FIELD,
-} from '../../types/Filterbar.constants'
-import { FilterBar } from '../Filterbar'
-import type { FilterField as FilterFieldConfig } from '../../types/Filterbar.types'
+} from '@/features/promocion/types/Filterbar.constants'
+import { FilterBar } from '@/features/promocion/components/Filterbar'
+import type { FilterField as FilterFieldConfig } from '@/features/promocion/types/Filterbar.types'
 import type { FiltrosAprobacion } from '@/features/promocion/types/solicitud.types'
 
 // ── Config de campos ──────────────────────────────────────────────────────────

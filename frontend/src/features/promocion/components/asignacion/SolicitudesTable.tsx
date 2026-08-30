@@ -15,7 +15,7 @@ import {
     TAMANO_LABELS,
     formatMonto,
 } from '@/shared/config/solicitudes.config'
-import type { SolicitudAsignacion } from '../../types/asignacion.types'
+import type { SolicitudAsignacion } from '@/features/promocion/types/asignacion.types'
 import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

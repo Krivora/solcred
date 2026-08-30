@@ -20,7 +20,7 @@ import { useState } from 'react';
 import { Button } from '@/shared/components/ui/button';
 import { Separator } from '@/shared/components/ui/separator';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import type { LogAuditoria } from '../../types/logs.types';
+import type { LogAuditoria } from '@/features/settings/types/logs.types';
 import {
   ACCION_CONFIG,
   MODULO_CONFIG,

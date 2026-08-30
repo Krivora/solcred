@@ -1,4 +1,4 @@
-import { apiRequest } from '../client';
+import { apiRequest } from '@/shared/lib/client';
 import type {
   LoginCredentials,
   LoginResponseData,

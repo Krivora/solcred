@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { Eye, SendHorizonal, RotateCcw, Ban } from 'lucide-react'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/dropdown-menu'
-import { SolicitudesTable } from '../SolicitudesTable'
-import { AccionSolicitudDialog, type AccionTipo } from '../AccionSolicitudDialog'
-import { useAccionesSolicitud } from '../../hooks/useAccionesSolicitud'
+import { SolicitudesTable } from '@/features/promocion/components/SolicitudesTable'
+import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/AccionSolicitudDialog'
+import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
-import { DocumentosDropdown } from '../historico/DocumentosDropdown'
-import { useDescargarPDF } from '../../hooks/useDescargarPDF'
+import { DocumentosDropdown } from '@/features/promocion/components/historico/DocumentosDropdown'
+import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]

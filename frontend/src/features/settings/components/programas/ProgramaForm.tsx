@@ -27,7 +27,7 @@ import {
     Requerimiento,
     type Programa,
     type ProgramaFormData,
-} from "../../types/programa.types";
+} from "@/features/settings/types/programa.types";
 
 interface ProgramaFormProps {
     programa?: Programa;

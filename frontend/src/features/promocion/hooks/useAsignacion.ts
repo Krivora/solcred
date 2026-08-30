@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react'
-import * as asignacionApi from '../api/asignacion'
+import * as asignacionApi from '@/features/promocion/api/asignacion'
 import type {
     GestorConCarga,
     AsignarManualDto,
     SolicitudAsignacion,
     FiltrosAsignacion,
     PaginatedResponse,
-} from '../types/asignacion.types'
-import type { ResultadoAsignacion } from '../api/asignacion'
+} from '@/features/promocion/types/asignacion.types'
+import type { ResultadoAsignacion } from '@/features/promocion/api/asignacion'
 import { solicitudToast } from '@/shared/lib/utils/toaster'
 
 interface EstadoAsignacionAutomatica {

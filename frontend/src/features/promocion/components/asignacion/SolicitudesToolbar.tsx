@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from '@/shared/components/ui/select'
 import { cn } from '@/shared/lib/utils/cn'
-import type { GrupoGestion } from '../../types/asignacion.types'
+import type { GrupoGestion } from '@/features/promocion/types/asignacion.types'
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 

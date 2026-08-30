@@ -41,8 +41,8 @@ import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
 import {
   actualizarUsuarioSchema,
   type ActualizarUsuarioForm,
-} from "../../schema/usuario.schemas";
-import type { Usuario } from "../../types/usuario.types";
+} from "@/features/settings/schema/usuario.schemas";
+import type { Usuario } from "@/features/settings/types/usuario.types";
 
 // ─── Utilidades ───────────────────────────────────────────────────────────────
 

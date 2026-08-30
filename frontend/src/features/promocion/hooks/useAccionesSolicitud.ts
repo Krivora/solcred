@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { solicitudesApi, type AccionConMotivoDto, type AccionOpcionalDto } from '../api/promocion'
+import { solicitudesApi, type AccionConMotivoDto, type AccionOpcionalDto } from '@/features/promocion/api/promocion'
 import { solicitudToast } from '@/shared/lib/utils/toaster'
 
 interface UseAccionesSolicitudOptions {

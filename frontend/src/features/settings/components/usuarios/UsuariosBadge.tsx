@@ -1,5 +1,5 @@
 import { Badge } from "@/shared/components/ui/badge";
-import type { TipoPersona } from "../../types/usuario.types";
+import type { TipoPersona } from "@/features/settings/types/usuario.types";
 import type { RolAplicacion } from "@/shared/lib/types/auth.types";
 
 const rolConfig: Record<RolAplicacion, { label: string; className: string }> = {

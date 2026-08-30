@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib/utils/cn";
-import { Requerimiento } from "../../../types/programa.types";
+import { Requerimiento } from "@/features/settings/types/programa.types";
 
 const options: { value: Requerimiento; label: string }[] = [
     { value: Requerimiento.NO_REQUIERE, label: "No" },

@@ -18,7 +18,7 @@ import type {
   FilterBarValues,
   SearchField,
   SelectField,
-} from '../types/Filterbar.types'
+} from '@/features/promocion/types/Filterbar.types'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

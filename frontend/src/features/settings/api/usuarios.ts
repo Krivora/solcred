@@ -4,7 +4,7 @@ import type {
   UsuarioResponse,
   ActualizarUsuarioDto,
   CambiarRolDto,
-} from "../types/usuario.types";
+} from "@/features/settings/types/usuario.types";
 
 export const usuariosApi = {
   listar: (): Promise<UsuariosResponse> =>
