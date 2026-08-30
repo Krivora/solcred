@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -30,7 +30,7 @@ import {
     CardTitle,
 } from "@/shared/components/ui/card";
 
-import { getPrograma, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas.api";
+import { usePrograma } from "@/features/settings/hooks/useProgramas";
 import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 import { ORDEN_SECCIONES } from "@/features/settings/components/programas/form/SeccionesSelector";
@@ -39,7 +39,6 @@ import {
     SeccionSolicitud,
     SECCION_LABELS,
     REQUERIMIENTO_LABELS,
-    type Programa,
 } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/cn";
 
@@ -69,37 +68,13 @@ const REQUERIMIENTO_COLOR: Record<Requerimiento, string> = {
 export default function DetalleProgramaPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
-    const [programa, setPrograma] = useState<Programa | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [toggling, setToggling] = useState(false);
+    const { programa, loading, isError, toggling, toggle, recargar } = usePrograma(id);
 
-    const cargar = async () => {
-        try {
-            const data = await getPrograma(id);
-            setPrograma(data);
-        } catch {
-            router.push("/dashboard/admin/configuracion/programas");
-        } finally {
-            setLoading(false);
-        }
-    };
+    useEffect(() => {
+        if (isError) router.push("/dashboard/admin/configuracion/programas");
+    }, [isError, router]);
 
-    useEffect(() => { cargar()});
-
-    const handleToggle = async () => {
-        if (!programa) return;
-        setToggling(true);
-        try {
-            if (programa.activo) {
-                await desactivarPrograma(programa.id);
-            } else {
-                await activarPrograma(programa.id);
-            }
-            await cargar();
-        } finally {
-            setToggling(false);
-        }
-    };
+    const handleToggle = () => toggle();
 
     if (loading) {
         return (
@@ -268,7 +243,7 @@ export default function DetalleProgramaPage() {
                     <DocumentosPrograma
                         programaId={programa.id}
                         documentos={programa.documentosRequeridos ?? []}
-                        onCambio={cargar}
+                        onCambio={recargar}
                     />
                 </div>
             </div>

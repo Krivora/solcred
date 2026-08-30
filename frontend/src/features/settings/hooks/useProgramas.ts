@@ -108,6 +108,41 @@ export function useProgramas() {
     }
 }
 
+// ── Un programa por id ──────────────────────────────────────────────────────
+export function usePrograma(id: string) {
+    const qc = useQueryClient()
+
+    const {
+        data: programa = null,
+        isLoading: loading,
+        isError,
+    } = useQuery({
+        queryKey: programaKeys.detail(id),
+        queryFn: () => programasApi.getPrograma(id),
+        enabled: !!id,
+    })
+
+    const toggleMut = useMutation({
+        mutationFn: () =>
+            programa?.activo
+                ? programasApi.desactivarPrograma(id)
+                : programasApi.activarPrograma(id),
+        onSuccess: () => {
+            qc.invalidateQueries({ queryKey: programaKeys.all })
+        },
+        onError: (err: unknown) => programaToast.cambiarEstadoError((err as Error)?.message),
+    })
+
+    return {
+        programa,
+        loading,
+        isError,
+        toggling: toggleMut.isPending,
+        toggle: () => toggleMut.mutateAsync(),
+        recargar: () => qc.invalidateQueries({ queryKey: programaKeys.detail(id) }),
+    }
+}
+
 // ── Hook independiente para tipos de documento ──────────────────────────────
 export function useTiposDocumento() {
     const qc = useQueryClient()
