@@ -418,7 +418,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         title="Generar PDF"
                         disabled={idDescargando === s.id}
-                        onClick={() => descargar(s.id, s.folio)}
+                        onClick={() => descargar(s.id)}
                       >
                         {idDescargando === s.id ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />

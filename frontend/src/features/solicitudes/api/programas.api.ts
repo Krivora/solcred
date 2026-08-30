@@ -2,7 +2,7 @@ import { apiAuth } from "@/shared/api/client";
 import type {
     Programa,
     TipoDocumento,
-} from "@/shared/types/programa.types";
+} from "@/features/solicitudes/types/programa.types";
 
 export async function getProgramas(): Promise<Programa[]> {
     return apiAuth<Programa[]>("/admin/programas");

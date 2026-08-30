@@ -11,7 +11,7 @@ import {
   TipoVivienda,
 } from '@/shared/types/solicitudes.types'
 
-import { Programa } from '@/shared/types/programa.types'
+import { Programa } from '@/features/solicitudes/types/programa.types'
 export type SeccionSolicitud =
   | 'SOLICITANTE' | 'AVAL' | 'CREDITO' | 'GARANTIA'
   | 'NEGOCIO' | 'MERCADO' | 'BANCARIOS'

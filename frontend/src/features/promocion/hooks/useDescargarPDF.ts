@@ -1,37 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { solicitudesApi } from '@/features/promocion/api/promocion.api'
-import { ApiError } from '@/shared/api/client'
-import type { DocumentoTipo } from '@/shared/config/documentos.config'
-import { DOCUMENTO_LABELS } from '@/shared/config/documentos.config'
+import { DOCUMENTO_LABELS, type DocumentoTipo } from '@/shared/config/documentos.config'
+import { useDescargarBlob } from '@/shared/hooks/useDescargarBlob'
 
-interface UseDescargarPDFReturn {
-    descargar: (id: string, tipo?: DocumentoTipo) => Promise<void>
-    idDescargando: string | null
-    error: string | null
-}
+export function useDescargarPDF() {
+    const { descargar: descargarBlob, idDescargando, error } = useDescargarBlob()
 
-export function useDescargarPDF(): UseDescargarPDFReturn {
-    const [idDescargando, setIdDescargando] = useState<string | null>(null)
-    const [error, setError] = useState<string | null>(null)
-
-    const descargar = useCallback(async (id: string, tipo: DocumentoTipo = 'solicitud') => {
-        setIdDescargando(id)
-        setError(null)
-        try {
-            const blob = await solicitudesApi.descargarDocumento(id, tipo)
-            const url = window.URL.createObjectURL(blob)
-            window.open(url, '_blank')
-            setTimeout(() => window.URL.revokeObjectURL(url), 10_000)
-        } catch (err) {
-            const message =
-                err instanceof ApiError
-                    ? err.message
-                    : `No se pudo generar el documento: ${DOCUMENTO_LABELS[tipo]}.`
-            setError(message)
-        } finally {
-            setIdDescargando(null)
-        }
-    }, [])
+    const descargar = useCallback(
+        (id: string, tipo: DocumentoTipo = 'solicitud') =>
+            descargarBlob(
+                id,
+                () => solicitudesApi.descargarDocumento(id, tipo),
+                `No se pudo generar el documento: ${DOCUMENTO_LABELS[tipo]}.`,
+            ),
+        [descargarBlob],
+    )
 
     return { descargar, idDescargando, error }
 }
