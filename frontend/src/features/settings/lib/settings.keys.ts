@@ -29,7 +29,7 @@ export const grupoKeys = {
 export const logKeys = {
   all: ['settings', 'logs'] as const,
   lists: () => [...logKeys.all, 'list'] as const,
-  list: (params: Record<string, unknown>) => [...logKeys.lists(), params] as const,
+  list: (params: unknown) => [...logKeys.lists(), params] as const,
   resumen: () => [...logKeys.all, 'resumen'] as const,
   detail: (id: string) => [...logKeys.all, 'detail', id] as const,
 }
