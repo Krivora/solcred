@@ -365,7 +365,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
         </Table>
       </div>
 
-      <Paginacion meta={{ ...meta, pageSize: 10 }} onPaginar={onPaginar} />
+      <Paginacion meta={{ ...meta, pageSize: meta.limit }} onPaginar={onPaginar} />
     </div>
   )
 }

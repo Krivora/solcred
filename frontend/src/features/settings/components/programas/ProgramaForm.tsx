@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
     Loader2, FileText, DollarSign, ShieldCheck,
-    Check, User, Building2, BadgeCheck, Calendar,
+    Check, User, Building2, Calendar,
 } from "lucide-react";
 
 import { Button } from "@/shared/components/ui/button";
@@ -91,9 +91,8 @@ export function ProgramaForm({ programa, documentosSlot }: ProgramaFormProps) {
             router.push("/dashboard/admin/configuracion/programas");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : undefined;
-            programa
-                ? programaToast.actualizarError(message)
-                : programaToast.crearError(message);
+            if (programa) programaToast.actualizarError(message);
+            else programaToast.crearError(message);
         } finally {
             setLoading(false);
         }

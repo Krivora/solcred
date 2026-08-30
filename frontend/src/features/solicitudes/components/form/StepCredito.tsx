@@ -22,7 +22,6 @@ import { CategoriaCredito } from '@/shared/types/solicitudes.types'
 import { MontoInput } from '@/shared/components/common/inputs'
 import { montoAFloat } from '@/shared/lib/masks'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
-import { cn } from '@/shared/lib/cn'
 
 interface StepCreditoProps {
     defaultValues?: DatosCredito

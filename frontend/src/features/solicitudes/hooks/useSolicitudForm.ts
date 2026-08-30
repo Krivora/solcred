@@ -14,7 +14,6 @@ import type {
   DatosPersona,
   Solicitud,
 } from '@/features/solicitudes/types/solicitud.types'
-import { ApiError } from '@/shared/api/client'
 
 export type Step =
   | 'programa'
@@ -27,11 +26,6 @@ export type Step =
   | 'mercado'
   | 'bancarios'
   | 'resumen'
-
-const STEPS: Step[] = [
-  'programa', 'general', 'solicitante', 'aval', 'credito',
-  'garantia', 'negocio', 'mercado', 'bancarios', 'resumen',
-]
 
 interface UseSolicitudFormOptions {
   solicitudIdExistente?: string
@@ -82,7 +76,8 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
   // Omitir: no llama al backend, solo avanza. Válido para pasos OPCIONAL.
   const omitirPaso = () => {
     if (!pasoOmitible) return
-    esEdicion ? marcarGuardado() : goNext()
+    if (esEdicion) marcarGuardado()
+    else goNext()
   }
   useEffect(() => {
     if (!solicitudIdExistente) return
@@ -131,7 +126,8 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
       const data = await accion()
       aplicarResultado?.(data)
       onExito()
-      esEdicion ? marcarGuardado() : goNext()
+      if (esEdicion) marcarGuardado()
+      else goNext()
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : mensajeErrorFallback
       setError(msg)

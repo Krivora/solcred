@@ -31,19 +31,18 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
     data: listadoData,
     isLoading: cargando,
     isError,
-    refetch: refetchListado,
   } = useQuery({
     queryKey: promocionKeys.listado(filtros),
     queryFn: () => solicitudesApi.listarPromocion(filtros),
     placeholderData: keepPreviousData, // mientras carga la nueva página, muestra la anterior en vez de vaciar la tabla
   })
 
-  const { data: stats, isLoading: cargandoStats, refetch: refetchStats } = useQuery({
+  const { data: stats, isLoading: cargandoStats } = useQuery({
     queryKey: promocionKeys.stats(),
     queryFn: () => solicitudesApi.statsPromocion(),
   })
 
-  const { data: gestores = [], refetch: refetchGestores } = useQuery({
+  const { data: gestores = [] } = useQuery({
     queryKey: promocionKeys.gestores(),
     queryFn: () => solicitudesApi.gestoresPromocion(),
     staleTime: 5 * 60_000, // los gestores cambian poco, cache más largo

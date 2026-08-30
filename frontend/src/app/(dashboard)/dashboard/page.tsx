@@ -57,9 +57,9 @@ const STATS_BY_ROLE: Record<string, StatCard[]> = {
 };
 
 export default function DashboardPage() {
-  const { usuario } = useAuthStore();
-  const stats = usuario ? (STATS_BY_ROLE[usuario.rol] ?? []) : [];
-  const welcomeTitle = usuario ? ROLE_WELCOME[usuario.rol] : "Dashboard";
+  const { usuario, rol } = useAuthStore();
+  const stats = rol ? (STATS_BY_ROLE[rol] ?? []) : [];
+  const welcomeTitle = rol ? ROLE_WELCOME[rol] : "Dashboard";
 
   return (
     <div className="space-y-8">
