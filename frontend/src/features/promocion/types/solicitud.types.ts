@@ -3,6 +3,7 @@ import {
     EstadoCivil,
     EstatusSolicitud,
     NivelEstudio,
+    Rol,
     Sector,
     TamanoEmpresa,
     TipoPersona,
@@ -164,6 +165,19 @@ export interface PersonalResumen {
     }
 }
 
+/**
+ * Usuario "plano" (sin anidar en `.usuario`). Así viene `realizadoPor` en el
+ * historial de estatus del backend: incluye el rol y puede ser null cuando el
+ * cambio lo hizo el sistema.
+ */
+export interface UsuarioResumen {
+    id: string
+    nombre: string
+    apellidoPaterno: string
+    apellidoMaterno: string
+    personal: { rol: Rol } | null
+}
+
 
 export interface AsignacionDetalle {
     id: string
@@ -188,7 +202,7 @@ export interface TimelineCambioEstatus {
     estatusAnterior: EstatusSolicitud
     estatusNuevo: EstatusSolicitud
     comentario: string | null
-    realizadoPor: PersonalResumen
+    realizadoPor: UsuarioResumen | null
 }
 
 export interface TimelineAsignacion {
