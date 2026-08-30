@@ -13,7 +13,6 @@ const DOCUMENTO_ENDPOINT: Record<DocumentoTipo, string> = {
   solicitud: 'pdf',
   tarjeta_informativa: 'tarjeta-informativa',
   carta_rechazo: 'carta-rechazo',
-  carta_financiamiento: 'carta-financiamiento',
   acuse_entrega: 'acuse-entrega',
 }
 // ─── DTOs ─────────────────────────────────────────────────────────────────────

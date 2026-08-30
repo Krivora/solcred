@@ -24,10 +24,12 @@ export default function DashboardLayout({
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Cierra el drawer mobile al navegar a otra ruta
-  useEffect(() => {
+  // Cierra el drawer mobile al navegar a otra ruta (patrón de React, sin efecto)
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   if (isLoading) {
     return (

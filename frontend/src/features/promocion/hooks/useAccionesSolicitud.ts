@@ -20,8 +20,8 @@ export const useAccionesSolicitud = (options: UseAccionesSolicitudOptions = {}) 
       await accion()
       onExito()
       onSuccess?.()
-    } catch (error: any) {
-      onError(error?.message)
+    } catch (error: unknown) {
+      onError(error instanceof Error ? error.message : undefined)
     } finally {
       setLoading(false)
     }

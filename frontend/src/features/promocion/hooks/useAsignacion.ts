@@ -10,6 +10,9 @@ import type {
 import type { ResultadoAsignacion } from '@/features/promocion/api/asignacion.api'
 import { solicitudToast } from '@/shared/lib/toaster'
 
+const getErrorMessage = (err: unknown): string =>
+    err instanceof Error ? err.message : 'Error de conexión con el servidor'
+
 interface EstadoAsignacionAutomatica {
     total: number
     exitosas: number
@@ -47,8 +50,8 @@ export function useAsignacion() {
             const { data, meta } = await asignacionApi.listarSolicitudesAsignacion(filtros)
             setSolicitudes(data)
             setMeta(meta)
-        } catch (err: any) {
-            solicitudToast.cargarSolicitudesError(err.message)
+        } catch (err: unknown) {
+            solicitudToast.cargarSolicitudesError(getErrorMessage(err))
         } finally {
             setCargandoSolicitudes(false)
         }
@@ -60,8 +63,8 @@ export function useAsignacion() {
             setCargandoGestores(true)
             const data = await asignacionApi.obtenerCargaGestores(grupoId)
             setGestores(data)
-        } catch (err: any) {
-            solicitudToast.cargarGestoresError(err.message)
+        } catch (err: unknown) {
+            solicitudToast.cargarGestoresError(getErrorMessage(err))
         } finally {
             setCargandoGestores(false)
         }
@@ -95,7 +98,8 @@ export function useAsignacion() {
 
             onSuccess?.()
             return fallidas.length === 0
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const mensaje = getErrorMessage(err)
             setEstadoAsignacion((prev) => ({
                 ...prev,
                 enProceso: false,
@@ -103,10 +107,10 @@ export function useAsignacion() {
                 fallidas: solicitudIds.map((id) => ({
                     solicitudId: id,
                     exito: false,
-                    mensaje: err.message ?? 'Error de conexión con el servidor',
+                    mensaje,
                 })),
             }))
-            solicitudToast.asignarError(err.message)
+            solicitudToast.asignarError(mensaje)
             return false
         } finally {
             setAsignando(false)
@@ -145,8 +149,9 @@ export function useAsignacion() {
 
             onSuccess?.()
             return fallidas.length === 0
-        } catch (err: any) {
+        } catch (err: unknown) {
             // fallo general de red/servidor, no de solicitudes individuales
+            const mensaje = getErrorMessage(err)
             setEstadoAsignacion((prev) => ({
                 ...prev,
                 enProceso: false,
@@ -154,19 +159,19 @@ export function useAsignacion() {
                 fallidas: solicitudIds.map((id) => ({
                     solicitudId: id,
                     exito: false,
-                    mensaje: err.message ?? 'Error de conexión con el servidor',
+                    mensaje,
                 })),
             }))
-            solicitudToast.asignarError(err.message)
+            solicitudToast.asignarError(mensaje)
             return false
         } finally {
             setAsignando(false)
         }
     }
 
-    const reiniciarEstadoAsignacion = useCallback(() => {
+    const reiniciarEstadoAsignacion = () => {
         setEstadoAsignacion(estadoAsignacionInicial)
-    }, [])
+    }
 
     return {
         solicitudes,

@@ -11,7 +11,6 @@ import type {
 } from '@/shared/schemas/auth.schema'
 import { authToast } from '@/shared/lib/toaster'
 import { getDefaultRouteForRole } from '@/shared/config/route-permissions.config'
-import { obtenerRolEfectivo } from '@/shared/types/auth.types'
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof ApiError) return err.message
     if (err instanceof Error) return err.message

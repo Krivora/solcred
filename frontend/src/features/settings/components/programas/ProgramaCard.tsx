@@ -13,7 +13,12 @@ import {
     DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
-import type { Programa } from "@/features/settings/types/programa.types";
+import { Requerimiento, SeccionSolicitud, type Programa } from "@/features/settings/types/programa.types";
+
+const avalEsObligatorio = (programa: Programa): boolean =>
+    !!programa.secciones?.some(
+        (s) => s.seccion === SeccionSolicitud.AVAL && s.requerimiento === Requerimiento.OBLIGATORIO,
+    );
 
 interface ProgramaCardProps {
     programa: Programa;
@@ -141,7 +146,7 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                 </div>
 
                 {/* Tags */}
-                {programa.aval && (
+                {avalEsObligatorio(programa) && (
                     <div className="flex items-center gap-1.5">
                         <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/8 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
                             Aval requerido

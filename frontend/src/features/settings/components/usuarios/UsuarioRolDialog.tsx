@@ -70,9 +70,6 @@ const ROLES: RolConfig[] = [
   },
 ];
 
-const getRolConfig = (value?: RolValue) =>
-  ROLES.find((r) => r.value === value) ?? null;
-
 // ─── Utilidad: iniciales ──────────────────────────────────────────────────────
 
 function iniciales(nombre: string, apellido: string) {

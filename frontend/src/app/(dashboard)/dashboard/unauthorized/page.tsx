@@ -6,8 +6,8 @@ import { getDefaultRouteForRole } from '@/shared/config/route-permissions.config
 import { ErrorState } from '@/shared/components/common/ErrorState';
 
 export default function DashboardUnauthorizedPage() {
-    const usuario = useAuthStore((state) => state.usuario);
-    const inicioHref = usuario ? getDefaultRouteForRole(usuario.rol) : '/login';
+    const rol = useAuthStore((state) => state.rol);
+    const inicioHref = rol ? getDefaultRouteForRole(rol) : '/login';
 
     return (
         <ErrorState

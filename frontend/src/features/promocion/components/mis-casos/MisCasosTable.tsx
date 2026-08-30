@@ -19,7 +19,7 @@ interface Props {
 }
 
 export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefresh }: Props) {
-  const { descargar, idDescargando, error } = useDescargarPDF()
+  const { descargar, idDescargando } = useDescargarPDF()
   const [dialogOpen, setDialogOpen]           = useState(false)
   const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)

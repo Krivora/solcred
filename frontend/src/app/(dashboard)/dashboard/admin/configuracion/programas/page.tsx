@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Building2, Search, SlidersHorizontal, Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -12,43 +12,25 @@ import {
     SelectValue,
 } from "@/shared/components/ui/select";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { getProgramas, activarPrograma, desactivarPrograma } from "@/features/settings/api/programas.api";
+import { useProgramas } from "@/features/settings/hooks/useProgramas";
 import { ProgramaCard } from "@/features/settings/components/programas/ProgramaCard";
-import type { Programa } from "@/features/settings/types/programa.types";
 import { PageHeader } from "@/shared/components/common/PageHeader";
 
 export default function ProgramasPage() {
-    const [programas, setProgramas] = useState<Programa[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { programas, cargando: loading, error, recargar, activar, desactivar } = useProgramas();
     const [search, setSearch] = useState("");
     const [filtro, setFiltro] = useState<"todos" | "activos" | "inactivos">("todos");
     const [toggling, setToggling] = useState<string | null>(null);
-    const cargar = useCallback(async () => {
-        try {
-            setLoading(true);
-            const data = await getProgramas();
-            setProgramas(data);
-        } catch {
-            setError("No se pudieron cargar los programas.");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {cargar();}, [cargar]);
+    const cargar = recargar;
 
     const handleToggleActivo = async (id: string, activo: boolean) => {
         setToggling(id);
         try {
             if (activo) {
-                await desactivarPrograma(id);
+                await desactivar(id);
             } else {
-                await activarPrograma(id);
+                await activar(id);
             }
-            await cargar();
-        } catch {
-            // silenciar, podría mostrar un toast
         } finally {
             setToggling(null);
         }

@@ -151,9 +151,9 @@ export function AsignacionSolicitudesTable({
                             { label: 'Antigüedad', extra: 'w-20 text-right' },
                             { label: 'Gestor', extra: 'w-10' },
                             { label: '', extra: 'w-8' },
-                        ].map(({ label, extra }) => (
+                        ].map(({ label, extra }, i) => (
                             <TableHead
-                                key={label || Math.random()}
+                                key={label || i}
                                 className={cn(
                                     'text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3',
                                     extra

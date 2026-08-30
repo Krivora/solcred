@@ -8,8 +8,8 @@ interface PaginacionProps {
 }
 
 export function Paginacion({ meta, onPaginar }: PaginacionProps) {
-    const desde = Math.min((meta.page - 1) * meta.limit + 1, meta.total)
-    const hasta = Math.min(meta.page * meta.limit, meta.total)
+    const desde = Math.min((meta.page - 1) * meta.pageSize + 1, meta.total)
+    const hasta = Math.min(meta.page * meta.pageSize, meta.total)
 
     return (
         <div className="flex items-center justify-between px-1">

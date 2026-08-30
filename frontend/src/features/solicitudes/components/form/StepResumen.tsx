@@ -50,6 +50,10 @@ export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Pro
   const s = solicitud.datosSolicitante
   const a = solicitud.datosAval
 
+  // El backend no guarda monto/plazo planos: se derivan de datosCredito.
+  const montoSolicitado = solicitud.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0)
+  const plazoSolicitado = solicitud.datosCredito?.plazoMeses
+
   return (
     <div className="space-y-6">
       <div>
@@ -64,15 +68,15 @@ export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Pro
         <Section icon={Briefcase} title="Programa y condiciones">
           <InfoRow label="Programa" value={solicitud.programa?.nombre} />
           <InfoRow label="Tipo de persona" value={solicitud.tipoPersona === 'FISICA' ? 'Persona Física' : 'Persona Moral'} />
-          <InfoRow label="Sector" value={SECTOR_LABELS[solicitud.sector]} />
+          <InfoRow label="Sector" value={solicitud.sector ? SECTOR_LABELS[solicitud.sector] : undefined} />
           <InfoRow label="Tamaño de empresa" value={solicitud.tamanoEmpresa ?? undefined} />
           <Separator className="my-1" />
-          <InfoRow label="Monto solicitado" value={solicitud.montoSolicitado != null
-              ? `$${solicitud.montoSolicitado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`
+          <InfoRow label="Monto solicitado" value={montoSolicitado != null
+              ? `$${montoSolicitado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`
               : undefined
             }
-          />          
-          <InfoRow label="Plazo" value={`${solicitud.plazoSolicitado} meses`} />
+          />
+          <InfoRow label="Plazo" value={plazoSolicitado != null ? `${plazoSolicitado} meses` : undefined} />
         </Section>
 
         {/* Solicitante */}
