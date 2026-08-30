@@ -3,7 +3,7 @@
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useExpediente } from '@/features/expediente/hooks/useExpediente'
-import { useHistorialDocumento } from '@/features/expediente/hooks/useExpediente'
+import { useHistorialDocumento } from '@/features/expediente/hooks/useHistorialDocumento'
 import { useSubirDocumento } from '@/features/expediente/hooks/useSubirDocumento'
 import { useAuthStore } from '@/shared/stores/auth.store'
 

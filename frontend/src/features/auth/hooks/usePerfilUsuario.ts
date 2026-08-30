@@ -1,4 +1,6 @@
-import { useEffect, useState, useCallback } from 'react'
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
 import { authApi } from '@/features/auth/api/auth.api'
 import { useAuthStore } from '@/shared/stores/auth.store'
 import type { Usuario } from '@/shared/types/auth.types'
@@ -9,34 +11,23 @@ interface UsePerfilUsuarioReturn {
   error: string | null
 }
 
+/**
+ * Perfil del usuario autenticado. `enabled` retrasa la petición hasta que
+ * el consumidor la necesita (p. ej. al llegar al step que precarga datos).
+ */
 export function usePerfilUsuario(enabled: boolean): UsePerfilUsuarioReturn {
   const token = useAuthStore((s) => s.token)
-  const [usuario, setUsuario] = useState<Usuario | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const fetchPerfil = useCallback(async () => {
-    if (!token) return
-    setIsLoading(true)
-    setError(null)
-    try {
-      const usuario = await authApi.perfil(token) // ya no se destructura
-      setUsuario(usuario)
-    } catch (err) {
-      console.error('Error al obtener perfil:', err)
-      setError('No se pudo cargar tu información de perfil.')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [token])
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['auth', 'perfil'],
+    queryFn: () => authApi.perfil(token as string),
+    enabled: enabled && !!token,
+    staleTime: Infinity, // el perfil no cambia dentro de una sesión
+  })
 
-  useEffect(() => {
-    // No dispara nada hasta que 'enabled' sea true (llegamos al step correcto),
-    // y evita refetch si ya se cargó una vez.
-    if (enabled && !usuario) {
-      fetchPerfil()
-    }
-  }, [enabled, usuario, fetchPerfil])
-
-  return { usuario, isLoading, error }
+  return {
+    usuario: data ?? null,
+    isLoading,
+    error: isError ? 'No se pudo cargar tu información de perfil.' : null,
+  }
 }

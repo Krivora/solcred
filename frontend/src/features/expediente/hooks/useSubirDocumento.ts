@@ -1,50 +1,38 @@
-import { useState, useCallback } from 'react'
+'use client'
+
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { uploadsApi } from '@/shared/api/uploads.api'
+import { expedienteKeys } from '@/features/expediente/lib/expediente.keys'
 import { documentoToast } from '@/shared/lib/toaster'
+
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof Error) return err.message
     if (typeof err === 'string') return err
     return 'Error inesperado'
 }
+
 export const useSubirDocumento = (
     solicitudId: string,
-    onSuccess?: () => Promise<void> | void
+    onSuccess?: () => Promise<void> | void,
 ) => {
-    const [subiendo, setSubiendo] = useState(false)
+    const qc = useQueryClient()
 
-    const subirDocumento = useCallback(
-        async (
-            tipoDocumentoId: string,
-            archivo: File
-        ) => {
-            try {
-                setSubiendo(true)
-
-                const documento =
-                    await uploadsApi.subirArchivo(
-                        solicitudId,
-                        tipoDocumentoId,
-                        archivo
-                    )
-
-                documentoToast.subidaExitosa(documento.version)
-
-                await onSuccess?.()
-
-                return documento
-            } catch (err: unknown) {
-                const message = getErrorMessage(err)
-                documentoToast.subidaError(message)
-                throw err
-            } finally {
-                setSubiendo(false)
-            }
+    const mut = useMutation({
+        mutationFn: ({ tipoDocumentoId, archivo }: { tipoDocumentoId: string; archivo: File }) =>
+            uploadsApi.subirArchivo(solicitudId, tipoDocumentoId, archivo),
+        onSuccess: async (documento) => {
+            documentoToast.subidaExitosa(documento.version)
+            qc.invalidateQueries({ queryKey: expedienteKeys.detail(solicitudId) })
+            await onSuccess?.()
         },
-        [solicitudId, onSuccess]
-    )
+        onError: (err) => documentoToast.subidaError(getErrorMessage(err)),
+    })
+
+    const subirDocumento = async (tipoDocumentoId: string, archivo: File) =>
+        mut.mutateAsync({ tipoDocumentoId, archivo })
 
     return {
-        subiendo,
+        subiendo: mut.isPending,
         subirDocumento,
     }
 }

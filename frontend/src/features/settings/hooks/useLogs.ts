@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs.api';
+import { logKeys } from '@/features/settings/lib/settings.keys';
 import type {
   LogAuditoria,
   LogFilters,
-  LogsPaginados,
-  ResumenLogs,
+  LogsQueryParams,
 } from '@/features/settings/types/logs.types';
 
 const DEFAULT_FILTERS: LogFilters = {
@@ -20,156 +21,102 @@ const DEFAULT_FILTERS: LogFilters = {
 
 const DEFAULT_LIMITE = 20;
 
-export function useLogs() {
-  const [logs, setLogs] = useState<LogAuditoria[]>([]);
-  const [resumen, setResumen] = useState<ResumenLogs | null>(null);
-  const [paginacion, setPaginacion] = useState({
-    pagina: 1,
+// `busqueda` es solo un chip de UI: el backend no lo recibe, así que no entra
+// en la query key (cambiarlo no dispara refetch).
+function toQueryParams(filters: LogFilters, pagina: number): LogsQueryParams {
+  return {
+    pagina,
     limite: DEFAULT_LIMITE,
-    total: 0,
-    totalPaginas: 0,
-  });
+    ...(filters.accion && { accion: filters.accion }),
+    ...(filters.modulo && { modulo: filters.modulo }),
+    ...(filters.usuarioId && { usuarioId: filters.usuarioId }),
+    ...(filters.fechaInicio && {
+      fechaInicio: new Date(filters.fechaInicio).toISOString(),
+    }),
+    ...(filters.fechaFin && {
+      fechaFin: new Date(filters.fechaFin + 'T23:59:59').toISOString(),
+    }),
+  };
+}
+
+export function useLogs() {
+  const qc = useQueryClient();
+
+  const [pagina, setPagina] = useState(1);
   const [filters, setFilters] = useState<LogFilters>(DEFAULT_FILTERS);
-  const [loading, setLoading] = useState(false);
-  const [loadingResumen, setLoadingResumen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedLog, setSelectedLog] = useState<LogAuditoria | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const queryParams = useMemo(() => toQueryParams(filters, pagina), [filters, pagina]);
 
-  // ── Guardar filters en ref para evitar closures stale ──
-  const filtersRef = useRef<LogFilters>(DEFAULT_FILTERS);
-  useEffect(() => {
-    filtersRef.current = filters;
-  }, [filters]);
+  const {
+    data,
+    isFetching,
+    isError,
+    error: queryError,
+  } = useQuery({
+    queryKey: logKeys.list(queryParams),
+    queryFn: () => getLogs(queryParams),
+    placeholderData: keepPreviousData,
+  });
 
-  // ── Fetch logs ─────────────────────────────────────────
-  const fetchLogs = useCallback(async (page = 1, overrideFilters?: LogFilters) => {
-    setLoading(true);
-    setError(null);
+  const { data: resumen = null, isLoading: loadingResumen } = useQuery({
+    queryKey: logKeys.resumen(),
+    queryFn: getResumenLogs,
+  });
 
-    const currentFilters = overrideFilters ?? filtersRef.current;
+  const paginacion = {
+    pagina: data?.pagina ?? pagina,
+    limite: data?.limite ?? DEFAULT_LIMITE,
+    total: data?.total ?? 0,
+    totalPaginas: data?.totalPaginas ?? 0,
+  };
 
-    try {
-      const params = {
-        pagina: page,
-        limite: DEFAULT_LIMITE,
-        ...(currentFilters.accion      && { accion: currentFilters.accion }),
-        ...(currentFilters.modulo      && { modulo: currentFilters.modulo }),
-        ...(currentFilters.usuarioId   && { usuarioId: currentFilters.usuarioId }),
-        ...(currentFilters.fechaInicio && {
-          fechaInicio: new Date(currentFilters.fechaInicio).toISOString(),
-        }),
-        ...(currentFilters.fechaFin && {
-          fechaFin: new Date(currentFilters.fechaFin + 'T23:59:59').toISOString(),
-        }),
-      };
-
-      const data: LogsPaginados = await getLogs(params);
-
-      setLogs(data.logs);
-      setPaginacion({
-        pagina: data.pagina,
-        limite: data.limite,
-        total: data.total,
-        totalPaginas: data.totalPaginas,
-      });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error al cargar logs';
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, []); // sin dependencias — lee filters desde ref
-
-  // ── Fetch resumen ──────────────────────────────────────
-  const fetchResumen = useCallback(async () => {
-    setLoadingResumen(true);
-    try {
-      const data = await getResumenLogs();
-      setResumen(data);
-    } catch {
-      // Silencioso
-    } finally {
-      setLoadingResumen(false);
-    }
-  }, []);
-
-  // ── Fetch log detalle ──────────────────────────────────
-  const fetchLogById = useCallback(async (id: string) => {
-    setLoadingDetail(true);
-    try {
-      const data = await getLogById(id);
-      setSelectedLog(data);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error al cargar detalle';
-      setError(msg);
-    } finally {
-      setLoadingDetail(false);
-    }
-  }, []);
-
-  // ── Actualizar filtro ──────────────────────────────────
   const updateFilter = useCallback(
     <K extends keyof LogFilters>(key: K, value: LogFilters[K]) => {
-      setFilters((prev) => {
-        const next = { ...prev, [key]: value };
-        filtersRef.current = next;
-
-        if (key === 'busqueda') {
-          if (debounceTimer.current) clearTimeout(debounceTimer.current);
-          debounceTimer.current = setTimeout(() => {
-            fetchLogs(1, next);
-          }, 400);
-        } else {
-          fetchLogs(1, next);
-        }
-
-        return next;
-      });
+      setFilters((prev) => ({ ...prev, [key]: value }));
+      setPagina(1);
     },
-    [fetchLogs],
+    [],
   );
 
-  // ── Reset filtros ──────────────────────────────────────
   const resetFilters = useCallback(() => {
-    filtersRef.current = DEFAULT_FILTERS;
     setFilters(DEFAULT_FILTERS);
-    fetchLogs(1, DEFAULT_FILTERS);
-  }, [fetchLogs]);
-
-  // ── Paginación — ahora lee filters desde ref ───────────
-  const goToPage = useCallback(
-    (page: number) => {
-      fetchLogs(page);
-    },
-    [fetchLogs],
-  );
-
-  // ── Refrescar ──────────────────────────────────────────
-  const refresh = useCallback(() => {
-    fetchLogs(paginacion.pagina);
-    fetchResumen();
-  }, [fetchLogs, fetchResumen, paginacion.pagina]);
-
-  // ── Carga inicial ──────────────────────────────────────
-  useEffect(() => {
-    fetchLogs(1);
-    fetchResumen();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setPagina(1);
   }, []);
 
+  const goToPage = useCallback((page: number) => setPagina(page), []);
+
+  const refresh = useCallback(() => {
+    qc.invalidateQueries({ queryKey: logKeys.all });
+  }, [qc]);
+
+  const fetchLogById = useCallback(
+    async (id: string) => {
+      setLoadingDetail(true);
+      try {
+        const log = await qc.fetchQuery({
+          queryKey: logKeys.detail(id),
+          queryFn: () => getLogById(id),
+        });
+        setSelectedLog(log);
+      } finally {
+        setLoadingDetail(false);
+      }
+    },
+    [qc],
+  );
+
   return {
-    logs,
+    logs: data?.logs ?? [],
     resumen,
     paginacion,
     filters,
     selectedLog,
-    loading,
+    loading: isFetching,
     loadingResumen,
     loadingDetail,
-    error,
+    error: isError ? ((queryError as Error)?.message ?? 'Error al cargar logs') : null,
     updateFilter,
     resetFilters,
     goToPage,
