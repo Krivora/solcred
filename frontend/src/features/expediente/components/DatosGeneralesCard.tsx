@@ -14,7 +14,7 @@ import {
     Building2,
     Hash,
 } from 'lucide-react'
-import type { Expediente } from '@/shared/types/expediente.types'
+import type { Expediente } from '@/features/expediente/types/expediente.types'
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
 const formatMonto = (monto: number) =>

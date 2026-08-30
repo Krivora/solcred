@@ -13,8 +13,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/shared/components/ui/table'
-import { EstatusDocumentoBadge } from './Estatusdocumentobadge'
-import { ValidarDocumentoDialog } from './Validardocumentodialog'
+import { EstatusDocumentoBadge } from './EstatusDocumentoBadge'
+import { ValidarDocumentoDialog } from './ValidarDocumentoDialog'
 import {
     XCircle,
     ExternalLink,
@@ -29,7 +29,7 @@ import {
 import type {
     ResumenDocumento,
     ValidarDocumentoDto,
-} from '@/shared/types/expediente.types'
+} from '@/features/expediente/types/expediente.types'
 import { uploadsApi } from '@/shared/api/uploads.api'
 import { ApiError } from '@/shared/api/client'
 
