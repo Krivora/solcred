@@ -1,10 +1,10 @@
-import { apiRequest } from '@/shared/lib/client';
+import { apiRequest } from '@/shared/api/client';
 import type {
   LoginCredentials,
   LoginResponseData,
   RegisterCredentials,
   Usuario,
-} from '@/shared/lib/types/auth.types';
+} from '@/shared/types/auth.types';
 
 export const authApi = {
   login: (credentials: LoginCredentials) =>

@@ -7,7 +7,7 @@ import {
 } from '@/shared/components/ui/dropdown-menu'
 import { Button } from '@/shared/components/ui/button'
 import { DOCUMENTO_LABELS, getDocumentosDisponibles, type DocumentoTipo } from '@/shared/config/documentos.config'
-import type { EstatusSolicitud } from '@/shared/lib/types/solicitudes.types'
+import type { EstatusSolicitud } from '@/shared/types/solicitudes.types'
 
 interface Props {
     estatus: EstatusSolicitud

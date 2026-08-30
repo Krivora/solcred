@@ -8,7 +8,7 @@ import { Skeleton } from '@/shared/components/ui/skeleton'
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/shared/components/ui/table'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import {
     ESTATUS_STYLES,
     SECTOR_LABELS,
@@ -16,7 +16,7 @@ import {
     formatMonto,
 } from '@/shared/config/solicitudes.config'
 import type { SolicitudAsignacion } from '@/features/promocion/types/asignacion.types'
-import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
+import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

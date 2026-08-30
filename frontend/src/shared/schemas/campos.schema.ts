@@ -6,7 +6,7 @@
  * Uso típico dentro de un schema de step:
  *
  *   import { z } from "zod";
- *   import { telefonoSchema, codigoPostalSchema, correoSchema, montoSchema } from "@/shared/lib/schema/campos.schemas";
+ *   import { telefonoSchema, codigoPostalSchema, correoSchema, montoSchema } from "@/shared/schemas/campos.schema";
  *
  *   export const datosNegocioSchema = z.object({
  *     telefonoFijoNegocio: telefonoSchema.optional().or(z.literal("")),

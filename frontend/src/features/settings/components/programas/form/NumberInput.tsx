@@ -1,5 +1,5 @@
 import { Input } from "@/shared/components/ui/input";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     prefix?: string;

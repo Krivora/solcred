@@ -29,9 +29,9 @@ import {
 import type {
     ResumenDocumento,
     ValidarDocumentoDto,
-} from '@/shared/lib/types/expediente.types'
-import { uploadsApi } from '@/shared/lib/api/uploads.api'
-import { ApiError } from '@/shared/lib/client'
+} from '@/shared/types/expediente.types'
+import { uploadsApi } from '@/shared/api/uploads.api'
+import { ApiError } from '@/shared/api/client'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types

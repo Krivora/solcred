@@ -9,7 +9,7 @@ import { UsuarioDesactivarDialog } from "@/features/settings/components/usuarios
 import { useUsuarios } from "@/features/settings/hooks/useUsuarios";
 import type { Usuario } from "@/features/settings/types/usuario.types";
 import type { ActualizarUsuarioForm, CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
-import { PageHeader } from "@/shared/components/ui/PageHeader";
+import { PageHeader } from "@/shared/components/common/PageHeader";
 import { UsuarioRevocarAccesoDialog } from "@/features/settings/components/usuarios/UsuarioRevocarAccesoDialog";
 
 export default function UsuariosPage() {

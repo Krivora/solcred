@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Shield, ChevronDown, Check } from "lucide-react";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 import {
   Dialog,
@@ -23,8 +23,8 @@ import {
 
 import { cambiarRolSchema, type CambiarRolForm } from "@/features/settings/schema/usuario.schemas";
 import type { Usuario } from "@/features/settings/types/usuario.types";
-import type { RolAplicacion } from "@/shared/lib/types/auth.types";
-import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
+import type { RolAplicacion } from "@/shared/types/auth.types";
+import { obtenerRolEfectivo } from "@/shared/types/auth.types";
 
 // ─── Config de roles ──────────────────────────────────────────────────────────
 // Para agregar más roles: solo añade objetos a este array.

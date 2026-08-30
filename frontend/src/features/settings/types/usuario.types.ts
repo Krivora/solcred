@@ -1,4 +1,4 @@
-import type { Rol, RolAplicacion } from "@/shared/lib/types/auth.types";
+import type { Rol, RolAplicacion } from "@/shared/types/auth.types";
 
 export type TipoPersona = "FISICA" | "MORAL";
 

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { solicitudesApi } from '@/features/promocion/api/promocion'
-import { ApiError } from '@/shared/lib/client'
+import { ApiError } from '@/shared/api/client'
 import type { DocumentoTipo } from '@/shared/config/documentos.config'
 import { DOCUMENTO_LABELS } from '@/shared/config/documentos.config'
 

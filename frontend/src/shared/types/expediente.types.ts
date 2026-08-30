@@ -1,5 +1,5 @@
-import type { TipoPersona, EstatusSolicitud } from '@/shared/lib/types/solicitudes.types'
-import { EstatusDocumento } from '@/shared/lib/types/documento.types'
+import type { TipoPersona, EstatusSolicitud } from '@/shared/types/solicitudes.types'
+import { EstatusDocumento } from '@/shared/types/documento.types'
 
 // ─── Documento ────────────────────────────────────────────────────────────────
 

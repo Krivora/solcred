@@ -5,7 +5,7 @@ import { Button } from '@/shared/components/ui/button'
 import { MisCasosFiltros } from '@/features/promocion/components/mis-casos/MisCasosFiltros'
 import { MisCasosTable } from '@/features/promocion/components/mis-casos/MisCasosTable'
 import { useMisCasos } from '@/features/promocion/hooks/useMisCasos'
-import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
 
 export default function MisCasosPage() {
     const {

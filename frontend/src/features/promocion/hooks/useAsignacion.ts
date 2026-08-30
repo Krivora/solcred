@@ -8,7 +8,7 @@ import type {
     PaginatedResponse,
 } from '@/features/promocion/types/asignacion.types'
 import type { ResultadoAsignacion } from '@/features/promocion/api/asignacion'
-import { solicitudToast } from '@/shared/lib/utils/toaster'
+import { solicitudToast } from '@/shared/lib/toaster'
 
 interface EstadoAsignacionAutomatica {
     total: number

@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Textarea } from '@/shared/components/ui/textarea'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import {
     guardarDatosMercadoSchema,
     type GuardarDatosMercadoDto,

@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import type { PaginacionMeta } from '@/shared/lib/types/solicitudes.types'
+import type { PaginacionMeta } from '@/shared/types/solicitudes.types'
 
 interface PaginacionProps {
     meta: PaginacionMeta

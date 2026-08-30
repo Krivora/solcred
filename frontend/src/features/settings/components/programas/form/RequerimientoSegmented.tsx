@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 import { Requerimiento } from "@/features/settings/types/programa.types";
 
 const options: { value: Requerimiento; label: string }[] = [

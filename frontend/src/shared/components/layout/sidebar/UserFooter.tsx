@@ -7,7 +7,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import { useAuthStore } from "@/shared/lib/store/auth.store";
+import { useAuthStore } from "@/shared/stores/auth.store";
 
 export function UserFooter({ collapsed }: { collapsed: boolean }) {
     const { usuario } = useAuthStore();

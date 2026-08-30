@@ -2,9 +2,9 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Usuario, RolAplicacion } from '@/shared/lib/types/auth.types';
-import { obtenerRolEfectivo } from '@/shared/lib/types/auth.types';
-import { setCookie, deleteCookie } from '@/shared/lib/utils/cookies';
+import type { Usuario, RolAplicacion } from '@/shared/types/auth.types';
+import { obtenerRolEfectivo } from '@/shared/types/auth.types';
+import { setCookie, deleteCookie } from '@/shared/lib/cookies';
 
 type UsuarioBasico = Pick<Usuario, 'id' | 'correo' | 'nombre' | 'apellidoPaterno' | 'tipoUsuario' | 'personal'>;
 

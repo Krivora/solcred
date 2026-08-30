@@ -41,7 +41,7 @@ import {
     REQUERIMIENTO_LABELS,
     type Programa,
 } from "@/features/settings/types/programa.types";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 const fmt = (n: number) =>
     new Intl.NumberFormat("es-MX", {

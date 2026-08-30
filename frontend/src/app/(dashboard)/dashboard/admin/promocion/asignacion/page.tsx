@@ -9,10 +9,10 @@ import { AsignacionSheet } from '@/features/promocion/components/asignacion/Asig
 import { AsignacionMasivaDialog } from '@/features/promocion/components/asignacion/AsignacionMasivaDialog' // ← nuevo
 import { useAsignacion } from '@/features/promocion/hooks/useAsignacion'
 import { useGrupos } from '@/features/settings/hooks/useGrupos'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import type { FiltrosAsignacion, GestorConCarga } from '@/features/promocion/types/asignacion.types'
 import { SolicitudesPanel } from '@/features/promocion/components/asignacion/SolicitudesPanel'
-import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
 
 
 interface SheetData {

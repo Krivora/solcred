@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
     return (

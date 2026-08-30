@@ -38,8 +38,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/
 
 import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
 import type { Usuario, UsuarioFiltros, TipoPersona } from "@/features/settings/types/usuario.types";
-import type { RolAplicacion } from "@/shared/lib/types/auth.types";
-import { obtenerRolEfectivo } from "@/shared/lib/types/auth.types";
+import type { RolAplicacion } from "@/shared/types/auth.types";
+import { obtenerRolEfectivo } from "@/shared/types/auth.types";
 
 type SortKey = "nombre" | "correo" | "rol" | "creadoEn";
 type SortDir = "asc" | "desc";

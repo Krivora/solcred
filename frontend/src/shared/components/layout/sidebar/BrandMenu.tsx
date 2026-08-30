@@ -16,8 +16,8 @@ import {
     Keyboard,
     Sparkles,
 } from "lucide-react";
-import { cn } from "@/shared/lib/utils/cn";
-import { useAuthStore } from "@/shared/lib/store/auth.store";
+import { cn } from "@/shared/lib/cn";
+import { useAuthStore } from "@/shared/stores/auth.store";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -28,7 +28,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { ROLE_CONFIG } from "./role-config";
+import { ROLE_CONFIG } from "./role.config";
 import { ThemeSwitcherDialog } from "./ThemeSwitcherDialog";
 
 interface BrandMenuProps {

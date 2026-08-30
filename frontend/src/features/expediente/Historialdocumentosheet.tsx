@@ -11,7 +11,7 @@ import { Badge } from '@/shared/components/ui/badge'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { EstatusDocumentoBadge } from './Estatusdocumentobadge'
 import { FileText, Clock, User, ExternalLink } from 'lucide-react'
-import type { DocumentoConValidacionRaw } from '@/shared/lib/types/expediente.types'
+import type { DocumentoConValidacionRaw } from '@/shared/types/expediente.types'
 
 interface HistorialDocumentoSheetProps {
     open: boolean

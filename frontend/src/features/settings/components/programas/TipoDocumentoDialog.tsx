@@ -11,7 +11,7 @@ import {
     DialogFooter, DialogHeader, DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { crearTipoDocumento } from "@/features/settings/api/programas";
-import { programaToast } from "@/shared/lib/utils/toaster";
+import { programaToast } from "@/shared/lib/toaster";
 import type { TipoDocumento } from "@/features/settings/types/programa.types";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { apiAuth } from '@/shared/lib/client';
+import { apiAuth } from '@/shared/api/client';
 import type {
   LogAuditoria,
   LogsPaginados,

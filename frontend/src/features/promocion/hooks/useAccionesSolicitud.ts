@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { solicitudesApi, type AccionConMotivoDto, type AccionOpcionalDto } from '@/features/promocion/api/promocion'
-import { solicitudToast } from '@/shared/lib/utils/toaster'
+import { solicitudToast } from '@/shared/lib/toaster'
 
 interface UseAccionesSolicitudOptions {
   onSuccess?: () => void

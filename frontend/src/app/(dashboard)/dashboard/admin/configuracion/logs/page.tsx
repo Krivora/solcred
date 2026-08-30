@@ -6,7 +6,7 @@ import { LogsFilters } from '@/features/settings/components/logs/LogsFilters';
 import { LogsTable } from '@/features/settings/components/logs/LogsTable';
 import { LogDetailModal } from '@/features/settings/components/logs/LogDetailModal';
 import { useLogs } from '@/features/settings/hooks/useLogs';
-import { PageHeader } from '@/shared/components/ui/PageHeader';
+import { PageHeader } from '@/shared/components/common/PageHeader';
 
 export default function LogsPage() {
   const {

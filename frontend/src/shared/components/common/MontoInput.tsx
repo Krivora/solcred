@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { Input } from "@/shared/components/ui/input";
-import { cn } from "@/shared/lib/utils/cn";
-import { formatearMonto, limpiarMonto } from "@/shared/lib/utils/masks";
+import { cn } from "@/shared/lib/cn";
+import { formatearMonto, limpiarMonto } from "@/shared/lib/masks";
 
 interface MontoInputProps
   extends Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type"> {

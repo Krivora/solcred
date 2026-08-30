@@ -19,7 +19,7 @@ import {
     quitarDocumento, crearTipoDocumento,
 } from "@/features/settings/api/programas";
 import type { ProgramaDocumento, TipoDocumento, AplicaA } from "@/features/settings/types/programa.types";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers

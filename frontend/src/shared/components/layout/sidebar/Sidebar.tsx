@@ -1,8 +1,8 @@
 // src/shared/components/layout/sidebar/Sidebar.tsx
 "use client";
 
-import { cn } from "@/shared/lib/utils/cn";
-import { useAuthStore } from "@/shared/lib/store/auth.store";
+import { cn } from "@/shared/lib/cn";
+import { useAuthStore } from "@/shared/stores/auth.store";
 import { getNavForRole, settingsNavItem } from "@/shared/config/nav.config";
 import { Separator } from "@/shared/components/ui/separator";
 import { Sheet, SheetContent } from "@/shared/components/ui/sheet";

@@ -1,8 +1,8 @@
 // features/auth/hooks/usePerfilUsuario.ts
 import { useEffect, useState, useCallback } from 'react'
 import { authApi } from '@/shared/lib/api/auth'
-import { useAuthStore } from '@/shared/lib/store/auth.store'
-import type { Usuario } from '@/shared/lib/types/auth.types'
+import { useAuthStore } from '@/shared/stores/auth.store'
+import type { Usuario } from '@/shared/types/auth.types'
 
 interface UsePerfilUsuarioReturn {
   usuario: Usuario | null

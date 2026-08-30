@@ -1,7 +1,7 @@
 'use client'
 
 import { CheckCircle2, XCircle, Clock, Upload, TrendingUp } from 'lucide-react'
-import type { MetricasExpediente } from '@/shared/lib/types/expediente.types'
+import type { MetricasExpediente } from '@/shared/types/expediente.types'
 
 interface MetricasExpedientePanelProps {
     metricas: MetricasExpediente

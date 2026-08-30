@@ -3,7 +3,7 @@
 
 import { useTheme } from "next-themes";
 import { Check } from "lucide-react";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 import {
     Dialog,
     DialogContent,

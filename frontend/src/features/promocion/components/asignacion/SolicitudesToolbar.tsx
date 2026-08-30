@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/shared/components/ui/select'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 import type { GrupoGestion } from '@/features/promocion/types/asignacion.types'
 
 // ─── Props ────────────────────────────────────────────────────────────────────

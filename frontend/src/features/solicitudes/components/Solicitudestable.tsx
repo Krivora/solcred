@@ -20,9 +20,9 @@ import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
 import { Pencil, Send, User, FolderOpen, FileText, Loader2, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
+import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
 import { useDescargarPDF } from '@/features/solicitudes/hooks/useDescargarPDF'
-import { solicitudesToast } from '@/shared/lib/utils/toaster'
+import { solicitudesToast } from '@/shared/lib/toaster'
 
 const SECTOR_LABELS: Record<string, string> = {
   AGROPECUARIO: 'Agropecuario',

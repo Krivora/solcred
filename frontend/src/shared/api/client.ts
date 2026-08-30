@@ -84,7 +84,7 @@ export async function apiAuth<T>(
   endpoint: string,
   options: Omit<RequestOptions, 'token'> = {},
 ): Promise<T> {
-  const { useAuthStore } = await import('@/shared/lib/store/auth.store');
+  const { useAuthStore } = await import('@/shared/stores/auth.store');
   const token = useAuthStore.getState().token;
 
   if (!token) {

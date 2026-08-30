@@ -5,7 +5,7 @@ import type {
     CrearGrupoDto,
     ActualizarGrupoDto,
 } from '@/features/settings/types/grupos.types'
-import { grupoToast } from '@/shared/lib/utils/toaster'
+import { grupoToast } from '@/shared/lib/toaster'
 
 export function useGrupos() {
     const [grupos, setGrupos] = useState<GrupoGestion[]>([])

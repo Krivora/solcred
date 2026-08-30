@@ -4,8 +4,8 @@
 import { usePathname } from "next/navigation";
 import { Bell, Search, Menu } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { useAuthStore } from "@/shared/lib/store/auth.store";
-import { cn } from "@/shared/lib/utils/cn";
+import { useAuthStore } from "@/shared/stores/auth.store";
+import { cn } from "@/shared/lib/cn";
 
 const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Inicio",

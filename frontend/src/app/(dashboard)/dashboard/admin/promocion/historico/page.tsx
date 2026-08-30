@@ -5,8 +5,8 @@ import { Button } from '@/shared/components/ui/button'
 import { HistoricoFiltros} from '@/features/promocion/components/historico/HistoricoFiltros'
 import { HistoricoTable } from '@/features/promocion/components/historico/HistoricoTable'
 import { useHistorico } from '@/features/promocion/hooks/useHistorico'
-import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
-import { useNavAnimation } from '@/shared/lib/hooks/useNavAnimation'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 export default function HistoricoPage() {
     const { 

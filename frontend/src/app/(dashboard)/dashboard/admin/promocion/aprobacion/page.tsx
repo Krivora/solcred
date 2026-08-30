@@ -5,7 +5,7 @@ import { Button } from '@/shared/components/ui/button'
 import { AprobacionFiltros } from '@/features/promocion/components/aprobacion/AprobacionFiltros'
 import { AprobacionTable } from '@/features/promocion/components/aprobacion/AprobacionTable'
 import { useAprobacion } from '@/features/promocion/hooks/useAprobacion'
-import { PageHeader, RefreshAction } from '@/shared/components/ui/PageHeader'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
 
 export default function AprobacionPage() {
   const {

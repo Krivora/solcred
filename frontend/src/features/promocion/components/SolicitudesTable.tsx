@@ -10,12 +10,12 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
 import { FolderOpen, FileText, MoreHorizontal, Loader2 } from 'lucide-react'
-import { Paginacion } from '@/shared/components/ui/Paginacion'
+import { Paginacion } from '@/shared/components/common/Paginacion'
 import {
   ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
 } from '@/shared/config/solicitudes.config'
 import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
-import { SolicitanteCell } from '@/shared/components/ui/SolicitanteCell'
+import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
 import type { ReactNode } from 'react'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 

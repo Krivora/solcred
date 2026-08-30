@@ -3,7 +3,7 @@ import {
     Building2, LineChart, Landmark,
 } from "lucide-react";
 import type { ElementType } from "react";
-import { cn } from "@/shared/lib/utils/cn";
+import { cn } from "@/shared/lib/cn";
 import { RequerimientoSegmented } from "./RequerimientoSegmented";
 import {
     Requerimiento,

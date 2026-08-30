@@ -1,5 +1,5 @@
 import { Badge } from '@/shared/components/ui/badge'
-import type { EstatusSolicitud } from '@/shared/lib/types/solicitudes.types'
+import type { EstatusSolicitud } from '@/shared/types/solicitudes.types'
 import {
   FileEdit,
   Clock,
@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 
 interface EstatusBadgeProps {
   estatus: EstatusSolicitud

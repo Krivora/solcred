@@ -1,5 +1,5 @@
 import { navConfig, settingsNavItem, type NavItem } from './nav.config';
-import type { RolAplicacion } from '@/shared/lib/types/auth.types';
+import type { RolAplicacion } from '@/shared/types/auth.types';
 
 interface RoutePermission {
     pattern: string; // puede contener :param como comodín de un segmento

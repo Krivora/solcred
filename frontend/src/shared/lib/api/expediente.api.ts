@@ -1,10 +1,10 @@
-import { apiAuth } from '@/shared/lib/client'
+import { apiAuth } from '@/shared/api/client'
 import type {
     Expediente,
     DocumentoActivo,
     ValidarDocumentoDto,
     DocumentoConValidacionRaw,
-} from '@/shared/lib/types/expediente.types'
+} from '@/shared/types/expediente.types'
 
 export const expedienteApi = {
     // ─── Vista general del expediente ──────────────────────────────────────────

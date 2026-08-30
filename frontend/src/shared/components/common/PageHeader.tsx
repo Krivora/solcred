@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChevronRight, RefreshCw, ArrowLeft } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import { cn } from '@/shared/lib/utils/cn'
+import { cn } from '@/shared/lib/cn'
 
 interface BreadcrumbItem {
   label: string

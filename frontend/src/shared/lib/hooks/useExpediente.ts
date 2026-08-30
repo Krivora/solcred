@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { expedienteApi } from '@/shared/lib/api/expediente.api'
-import { expedienteToast } from '@/shared/lib/utils/toaster'
+import { expedienteToast } from '@/shared/lib/toaster'
 import type {
     DocumentoActivo,
     DocumentoConValidacionRaw,
     Expediente,
     ValidarDocumentoDto,
-} from '@/shared/lib/types/expediente.types'
+} from '@/shared/types/expediente.types'
 
 const getErrorMessage = (err: unknown): string => {
     if (err instanceof Error) return err.message

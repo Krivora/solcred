@@ -5,7 +5,7 @@ import type {
     ProgramaFormData,
     TipoDocumento,
 } from '@/features/settings/types/programa.types'
-import { programaToast } from '@/shared/lib/utils/toaster'
+import { programaToast } from '@/shared/lib/toaster'
 
 export function useProgramas() {
     const [programas, setProgramas] = useState<Programa[]>([])

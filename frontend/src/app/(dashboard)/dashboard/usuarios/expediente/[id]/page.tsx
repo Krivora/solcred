@@ -4,7 +4,7 @@ import { use } from 'react'
 import { useExpediente } from '@/shared/lib/hooks/useExpediente'
 import { useHistorialDocumento } from '@/shared/lib/hooks/useExpediente'
 import { useSubirDocumento } from '@/shared/lib/hooks/useSubirDocumento'
-import { useAuthStore } from '@/shared/lib/store/auth.store'
+import { useAuthStore } from '@/shared/stores/auth.store'
 
 import { DatosGeneralesCard } from '@/features/expediente/Datosgeneralescard'
 import { MetricasExpedientePanel } from '@/features/expediente/Metricasexpedientebar'

@@ -2,7 +2,7 @@
 
 import { User, Building2 } from 'lucide-react'
 import { TIPO_PERSONA_LABELS } from '@/shared/config/solicitudes.config'
-import type { TipoPersona } from '@/shared/lib/types/solicitudes.types'
+import type { TipoPersona } from '@/shared/types/solicitudes.types'
 
 interface DatosNombre {
     nombre: string

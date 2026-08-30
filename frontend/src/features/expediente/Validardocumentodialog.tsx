@@ -13,7 +13,7 @@ import { Button } from '@/shared/components/ui/button'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Label } from '@/shared/components/ui/label'
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
-import type { ValidarDocumentoDto } from '@/shared/lib/types/expediente.types'
+import type { ValidarDocumentoDto } from '@/shared/types/expediente.types'
 
 type Accion = 'APROBADO' | 'RECHAZADO'
 

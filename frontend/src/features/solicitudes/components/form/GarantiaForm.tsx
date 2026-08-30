@@ -17,13 +17,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/shared/components/ui/alert-dialog'
-import { cn } from "@/shared/lib/utils/cn"
+import { cn } from "@/shared/lib/cn"
 import {
     guardarDatosGarantiaSchema,
     type GuardarDatosGarantiaDto,
 } from '@/features/solicitudes/schemas/solicitudes.schema'
-import { MontoInput, CodigoPostalInput } from '@/shared/components/ui/inputs'
-import { montoAFloat } from '@/shared/lib/utils/masks'
+import { MontoInput, CodigoPostalInput } from '@/shared/components/common/inputs'
+import { montoAFloat } from '@/shared/lib/masks'
 
 interface Props {
     defaultValues?: Partial<GuardarDatosGarantiaDto>

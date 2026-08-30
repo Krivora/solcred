@@ -1,16 +1,16 @@
 'use client'
 
 import { Controller, useForm } from 'react-hook-form'
-import type { EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/lib/types/solicitudes.types'
+import type { EstadoCivil, NivelEstudio, TipoVivienda } from '@/shared/types/solicitudes.types'
 import { DatosPersona } from '@/features/solicitudes/types/solicitud.types'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
 import { Button } from '@/shared/components/ui/button'
-import { FormError } from '@/shared/components/ui/FormError'
+import { FormError } from '@/shared/components/common/FormError'
 import { Separator } from '@/shared/components/ui/separator'
 import { ChevronLeft, ChevronRight, User, Phone, MapPin } from 'lucide-react'
-import { TelefonoInput, CodigoPostalInput, CorreoInput } from '@/shared/components/ui/inputs'
+import { TelefonoInput, CodigoPostalInput, CorreoInput } from '@/shared/components/common/inputs'
 
 interface Props {
   title: string
