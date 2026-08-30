@@ -13,7 +13,9 @@ import {
 
 import { Programa } from '@/features/settings/types/programa.types'
 import type { SeccionSolicitud, Requerimiento } from '@/shared/types/domain.enums'
+import type { PaginacionData } from '@/shared/types/api'
 export type { SeccionSolicitud, Requerimiento }
+export type { PaginacionData }
 
 export interface ProgramaSeccion {
   seccion: SeccionSolicitud
@@ -179,15 +181,9 @@ export interface Solicitud {
   } | null
 }
 
-// Shape exacto de la respuesta de GET /solicitudes (paginada)
+// Shape exacto de la respuesta de GET /clientes/solicitudes (paginada).
+// OJO: el controller usa `items` (no `data`) — ver KNOWN-ISSUES.md.
 export interface SolicitudesPaginadas {
   items: Solicitud[]
-  pagination: PaginacionMeta
-}
-
-export interface PaginacionMeta {
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
+  pagination: PaginacionData
 }

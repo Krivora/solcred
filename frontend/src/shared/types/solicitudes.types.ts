@@ -7,11 +7,6 @@ import type { EstatusSolicitud } from './domain.enums'
 
 export const ESTATUS_FINALES: EstatusSolicitud[] = ['CANCELADO', 'RECHAZADO', 'APROBADO']
 
-// Nombres alineados 1:1 con lo que regresa el backend (solicitudes.controller.ts).
-// Si esto diverge del backend otra vez, la lista de solicitudes se rompe en silencio.
-export interface PaginacionMeta {
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
-}
+// El sobre de API y los bloques de paginación viven en `@/shared/types/api`.
+// Se re-exportan aquí por compatibilidad con imports existentes.
+export type { ApiResponse, PaginacionData, PaginacionMeta, RespuestaPaginada, RespuestaConMeta } from './api'

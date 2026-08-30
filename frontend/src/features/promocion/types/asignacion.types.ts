@@ -166,12 +166,5 @@ export interface SolicitudAsignacion {
     } | null
 }
 
-export interface PaginatedResponse<T> {
-    data: T[]
-    meta: {
-        total: number
-        page: number
-        limit: number
-        totalPages: number
-    }
-}
+// `{ data, meta: { limit } }` — estilo admin/promocion. Ver @/shared/types/api.
+export type { RespuestaConMeta as PaginatedResponse } from '@/shared/types/api'
