@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Trash2, FileText, Loader2, FileBadge2,
     ShieldCheck, Users, CheckCircle2, Circle, Search,
@@ -14,11 +14,9 @@ import {
 } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
 import { TipoDocumentoDialog } from "./TipoDocumentoDialog";
-import {
-    getTiposDocumento, agregarDocumento,
-    quitarDocumento, crearTipoDocumento,
-} from "@/features/settings/api/programas.api";
-import type { ProgramaDocumento, TipoDocumento, AplicaA } from "@/features/settings/types/programa.types";
+import { agregarDocumento, quitarDocumento } from "@/features/settings/api/programas.api";
+import { useTiposDocumento } from "@/features/settings/hooks/useProgramas";
+import type { ProgramaDocumento, AplicaA } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/cn";
 
 // ─────────────────────────────────────────────────────────────
@@ -175,8 +173,7 @@ interface EditableProps {
 
 export function DocumentosPrograma({ programaId, documentos: documentosProp, onCambio }: EditableProps) {
     const [documentos, setDocumentos] = useState<ProgramaDocumento[]>(documentosProp);
-    const [tiposDisponibles, setTiposDisponibles] = useState<TipoDocumento[]>([]);
-    const [loadingTipos, setLoadingTipos] = useState(true);
+    const { tipos: tiposDisponibles, cargando: loadingTipos, recargar: recargarTipos, crear: crearTipo } = useTiposDocumento();
     const [tipoSeleccionado, setTipoSeleccionado] = useState("");
     const [esObligatorio, setEsObligatorio] = useState(true);
     const [aplicaA, setAplicaA] = useState<AplicaA>("AMBOS");
@@ -184,18 +181,6 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
     const [quitando, setQuitando] = useState<string | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const cargarTipos = async () => {
-        setLoadingTipos(true);
-        try {
-            const tipos = await getTiposDocumento();
-            setTiposDisponibles(tipos);
-        } catch (err) {
-            console.error("Error cargando tipos de documento:", err); // 👈
-        } finally {
-            setLoadingTipos(false);
-        }
-    };
-    useEffect(() => { cargarTipos(); }, []);
     const asignados = new Set(documentos.map(d => d.tipoDocumentoId));
     const disponibles = tiposDisponibles.filter(t => !asignados.has(t.id));
     const obligatorios = documentos.filter(d => d.esObligatorio).length;
@@ -235,9 +220,9 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
         } finally { setQuitando(null); }
     };
     const handleNuevoTipo = async (data: { nombre: string; descripcion?: string }) => {
-        const nuevo = await crearTipoDocumento(data);
-        await cargarTipos();
-        setTipoSeleccionado(nuevo.id);
+        const nuevo = await crearTipo(data);
+        await recargarTipos();
+        if (nuevo) setTipoSeleccionado(nuevo.id);
         setDialogOpen(false);
     };
     return (

@@ -303,14 +303,6 @@ export default function AsignacionPage() {
                 }}
                 estado={estadoAsignacion}
                 folioPorId={Object.fromEntries(solicitudes.map(s => [s.id, s.folio]))}
-            /><AsignacionMasivaDialog
-                open={dialogAsignacionOpen}
-                onOpenChange={(open) => {
-                    setDialogAsignacionOpen(open)
-                    if (!open) reiniciarEstadoAsignacion()
-                }}
-                estado={estadoAsignacion}
-                folioPorId={Object.fromEntries(solicitudes.map(s => [s.id, s.folio]))}
             />
         </div>
     )

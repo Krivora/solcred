@@ -45,7 +45,7 @@ interface TablaDocumentosProps {
     gestorAsignadoId: string | null
     usuarioId: string
     onValidar: (documentoId: string, dto: ValidarDocumentoDto) => Promise<void>
-    onSubir: (tipoDocumentoId: string, archivo: File) => Promise<any>
+    onSubir: (tipoDocumentoId: string, archivo: File) => Promise<unknown>
     onVerHistorial: (tipoDocumentoId: string, nombre: string) => void
 }
 

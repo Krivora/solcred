@@ -105,16 +105,7 @@ export function GarantiaForm({ defaultValues, onSubmit, onBack, loading, skipLab
     return (
         <>
             <form
-                onSubmit={handleSubmit(onSubmit, (errores) => {
-                    const resumen = Object.entries(errores.garantias ?? {}).map(([index, err]: [string, any]) => {
-                        const campos = Object.fromEntries(
-                            Object.entries(err ?? {})
-                                .filter(([k]) => k !== 'ref')
-                                .map(([k, v]: [string, any]) => [k, v?.message])
-                        )
-                        return { garantia: index, campos }
-                    })
-                })}
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-6"
             >              {/* Encabezado con contexto — reduce la sensación de "trámite" */}
                 <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">

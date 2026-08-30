@@ -88,13 +88,19 @@ export function AsignacionSheet({
     // "reasignación" solo tiene sentido con una sola solicitud, donde sabemos el gestor actual
     const esReasignacion = !esLote && !!gestorActualId
 
-    // Cargar gestores cuando abre el sheet
-    useEffect(() => {
+    // Limpiar el formulario al abrir (patrón de React, sin efecto)
+    const [prevOpen, setPrevOpen] = useState(open)
+    if (open !== prevOpen) {
+        setPrevOpen(open)
         if (open) {
-            cargarGestores()
             setGestorSeleccionado(null)
             setMotivo('')
         }
+    }
+
+    // Cargar gestores cuando abre el sheet
+    useEffect(() => {
+        if (open) cargarGestores()
     }, [open, cargarGestores])
 
     const puedeConfirmar =

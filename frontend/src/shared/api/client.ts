@@ -21,7 +21,7 @@ export class ApiError extends Error {
 }
 
 async function parseErrorResponse(response: Response): Promise<never> {
-  let json: any = null;
+  let json: { message?: string; errors?: string[] } | null = null;
   try {
     json = await response.json();
   } catch {

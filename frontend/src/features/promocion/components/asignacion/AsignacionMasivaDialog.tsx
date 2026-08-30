@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog'
 import { Button } from '@/shared/components/ui/button'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
@@ -41,41 +41,41 @@ const TECHO_SIMULADO = 92
 export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId }: Props) {
     const [erroresAbiertos, setErroresAbiertos] = useState(false)
     const [progresoSimulado, setProgresoSimulado] = useState(0)
-    const intervaloRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-    const procesadas = estado.exitosas + estado.fallidas.length
     const sinErrores = estado.finalizado && estado.fallidas.length === 0
     const conErrores = estado.finalizado && estado.fallidas.length > 0
 
-    // colapsa automáticamente el panel de errores cada vez que se abre un nuevo lote
-    useEffect(() => {
+    // Reseteos derivados de cambios de prop (patrón de React, sin efecto):
+    // colapsar el panel de errores al abrir un lote nuevo…
+    const [prevOpen, setPrevOpen] = useState(open)
+    if (open !== prevOpen) {
+        setPrevOpen(open)
         if (open) setErroresAbiertos(false)
-    }, [open])
+    }
+    // …y reiniciar / completar la barra según arranca o termina el proceso.
+    const [prevEnProceso, setPrevEnProceso] = useState(estado.enProceso)
+    if (estado.enProceso !== prevEnProceso) {
+        setPrevEnProceso(estado.enProceso)
+        if (estado.enProceso) setProgresoSimulado(0)
+        else if (estado.finalizado) setProgresoSimulado(100)
+    }
 
     // ── Progreso simulado: sube rápido al inicio, se frena según se acerca al techo ──
     useEffect(() => {
-        if (estado.enProceso) {
-            setProgresoSimulado(0)
+        if (!estado.enProceso) return
 
-            intervaloRef.current = setInterval(() => {
-                setProgresoSimulado((prev) => {
-                    if (prev >= TECHO_SIMULADO) return prev
-                    // easing: entre más cerca del techo, pasos más pequeños
-                    const distanciaRestante = TECHO_SIMULADO - prev
-                    const incremento = Math.max(0.4, distanciaRestante * 0.06)
-                    return Math.min(TECHO_SIMULADO, prev + incremento)
-                })
-            }, 120)
-        } else {
-            if (intervaloRef.current) clearInterval(intervaloRef.current)
-            // al terminar (con o sin errores), completa la barra de una vez
-            if (estado.finalizado) setProgresoSimulado(100)
-        }
+        const intervalo = setInterval(() => {
+            setProgresoSimulado((prev) => {
+                if (prev >= TECHO_SIMULADO) return prev
+                // easing: entre más cerca del techo, pasos más pequeños
+                const distanciaRestante = TECHO_SIMULADO - prev
+                const incremento = Math.max(0.4, distanciaRestante * 0.06)
+                return Math.min(TECHO_SIMULADO, prev + incremento)
+            })
+        }, 120)
 
-        return () => {
-            if (intervaloRef.current) clearInterval(intervaloRef.current)
-        }
-    }, [estado.enProceso, estado.finalizado])
+        return () => clearInterval(intervalo)
+    }, [estado.enProceso])
 
     const porcentajeMostrado = estado.enProceso
         ? Math.round(progresoSimulado)

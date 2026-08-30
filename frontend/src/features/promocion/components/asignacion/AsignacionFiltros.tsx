@@ -65,7 +65,7 @@ export function AsignacionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosAct
                 {/* Tipo persona */}
                 <Select
                     value={toSelect(filtros.tipoPersona)}
-                    onValueChange={v => onFiltrar({ tipoPersona: toFiltro(v) as any })}
+                    onValueChange={v => onFiltrar({ tipoPersona: toFiltro(v) })}
                 >
                     <SelectTrigger className="h-8 w-auto min-w-32 text-xs border-border/60 data-[state=open]:border-primary/50">
                         <SelectValue placeholder="Tipo persona" />
@@ -80,7 +80,7 @@ export function AsignacionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosAct
                 {/* Sector */}
                 <Select
                     value={toSelect(filtros.sector)}
-                    onValueChange={v => onFiltrar({ sector: toFiltro(v) as any })}
+                    onValueChange={v => onFiltrar({ sector: toFiltro(v) })}
                 >
                     <SelectTrigger className="h-8 w-auto min-w-32 text-xs border-border/60 data-[state=open]:border-primary/50">
                         <SelectValue placeholder="Sector" />
@@ -99,7 +99,7 @@ export function AsignacionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosAct
                 {/* Tamaño empresa */}
                 <Select
                     value={toSelect(filtros.tamanoEmpresa)}
-                    onValueChange={v => onFiltrar({ tamanoEmpresa: toFiltro(v) as any })}
+                    onValueChange={v => onFiltrar({ tamanoEmpresa: toFiltro(v) })}
                 >
                     <SelectTrigger className="h-8 w-auto min-w-30 text-xs border-border/60 data-[state=open]:border-primary/50">
                         <SelectValue placeholder="Tamaño" />
@@ -115,7 +115,7 @@ export function AsignacionFiltros({ filtros, onFiltrar, onLimpiar, hayFiltrosAct
                 {/* Asignación */}
                 <Select
                     value={toSelect(filtros.asignacion)}
-                    onValueChange={v => onFiltrar({ asignacion: toFiltro(v) as any })}
+                    onValueChange={v => onFiltrar({ asignacion: v === 'todos' ? undefined : (v as 'asignados' | 'sin_asignar') })}
                 >
                     <SelectTrigger className="h-8 w-auto min-w-36 text-xs border-border/60 data-[state=open]:border-primary/50">
                         <SelectValue placeholder="Asignación" />
