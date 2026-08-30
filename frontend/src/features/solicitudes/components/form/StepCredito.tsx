@@ -22,6 +22,7 @@ import { CategoriaCredito } from '@/shared/types/solicitudes.types'
 import { MontoInput } from '@/shared/components/common/inputs'
 import { montoAFloat } from '@/shared/lib/masks'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select'
+import { StepHeader } from './StepHeader'
 
 interface StepCreditoProps {
     defaultValues?: DatosCredito
@@ -142,31 +143,22 @@ export function StepCredito({
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Encabezado + resumen del total, en una sola franja fija arriba */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-primary/20 bg-primary/5 px-5 py-4">
-                <div>
-                    <h2 className="text-lg font-semibold text-foreground leading-tight">
-                        Datos del crédito
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                        Define plazo, gracia y el destino de los recursos
-                    </p>
-                </div>
-                <div className="flex items-center gap-3 sm:text-right">
-                    <div className="flex flex-col">
-                        <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                            Monto total solicitado
-                        </span>
-                        <span className="text-2xl font-bold tabular-nums text-primary">
-                            {formatoMoneda(totalGeneral)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                            {conceptosCapturados}{' '}
-                            {conceptosCapturados === 1 ? 'concepto capturado' : 'conceptos capturados'}
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <StepHeader
+                icon={Wallet}
+                title="Datos del crédito"
+                subtitle="Define plazo, gracia y el destino de los recursos."
+            >
+                <span className="block text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                    Monto total solicitado
+                </span>
+                <span className="block text-2xl font-bold tabular-nums text-primary leading-tight">
+                    {formatoMoneda(totalGeneral)}
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                    {conceptosCapturados}{' '}
+                    {conceptosCapturados === 1 ? 'concepto capturado' : 'conceptos capturados'}
+                </span>
+            </StepHeader>
 
             {/* Condiciones — ancho completo, campos con espacio real */}
             <Card>

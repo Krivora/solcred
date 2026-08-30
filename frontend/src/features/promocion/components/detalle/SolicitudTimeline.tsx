@@ -52,7 +52,7 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
                     </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-1">
-                    Por <span className="font-medium text-foreground/70">{nombreCompleto(evento.realizadoPor?.usuario)}</span>
+                    Por <span className="font-medium text-foreground/70">{nombreCompleto(evento.realizadoPor)}</span>
                 </p>
                 {evento.comentario && (
                     <p className="text-[12px] text-foreground/80 mt-2 bg-muted/50 border border-border/40 rounded-md px-2.5 py-2 leading-relaxed">

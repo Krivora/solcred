@@ -52,6 +52,56 @@ export const crearTipoDocumento = async (
   }
 };
 
+export const actualizarTipoDocumento = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const tipo = await programasService.actualizarTipoDocumento(
+      req.params.id as string,
+      req.body
+    );
+
+    await registrarLog({
+      accion: AccionLog.ACTUALIZAR,
+      modulo: ModuloLog.PROGRAMAS,
+      descripcion: `Tipo de documento actualizado: ${tipo.nombre}`,
+      usuarioId: req.usuario!.id,
+      entidadId: tipo.id,
+      req,
+    });
+
+    res.status(200).json(ok("Tipo de documento actualizado", tipo));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const eliminarTipoDocumento = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    await programasService.eliminarTipoDocumento(id);
+
+    await registrarLog({
+      accion: AccionLog.ELIMINAR,
+      modulo: ModuloLog.PROGRAMAS,
+      descripcion: `Tipo de documento eliminado`,
+      usuarioId: req.usuario!.id,
+      entidadId: id,
+      req,
+    });
+
+    res.status(200).json(ok("Tipo de documento eliminado"));
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ── Programas ──────────────────────────────────────────────
 
 export const listar = async (

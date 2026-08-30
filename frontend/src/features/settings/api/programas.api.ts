@@ -40,6 +40,17 @@ export async function crearTipoDocumento(data: {
     return apiAuth<TipoDocumento>("/admin/programas/tipos-documento", { method: "POST", body: data });
 }
 
+export async function actualizarTipoDocumento(
+    id: string,
+    data: { nombre?: string; descripcion?: string | null },
+): Promise<TipoDocumento> {
+    return apiAuth<TipoDocumento>(`/admin/programas/tipos-documento/${id}`, { method: "PUT", body: data });
+}
+
+export async function eliminarTipoDocumento(id: string): Promise<void> {
+    return apiAuth(`/admin/programas/tipos-documento/${id}`, { method: "DELETE" });
+}
+
 export async function agregarDocumento(
     programaId: string,
     data: { tipoDocumentoId: string; esObligatorio: boolean; aplicaA?: "FISICA" | "MORAL" | 'AMBOS' }

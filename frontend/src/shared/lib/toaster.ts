@@ -206,6 +206,11 @@ export const programaToast = {
             description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',
         }),
 
+    documentosParciales: (fallidos: number) =>
+        toast.warning('Algunos documentos no se adjuntaron', {
+            description: `El programa se creó, pero ${fallidos} documento(s) quedaron pendientes. Agrégalos desde la edición.`,
+        }),
+
     activado: () =>
         toast.success('Programa activado'),
     desactivado: () =>
@@ -219,6 +224,10 @@ export const programaToast = {
         toast.success('Tipo de documento creado', {
             description: 'El tipo de documento se ha creado correctamente',
         }),
+    tipoDocumentoActualizado: () =>
+        toast.success('Tipo de documento actualizado'),
+    tipoDocumentoEliminado: () =>
+        toast.success('Tipo de documento eliminado'),
     tipoDocumentoError: (message?: string) =>
         toast.error('Error al guardar', {
             description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',

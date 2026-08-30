@@ -40,6 +40,12 @@ const currency = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n)
 
+/** Navega al expediente marcando la transición como "avance" (slide de entrada). */
+const irAExpediente = (router: ReturnType<typeof useRouter>, id: string) => {
+  sessionStorage.setItem('nav-direction', 'adelante')
+  router.push(`/dashboard/usuarios/expediente/${id}`)
+}
+
 /* ────────────────────────────────────────────────────────────
    SKELETONS
 ──────────────────────────────────────────────────────────── */
@@ -165,7 +171,7 @@ function SolicitudCard({
           size="icon"
           className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/10 shrink-0"
           title="Ver expediente digital"
-          onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+          onClick={() => irAExpediente(router, s.id)}
         >
           <FolderOpen className="h-4 w-4" />
         </Button>
@@ -212,7 +218,7 @@ function SolicitudCard({
             variant="outline"
             size="sm"
             className="h-9 flex-1 gap-1.5 text-xs rounded-full ml-1"
-            onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+            onClick={() => irAExpediente(router, s.id)}
           >
             Ver detalle
             <ChevronRight className="w-3.5 h-3.5" />
@@ -404,7 +410,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         variant="ghost" size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                         title="Ver expediente digital"
-                        onClick={() => router.push(`/dashboard/usuarios/expediente/${s.id}`)}
+                        onClick={() => irAExpediente(router, s.id)}
                       >
                         <FolderOpen className="h-3.5 w-3.5" />
                       </Button>

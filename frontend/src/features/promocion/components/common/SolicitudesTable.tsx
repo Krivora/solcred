@@ -307,7 +307,10 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                       variant="ghost" size="icon"
                       className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                       title="Ver expediente digital"
-                      onClick={() => router.push(getExpedienteUrl(sol.id))}
+                      onClick={() => {
+                        sessionStorage.setItem('nav-direction', 'adelante')
+                        router.push(getExpedienteUrl(sol.id))
+                      }}
                     >
                       <FolderOpen className="h-3.5 w-3.5" />
                     </Button>

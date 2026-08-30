@@ -11,7 +11,7 @@ import { MercadoForm } from '@/features/solicitudes/components/form/MercadoForm'
 import { BancariosForm } from '@/features/solicitudes/components/form/BancariosForm'
 import { StepResumen } from '@/features/solicitudes/components/form/StepResumen'
 import { useRouter } from 'next/navigation'
-import { Check } from 'lucide-react'
+import { Check, User, Users } from 'lucide-react'
 
 interface Props {
     solicitudId: string
@@ -102,6 +102,7 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
 
                     {currentStep === 'solicitante' && (
                         <PersonaForm
+                            icon={User}
                             title="Datos del solicitante"
                             subtitle="Información personal de quien solicita el crédito"
                             defaultValues={solicitud.datosSolicitante}
@@ -116,6 +117,7 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
 
                     {currentStep === 'aval' && (
                         <PersonaForm
+                            icon={Users}
                             title="Datos del aval"
                             subtitle="Información de la persona que respalda la solicitud"
                             defaultValues={solicitud.datosAval}

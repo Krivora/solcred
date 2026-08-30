@@ -14,6 +14,7 @@ import { HistorialDocumentoSheet } from '@/features/expediente/components/Histor
 
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 import { ArrowLeft, FolderOpen, AlertTriangle, FileText } from 'lucide-react'
 import Link from 'next/link'
@@ -31,6 +32,8 @@ const ExpedienteSkeleton = () => (
         </div>
     </div>
 )
+
+const irAtras = () => sessionStorage.setItem('nav-direction', 'atras')
 
 const ExpedienteError = ({
     mensaje,
@@ -56,7 +59,7 @@ const ExpedienteError = ({
         </div>
 
         <Button variant="outline" size="sm" asChild>
-            <Link href={backHref}>
+            <Link href={backHref} onClick={irAtras}>
                 <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
                 Regresar
             </Link>
@@ -70,6 +73,12 @@ export default function ExpedientePage({
     const { id: solicitudId } = use(params)
     const router = useRouter()
     const { usuario } = useAuthStore()
+    const claseAnimacion = useNavAnimation('animate-slide-entrada') // siempre "avanzas" hacia aquí
+
+    const handleRegresar = () => {
+        sessionStorage.setItem('nav-direction', 'atras')
+        router.back()
+    }
 
     // ─── Expediente ───────────────────────────────────────────
     const {
@@ -118,7 +127,7 @@ export default function ExpedientePage({
     }
 
     return (
-        <div className="space-y-5">
+        <div className={`${claseAnimacion} space-y-5`}>
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -126,7 +135,7 @@ export default function ExpedientePage({
                         variant="ghost"
                         size="icon"
                         className="h-9 w-9 mt-0.5"
-                        onClick={() => router.back()}
+                        onClick={handleRegresar}
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
@@ -155,7 +164,10 @@ export default function ExpedientePage({
                         variant="outline"
                         size="sm"
                         className="gap-2"
-                        onClick={() => router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)}
+                        onClick={() => {
+                            sessionStorage.setItem('nav-direction', 'adelante')
+                            router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)
+                        }}
                     >
                         <FileText className="h-3.5 w-3.5" />
                         Ver solicitud

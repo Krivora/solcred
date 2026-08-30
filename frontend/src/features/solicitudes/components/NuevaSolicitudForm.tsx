@@ -12,6 +12,7 @@ import { MercadoForm } from './form/MercadoForm'
 import { BancariosForm } from './form/BancariosForm'
 import { StepResumen } from './form/StepResumen'
 import { useRouter } from 'next/navigation'
+import { User, Users } from 'lucide-react'
 import { usePerfilUsuario } from '@/features/auth/hooks/usePerfilUsuario'
 export function NuevaSolicitudForm() {
   const router = useRouter()
@@ -90,6 +91,7 @@ export function NuevaSolicitudForm() {
             </div>
           ) : (
             <PersonaForm
+              icon={User}
               title={esFisica ? 'Datos del solicitante' : 'Datos del representante legal'}
               subtitle={
                 esFisica
@@ -109,6 +111,7 @@ export function NuevaSolicitudForm() {
 
         {currentStep === 'aval' && solicitud && (
           <PersonaForm
+            icon={Users}
             title="Datos del aval"
             subtitle="Información de la persona que respalda la solicitud"
             defaultValues={solicitud.datosAval}

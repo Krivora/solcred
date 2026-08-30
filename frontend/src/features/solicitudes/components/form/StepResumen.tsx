@@ -6,7 +6,8 @@ import { Button } from '@/shared/components/ui/button'
 import { Checkbox } from '@/shared/components/ui/checkbox'
 import { FormError } from '@/shared/components/common/FormError'
 import { Separator } from '@/shared/components/ui/separator'
-import { ChevronLeft, Send, User, Users, Briefcase, ShieldCheck } from 'lucide-react'
+import { ChevronLeft, Send, User, Users, Briefcase, ShieldCheck, ClipboardCheck } from 'lucide-react'
+import { StepHeader } from './StepHeader'
 
 interface Props {
   solicitud: Solicitud
@@ -56,12 +57,11 @@ export function StepResumen({ solicitud, onEnviar, onBack, loading, error }: Pro
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground">Resumen de la solicitud</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Revisa la información antes de enviar. Una vez enviada no podrás editarla.
-        </p>
-      </div>
+      <StepHeader
+        icon={ClipboardCheck}
+        title="Resumen de la solicitud"
+        subtitle="Revisa la información antes de enviar. Una vez enviada no podrás editarla."
+      />
 
       <div className="space-y-3">
         {/* Programa */}

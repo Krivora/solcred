@@ -23,13 +23,23 @@ const BREADCRUMB_MAP: Record<string, string> = {
   usuarios: "Usuarios",
   logs: "Logs de Auditoría",
   nueva: "Nueva Solicitud",
+  expediente: "Expediente digital",
+  editar: "Editar",
 };
+
+// Segmentos que son identificadores (uuid / cuid / hash) — no aportan al breadcrumb
+const ID_SEGMENT = /^[0-9a-f]{8,}$|^[0-9a-f]{8}-[0-9a-f]{4}-/i;
+
 function getBreadcrumbs(pathname: string): { label: string; href: string }[] {
   const parts = pathname.split("/").filter(Boolean);
-  return parts.map((part, i) => ({
-    label: BREADCRUMB_MAP[part] ?? part,
-    href: "/" + parts.slice(0, i + 1).join("/"),
-  }));
+  return parts
+    .map((part, i) => ({
+      part,
+      label: BREADCRUMB_MAP[part] ?? part,
+      href: "/" + parts.slice(0, i + 1).join("/"),
+    }))
+    .filter(({ part }) => !ID_SEGMENT.test(part))
+    .map(({ label, href }) => ({ label, href }));
 }
 
 interface HeaderProps {

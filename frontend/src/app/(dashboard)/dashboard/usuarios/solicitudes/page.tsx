@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Button } from '@/shared/components/ui/button'
 import { SolicitudesTable } from '@/features/solicitudes/components/SolicitudesTable'
 import { useMisSolicitudes } from '@/features/solicitudes/hooks/useMisSolicitudes'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 import { Plus, RefreshCw, AlertCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 import { ESTATUS_FINALES } from '@/shared/types/solicitudes.types'
@@ -21,6 +22,7 @@ export default function MisSolicitudesPage() {
   const router = useRouter()
   const { solicitudes, isLoading, error, refetch } = useMisSolicitudes()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que regreses del detalle/expediente
 
   const solicitudActiva = solicitudes.find(
     s => !ESTATUS_FINALES.includes(s.estatus)
@@ -36,7 +38,7 @@ export default function MisSolicitudesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4 py-6">
+    <div className={`${claseAnimacion} flex flex-col gap-6 px-4 py-6`}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

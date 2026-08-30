@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Landmark, ShieldCheck, AlertCircle } from 'lucide-react'
+import { StepHeader } from './StepHeader'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
@@ -38,12 +39,11 @@ export function BancariosForm({ defaultValues, onSubmit, onBack, loading,  skipL
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-foreground">Datos bancarios</h2>
-                <p className="text-sm text-muted-foreground">
-                    Cuenta donde se depositará el crédito si es aprobado.
-                </p>
-            </div>
+            <StepHeader
+                icon={Landmark}
+                title="Datos bancarios"
+                subtitle="Cuenta donde se depositará el crédito si es aprobado."
+            />
 
             <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
                 <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5 bg-accent/40 border-b border-border">

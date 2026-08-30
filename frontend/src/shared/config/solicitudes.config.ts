@@ -21,10 +21,15 @@ export const ESTATUS_STYLES: Record<string, EstatusStyle> = {
         className: 'border-primary/30 text-primary bg-primary/5',
         dotClass: 'bg-primary',
     },
-    EN_CORRECION: {
+    EN_CORRECCION: {
         label: 'En corrección',
         className: 'border-orange-300/70 text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30',
         dotClass: 'bg-orange-500',
+    },
+    RECHAZADO: {
+        label: 'Rechazado',
+        className: 'border-red-300/70 text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30',
+        dotClass: 'bg-red-500',
     },
     EN_APROBACION: {
         label: 'En aprobación',

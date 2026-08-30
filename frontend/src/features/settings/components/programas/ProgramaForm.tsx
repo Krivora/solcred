@@ -21,13 +21,13 @@ import { NumberInput } from "./form/NumberInput";
 import { SeccionesSelector, ORDEN_SECCIONES } from "./form/SeccionesSelector";
 import { SectionHeading } from "./form/SectionHeading";
 import { ToggleCard } from "./form/ToggleCard";
+import { DocumentosPrograma } from "./DocumentosPrograma";
 
-import { crearPrograma, actualizarPrograma } from "@/features/settings/api/programas.api";
-import type { Programa, ProgramaFormData } from "@/features/settings/types/programa.types";
+import { crearPrograma, actualizarPrograma, agregarDocumento } from "@/features/settings/api/programas.api";
+import type { Programa, ProgramaDocumento, ProgramaFormData } from "@/features/settings/types/programa.types";
 
 interface ProgramaFormProps {
     programa?: Programa;
-    documentosSlot?: React.ReactNode;
 }
 
 const defaultValues: ProgramaFormData = {
@@ -43,9 +43,14 @@ const defaultValues: ProgramaFormData = {
     })),
 };
 
-export function ProgramaForm({ programa, documentosSlot }: ProgramaFormProps) {
+export function ProgramaForm({ programa }: ProgramaFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    // En alta, los documentos se juntan en borrador y se adjuntan tras crear el
+    // programa. En edición, DocumentosPrograma los persiste al instante.
+    const [documentos, setDocumentos] = useState<ProgramaDocumento[]>(
+        programa?.documentosRequeridos ?? [],
+    );
 
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<ProgramaFormData>({
         defaultValues: programa ?? defaultValues,
@@ -80,8 +85,20 @@ export function ProgramaForm({ programa, documentosSlot }: ProgramaFormProps) {
                 await actualizarPrograma(programa.id, parsed);
                 programaToast.actualizado(programa.nombre);
             } else {
-                await crearPrograma(parsed);
+                const nuevo = await crearPrograma(parsed);
+                // Adjuntar los documentos capturados en borrador
+                const resultados = await Promise.allSettled(
+                    documentos.map((d) =>
+                        agregarDocumento(nuevo.id, {
+                            tipoDocumentoId: d.tipoDocumentoId,
+                            esObligatorio: d.esObligatorio,
+                            aplicaA: d.aplicaA ?? undefined,
+                        }),
+                    ),
+                );
+                const fallidos = resultados.filter((r) => r.status === "rejected").length;
                 programaToast.creado(data.nombre);
+                if (fallidos > 0) programaToast.documentosParciales(fallidos);
             }
 
             router.push("/dashboard/admin/configuracion/programas");
@@ -244,21 +261,26 @@ export function ProgramaForm({ programa, documentosSlot }: ProgramaFormProps) {
             </Card>
 
             {/* Row 3: Secciones + Documentos, lado a lado */}
-                <div className={cn("grid grid-cols-1 gap-6", documentosSlot && "lg:grid-cols-2")}>
-                    <Card>
-                        <SectionHeading
-                            icon={ShieldCheck}
-                            title="Secciones de la Solicitud"
-                            description="Define qué pestañas debe llenar el solicitante y si son obligatorias u opcionales"
-                        />
-                        <SeccionesSelector
-                            value={watch("secciones")}
-                            onChange={(secciones) => setValue("secciones", secciones)}
-                        />
-                    </Card>
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card>
+                    <SectionHeading
+                        icon={ShieldCheck}
+                        title="Secciones de la solicitud"
+                        description="Define qué pestañas debe llenar el solicitante y si son obligatorias u opcionales"
+                    />
+                    <SeccionesSelector
+                        value={watch("secciones")}
+                        onChange={(secciones) => setValue("secciones", secciones)}
+                    />
+                </Card>
 
-                    {documentosSlot}
-                </div>
+                <DocumentosPrograma
+                    key={programa?.id ?? "nuevo"}
+                    programaId={programa?.id}
+                    documentos={documentos}
+                    onCambio={setDocumentos}
+                />
+            </div>
 
             {/* Actions */}
             <div className="flex items-center justify-between border-t border-border pt-5">

@@ -1,6 +1,7 @@
 'use client'
 
 import { use } from 'react'
+import { useRouter } from 'next/navigation'
 import { useExpediente } from '@/features/expediente/hooks/useExpediente'
 import { useHistorialDocumento } from '@/features/expediente/hooks/useHistorialDocumento'
 import { useSubirDocumento } from '@/features/expediente/hooks/useSubirDocumento'
@@ -13,9 +14,12 @@ import { HistorialDocumentoSheet } from '@/features/expediente/components/Histor
 
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 import { ArrowLeft, FolderOpen, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+
+const irAtras = () => sessionStorage.setItem('nav-direction', 'atras')
 
 interface ExpedientePageProps {
     params: Promise<{ id: string }>
@@ -55,7 +59,7 @@ const ExpedienteError = ({
         </div>
 
         <Button variant="outline" size="sm" asChild>
-            <Link href={backHref}>
+            <Link href={backHref} onClick={irAtras}>
                 <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
                 Regresar
             </Link>
@@ -67,8 +71,15 @@ export default function ExpedientePage({
     params,
 }: ExpedientePageProps) {
     const { id: solicitudId } = use(params)
+    const router = useRouter()
 
     const { usuario } = useAuthStore()
+    const claseAnimacion = useNavAnimation('animate-slide-entrada') // siempre "avanzas" hacia aquí
+
+    const handleRegresar = () => {
+        sessionStorage.setItem('nav-direction', 'atras')
+        router.back()
+    }
 
     // ─── Expediente ───────────────────────────────────────────
     const {
@@ -118,10 +129,20 @@ export default function ExpedientePage({
     }
 
     return (
-        <div className="space-y-5">
+        <div className={`${claseAnimacion} space-y-5`}>
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 mt-0.5"
+                        onClick={handleRegresar}
+                        aria-label="Regresar"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+
                     <div className="rounded-xl bg-primary/10 p-2.5 ring-1 ring-primary/20">
                         <FolderOpen className="h-5 w-5 text-primary" />
                     </div>
@@ -140,18 +161,6 @@ export default function ExpedientePage({
                         </p>
                     </div>
                 </div>
-
-                <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                    className="shrink-0 mt-0.5"
-                >
-                    <Link href={backHref}>
-                        <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-                        Regresar
-                    </Link>
-                </Button>
             </div>
 
             {/* Loading */}

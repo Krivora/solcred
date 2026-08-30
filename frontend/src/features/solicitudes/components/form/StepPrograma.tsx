@@ -8,9 +8,10 @@ import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { FormError } from '@/shared/components/common/FormError'
 import { cn } from '@/shared/lib/cn'
+import { StepHeader } from './StepHeader'
 import {
   ChevronRight, Search, Building2, User,
-  ArrowDown, ArrowUp,
+  ArrowDown, ArrowUp, LayoutGrid,
 } from 'lucide-react'
 
 interface Props {
@@ -47,13 +48,11 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Encabezado */}
-      <div>
-        <h2 className="text-lg font-semibold text-foreground">Selecciona el programa</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Elige el programa de crédito que mejor se adapte a tus necesidades
-        </p>
-      </div>
+      <StepHeader
+        icon={LayoutGrid}
+        title="Selecciona el programa"
+        subtitle="Elige el programa de crédito que mejor se adapte a tus necesidades."
+      />
 
       {/* Buscador */}
       {programas.length > 4 && (

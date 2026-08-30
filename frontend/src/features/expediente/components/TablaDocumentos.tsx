@@ -25,6 +25,9 @@ import {
     ThumbsDown,
     Upload,
     Loader2,
+    CheckCircle2,
+    Clock3,
+    FileText,
 } from 'lucide-react'
 import type {
     ResumenDocumento,
@@ -32,6 +35,7 @@ import type {
 } from '@/features/expediente/types/expediente.types'
 import { uploadsApi } from '@/shared/api/uploads.api'
 import { ApiError } from '@/shared/api/client'
+import { cn } from '@/shared/lib/cn'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -63,11 +67,74 @@ const DIALOG_INICIAL: DialogState = {
     accion: 'APROBADO',
 }
 
-const accentColor: Record<string, string> = {
-    APROBADO: 'bg-emerald-400',
-    PENDIENTE: 'bg-amber-400',
-    RECHAZADO: 'bg-red-400',
-    NO_SUBIDO: 'bg-border',
+// Estilo por estatus: chip guía de la fila, tinte sutil de fila y color de barra.
+const ESTATUS_META: Record<
+    string,
+    { icon: React.ElementType; chip: string; rowTint: string; bar: string }
+> = {
+    APROBADO: {
+        icon: CheckCircle2,
+        chip: 'bg-emerald-500/10 text-emerald-600 ring-emerald-500/25 dark:text-emerald-400',
+        rowTint: '',
+        bar: 'bg-emerald-500',
+    },
+    PENDIENTE: {
+        icon: Clock3,
+        chip: 'bg-amber-500/10 text-amber-600 ring-amber-500/25 dark:text-amber-400',
+        rowTint: '',
+        bar: 'bg-amber-500',
+    },
+    RECHAZADO: {
+        icon: XCircle,
+        chip: 'bg-red-500/10 text-red-500 ring-red-500/25 dark:text-red-400',
+        rowTint: 'bg-red-500/[0.035]',
+        bar: 'bg-red-500',
+    },
+    NO_SUBIDO: {
+        icon: Upload,
+        chip: 'bg-muted text-muted-foreground/60 ring-border',
+        rowTint: '',
+        bar: 'bg-muted-foreground/25',
+    },
+}
+
+const metaDe = (estatus: string) => ESTATUS_META[estatus] ?? ESTATUS_META.NO_SUBIDO
+
+function EstatusChip({ estatus, className }: { estatus: string; className?: string }) {
+    const { icon: Icon, chip } = metaDe(estatus)
+    return (
+        <div
+            className={cn(
+                'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1',
+                chip,
+                className,
+            )}
+        >
+            <Icon className="h-4 w-4" />
+        </div>
+    )
+}
+
+/** Barra de composición: aprobados / en revisión / rechazados / faltantes. */
+function BarraComposicion({ documentos }: { documentos: ResumenDocumento[] }) {
+    const total = documentos.length
+    if (total === 0) return null
+    const orden: string[] = ['APROBADO', 'PENDIENTE', 'RECHAZADO', 'NO_SUBIDO']
+    return (
+        <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            {orden.map((estatus) => {
+                const n = documentos.filter((d) => d.estatus === estatus).length
+                if (n === 0) return null
+                return (
+                    <div
+                        key={estatus}
+                        className={metaDe(estatus).bar}
+                        style={{ width: `${(n / total) * 100}%` }}
+                    />
+                )
+            })}
+        </div>
+    )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -80,7 +147,7 @@ function MotivoRechazo({ motivo }: { motivo: string }) {
             <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 max-w-full sm:max-w-45 cursor-help group">
                     <XCircle className="h-3 w-3 shrink-0 text-red-400" />
-                    <p className="text-xs text-red-600 truncate group-hover:underline decoration-dashed underline-offset-2">
+                    <p className="text-xs text-red-600 dark:text-red-400 truncate group-hover:underline decoration-dashed underline-offset-2">
                         {motivo}
                     </p>
                 </div>
@@ -167,7 +234,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 dark:border-emerald-900 dark:text-emerald-400 dark:hover:bg-emerald-950/40 dark:hover:border-emerald-800 dark:hover:text-emerald-300 transition-all`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'APROBADO')}
                         aria-label={`Aprobar ${nombreDocumento}`}
@@ -182,7 +249,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:border-red-800 dark:hover:text-red-300 transition-all`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'RECHAZADO')}
                         aria-label={`Rechazar ${nombreDocumento}`}
@@ -253,14 +320,14 @@ function TipoBadge({ esObligatorio }: { esObligatorio: boolean }) {
     return esObligatorio ? (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-red-600 border-red-200 bg-red-50 shrink-0"
+            className="text-[10px] px-1.5 py-0 h-4 text-red-600 border-red-200 bg-red-50 dark:text-red-300 dark:border-red-900 dark:bg-red-950/40 shrink-0"
         >
             Requerido
         </Badge>
     ) : (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-slate-400 border-slate-200 bg-slate-50 shrink-0"
+            className="text-[10px] px-1.5 py-0 h-4 text-slate-400 border-slate-200 bg-slate-50 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800/50 shrink-0"
         >
             Opcional
         </Badge>
@@ -316,21 +383,23 @@ function DocumentoCard({
     const esPendiente = estatus === 'PENDIENTE'
     const esValidable = puedeValidar && esPendiente && !!documentoActivo
     const tieneHistorial = estatus !== 'NO_SUBIDO'
-    const colorAccent = accentColor[estatus] ?? accentColor['NO_SUBIDO']
     const puedeSubirEsteDoc = puedeSubir && estatus !== 'APROBADO'
 
     return (
-        <div className="relative rounded-lg border border-border bg-card overflow-hidden">
-            <div className={`absolute left-0 top-0 bottom-0 w-0.75 ${colorAccent}`} />
-            <div className="pl-4 pr-3 py-3.5 space-y-3">
-                {/* Título + badges */}
-                <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-foreground leading-snug">
-                                {tipoDocumento.nombre}
-                            </span>
-                            <TipoBadge esObligatorio={esObligatorio} />
+        <div className={cn('rounded-xl border border-border bg-card overflow-hidden', metaDe(estatus).rowTint)}>
+            <div className="px-3.5 py-3.5 space-y-3">
+                {/* Chip + título + badges */}
+                <div className="flex items-start gap-3">
+                    <EstatusChip estatus={estatus} />
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                <span className="text-sm font-medium text-foreground leading-snug">
+                                    {tipoDocumento.nombre}
+                                </span>
+                                <TipoBadge esObligatorio={esObligatorio} />
+                            </div>
+                            <EstatusDocumentoBadge estatus={estatus} />
                         </div>
                         {tipoDocumento.descripcion && (
                             <p className="text-xs text-muted-foreground mt-0.5">
@@ -338,7 +407,6 @@ function DocumentoCard({
                             </p>
                         )}
                     </div>
-                    <EstatusDocumentoBadge estatus={estatus} />
                 </div>
 
                 {/* Archivo + versión */}
@@ -435,7 +503,7 @@ function DocumentosListaMobile({
     if (documentos.length === 0) return <VacioState />
 
     return (
-        <div className="space-y-3 px-4 pb-4">
+        <div className="space-y-2.5">
             {documentos.map((doc) => (
                 <DocumentoCard
                     key={doc.tipoDocumento.id}
@@ -484,8 +552,8 @@ function DocumentosTablaDesktop({
             <Table>
                 <TableHeader>
                     <TableRow className="hover:bg-transparent bg-muted/40">
-                        <TableHead className="w-1 p-0" />
-                        <TableHead className="pl-4 text-[11px] font-semibold uppercase tracking-wider">
+                        <TableHead className="w-14 pl-5" />
+                        <TableHead className="text-[11px] font-semibold uppercase tracking-wider">
                             Documento
                         </TableHead>
                         <TableHead className="text-[11px] font-semibold uppercase tracking-wider">
@@ -512,19 +580,21 @@ function DocumentosTablaDesktop({
                         const esPendiente = estatus === 'PENDIENTE'
                         const esValidable = puedeValidar && esPendiente && !!documentoActivo
                         const tieneHistorial = estatus !== 'NO_SUBIDO'
-                        const colorAccent = accentColor[estatus] ?? accentColor['NO_SUBIDO']
                         const puedeSubirEstaFila = puedeSubir && estatus !== 'APROBADO'
 
                         return (
                             <TableRow
                                 key={tipoDocumento.id}
-                                className="hover:bg-muted/20 transition-colors duration-100"
+                                className={cn(
+                                    'transition-colors duration-100 hover:bg-muted/30',
+                                    metaDe(estatus).rowTint,
+                                )}
                             >
-                                <TableCell className="w-1 p-0">
-                                    <div className={`w-0.75 h-full min-h-13 rounded-r-full ${colorAccent}`} />
+                                <TableCell className="pl-5 py-3.5">
+                                    <EstatusChip estatus={estatus} />
                                 </TableCell>
 
-                                <TableCell className="pl-4 py-3.5">
+                                <TableCell className="py-3.5">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="text-sm font-medium text-foreground leading-snug">
                                             {tipoDocumento.nombre}
@@ -658,31 +728,50 @@ export function TablaDocumentos({
     }
 
     const totalDocs = documentos.length
-    const obligatorios = documentos.filter((d) => d.esObligatorio).length
     const aprobados = documentos.filter((d) => d.estatus === 'APROBADO').length
+    const pendientesAccion = documentos.filter(
+        (d) => d.esObligatorio && (d.estatus === 'NO_SUBIDO' || d.estatus === 'RECHAZADO'),
+    ).length
 
     return (
         <>
             <Card className="w-full">
-                <CardHeader className="pb-0 pt-5 px-4 sm:px-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
+                <CardHeader className="pb-4 pt-5 px-4 sm:px-5 gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                         <CardTitle className="text-base font-semibold flex items-center gap-2">
                             <div className="rounded-lg bg-primary/10 p-1.5 ring-1 ring-primary/20">
                                 <ShieldCheck className="h-4 w-4 text-primary" />
                             </div>
                             Documentos requeridos
                         </CardTitle>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{aprobados} de {totalDocs} documentos</span>
-                            <span className="text-border">·</span>
-                            <span>{obligatorios} obligatorios</span>
+
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground tabular-nums">
+                                {aprobados}<span className="text-muted-foreground/50">/{totalDocs}</span> aprobados
+                            </span>
+                            <span
+                                className={cn(
+                                    'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold',
+                                    pendientesAccion > 0
+                                        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                        : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                                )}
+                            >
+                                {pendientesAccion > 0 ? (
+                                    <><FileText className="h-3 w-3" /> {pendientesAccion} por atender</>
+                                ) : (
+                                    <><CheckCircle2 className="h-3 w-3" /> Al día</>
+                                )}
+                            </span>
                         </div>
                     </div>
+
+                    <BarraComposicion documentos={documentos} />
                 </CardHeader>
 
-                <CardContent className="px-4 py-5">
+                <CardContent className="p-0 border-t border-border/60">
                     {/* Mobile / tablet chico */}
-                    <div className="md:hidden">
+                    <div className="md:hidden p-4">
                         <DocumentosListaMobile
                             solicitudId={solicitudId}
                             documentos={documentos}

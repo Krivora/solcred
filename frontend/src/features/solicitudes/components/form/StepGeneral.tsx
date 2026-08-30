@@ -9,9 +9,10 @@ import {
   ChevronLeft, ChevronRight,
   User, Building2,
   Wheat, Factory, ShoppingBag, Headphones, Cpu, LayoutGrid,
-  Store, Landmark, Building, TrendingUp,
+  Store, Landmark, Building, TrendingUp, ClipboardList,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
+import { StepHeader } from './StepHeader'
 
 interface Props {
   solicitud: Solicitud
@@ -174,15 +175,11 @@ export function StepGeneral({ solicitud, onSubmit, onBack, loading, error }: Pro
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">
-          Datos generales
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Información sobre el solicitante y su actividad económica.
-        </p>
-      </div>
+      <StepHeader
+        icon={ClipboardList}
+        title="Datos generales"
+        subtitle="Información sobre el solicitante y su actividad económica."
+      />
 
       {/* ① Tipo de persona */}
       <FormSection step={1} label="Tipo de solicitante">

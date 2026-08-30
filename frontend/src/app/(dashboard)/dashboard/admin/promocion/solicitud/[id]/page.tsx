@@ -30,6 +30,11 @@ export default function SolicitudDetallePage({ params }: Props) {
         router.back()
     }
 
+    const irAExpediente = () => {
+        sessionStorage.setItem('nav-direction', 'adelante')
+        router.push(`/dashboard/admin/promocion/expediente/${id}`)
+    }
+
     if (cargando) {
         return (
             <div className={`${claseAnimacion} flex flex-col gap-6 p-6`}>
@@ -106,7 +111,7 @@ export default function SolicitudDetallePage({ params }: Props) {
                             variant="outline"
                             size="sm"
                             className="gap-2"
-                            onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitud.id}`)}
+                            onClick={irAExpediente}
                         >
                             <FolderOpen className="h-3.5 w-3.5" />
                             Ver expediente
@@ -124,7 +129,7 @@ export default function SolicitudDetallePage({ params }: Props) {
                             variant="outline"
                             size="sm"
                             className="gap-2"
-                            onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitud.id}`)}
+                            onClick={irAExpediente}
                         >
                             <FileText className="h-3.5 w-3.5" />
                             Tarjeta Informativa

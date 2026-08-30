@@ -6,6 +6,7 @@ import { AprobacionFiltros } from '@/features/promocion/components/aprobacion/Ap
 import { AprobacionTable } from '@/features/promocion/components/aprobacion/AprobacionTable'
 import { useAprobacion } from '@/features/promocion/hooks/useAprobacion'
 import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
+import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 export default function AprobacionPage() {
   const {
@@ -14,8 +15,10 @@ export default function AprobacionPage() {
     limpiarFiltros, recargar,
   } = useAprobacion()
 
+  const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que vengas del detalle
+
   return (
-    <div className="mx-auto max-w-8xl space-y-6">
+    <div className={`${claseAnimacion} mx-auto max-w-8xl space-y-6`}>
 
       <PageHeader
         title="Comité de Aprobación"

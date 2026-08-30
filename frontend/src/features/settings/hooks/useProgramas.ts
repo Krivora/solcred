@@ -162,6 +162,25 @@ export function useTiposDocumento() {
         onError: (err: unknown) => programaToast.tipoDocumentoError((err as Error)?.message),
     })
 
+    const actualizarMut = useMutation({
+        mutationFn: ({ id, data }: { id: string; data: { nombre?: string; descripcion?: string | null } }) =>
+            programasApi.actualizarTipoDocumento(id, data),
+        onSuccess: () => {
+            programaToast.tipoDocumentoActualizado()
+            qc.invalidateQueries({ queryKey: tipoDocumentoKeys.all })
+        },
+        onError: (err: unknown) => programaToast.tipoDocumentoError((err as Error)?.message),
+    })
+
+    const eliminarMut = useMutation({
+        mutationFn: (id: string) => programasApi.eliminarTipoDocumento(id),
+        onSuccess: () => {
+            programaToast.tipoDocumentoEliminado()
+            qc.invalidateQueries({ queryKey: tipoDocumentoKeys.all })
+        },
+        onError: (err: unknown) => programaToast.tipoDocumentoError((err as Error)?.message),
+    })
+
     const crear = async (data: {
         nombre: string
         descripcion?: string
@@ -173,11 +192,36 @@ export function useTiposDocumento() {
         }
     }
 
+    const actualizar = async (
+        id: string,
+        data: { nombre?: string; descripcion?: string | null },
+    ): Promise<boolean> => {
+        try {
+            await actualizarMut.mutateAsync({ id, data })
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    const eliminar = async (id: string): Promise<boolean> => {
+        try {
+            await eliminarMut.mutateAsync(id)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     return {
         tipos,
         cargando,
         recargar: () => qc.invalidateQueries({ queryKey: tipoDocumentoKeys.all }),
         crear,
+        actualizar,
+        eliminar,
+        guardando: actualizarMut.isPending,
+        eliminando: eliminarMut.isPending,
     }
 }
 
