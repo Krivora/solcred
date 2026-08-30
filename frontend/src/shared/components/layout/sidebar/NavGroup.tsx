@@ -1,4 +1,3 @@
-// src/shared/components/layout/sidebar/NavGroup.tsx
 "use client";
 
 import { useState } from "react";

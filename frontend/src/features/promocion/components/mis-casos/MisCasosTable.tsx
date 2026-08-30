@@ -23,7 +23,6 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
   const [dialogOpen, setDialogOpen]           = useState(false)
   const [accionActiva, setAccionActiva]       = useState<AccionTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
-  console.log('solicitudes', solicitudes)
   const { loading, devolverAlSolicitante, enviarAAprobacion, cancelar } =
     useAccionesSolicitud({ onSuccess: () => { setDialogOpen(false); onRefresh() } })
 

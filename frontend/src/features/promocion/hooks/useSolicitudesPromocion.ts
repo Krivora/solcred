@@ -1,4 +1,3 @@
-// features/promocion/hooks/useSolicitudesPromocion.ts
 'use client'
 
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query'

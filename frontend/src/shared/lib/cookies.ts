@@ -1,4 +1,3 @@
-// shared/lib/utils/cookies.ts
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 días, ajusta según tu JWT expiry
 
 export function setCookie(name: string, value: string, maxAge = COOKIE_MAX_AGE_SECONDS): void {

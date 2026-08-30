@@ -1,4 +1,3 @@
-// features/promocion/hooks/useMutarSolicitud.ts
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'

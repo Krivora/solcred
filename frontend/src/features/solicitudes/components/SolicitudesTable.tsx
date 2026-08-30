@@ -238,7 +238,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selected, setSelected] = useState<Solicitud | null>(null)
   const { descargar, idDescargando } = useDescargarPDF()
-  console.log(solicitudes)
   function handleEnviarClick(s: Solicitud) {
     setSelected(s)
     setDialogOpen(true)

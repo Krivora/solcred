@@ -1,4 +1,3 @@
-// src/shared/components/layout/sidebar/role-config.ts
 export const ROLE_CONFIG: Record<string, { label: string; className: string }> = {
     ADMIN: {
         label: "Admin",

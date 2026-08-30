@@ -1,4 +1,3 @@
-// src/shared/components/layout/sidebar/ThemeSwitcherDialog.tsx
 "use client";
 
 import { useTheme } from "next-themes";

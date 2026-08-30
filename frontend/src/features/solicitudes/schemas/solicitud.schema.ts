@@ -1,4 +1,3 @@
-// shared/lib/schemas/solicitudes.schema.ts
 import { z } from 'zod'
 
 // ─────────────────────────────────────────

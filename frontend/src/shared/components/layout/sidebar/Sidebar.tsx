@@ -1,4 +1,3 @@
-// src/shared/components/layout/sidebar/Sidebar.tsx
 "use client";
 
 import { cn } from "@/shared/lib/cn";

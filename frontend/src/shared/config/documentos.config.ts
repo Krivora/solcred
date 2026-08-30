@@ -1,4 +1,3 @@
-// shared/config/documentos.config.ts
 import type { EstatusSolicitud } from '@/shared/types/solicitudes.types'
 
 export type DocumentoTipo = 'solicitud' | 'tarjeta_informativa' | 'carta_rechazo' | 'acuse_entrega'

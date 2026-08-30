@@ -1,4 +1,3 @@
-// features/solicitudes/components/form/StepCredito.tsx
 'use client'
 import { useState } from 'react'
 import {

@@ -1,4 +1,3 @@
-// shared/lib/hooks/useNavAnimation.ts
 'use client'
 
 import { useEffect, useState, useRef } from 'react'

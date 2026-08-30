@@ -132,7 +132,6 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
       />
     )
   }
-  console.log('SolicitudesTable - solicitudes:', solicitudes)
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">

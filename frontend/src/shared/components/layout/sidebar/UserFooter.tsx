@@ -1,4 +1,3 @@
-// src/shared/components/layout/sidebar/UserFooter.tsx
 "use client";
 
 import {

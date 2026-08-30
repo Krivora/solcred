@@ -43,7 +43,6 @@ export function NuevaSolicitudForm() {
     currentStep === 'solicitante' && esFisica && !yaTieneDatosSolicitante
 
   const { usuario, isLoading: cargandoPerfil } = usePerfilUsuario(debePrecargarPerfil)
-  console.log('usuario', usuario)
   const defaultValuesSolicitante = yaTieneDatosSolicitante
     ? solicitud!.datosSolicitante
     : esFisica && usuario

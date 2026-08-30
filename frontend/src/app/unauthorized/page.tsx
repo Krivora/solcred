@@ -9,7 +9,6 @@ export default function UnauthorizedPage() {
     const usuario = useAuthStore((state) => state.usuario);
     const rol = useAuthStore((state) => state.rol);
     const isLoading = useAuthStore((state) => state.isLoading);
-    console.log('UnauthorizedPage render', { usuario, rol, isLoading });
     if (isLoading) {
         return null;
     }

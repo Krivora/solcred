@@ -1,4 +1,3 @@
-// features/promocion/lib/queryKeys.ts
 import type { FiltrosPromocion } from '@/features/promocion/types/solicitud.types'
 
 export const promocionKeys = {
