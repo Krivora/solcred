@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
     Trash2, FileText, Loader2, FileBadge2,
-    ShieldCheck, Users, CheckCircle2, Circle, Search,
+    ShieldCheck, Users, CheckCircle2, Circle, Search, Plus,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Label } from "@/shared/components/ui/label";
@@ -90,7 +90,7 @@ function ListaDocumentos({
                 </div>
                 <div>
                     <p className="text-sm font-medium text-foreground/70">Sin documentos asignados</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Agrega documentos requeridos desde el panel inferior</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Usa el panel de arriba para agregar los documentos que el solicitante deberá subir</p>
                 </div>
             </div>
         );
@@ -166,13 +166,16 @@ function ListaDocumentos({
 }
 
 interface EditableProps {
-    programaId: string;
+    /** Si viene, cada alta/baja se persiste al instante. Si no (alta de programa
+     *  nuevo), los documentos se juntan en borrador y el form los adjunta al crear. */
+    programaId?: string;
     documentos: ProgramaDocumento[];
-    onCambio: () => void;
+    onCambio: (documentos: ProgramaDocumento[]) => void;
 }
 
 export function DocumentosPrograma({ programaId, documentos: documentosProp, onCambio }: EditableProps) {
     const [documentos, setDocumentos] = useState<ProgramaDocumento[]>(documentosProp);
+    const esBorrador = !programaId;
     const { tipos: tiposDisponibles, cargando: loadingTipos, recargar: recargarTipos, crear: crearTipo } = useTiposDocumento();
     const [tipoSeleccionado, setTipoSeleccionado] = useState("");
     const [esObligatorio, setEsObligatorio] = useState(true);
@@ -187,36 +190,41 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
     const opcionales = documentos.length - obligatorios;
     const handleAgregar = async () => {
         if (!tipoSeleccionado) return;
+        const tipo = tiposDisponibles.find(t => t.id === tipoSeleccionado);
+        if (!tipo) return;
         setAgregando(true);
         try {
-            await agregarDocumento(programaId, {
+            if (programaId) {
+                await agregarDocumento(programaId, {
+                    tipoDocumentoId: tipoSeleccionado,
+                    esObligatorio,
+                    aplicaA,
+                });
+            }
+            const nueva = [...documentos, {
+                id: crypto.randomUUID(),
+                programaId: programaId ?? "",
                 tipoDocumentoId: tipoSeleccionado,
                 esObligatorio,
                 aplicaA,
-            });
-            const tipo = tiposDisponibles.find(t => t.id === tipoSeleccionado);
-            if (tipo) {
-                setDocumentos(prev => [...prev, {
-                    id: crypto.randomUUID(),
-                    programaId,
-                    tipoDocumentoId: tipoSeleccionado,
-                    esObligatorio,
-                    aplicaA: aplicaA,
-                    tipoDocumento: tipo,
-                }]);
-            }
+                tipoDocumento: tipo,
+            }];
+            setDocumentos(nueva);
             setTipoSeleccionado("");
             setEsObligatorio(true);
             setAplicaA("AMBOS");
-            onCambio();
+            onCambio(nueva);
         } finally { setAgregando(false); }
     };
     const handleQuitar = async (tipoDocumentoId: string) => {
         setQuitando(tipoDocumentoId);
         try {
-            await quitarDocumento(programaId, tipoDocumentoId);
-            setDocumentos(prev => prev.filter(d => d.tipoDocumentoId !== tipoDocumentoId));
-            onCambio();
+            if (programaId) {
+                await quitarDocumento(programaId, tipoDocumentoId);
+            }
+            const nueva = documentos.filter(d => d.tipoDocumentoId !== tipoDocumentoId);
+            setDocumentos(nueva);
+            onCambio(nueva);
         } finally { setQuitando(null); }
     };
     const handleNuevoTipo = async (data: { nombre: string; descripcion?: string }) => {
@@ -235,11 +243,13 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
                                 <FileText className="h-4 w-4" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold leading-none">Documentos Requeridos</h3>
+                                <h3 className="text-sm font-semibold leading-none">Documentos requeridos</h3>
                                 <p className="text-xs text-muted-foreground mt-1">
-                                    {documentos.length
-                                        ? `${documentos.length} asignado(s)`
-                                        : "Sin documentos asignados aún"}
+                                    {esBorrador
+                                        ? "Se guardarán junto con el programa"
+                                        : documentos.length
+                                            ? `${documentos.length} asignado(s)`
+                                            : "Sin documentos asignados aún"}
                                 </p>
                             </div>
                         </div>
@@ -258,70 +268,84 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
                             )}
                         </div>
                     </div>
-                    {/* Fila 2: Formulario agregar en línea */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Select
-                            value={tipoSeleccionado}
-                            onValueChange={setTipoSeleccionado}
-                            disabled={loadingTipos || disponibles.length === 0}
-                        >
-                            <SelectTrigger className="h-8 w-80 bg-background text-xs border-border/70">
-                                <SelectValue placeholder={
-                                    loadingTipos ? "Cargando tipos..." :
-                                    disponibles.length === 0 ? "Todos asignados" :
-                                    "Seleccionar documento…"
-                                } />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {disponibles.map(t => (
-                                    <SelectItem key={t.id} value={t.id} className="text-sm">
-                                        {t.nombre}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    {/* Formulario para agregar un documento */}
+                    <div className="space-y-2">
+                        {/* Fila 1: tipo de documento + crear tipo nuevo */}
+                        <div className="flex items-center gap-2">
+                            <Select
+                                value={tipoSeleccionado}
+                                onValueChange={setTipoSeleccionado}
+                                disabled={loadingTipos || disponibles.length === 0}
+                            >
+                                <SelectTrigger className="h-8 flex-1 bg-background text-xs border-border/70">
+                                    <SelectValue placeholder={
+                                        loadingTipos ? "Cargando tipos..." :
+                                        disponibles.length === 0 ? "Todos los tipos ya están asignados" :
+                                        "Seleccionar documento…"
+                                    } />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {disponibles.map(t => (
+                                        <SelectItem key={t.id} value={t.id} className="text-sm">
+                                            {t.nombre}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
-                        {/* Switch obligatorio */}
-                        <div className="flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2.5 h-8">
-                            <Switch
-                                id="sw-obligatorio"
-                                checked={esObligatorio}
-                                onCheckedChange={setEsObligatorio}
-                                className="scale-[0.8]"
-                            />
-                            <Label htmlFor="sw-obligatorio" className="text-xs font-medium cursor-pointer whitespace-nowrap text-muted-foreground">
-                                Obligatorio
-                            </Label>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-8 gap-1.5 text-xs shrink-0 text-muted-foreground"
+                                onClick={() => setDialogOpen(true)}
+                            >
+                                <Plus className="h-3.5 w-3.5" />
+                                Nuevo tipo
+                            </Button>
                         </div>
 
-                        {/* Aplica a */}
-                        <Select
-                            value={aplicaA ?? "AMBOS"}
-                            onValueChange={v => setAplicaA(v as AplicaA)}
-                        >
-                            <SelectTrigger className="h-8 w-30 bg-background text-xs border-border/70">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="AMBOS">Ambos</SelectItem>
-                                <SelectItem value="FISICA">P. Física</SelectItem>
-                                <SelectItem value="MORAL">P. Moral</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        {/* Fila 2: parámetros + agregar */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2.5 h-8">
+                                <Switch
+                                    id="sw-obligatorio"
+                                    checked={esObligatorio}
+                                    onCheckedChange={setEsObligatorio}
+                                    className="scale-[0.8]"
+                                />
+                                <Label htmlFor="sw-obligatorio" className="text-xs font-medium cursor-pointer whitespace-nowrap text-muted-foreground">
+                                    Obligatorio
+                                </Label>
+                            </div>
 
-                        {/* Botón */}
-                        <Button
-                            type="button"
-                            size="sm"
-                            className="h-8 gap-1.5 text-xs shrink-0"
-                            disabled={!tipoSeleccionado || agregando}
-                            onClick={handleAgregar}
-                        >
-                            {agregando
-                                ? <Loader2 className="h-3 w-3 animate-spin" />
-                                : <CheckCircle2 className="h-3 w-3" />}
-                            Agregar
-                        </Button>
+                            <Select
+                                value={aplicaA ?? "AMBOS"}
+                                onValueChange={v => setAplicaA(v as AplicaA)}
+                            >
+                                <SelectTrigger className="h-8 w-32 bg-background text-xs border-border/70">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="AMBOS">Ambos</SelectItem>
+                                    <SelectItem value="FISICA">P. Física</SelectItem>
+                                    <SelectItem value="MORAL">P. Moral</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                            <Button
+                                type="button"
+                                size="sm"
+                                className="h-8 gap-1.5 text-xs shrink-0 ml-auto"
+                                disabled={!tipoSeleccionado || agregando}
+                                onClick={handleAgregar}
+                            >
+                                {agregando
+                                    ? <Loader2 className="h-3 w-3 animate-spin" />
+                                    : <CheckCircle2 className="h-3 w-3" />}
+                                Agregar
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 {/* ── Lista ──────────────────────────────────────────── */}

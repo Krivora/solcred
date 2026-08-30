@@ -35,6 +35,7 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
         setGuardando(true);
         try {
             if (onGuardar) {
+                // El padre es dueño de la llamada y del feedback de éxito.
                 await onGuardar({ nombre: nombre.trim(), descripcion: descripcion.trim() || undefined });
             } else if (onSuccess) {
                 const nuevo = await crearTipoDocumento({
@@ -42,8 +43,8 @@ export function TipoDocumentoDialog({ open, onOpenChange, onGuardar, onSuccess }
                     descripcion: descripcion.trim() || undefined,
                 });
                 onSuccess(nuevo);
+                programaToast.tipoDocumentoCreado();
             }
-            programaToast.tipoDocumentoCreado();
             reset();
             onOpenChange(false);
         } catch (e: unknown) {

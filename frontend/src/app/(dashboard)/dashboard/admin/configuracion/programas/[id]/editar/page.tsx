@@ -9,7 +9,6 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { ProgramaForm } from "@/features/settings/components/programas/ProgramaForm";
 import { getPrograma } from "@/features/settings/api/programas.api";
 import type { Programa } from "@/features/settings/types/programa.types";
-import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 
 export default function EditarProgramaPage() {
     const { id } = useParams<{ id: string }>();
@@ -53,19 +52,7 @@ export default function EditarProgramaPage() {
             ) : error ? (
                 <p className="text-sm text-destructive">{error}</p>
             ) : programa ? (
-                <>
-                    <ProgramaForm
-                        programa={programa}
-                        documentosSlot={
-                            <DocumentosPrograma
-                                key={programa.id}
-                                programaId={programa.id}
-                                documentos={programa.documentosRequeridos ?? []}
-                                onCambio={() => {}}
-                            />
-                        }
-                    />
-                </>
+                <ProgramaForm programa={programa} />
             ) : null}
         </div>
     );

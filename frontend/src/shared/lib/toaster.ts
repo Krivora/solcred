@@ -206,6 +206,11 @@ export const programaToast = {
             description: message ?? 'Ocurrió un error inesperado, intenta de nuevo',
         }),
 
+    documentosParciales: (fallidos: number) =>
+        toast.warning('Algunos documentos no se adjuntaron', {
+            description: `El programa se creó, pero ${fallidos} documento(s) quedaron pendientes. Agrégalos desde la edición.`,
+        }),
+
     activado: () =>
         toast.success('Programa activado'),
     desactivado: () =>
