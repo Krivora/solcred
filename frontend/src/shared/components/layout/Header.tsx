@@ -95,7 +95,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         {/* Search */}
         <Button
           variant="outline"
-          size="sm"
+          size="lg"
           className="hidden md:flex items-center gap-2 text-muted-foreground h-8 px-3 text-xs"
         >
           <Search className="h-3.5 w-3.5" />
