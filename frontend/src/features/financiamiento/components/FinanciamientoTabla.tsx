@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
+import { Calculator } from 'lucide-react'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/dropdown-menu'
 import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
 import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
@@ -29,11 +31,14 @@ interface Props {
   acciones: AccionDef[]
   mostrarColumnaAnalista?: boolean
   vacio: { icon: ReactNode; titulo: string; descripcion: string }
+  /** Si viene, agrega un item "Realizar Análisis" al inicio del dropdown. */
+  enlaceAnalisis?: (id: string) => string
 }
 
 export function FinanciamientoTabla({
-  solicitudes, meta, cargando, onPaginar, onRefresh, acciones, mostrarColumnaAnalista, vacio,
+  solicitudes, meta, cargando, onPaginar, onRefresh, acciones, mostrarColumnaAnalista, vacio, enlaceAnalisis,
 }: Props) {
+  const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [accionActiva, setAccionActiva] = useState<AccionFinTipo | null>(null)
   const [solicitudActiva, setSolicitudActiva] = useState<string | null>(null)
@@ -86,12 +91,29 @@ export function FinanciamientoTabla({
           mostrarColumnaAnalista,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: true,
-          mostrarColumnaPdf: false,
+          mostrarColumnaPdf: true,
           labelFecha: 'Recibida',
           vacioCopy: vacio,
-          renderAcciones: acciones.length
+          renderAcciones: (acciones.length || enlaceAnalisis)
             ? (id) => (
                 <>
+                  {enlaceAnalisis && (
+                    <>
+                      <DropdownMenuItem
+                        className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
+                        onClick={() => { sessionStorage.setItem('nav-direction', 'adelante'); router.push(enlaceAnalisis(id)) }}
+                      >
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover/item:bg-primary/15">
+                          <Calculator className="h-3.5 w-3.5" />
+                        </div>
+                        <div className="flex flex-col gap-0">
+                          <span className="text-xs font-medium leading-tight text-foreground">Realizar Análisis</span>
+                          <span className="text-[11px] text-muted-foreground leading-tight">Abrir la herramienta de análisis financiero</span>
+                        </div>
+                      </DropdownMenuItem>
+                      {acciones.length > 0 && <DropdownMenuSeparator className="my-1 bg-border/60" />}
+                    </>
+                  )}
                   {acciones.map((a) => (
                     <span key={a.tipo}>
                       {a.separadorAntes && <DropdownMenuSeparator className="my-1 bg-border/60" />}

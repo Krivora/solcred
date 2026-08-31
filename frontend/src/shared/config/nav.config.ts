@@ -91,7 +91,7 @@ export const navConfig: NavItem[] = [
         label: "Mesa de Control",
         href: "/dashboard/financiamiento/mesa-control",
         icon: ShieldCheck,
-        roles: ["ADMIN", "ANALISTA"],
+        roles: ["ADMIN", "SUPERVISOR"],
       },
       {
         label: "Asignación",

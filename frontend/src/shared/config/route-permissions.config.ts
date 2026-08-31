@@ -21,6 +21,7 @@ function flattenNavConfig(items: NavItem[]): RoutePermission[] {
 const EXTRA_ROUTES: RoutePermission[] = [
     { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR'] },
     { pattern: '/dashboard/financiamiento/solicitud/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR'] },
+    { pattern: '/dashboard/financiamiento/analisis/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR'] },
     { pattern: '/dashboard/usuarios/expediente/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/nueva', roles: ['CLIENTE'] },

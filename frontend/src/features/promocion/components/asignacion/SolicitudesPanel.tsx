@@ -2,7 +2,7 @@
 
 import { SolicitudesToolbar } from './SolicitudesToolbar'
 import { AsignacionSolicitudesTable } from './AsignacionSolicitudesTable'
-import type { SolicitudAsignacion } from '@/features/promocion/types/asignacion.types'
+import type { SolicitudAsignacion, GestorConCarga } from '@/features/promocion/types/asignacion.types'
 import type { GrupoGestion } from '@/features/settings/types/grupos.types'
 import { AsignacionFiltros } from './AsignacionFiltros'
 import type { FiltrosAsignacion } from '@/features/promocion/types/asignacion.types'
@@ -17,6 +17,7 @@ interface SolicitudesPanelProps {
     cargando: boolean
     error: string | null
     grupos: GrupoGestion[]
+    gestores: GestorConCarga[]
     seleccionadas: Set<string>
     todoSeleccionado: boolean
     asignandoId: string | null
@@ -44,6 +45,7 @@ export function SolicitudesPanel({
     cargando,
     error,
     grupos,
+    gestores,
     seleccionadas,
     todoSeleccionado,
     asignandoId,
@@ -64,13 +66,16 @@ export function SolicitudesPanel({
     const total = solicitudes.filter(s => s.estatus === 'PENDIENTE').length
     return (
         <div className="flex-1 flex flex-col min-w-0">
-            <div className="px-4 py-3 border-b border-border/40">
-                <AsignacionFiltros
-                    filtros={filtros}
-                    onFiltrar={onFiltrar}
-                    onLimpiar={onLimpiarFiltros}
-                    hayFiltrosActivos={hayFiltrosActivos}
-                />
+            <div className="p-4 pb-0">
+                <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                    <AsignacionFiltros
+                        filtros={filtros}
+                        onFiltrar={onFiltrar}
+                        onLimpiar={onLimpiarFiltros}
+                        hayFiltrosActivos={hayFiltrosActivos}
+                        gestores={gestores}
+                    />
+                </div>
             </div>
             <SolicitudesToolbar
                 total={total}

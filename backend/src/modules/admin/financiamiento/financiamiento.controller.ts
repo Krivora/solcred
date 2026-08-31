@@ -13,8 +13,10 @@ import type { FiltrosFinanciamiento } from "./financiamiento.service";
 // ─────────────────────────────────────────────────────────────────────────────
 
 function parseFiltros(req: RequestAutenticado): FiltrosFinanciamiento {
-  const { tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } =
-    req.query;
+  const {
+    tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda,
+    asignacion, analistaId,
+  } = req.query;
 
   return {
     ...parsearPaginacionQuery(req.query),
@@ -25,6 +27,9 @@ function parseFiltros(req: RequestAutenticado): FiltrosFinanciamiento {
     fechaDesde: fechaDesde as string | undefined,
     fechaHasta: fechaHasta as string | undefined,
     busqueda: busqueda as string | undefined,
+    analistaId: analistaId as string | undefined,
+    asignacion:
+      asignacion === "asignados" || asignacion === "sin_asignar" ? asignacion : undefined,
   };
 }
 
@@ -53,7 +58,10 @@ export const listarMesaControl = async (req: RequestAutenticado, res: Response, 
 
 export const listarAsignacion = async (req: RequestAutenticado, res: Response, next: NextFunction) => {
   try {
-    const resultado = await financiamientoService.listarPorEtapa("EN_ASIGNACION", parseFiltros(req));
+    const resultado = await financiamientoService.listarPorEtapa(
+      ["EN_ASIGNACION", "EN_ANALISIS"],
+      parseFiltros(req)
+    );
     await registrarConsulta(req, "Cola de asignación de financiamiento consultada");
     res.status(200).json(ok("Solicitudes por asignar obtenidas", resultado));
   } catch (error) {
@@ -194,25 +202,37 @@ export const aprobar = accion(
   "APROBADO"
 );
 
-export const asignarAnalista = async (req: RequestAutenticado, res: Response, next: NextFunction) => {
+export const asignarAnalistas = async (req: RequestAutenticado, res: Response, next: NextFunction) => {
   try {
-    const solicitud = await financiamientoService.asignarAnalista(
-      req.params.id as string,
-      req.body.analistaId,
+    const { solicitudIds, analistaId, motivo } = req.body as {
+      solicitudIds: string[];
+      analistaId: string;
+      motivo?: string;
+    };
+
+    const resultados = await financiamientoService.asignarAnalistas(
+      solicitudIds,
+      analistaId,
       req.usuario!.personalId ?? null,
-      req.body.motivo,
+      motivo,
       req.usuario!.id
     );
+
+    const exitosas = resultados.filter((r) => r.exito).length;
+    const fallidas = resultados.length - exitosas;
+
     await registrarLog({
       accion: AccionLog.ACTUALIZAR,
       modulo: ModuloLog.SOLICITUDES,
-      descripcion: `Analista asignado a solicitud de financiamiento: ${req.params.id}`,
+      descripcion: `Asignación de analista en financiamiento: ${exitosas} exitosas, ${fallidas} fallidas de ${resultados.length}`,
       usuarioId: req.usuario!.id,
-      entidadId: solicitud.id,
+      // Pivote por solicitud cuando la acción fue individual (fila, no lote).
+      entidadId: solicitudIds.length === 1 ? solicitudIds[0] : undefined,
       req,
-      metadata: { estatus: "EN_ANALISIS", analistaId: req.body.analistaId },
+      metadata: { analistaId, solicitudIds },
     });
-    res.status(200).json(ok("Analista asignado", solicitud));
+
+    res.status(200).json(ok("Proceso de asignación completado", resultados));
   } catch (error) {
     next(error);
   }

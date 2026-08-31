@@ -12,6 +12,7 @@ export default function MisCasosFinanciamientoPage() {
       titulo="Mis Casos"
       descripcion="Solicitudes asignadas a ti para análisis financiero"
       hook={hook}
+      enlaceAnalisis={(id) => `/dashboard/financiamiento/analisis/${id}`}
       acciones={[
         {
           tipo: 'enviar_validacion',

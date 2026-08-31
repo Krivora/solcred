@@ -30,10 +30,11 @@ interface Props {
   acciones: AccionDef[]
   mostrarColumnaAnalista?: boolean
   vacio: { icon: ReactNode; titulo: string; descripcion: string }
+  enlaceAnalisis?: (id: string) => string
 }
 
 export function FinanciamientoListPage({
-  titulo, descripcion, hook, acciones, mostrarColumnaAnalista, vacio,
+  titulo, descripcion, hook, acciones, mostrarColumnaAnalista, vacio, enlaceAnalisis,
 }: Props) {
   const claseAnimacion = useNavAnimation('')
 
@@ -79,6 +80,7 @@ export function FinanciamientoListPage({
         acciones={acciones}
         mostrarColumnaAnalista={mostrarColumnaAnalista}
         vacio={vacio}
+        enlaceAnalisis={enlaceAnalisis}
       />
     </div>
   )

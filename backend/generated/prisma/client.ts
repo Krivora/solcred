@@ -105,6 +105,11 @@ export type ProgramaDocumento = Prisma.ProgramaDocumentoModel
  */
 export type Solicitud = Prisma.SolicitudModel
 /**
+ * Model Analisis
+ * 
+ */
+export type Analisis = Prisma.AnalisisModel
+/**
  * Model DatosSolicitante
  * 
  */

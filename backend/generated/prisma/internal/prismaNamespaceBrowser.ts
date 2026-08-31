@@ -64,6 +64,7 @@ export const ModelName = {
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
   Solicitud: 'Solicitud',
+  Analisis: 'Analisis',
   DatosSolicitante: 'DatosSolicitante',
   DatosAval: 'DatosAval',
   DatosCredito: 'DatosCredito',
@@ -275,6 +276,22 @@ export const SolicitudScalarFieldEnum = {
 } as const
 
 export type SolicitudScalarFieldEnum = (typeof SolicitudScalarFieldEnum)[keyof typeof SolicitudScalarFieldEnum]
+
+
+export const AnalisisScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  analistaId: 'analistaId',
+  situacionFinanciera: 'situacionFinanciera',
+  ajustesCredito: 'ajustesCredito',
+  criteriosEvaluacion: 'criteriosEvaluacion',
+  amortizacion: 'amortizacion',
+  comentario: 'comentario',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type AnalisisScalarFieldEnum = (typeof AnalisisScalarFieldEnum)[keyof typeof AnalisisScalarFieldEnum]
 
 
 export const DatosSolicitanteScalarFieldEnum = {

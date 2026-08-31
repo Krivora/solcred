@@ -32,6 +32,19 @@ export interface FiltrosFinanciamiento {
   busqueda?: string
 }
 
+/** Filtros de la pantalla de Asignación (muestra EN_ASIGNACION + EN_ANALISIS). */
+export interface FiltrosAsignacionFinanciamiento extends FiltrosFinanciamiento {
+  asignacion?: 'asignados' | 'sin_asignar'
+  analistaId?: string
+}
+
+/** Resultado por solicitud de una asignación/reasignación en lote. */
+export interface ResultadoAsignacion {
+  solicitudId: string
+  exito: boolean
+  mensaje?: string
+}
+
 export interface FinanciamientoStats {
   mesaControl: number
   asignacion: number
@@ -42,12 +55,12 @@ export interface FinanciamientoStats {
   rechazados: number
 }
 
+/** Shape aplanado (igual que `GestorConCarga` de Promoción, sin `grupoId`). */
 export interface AnalistaConCarga {
   id: string
-  usuario: {
-    nombre: string
-    apellidoPaterno: string
-    apellidoMaterno: string
-  }
-  carga: number
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  correo: string
+  cargaActual: number
 }
