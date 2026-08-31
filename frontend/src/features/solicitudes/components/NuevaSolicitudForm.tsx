@@ -62,10 +62,11 @@ export function NuevaSolicitudForm() {
   }
 
   return (
-    <div className="max-w-8xl mx-auto space-y-8">
+    <div className="space-y-8">
       <StepIndicator pasos={pasosActivos} currentIndex={stepIndex} />
 
       <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+       <div key={currentStep} className="animate-step-in">
         {currentStep === 'programa' && (
           <StepPrograma
             onSubmit={crearSolicitud}
@@ -189,6 +190,7 @@ export function NuevaSolicitudForm() {
             error={error}
           />
         )}
+       </div>
       </div>
     </div>
   )

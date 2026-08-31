@@ -389,6 +389,7 @@ export const ModelName = {
   ReglaGrupo: 'ReglaGrupo',
   GrupoGestor: 'GrupoGestor',
   AsignacionSolicitud: 'AsignacionSolicitud',
+  AsignacionFinanciamiento: 'AsignacionFinanciamiento',
   Usuario: 'Usuario',
   Personal: 'Personal',
   Programa: 'Programa',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -793,6 +794,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AsignacionSolicitudCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AsignacionSolicitudCountAggregateOutputType> | number
+        }
+      }
+    }
+    AsignacionFinanciamiento: {
+      payload: Prisma.$AsignacionFinanciamientoPayload<ExtArgs>
+      fields: Prisma.AsignacionFinanciamientoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AsignacionFinanciamientoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AsignacionFinanciamientoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        findFirst: {
+          args: Prisma.AsignacionFinanciamientoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AsignacionFinanciamientoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        findMany: {
+          args: Prisma.AsignacionFinanciamientoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>[]
+        }
+        create: {
+          args: Prisma.AsignacionFinanciamientoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        createMany: {
+          args: Prisma.AsignacionFinanciamientoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AsignacionFinanciamientoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>[]
+        }
+        delete: {
+          args: Prisma.AsignacionFinanciamientoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        update: {
+          args: Prisma.AsignacionFinanciamientoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        deleteMany: {
+          args: Prisma.AsignacionFinanciamientoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AsignacionFinanciamientoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AsignacionFinanciamientoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>[]
+        }
+        upsert: {
+          args: Prisma.AsignacionFinanciamientoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionFinanciamientoPayload>
+        }
+        aggregate: {
+          args: Prisma.AsignacionFinanciamientoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAsignacionFinanciamiento>
+        }
+        groupBy: {
+          args: Prisma.AsignacionFinanciamientoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AsignacionFinanciamientoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AsignacionFinanciamientoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AsignacionFinanciamientoCountAggregateOutputType> | number
         }
       }
     }
@@ -2230,6 +2305,20 @@ export const AsignacionSolicitudScalarFieldEnum = {
 export type AsignacionSolicitudScalarFieldEnum = (typeof AsignacionSolicitudScalarFieldEnum)[keyof typeof AsignacionSolicitudScalarFieldEnum]
 
 
+export const AsignacionFinanciamientoScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  analistaId: 'analistaId',
+  asignadoPorId: 'asignadoPorId',
+  activa: 'activa',
+  fechaAsignacion: 'fechaAsignacion',
+  fechaReasignacion: 'fechaReasignacion',
+  motivoReasignacion: 'motivoReasignacion'
+} as const
+
+export type AsignacionFinanciamientoScalarFieldEnum = (typeof AsignacionFinanciamientoScalarFieldEnum)[keyof typeof AsignacionFinanciamientoScalarFieldEnum]
+
+
 export const UsuarioScalarFieldEnum = {
   id: 'id',
   correo: 'correo',
@@ -3083,6 +3172,7 @@ export type GlobalOmitConfig = {
   reglaGrupo?: Prisma.ReglaGrupoOmit
   grupoGestor?: Prisma.GrupoGestorOmit
   asignacionSolicitud?: Prisma.AsignacionSolicitudOmit
+  asignacionFinanciamiento?: Prisma.AsignacionFinanciamientoOmit
   usuario?: Prisma.UsuarioOmit
   personal?: Prisma.PersonalOmit
   programa?: Prisma.ProgramaOmit

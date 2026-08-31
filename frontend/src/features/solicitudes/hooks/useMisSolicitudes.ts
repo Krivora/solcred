@@ -25,7 +25,7 @@ export function useMisSolicitudes(): UseMisSolicitudesReturn {
   })
 
   return {
-    solicitudes: data?.items ?? [],
+    solicitudes: data?.data ?? [],
     pagination: data?.pagination ?? null,
     isLoading,
     error: isError ? MENSAJE_ERROR_DEFAULT : null,

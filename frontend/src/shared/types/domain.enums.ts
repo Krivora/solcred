@@ -15,8 +15,8 @@ export const TIPO_PERSONA_VALUES = ['FISICA', 'MORAL'] as const satisfies readon
 export type TipoPersonaDocumento = 'FISICA' | 'MORAL' | 'AMBOS'
 export const TIPO_PERSONA_DOCUMENTO_VALUES = ['FISICA', 'MORAL', 'AMBOS'] as const satisfies readonly TipoPersonaDocumento[]
 
-export type EstatusSolicitud = 'BORRADOR' | 'PENDIENTE' | 'EN_REVISION' | 'EN_CORRECCION' | 'EN_FINANCIAMIENTO' | 'EN_APROBACION' | 'APROBADO' | 'RECHAZADO' | 'CANCELADO'
-export const ESTATUS_SOLICITUD_VALUES = ['BORRADOR', 'PENDIENTE', 'EN_REVISION', 'EN_CORRECCION', 'EN_FINANCIAMIENTO', 'EN_APROBACION', 'APROBADO', 'RECHAZADO', 'CANCELADO'] as const satisfies readonly EstatusSolicitud[]
+export type EstatusSolicitud = 'BORRADOR' | 'PENDIENTE' | 'EN_REVISION' | 'EN_CORRECCION' | 'EN_FINANCIAMIENTO' | 'EN_APROBACION' | 'EN_ASIGNACION' | 'EN_ANALISIS' | 'EN_VALIDACION' | 'EN_COMITE' | 'APROBADO' | 'RECHAZADO' | 'CANCELADO'
+export const ESTATUS_SOLICITUD_VALUES = ['BORRADOR', 'PENDIENTE', 'EN_REVISION', 'EN_CORRECCION', 'EN_FINANCIAMIENTO', 'EN_APROBACION', 'EN_ASIGNACION', 'EN_ANALISIS', 'EN_VALIDACION', 'EN_COMITE', 'APROBADO', 'RECHAZADO', 'CANCELADO'] as const satisfies readonly EstatusSolicitud[]
 
 export type EstadoCivil = 'SOLTERO' | 'CASADO' | 'DIVORCIADO' | 'VIUDO' | 'UNION_LIBRE'
 export const ESTADO_CIVIL_VALUES = ['SOLTERO', 'CASADO', 'DIVORCIADO', 'VIUDO', 'UNION_LIBRE'] as const satisfies readonly EstadoCivil[]

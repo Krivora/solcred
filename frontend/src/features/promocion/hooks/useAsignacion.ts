@@ -36,10 +36,10 @@ export function useAsignacion() {
 
     // ── Solicitudes ───────────────────────────────────────────────────────────
     const [solicitudes, setSolicitudes] = useState<SolicitudAsignacion[]>([])
-    const [meta, setMeta] = useState<PaginatedResponse<SolicitudAsignacion>['meta']>({
+    const [meta, setMeta] = useState<PaginatedResponse<SolicitudAsignacion>['pagination']>({
         total: 0,
         page: 1,
-        limit: 10,
+        pageSize: 10,
         totalPages: 0,
     })
     const [cargandoSolicitudes, setCargandoSolicitudes] = useState(false)
@@ -47,9 +47,9 @@ export function useAsignacion() {
     const cargarSolicitudes = useCallback(async (filtros: FiltrosAsignacion) => {
         try {
             setCargandoSolicitudes(true)
-            const { data, meta } = await asignacionApi.listarSolicitudesAsignacion(filtros)
+            const { data, pagination } = await asignacionApi.listarSolicitudesAsignacion(filtros)
             setSolicitudes(data)
-            setMeta(meta)
+            setMeta(pagination)
         } catch (err: unknown) {
             solicitudToast.cargarSolicitudesError(getErrorMessage(err))
         } finally {

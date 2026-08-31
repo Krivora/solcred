@@ -2,13 +2,13 @@
 
 import { CheckSquare } from 'lucide-react'
 import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
-import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
+import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
 import { DocumentosDropdown } from './DocumentosDropdown'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
-  meta: PaginacionMeta
+  meta: PaginacionData
   cargando: boolean
   onPaginar: (page: number) => void
   onRefresh: () => void

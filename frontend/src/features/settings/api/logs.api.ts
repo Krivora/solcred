@@ -18,8 +18,8 @@ function buildQueryString(params: LogsQueryParams): string {
   if (params.usuarioId)   query.set('usuarioId', params.usuarioId);
   if (params.fechaInicio) query.set('fechaInicio', params.fechaInicio);
   if (params.fechaFin)    query.set('fechaFin', params.fechaFin);
-  if (params.pagina)      query.set('pagina', String(params.pagina));
-  if (params.limite)      query.set('limite', String(params.limite));
+  if (params.page)        query.set('page', String(params.page));
+  if (params.pageSize)    query.set('pageSize', String(params.pageSize));
 
   const qs = query.toString();
   return qs ? `?${qs}` : '';

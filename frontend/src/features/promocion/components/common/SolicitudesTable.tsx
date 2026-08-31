@@ -14,7 +14,7 @@ import { Paginacion } from '@/shared/components/common/Paginacion'
 import {
   ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
 } from '@/shared/config/solicitudes.config'
-import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
+import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
 import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
 import type { ReactNode } from 'react'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
@@ -25,6 +25,7 @@ export interface SolicitudesTableConfig {
   getDetalleUrl?: (id: string) => string
   getExpedienteUrl: (id: string) => string
   mostrarColumnaGestor?: boolean
+  mostrarColumnaAnalista?: boolean
   mostrarColumnaEstatus?: boolean
   mostrarColumnaComentario?: boolean
   mostrarColumnaPdf?: boolean
@@ -41,7 +42,7 @@ export interface SolicitudesTableConfig {
 
 interface Props {
   solicitudes: SolicitudPromocion[]
-  meta: PaginacionMeta
+  meta: PaginacionData
   cargando: boolean
   onPaginar: (page: number) => void
   config: SolicitudesTableConfig
@@ -103,6 +104,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     getDetalleUrl = (id: string) => `/dashboard/admin/promocion/solicitud/${id}`,
     getExpedienteUrl,
     mostrarColumnaGestor = false,
+    mostrarColumnaAnalista = false,
     mostrarColumnaEstatus = true,
     mostrarColumnaComentario = false,
     mostrarColumnaPdf = true,
@@ -115,6 +117,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
   // Calculamos cuántas columnas hay para el skeleton
   const colCount = 6
     + (mostrarColumnaGestor ? 1 : 0)
+    + (mostrarColumnaAnalista ? 1 : 0)
     + (mostrarColumnaEstatus ? 1 : 0)
     + (mostrarColumnaPdf ? 1 : 0)
     + (renderDocumentos ? 1 : 0)
@@ -164,6 +167,11 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
               {mostrarColumnaGestor && (
                 <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
                   Gestor
+                </TableHead>
+              )}
+              {mostrarColumnaAnalista && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
+                  Analista
                 </TableHead>
               )}
               {mostrarColumnaComentario && (
@@ -289,6 +297,24 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                       )}
                     </TableCell>
                   )}
+                  {mostrarColumnaAnalista && (
+                    <TableCell className="py-3">
+                      {sol.analistaAsignado ? (
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-xs font-medium text-foreground leading-tight">
+                            {sol.analistaAsignado.analista.usuario.nombre} {sol.analistaAsignado.analista.usuario.apellidoPaterno}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            {formatFecha(sol.analistaAsignado.fechaAsignacion)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
+                          Sin asignar
+                        </span>
+                      )}
+                    </TableCell>
+                  )}
                   {mostrarColumnaComentario && (
                     <TableCell className="py-3">
                       {sol.comentarioPromotor ? (
@@ -368,7 +394,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
         </Table>
       </div>
 
-      <Paginacion meta={{ ...meta, pageSize: meta.limit }} onPaginar={onPaginar} />
+      <Paginacion meta={meta} onPaginar={onPaginar} />
     </div>
   )
 }

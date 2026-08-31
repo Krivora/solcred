@@ -1,17 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getProgramas } from '@/features/solicitudes/api/programas.api'
 import type { Programa } from '@/features/settings/types/programa.types'
 import type { CrearSolicitudDto } from '@/features/solicitudes/types/solicitud.types'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
+import { Skeleton } from '@/shared/components/ui/skeleton'
 import { FormError } from '@/shared/components/common/FormError'
 import { cn } from '@/shared/lib/cn'
 import { StepHeader } from './StepHeader'
 import {
   ChevronRight, Search, Building2, User,
-  ArrowDown, ArrowUp, LayoutGrid,
+  ArrowDown, ArrowUp, LayoutGrid, AlertCircle, RefreshCw,
 } from 'lucide-react'
 
 interface Props {
@@ -25,10 +26,28 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
   const [selected, setSelected] = useState<Programa | null>(null)
   const [search, setSearch] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
+  const [cargando, setCargando] = useState(true)
+  const [errorCarga, setErrorCarga] = useState<string | null>(null)
+
+  // Solo dispara el fetch; el estado se actualiza en los callbacks (async).
+  const ejecutarCarga = useCallback(() => {
+    getProgramas()
+      .then(setProgramas)
+      .catch((e) =>
+        setErrorCarga(e instanceof Error ? e.message : 'No se pudieron cargar los programas de crédito.'),
+      )
+      .finally(() => setCargando(false))
+  }, [])
 
   useEffect(() => {
-    getProgramas().then(setProgramas).catch(() => {})
-  }, [])
+    ejecutarCarga()
+  }, [ejecutarCarga])
+
+  const reintentarCarga = () => {
+    setCargando(true)
+    setErrorCarga(null)
+    ejecutarCarga()
+  }
 
   function handleSelect(p: Programa) {
     setSelected(p)
@@ -55,7 +74,7 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
       />
 
       {/* Buscador */}
-      {programas.length > 4 && (
+      {!cargando && !errorCarga && programas.length > 4 && (
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
@@ -67,12 +86,54 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
         </div>
       )}
 
-      {/* Grid de cards */}
-      {filtered.length === 0 ? (
-        <div className="py-12 text-center text-sm text-muted-foreground">
-          No se encontraron programas
+      {/* Estado: cargando */}
+      {cargando && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-3">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-2/3" />
+              <div className="border-t border-border pt-3 space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-full" />
+              </div>
+            </div>
+          ))}
         </div>
-      ) : (
+      )}
+
+      {/* Estado: error de carga */}
+      {!cargando && errorCarga && (
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 py-10 px-4 text-center">
+          <AlertCircle className="h-6 w-6 text-destructive" />
+          <p className="text-sm text-destructive">{errorCarga}</p>
+          <Button variant="outline" size="sm" onClick={reintentarCarga} className="gap-1.5">
+            <RefreshCw className="h-3.5 w-3.5" />
+            Reintentar
+          </Button>
+        </div>
+      )}
+
+      {/* Estado: sin programas configurados */}
+      {!cargando && !errorCarga && programas.length === 0 && (
+        <div className="py-12 text-center">
+          <p className="text-sm font-medium text-foreground">No hay programas de crédito disponibles</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Vuelve más tarde o contacta a un administrador.
+          </p>
+        </div>
+      )}
+
+      {/* Estado: búsqueda sin resultados */}
+      {!cargando && !errorCarga && programas.length > 0 && filtered.length === 0 && (
+        <div className="py-12 text-center text-sm text-muted-foreground">
+          No se encontraron programas para «{search}»
+        </div>
+      )}
+
+      {/* Grid de cards */}
+      {!cargando && !errorCarga && filtered.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {filtered.map((p) => (
             <ProgramaCard
@@ -88,7 +149,7 @@ export function StepPrograma({ onSubmit, loading, error }: Props) {
       <FormError message={localError ?? error} />
 
       <div className="flex justify-end">
-        <Button onClick={handleSubmit} disabled={loading || !selected} className="gap-2">
+        <Button onClick={handleSubmit} disabled={loading || cargando || !selected} className="gap-2">
           Continuar <ChevronRight className="w-4 h-4" />
         </Button>
       </div>

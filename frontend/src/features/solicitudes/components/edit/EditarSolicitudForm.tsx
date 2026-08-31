@@ -12,6 +12,7 @@ import { BancariosForm } from '@/features/solicitudes/components/form/BancariosF
 import { StepResumen } from '@/features/solicitudes/components/form/StepResumen'
 import { useRouter } from 'next/navigation'
 import { Check, User, Users } from 'lucide-react'
+import { PageHeader } from '@/shared/components/common/PageHeader'
 
 interface Props {
     solicitudId: string
@@ -63,23 +64,19 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
     }
 
     return (
-        <div className="max-w-8xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-lg font-semibold text-foreground">
-                        Editar solicitud — Folio {solicitud.folio}
-                    </h1>
-                    <p className="text-sm text-muted-foreground">
-                        Los cambios se guardan por sección, de forma independiente.
-                    </p>
-                </div>
+        <div className="space-y-6">
+            <PageHeader
+                title={`Editar solicitud — Folio ${solicitud.folio}`}
+                description="Los cambios se guardan por sección, de forma independiente."
+                backHref="/dashboard/usuarios/solicitudes"
+            >
                 {guardadoOk && (
-                    <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                         <Check className="size-3.5" />
                         Guardado
-                    </div>
+                    </span>
                 )}
-            </div>
+            </PageHeader>
 
             <div className="flex gap-6">
                 <EditarSolicitudSidebar
@@ -90,6 +87,7 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                 />
 
                 <div className="flex-1 bg-card rounded-xl border border-border p-6 shadow-sm">
+                  <div key={currentStep} className="animate-step-in">
                     {currentStep === 'general' && (
                         <StepGeneral
                             solicitud={solicitud}
@@ -195,6 +193,7 @@ export function EditarSolicitudForm({ solicitudId }: Props) {
                             error={error}
                         />
                     )}
+                  </div>
                 </div>
             </div>
         </div>

@@ -8,15 +8,24 @@ import {
   RechazarDto,
 } from "./promocion.schema";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
+import { paginado } from "@utils/pagination";
 import { CartaRechazoPDFData, SolicitudPDFData, DatosPersonaPDF, TarjetaInformativaPDFData, AcuseEntregaExpedientePDFData } from "../../../shared/pdf/pdf.types";
+import {
+  buildIncludeSolicitud,
+  calcularMetricas,
+  incluyeTodo,
+  registrarHistorial,
+  validarTransicion,
+} from "@modules/admin/_shared/solicitud-estado";
+
+export { obtenerSolicitudPorId } from "@modules/admin/_shared/solicitud-estado";
 
 const ESTATUS_RECHAZO: EstatusSolicitud[] = ["RECHAZADO", "CANCELADO"];
 
-const ESTATUS_FINALES: EstatusSolicitud[] = ["APROBADO", "RECHAZADO", "CANCELADO"];
 const ESTATUS_HISTORICO_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "PENDIENTE", "BORRADOR"];
 interface FiltrosPromocion {
   page: number
-  limit: number
+  pageSize: number
   estatus?: string
   tipoPersona?: string
   sector?: string
@@ -30,7 +39,7 @@ interface FiltrosPromocion {
 interface FiltrosMisCasos {
   gestorId: string
   page: number
-  limit: number
+  pageSize: number
   estatus?: string
   tipoPersona?: string
   sector?: string
@@ -40,329 +49,6 @@ interface FiltrosMisCasos {
   fechaHasta?: string
   busqueda?: string
 }
-const INCLUDE_SOLICITUD_BASE = {
-  programa: {
-    select: {
-      id: true,
-      nombre: true,
-      documentosRequeridos: {
-        where: { esObligatorio: true },
-        select: {
-          tipoDocumentoId: true,
-          esObligatorio: true,
-          aplicaA: true,
-        },
-      },
-    },
-  },
-  datosSolicitante: {
-    select: {
-      id: true,
-      nombre: true,
-      apellidoPaterno: true,
-      apellidoMaterno: true,
-      rfc: true,
-      correo: true,
-      celular: true,
-    },
-  },
-  asignaciones: {
-    where: { activa: true },
-    take: 1,
-    select: {
-      fechaAsignacion: true,
-      gestor: {
-        select: {
-          id: true,
-          usuario: {
-            select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-          },
-        },
-      },
-    },
-  },
-  documentos: {
-    where: { activo: true },
-    select: { tipoDocumentoId: true, estatus: true, activo: true },
-  },
-}
-
-function withHistorial(estatusNuevo: EstatusSolicitud) {
-  return {
-    ...INCLUDE_SOLICITUD_BASE,
-    historialEstatus: {
-      where: { estatusNuevo },
-      orderBy: { creadoEn: "desc" as const },
-      take: 1,
-      select: {
-        motivo: true,
-        creadoEn: true,
-        usuario: {
-          select: { nombre: true, apellidoPaterno: true },
-        },
-      },
-    },
-  }
-}
-
-// ── Overloads: el tipo de retorno depende del argumento ──────
-export function buildIncludeSolicitud(): typeof INCLUDE_SOLICITUD_BASE;
-export function buildIncludeSolicitud(
-  estatusNuevo: EstatusSolicitud
-): ReturnType<typeof withHistorial>;
-export function buildIncludeSolicitud(estatusNuevo?: EstatusSolicitud) {
-  if (!estatusNuevo) return INCLUDE_SOLICITUD_BASE;
-  return withHistorial(estatusNuevo);
-}
-
-const incluyeTodo = {
-  programa: {
-    include: {
-      documentosRequeridos: {
-        include: { tipoDocumento: true },
-      },
-    },
-  },
-  datosSolicitante: true,
-  datosAval: true,
-  datosCredito: {
-    include: { conceptos: true },
-  },
-  datosGarantia: {
-    include: { garantias: true },
-  },
-  datosNegocio: true,
-  datosMercado: true,
-  datosBancarios: true,
-  documentos: {
-    include: {
-      tipoDocumento: true,
-      validadoPor: {
-        include: { usuario: true },
-      },
-    },
-  },
-};
-const SELECT_DOCUMENTOS_REQUERIDOS = {
-  where: { esObligatorio: true },
-  select: {
-    tipoDocumentoId: true,
-    esObligatorio: true,
-    aplicaA: true,
-    tipoDocumento: true,
-  },
-}
-
-// helper reutilizable
-function calcularMetricas(solicitud: any) {
-  const tipoPersona = solicitud.tipoPersona
-  const requeridos = (solicitud.programa?.documentosRequeridos ?? []).filter((r: any) => {
-    if (!r.aplicaA) return true
-    if (!tipoPersona) return true
-    return r.aplicaA === tipoPersona || r.aplicaA === 'AMBOS'
-  })
-  const documentos = solicitud.documentos ?? []
-
-  const totalRequeridos = requeridos.filter((r: any) => r.esObligatorio).length
-
-  const documentosPorTipo = new Map<string, { estatus: string }>(
-    documentos
-      .filter((d: any) => d.activo)
-      .map((d: any) => [d.tipoDocumentoId as string, d as { estatus: string }])
-  )
-
-  let totalAprobados = 0
-  let totalPendientes = 0
-  let totalRechazados = 0
-  let totalNoSubidos = 0
-
-  for (const req of requeridos) {
-    if (!req.esObligatorio) continue
-    const doc = documentosPorTipo.get(req.tipoDocumentoId)
-    if (!doc) {
-      totalNoSubidos++
-    } else if (doc.estatus === 'APROBADO') {
-      totalAprobados++
-    } else if (doc.estatus === 'RECHAZADO') {
-      totalRechazados++
-    } else {
-      totalPendientes++
-    }
-  }
-
-  return {
-    totalRequeridos,
-    totalAprobados,
-    totalPendientes,
-    totalRechazados,
-    totalNoSubidos,
-    totalSubidos: totalRequeridos - totalNoSubidos,
-    porcentajeCompletado: totalRequeridos > 0
-      ? Math.round((totalAprobados / totalRequeridos) * 100)
-      : 0,
-  }
-}
-const registrarHistorial = async (
-  tx: Omit<typeof prisma, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>,
-  solicitudId: string,
-  estatusAnterior: EstatusSolicitud,
-  estatusNuevo: EstatusSolicitud,
-  usuarioId: string,
-  motivo?: string
-) => {
-  await tx.historialEstatus.create({
-    data: {
-      solicitudId,
-      estatusAnterior,
-      estatusNuevo,
-      motivo,
-      usuarioId,
-    },
-  })
-}
-const validarTransicion = async (solicitudId: string, estatusPermitidos?: EstatusSolicitud[]) => {
-  const solicitud = await prisma.solicitud.findUnique({ where: { id: solicitudId } });
-  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
-  if (ESTATUS_FINALES.includes(solicitud.estatus)) {
-    throw new AppError(`La solicitud ya tiene un estatus final: ${solicitud.estatus}`, 400);
-  }
-  if (estatusPermitidos && !estatusPermitidos.includes(solicitud.estatus)) {
-    throw new AppError(
-      `Acción no permitida. Estado actual: ${solicitud.estatus}. Se requiere: ${estatusPermitidos.join(", ")}`,
-      422
-    );
-  }
-  return solicitud;
-};
-
-export const obtenerSolicitudPorId = async (
-  id: string,
-  usuarioId: string,
-  rol: string
-) => {
-  const solicitud = await prisma.solicitud.findUnique({
-    where: { id },
-    include: {
-      programa: {
-        select: {
-          id: true,
-          nombre: true,
-          documentosRequeridos: SELECT_DOCUMENTOS_REQUERIDOS,
-        },
-      },
-      datosSolicitante: {
-        select: {
-          id: true,
-          nombre: true,
-          apellidoPaterno: true,
-          apellidoMaterno: true,
-          correo: true,
-          celular: true,
-        },
-      },
-      documentos: {
-        where: { activo: true },
-        include: {
-          tipoDocumento: true,
-          validadoPor: {
-            select: {
-              id: true,
-              usuario: {
-                select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-              },
-            },
-          },
-        },
-        orderBy: { subidoEn: "desc" },
-      },
-      asignaciones: {
-        orderBy: { fechaAsignacion: "asc" },
-        include: {
-          gestor: {
-            select: {
-              id: true,
-              usuario: {
-                select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true, correo: true },
-              },
-            },
-          },
-          grupo: {
-            select: { id: true, nombre: true },
-          },
-          asignadoPor: {
-            select: {
-              id: true,
-              usuario: {
-                select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-              },
-            },
-          },
-        },
-      },
-      historialEstatus: {
-        orderBy: { creadoEn: "asc" },
-        include: {
-          usuario: {
-            select: {
-              id: true,
-              nombre: true,
-              apellidoPaterno: true,
-              apellidoMaterno: true,
-              personal: { select: { rol: true } },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
-
-  if (rol === "CLIENTE" && solicitud.solicitanteId !== usuarioId) {
-    throw new AppError("No tienes permisos para ver esta solicitud", 403);
-  }
-
-  const { asignaciones, historialEstatus, ...datosGenerales } = solicitud;
-
-  // Asignación actualmente activa (para mostrar destacada arriba)
-  const gestorAsignado = asignaciones.find((a) => a.activa) ?? null;
-
-  // Timeline unificado: combina cambios de estatus y (re)asignaciones en orden cronológico
-  const timeline = [
-    ...historialEstatus.map((h) => ({
-      tipo: "CAMBIO_ESTATUS" as const,
-      fecha: h.creadoEn,
-      estatusAnterior: h.estatusAnterior,
-      estatusNuevo: h.estatusNuevo,
-      comentario: h.motivo,
-      realizadoPor: h.usuario,
-    })),
-    ...asignaciones.map((a) => ({
-      tipo: "ASIGNACION" as const,
-      fecha: a.fechaAsignacion,
-      gestor: a.gestor,
-      grupo: a.grupo,
-      asignadoPor: a.asignadoPor, // null = asignación automática
-      activa: a.activa,
-    })),
-    ...asignaciones
-      .filter((a) => a.fechaReasignacion !== null)
-      .map((a) => ({
-        tipo: "REASIGNACION" as const,
-        fecha: a.fechaReasignacion as Date,
-        gestorAnterior: a.gestor,
-        comentario: a.motivoReasignacion,
-      })),
-  ].sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
-
-  return {
-    ...datosGenerales,
-    metricas: calcularMetricas(solicitud),
-    gestorAsignado,
-    historialAsignaciones: asignaciones,
-    timeline,
-  };
-};
 
 export const gestoresPromocion = async () => {
   const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
@@ -397,7 +83,7 @@ export const gestoresPromocion = async () => {
 export const listarPromocion = async (filtros: FiltrosPromocion) => {
   const {
     page,
-    limit,
+    pageSize,
     estatus,
     tipoPersona,
     sector,
@@ -409,7 +95,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     gestorId, // ← reemplaza a `asignacion`
   } = filtros;
 
-  const skip = (page - 1) * limit;
+  const skip = (page - 1) * pageSize;
   const where: any = {};
   const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
   if (estatus) {
@@ -455,7 +141,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
   prisma.solicitud.findMany({
       where,
       skip,
-      take: limit,
+      take: pageSize,
       orderBy: { creadoEn: "desc" },
       include: buildIncludeSolicitud(),
     }),
@@ -471,15 +157,7 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
     };
   });
 
-  return {
-    data: solicitudesConMetricas,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+  return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 export const statsPromocion = async () => {
   const [total, borrador, pendiente, enRevision, aprobado, rechazado] =
@@ -499,7 +177,7 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   const {
     gestorId,
     page,
-    limit,
+    pageSize,
     estatus,
     tipoPersona,
     sector,
@@ -510,7 +188,7 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
     busqueda,
   } = filtros;
 
-  const skip = (page - 1) * limit;
+  const skip = (page - 1) * pageSize;
   const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION'];
   const where: any = {
     asignaciones: {
@@ -561,7 +239,7 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   prisma.solicitud.findMany({
       where,
       skip,
-      take: limit,
+      take: pageSize,
       orderBy: { creadoEn: "desc" },
       include: buildIncludeSolicitud("EN_REVISION"),
     }),
@@ -578,20 +256,12 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
     };
   });
 
-  return {
-    data: solicitudesConMetricas,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+  return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
 export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus' | 'asignacion'>) => {
-  const { page, limit, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
-  const skip = (page - 1) * limit;
+  const { page, pageSize, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
+  const skip = (page - 1) * pageSize;
 
   const where: any = {
     estatus: { in: ["EN_APROBACION"] },
@@ -624,7 +294,7 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
   prisma.solicitud.findMany({
     where,
     skip,
-    take: limit,
+    take: pageSize,
     orderBy: { creadoEn: "desc" },
     include: buildIncludeSolicitud("EN_APROBACION"),
   }),
@@ -641,15 +311,12 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
     };
   });
 
-  return {
-    data: solicitudesConMetricas,
-    meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
-  };
+  return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
 export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' | 'asignacion'>) => {
-  const { page, limit, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
-  const skip = (page - 1) * limit;
+  const { page, pageSize, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
+  const skip = (page - 1) * pageSize;
 
   const where: any = {
     estatus: { notIn: ESTATUS_HISTORICO_PROMOCION },
@@ -682,7 +349,7 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
   prisma.solicitud.findMany({
     where,
     skip,
-    take: limit,
+    take: pageSize,
     orderBy: { creadoEn: "desc" },
     include: buildIncludeSolicitud(),
   }),
@@ -698,10 +365,7 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
     };
   });
 
-  return {
-    data: solicitudesConMetricas,
-    meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
-  };
+  return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
 export const devolverAlSolicitante = async (
@@ -789,7 +453,10 @@ export const cancelar = async (
   dto: CancelarDto,
   usuarioId: string
 ) => {
-  const solicitud = await validarTransicion(solicitudId, ['PENDIENTE', 'EN_REVISION', 'EN_APROBACION'])
+  const solicitud = await validarTransicion(solicitudId, [
+    'PENDIENTE', 'EN_REVISION', 'EN_APROBACION',
+    'EN_FINANCIAMIENTO', 'EN_ASIGNACION', 'EN_ANALISIS', 'EN_VALIDACION', 'EN_COMITE',
+  ])
 
   return prisma.$transaction(async (tx) => {
     const actualizada = await tx.solicitud.update({
@@ -809,7 +476,9 @@ export const rechazar = async (
   dto: RechazarDto,
   usuarioId: string
 ) => {
-  const solicitud = await validarTransicion(solicitudId, ['EN_REVISION', 'EN_APROBACION', 'EN_FINANCIAMIENTO'])
+  const solicitud = await validarTransicion(solicitudId, [
+    'EN_REVISION', 'EN_APROBACION', 'EN_FINANCIAMIENTO', 'EN_VALIDACION', 'EN_COMITE',
+  ])
 
   return prisma.$transaction(async (tx) => {
     const actualizada = await tx.solicitud.update({

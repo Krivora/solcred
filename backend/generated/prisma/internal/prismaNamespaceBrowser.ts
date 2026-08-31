@@ -56,6 +56,7 @@ export const ModelName = {
   ReglaGrupo: 'ReglaGrupo',
   GrupoGestor: 'GrupoGestor',
   AsignacionSolicitud: 'AsignacionSolicitud',
+  AsignacionFinanciamiento: 'AsignacionFinanciamiento',
   Usuario: 'Usuario',
   Personal: 'Personal',
   Programa: 'Programa',
@@ -153,6 +154,20 @@ export const AsignacionSolicitudScalarFieldEnum = {
 } as const
 
 export type AsignacionSolicitudScalarFieldEnum = (typeof AsignacionSolicitudScalarFieldEnum)[keyof typeof AsignacionSolicitudScalarFieldEnum]
+
+
+export const AsignacionFinanciamientoScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  analistaId: 'analistaId',
+  asignadoPorId: 'asignadoPorId',
+  activa: 'activa',
+  fechaAsignacion: 'fechaAsignacion',
+  fechaReasignacion: 'fechaReasignacion',
+  motivoReasignacion: 'motivoReasignacion'
+} as const
+
+export type AsignacionFinanciamientoScalarFieldEnum = (typeof AsignacionFinanciamientoScalarFieldEnum)[keyof typeof AsignacionFinanciamientoScalarFieldEnum]
 
 
 export const UsuarioScalarFieldEnum = {

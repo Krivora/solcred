@@ -1,5 +1,5 @@
 // SolicitudTimeline.tsx
-import { UserPlus, RefreshCw, ArrowRightLeft, User } from 'lucide-react'
+import { UserPlus, RefreshCw, ArrowRightLeft, User, Calculator } from 'lucide-react'
 import type { TimelineEvento, AsignacionDetalle } from '@/features/promocion/types/solicitud.types'
 import { ESTATUS_STYLES, formatFecha } from '@/shared/config/solicitudes.config'
 
@@ -22,6 +22,8 @@ function EventoIcon({ tipo }: { tipo: TimelineEvento['tipo'] }) {
             return <UserPlus className={base} />
         case 'REASIGNACION':
             return <RefreshCw className={base} />
+        case 'ASIGNACION_FINANCIAMIENTO':
+            return <Calculator className={base} />
     }
 }
 
@@ -33,6 +35,8 @@ function EventoColor(tipo: TimelineEvento['tipo']) {
             return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
         case 'REASIGNACION':
             return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+        case 'ASIGNACION_FINANCIAMIENTO':
+            return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
     }
 }
 
@@ -73,6 +77,19 @@ function EventoContenido({ evento }: { evento: TimelineEvento }) {
                     Grupo <span className="font-medium text-foreground/70">{evento.grupo.nombre}</span>
                     {' · '}
                     {evento.asignadoPor ? `Por ${nombreCompleto(evento.asignadoPor.usuario)}` : 'Asignación automática'}
+                </p>
+            </>
+        )
+    }
+
+    if (evento.tipo === 'ASIGNACION_FINANCIAMIENTO') {
+        return (
+            <>
+                <p className="text-sm font-semibold text-foreground leading-tight">
+                    Analista asignado: {nombreCompleto(evento.analista.usuario)}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                    {evento.asignadoPor ? `Por ${nombreCompleto(evento.asignadoPor.usuario)}` : 'Financiamiento'}
                 </p>
             </>
         )

@@ -7,7 +7,7 @@ export const asignarManualSchema = z.object({
 });
 export const ListarAsignacionQuerySchema = z.object({
     page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce.number().int().positive().max(100).default(10),
+    pageSize: z.coerce.number().int().positive().max(100).default(10),
     estatus: z.string().optional(),
     tipoPersona: z.string().optional(),
     sector: z.string().optional(),

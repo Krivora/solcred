@@ -243,3 +243,30 @@
 .animate-slide-regreso {
   animation: slide-entrada-izquierda 320ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }
+
+/* ─── Transición entre pasos de un formulario multi-paso ────────── */
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-step-in {
+  animation: step-in 220ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* ─── Respeta la preferencia de menos movimiento ────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-in,
+  .animate-slide-entrada,
+  .animate-slide-regreso {
+    animation: none;
+  }
+}

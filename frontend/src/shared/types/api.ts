@@ -4,11 +4,9 @@
  * `ApiResponse<T>` es el espejo EXACTO de `backend/src/utils/response.ts`
  * (`ok()` / `fail()`). Todo endpoint JSON responde con este sobre.
  *
- * La paginación NO está unificada en el backend (deuda conocida — ver
- * KNOWN-ISSUES.md en la raíz):
- *   - `clientes/solicitudes` → `{ items, pagination: { pageSize } }`
- *   - `admin/promocion/*`    → `{ data,  meta:       { limit } }`
- * Por eso conviven `PaginacionData` (pageSize) y `PaginacionMeta` (limit).
+ * La paginación está unificada: todo listado paginado responde con
+ * `{ data, pagination: { page, pageSize, total, totalPages } }` y acepta los
+ * query params `page` + `pageSize`. Espejo de `backend/src/utils/pagination.ts`.
  */
 
 export interface ApiResponse<T = null> {
@@ -18,7 +16,7 @@ export interface ApiResponse<T = null> {
   errors?: unknown
 }
 
-/** Bloque de paginación estilo `clientes/*` (page + pageSize). */
+/** Bloque de paginación estándar. */
 export interface PaginacionData {
   page: number
   pageSize: number
@@ -26,22 +24,8 @@ export interface PaginacionData {
   totalPages: number
 }
 
-/** Bloque de paginación estilo `admin/promocion/*` (page + limit). */
-export interface PaginacionMeta {
-  page: number
-  limit: number
-  total: number
-  totalPages: number
-}
-
-/** `{ data, pagination }` — estilo `clientes/*`. */
+/** `{ data, pagination }` — envoltorio único de todo listado paginado. */
 export interface RespuestaPaginada<T> {
   data: T[]
   pagination: PaginacionData
-}
-
-/** `{ data, meta }` — estilo `admin/promocion/*`. */
-export interface RespuestaConMeta<T> {
-  data: T[]
-  meta: PaginacionMeta
 }

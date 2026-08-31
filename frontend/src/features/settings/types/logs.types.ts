@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────
 
 import type { AccionLog, ModuloLog } from '@/shared/types/domain.enums';
+import type { PaginacionData } from '@/shared/types/api';
 export type { AccionLog, ModuloLog };
 
 // ─────────────────────────────────────────
@@ -39,16 +40,13 @@ export interface LogsQueryParams {
   usuarioId?: string;
   fechaInicio?: string;
   fechaFin?: string;
-  pagina?: number;
-  limite?: number;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface LogsPaginados {
-  logs: LogAuditoria[];
-  total: number;
-  pagina: number;
-  limite: number;
-  totalPaginas: number;
+  data: LogAuditoria[];
+  pagination: PaginacionData;
 }
 
 // Shapes que devuelve Prisma groupBy en el backend

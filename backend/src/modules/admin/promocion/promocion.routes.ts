@@ -41,25 +41,25 @@ router.patch("/:id/promotor",
 );
 
 router.patch("/:id/financiamiento",
-  autorizar("ADMIN", "GESTOR", "GESTOR"),
+  autorizar("ADMIN"),
   validate(enviarAFinanciamientoSchema),
   solicitudesController.enviarAFinanciamiento
 );
 
 router.patch("/:id/aprobacion",
-  autorizar("ADMIN", "GESTOR", "GESTOR"),
+  autorizar("ADMIN", "GESTOR"),
   validate(enviarAAprobacionSchema),
   solicitudesController.enviarAAprobacion
 );
 
 router.patch("/:id/cancelar",
-  autorizar("ADMIN", "GESTOR"),
+  autorizar("ADMIN", "GESTOR", "ANALISTA", "SUPERVISOR"),
   validate(cancelarSchema),
   solicitudesController.cancelar
 );
 
 router.patch("/:id/rechazar",
-  autorizar("ADMIN", "GESTOR"),
+  autorizar("ADMIN", "SUPERVISOR"),
   validate(rechazarSchema),
   solicitudesController.rechazar
 );

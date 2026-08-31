@@ -1,49 +1,20 @@
 'use client'
 
-import { CheckCircle2, XCircle, Clock, Upload, TrendingUp } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import type { MetricasExpediente } from '@/features/expediente/types/expediente.types'
+import { ESTATUS_DOCUMENTO, TONE, type EstatusDocumentoUI } from '@/shared/config/estatus.tokens'
+import { cn } from '@/shared/lib/cn'
 
 interface MetricasExpedientePanelProps {
     metricas: MetricasExpediente
 }
 
-const STATS_CONFIG = [
-    {
-        key: 'totalAprobados' as const,
-        icon: CheckCircle2,
-        label: 'Aprobados',
-        colorText: 'text-emerald-600 dark:text-emerald-400',
-        colorBg: 'bg-emerald-50 dark:bg-emerald-950/40',
-        colorRing: 'ring-emerald-200/80 dark:ring-emerald-900/70',
-        barColor: 'bg-emerald-400',
-    },
-    {
-        key: 'totalPendientes' as const,
-        icon: Clock,
-        label: 'En revisión',
-        colorText: 'text-amber-600 dark:text-amber-400',
-        colorBg: 'bg-amber-50 dark:bg-amber-950/40',
-        colorRing: 'ring-amber-200/80 dark:ring-amber-900/70',
-        barColor: 'bg-amber-400',
-    },
-    {
-        key: 'totalRechazados' as const,
-        icon: XCircle,
-        label: 'Rechazados',
-        colorText: 'text-red-500 dark:text-red-400',
-        colorBg: 'bg-red-50 dark:bg-red-950/40',
-        colorRing: 'ring-red-200/80 dark:ring-red-900/70',
-        barColor: 'bg-red-400',
-    },
-    {
-        key: 'totalNoSubidos' as const,
-        icon: Upload,
-        label: 'Sin subir',
-        colorText: 'text-slate-500 dark:text-slate-400',
-        colorBg: 'bg-slate-50 dark:bg-slate-800/50',
-        colorRing: 'ring-slate-200/80 dark:ring-slate-700/70',
-        barColor: 'bg-slate-300 dark:bg-slate-600',
-    },
+// Cada fila del panel reutiliza el estatus de documento y su tono.
+const STATS_CONFIG: { key: keyof MetricasExpediente; estatus: EstatusDocumentoUI }[] = [
+    { key: 'totalAprobados', estatus: 'APROBADO' },
+    { key: 'totalPendientes', estatus: 'PENDIENTE' },
+    { key: 'totalRechazados', estatus: 'RECHAZADO' },
+    { key: 'totalNoSubidos', estatus: 'NO_SUBIDO' },
 ]
 
 export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelProps) => {
@@ -54,12 +25,8 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
     const circumference = 2 * Math.PI * radius
     const dashOffset = circumference * (1 - porcentajeCompletado / 100)
 
-    const progressColor =
-        porcentajeCompletado === 100
-            ? '#10b981'
-            : porcentajeCompletado >= 60
-                ? '#3b82f6'
-                : '#f59e0b'
+    const progresoTone =
+        porcentajeCompletado === 100 ? 'success' : porcentajeCompletado >= 60 ? 'info' : 'warning'
 
     return (
         <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
@@ -99,20 +66,21 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                             cy="44"
                             r={radius}
                             fill="none"
-                            stroke={progressColor}
+                            stroke="currentColor"
                             strokeWidth={stroke}
                             strokeLinecap="round"
                             strokeDasharray={circumference}
                             strokeDashoffset={dashOffset}
-                            style={{
-                                transition: 'stroke-dashoffset 0.9s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease',
-                            }}
+                            className={cn('transition-[stroke-dashoffset,color] duration-700 ease-out', TONE[progresoTone].text)}
                         />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
                         <span
-                            className="text-xl font-bold leading-none tabular-nums"
-                            style={{ color: progressColor }}
+                            className={cn('text-xl font-bold leading-none tabular-nums', TONE[progresoTone].text)}
+                            role="progressbar"
+                            aria-valuenow={porcentajeCompletado}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
                         >
                             {porcentajeCompletado}%
                         </span>
@@ -130,36 +98,36 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
 
             {/* ── Stats individuales ─────────────────────────────────── */}
             <div className="px-3 pb-4 space-y-2">
-                {STATS_CONFIG.map(({ key, icon: Icon, label, colorText, colorBg, colorRing, barColor }) => {
+                {STATS_CONFIG.map(({ key, estatus }) => {
                     const value = metricas[key]
                     const pct = totalRequeridos > 0 ? Math.round((value / totalRequeridos) * 100) : 0
+                    const { label, tone, icon: Icon } = ESTATUS_DOCUMENTO[estatus]
 
                     return (
                         <div
                             key={key}
-                            className={`
-                                rounded-lg px-3 py-2.5
-                                ${colorBg} ring-1 ${colorRing}
-                                transition-opacity duration-200
-                                ${value === 0 ? 'opacity-35' : 'opacity-100'}
-                            `}
+                            className={cn(
+                                'rounded-lg px-3 py-2.5 ring-1 transition-opacity duration-200',
+                                TONE[tone].chip,
+                                value === 0 ? 'opacity-35' : 'opacity-100',
+                            )}
                         >
                             {/* Fila superior: ícono + label + valor */}
                             <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <div className="flex items-center gap-1.5 min-w-0">
-                                    <Icon className={`h-3 w-3 ${colorText} shrink-0`} />
+                                    <Icon className="h-3 w-3 shrink-0" />
                                     <span className="text-[11px] text-muted-foreground truncate">
                                         {label}
                                     </span>
                                 </div>
-                                <span className={`text-sm font-bold tabular-nums ${colorText} shrink-0`}>
+                                <span className="text-sm font-bold tabular-nums shrink-0">
                                     {value}
                                 </span>
                             </div>
                             {/* Barra de proporción */}
                             <div className="h-1 w-full rounded-full bg-foreground/10 overflow-hidden">
                                 <div
-                                    className={`h-full rounded-full ${barColor} transition-all duration-700`}
+                                    className={cn('h-full rounded-full transition-all duration-700', TONE[tone].solid)}
                                     style={{ width: `${pct}%` }}
                                 />
                             </div>

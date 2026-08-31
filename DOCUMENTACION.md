@@ -55,9 +55,9 @@ uno digital, trazable y auditable, que:
 |---|---|---|
 | **Cliente** | `CLIENTE` | Llena y envía su solicitud, sube documentos a su expediente, consulta su estatus. |
 | **Gestor** | `PERSONAL` / `GESTOR` | Primer filtro ("Promoción"): revisa datos y documentos de las solicitudes que le asignan, las corrige/devuelve o las manda a aprobación. |
-| **Analista** | `PERSONAL` / `ANALISTA` | Pensado para el segundo filtro ("Financiamiento" — análisis financiero). **El módulo de negocio aún no está construido** (ver §6 y §8); hoy el rol existe en el sistema de permisos pero no tiene pantallas propias. |
+| **Analista** | `PERSONAL` / `ANALISTA` | Segundo filtro ("Financiamiento"): recibe casos asignados (Mis Casos), hace el análisis financiero y los envía a validación. |
 | **Admin** | `PERSONAL` / `ADMIN` | Ve y hace todo lo anterior, además de administrar el catálogo del sistema: programas de crédito, tipos de documento, usuarios, grupos de gestión y logs de auditoría. |
-| **Supervisor** | `PERSONAL` / `SUPERVISOR` | Existe como rol en el modelo de datos y en el JWT, pero **no tiene una pantalla ni permisos definidos en el frontend todavía** — es el más incompleto de los cuatro. |
+| **Supervisor** | `PERSONAL` / `SUPERVISOR` | Opera la etapa de **Validación** de Financiamiento (revisa el análisis del analista antes del comité). Fuera de eso aún sin alcance propio distinto de Admin. |
 
 ### 3.2 Ciclo de vida de una solicitud
 
@@ -68,6 +68,7 @@ historial es lo que arma el timeline que se ve en el detalle de la
 solicitud.
 
 ```
+─── PROMOCIÓN ──────────────────────────────────────────────────────────
 BORRADOR                  el cliente va llenando los pasos del formulario
    │  (cliente envía)
    ▼
@@ -78,24 +79,36 @@ EN_REVISION  ─────────────────────┐
    │  (el gestor manda a          │ (el gestor detecta algo mal y
    │   aprobación)                │  la devuelve al cliente)
    ▼                              ▼
-EN_APROBACION                EN_CORRECCION  → el cliente corrige y
-   │        │        │                        la vuelve a enviar
+EN_APROBACION                EN_CORRECCION  → el cliente corrige y reenvía
+   │        │        │                        → EN_REVISION
    │        │        └──(comité regresa al promotor)──► EN_REVISION
-   │        │
-   │        └──(comité aprueba)──► EN_FINANCIAMIENTO
-   │                                   │
-   │                                   ▼
-   │                              (sin endpoint todavía — ver §6/§8.1)
-   │
-   └──(comité rechaza)──► RECHAZADO   [estatus final]
+   │        └──(comité rechaza)──► RECHAZADO   [final]
+   │  (comité envía a financiamiento)
+   ▼
+─── FINANCIAMIENTO ─────────────────────────────────────────────────────
+EN_FINANCIAMIENTO         Mesa de Control: revisión adicional de info/docs
+   │  (mesa pasa a asignación)         └──(regresa a aprobación)──► EN_APROBACION
+   ▼
+EN_ASIGNACION             cola de asignación de analista
+   │  (se asigna un analista)
+   ▼
+EN_ANALISIS               el analista trabaja el caso (Mis Casos)
+   │  (analista envía a validación)
+   ▼
+EN_VALIDACION  ───────────► (regresa a analista)──► EN_ANALISIS
+   │  (validación envía a comité)      └──(rechaza)──► RECHAZADO [final]
+   ▼
+EN_COMITE      ───────────► (regresa a validación)──► EN_VALIDACION
+   │  (comité aprueba)                 └──(rechaza)──► RECHAZADO [final]
+   ▼
+APROBADO   [estatus final]
 
-En cualquier punto (con reglas de "no tocar estatus finales") → CANCELADO [final]
+En cualquier etapa no-final → CANCELADO [final]
 ```
 
-`APROBADO` existe como estatus final en el enum y se cuenta en las
-estadísticas, pero **hoy ningún endpoint del backend lo asigna** — la
-transición real desde `EN_FINANCIAMIENTO` está pendiente de que se construya
-ese módulo.
+El flujo de Financiamiento está **completo** (backend `admin/financiamiento` + 5
+pantallas). Cada salto queda en `HistorialEstatus` con su motivo, y el timeline
+del detalle también muestra la asignación de analista.
 
 ### 3.3 Expediente digital y validación de documentos
 
@@ -163,8 +176,13 @@ mano en el frontend**: se generan desde `backend/generated/prisma/enums.ts`
 `scripts/gen-domain-enums.ts` → `frontend/src/shared/types/domain.enums.ts`.
 Un script de chequeo (`npm run check:contract` desde la raíz) falla si
 divergen, y corre automáticamente en un hook de `pre-push`
-(`git config core.hooksPath githooks`). El detalle de esto y de la deuda de
-paginación no unificada está en `KNOWN-ISSUES.md`.
+(`git config core.hooksPath githooks`). El detalle de esto está en
+`KNOWN-ISSUES.md`.
+
+Todos los listados paginados del API responden con el mismo envoltorio
+(`{ data, pagination: { page, pageSize, total, totalPages } }`) y aceptan los
+query params `page` + `pageSize` — ver `backend/src/utils/pagination.ts` y su
+espejo `frontend/src/shared/types/api.ts`.
 
 ### 4.4 Lo que falta en la infraestructura
 
@@ -183,6 +201,7 @@ automatizadas — ver §8.
 | `uploads` | Subida y descarga de los archivos PDF del expediente, con verificación de propiedad (el cliente solo ve las suyas). |
 | `admin/promocion` | La cola de trabajo del primer filtro: listar, stats, detalle, y las transiciones de estatus (devolver, enviar a aprobación, regresar al promotor, enviar a financiamiento, cancelar, rechazar). Genera también los PDF de tarjeta informativa, carta de rechazo y acuse de entrega. |
 | `admin/asignacion` | Asigna solicitudes a gestores — automática (por reglas de `GrupoGestion`/`ReglaGrupo`) o manual — y reporta la carga de trabajo por gestor. |
+| `admin/financiamiento` | Segundo filtro. Listados por etapa (Mesa de Control, Asignación, Mis Casos del analista, Validación, Comité), asignación manual de analistas (`AsignacionFinanciamiento`, con carga por analista), y todas las transiciones de estatus del área — hasta `APROBADO` / `RECHAZADO`. Comparte la máquina de estados con Promoción vía `admin/_shared/solicitud-estado.ts`. |
 | `admin/grupos` | CRUD de grupos de gestión y sus reglas de asignación automática (por sector, tamaño de empresa, tipo de persona, monto, programa). |
 | `admin/programas` | CRUD de programas de crédito (montos, tasas, plazos, qué secciones del formulario aplican y con qué obligatoriedad) y del catálogo de tipos de documento (crear/editar/eliminar — el borrado se bloquea si el tipo está en uso). |
 | `admin/usuarios` | Listado y administración de usuarios del staff: cambiar rol, revocar acceso, desactivar. |
@@ -196,10 +215,10 @@ automatizadas — ver §8.
 | `solicitudes` | Todo el flujo del cliente: formulario multi-paso homologado (mismo header ícono+título+contexto en los 10 pasos), edición de borradores, listado con paginación y animaciones de transición entre vistas. |
 | `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación. |
 | `promocion` | Cola de solicitudes, asignación (con paginación y columna de gestores de tamaño fijo), aprobación, mis casos, histórico, detalle de solicitud con timeline. |
+| `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline` de `promocion` y el hook base `useListadoPromocion`. |
 | `settings` | Programas de crédito (alta/edición con documentos requeridos y secciones), catálogo de tipos de documento (grid de tarjetas, editar/eliminar), usuarios, grupos de gestión, logs. |
 
-No existe todavía una feature `financiamiento` ni `soporte` en el frontend —
-ver §6.
+No existe todavía una feature `soporte` en el frontend — ver §6.
 
 ## 6. Estado actual del proyecto
 
@@ -212,6 +231,11 @@ ver §6.
 - Flujo de Promoción (primer filtro) completo: cola, asignación (automática y
   manual), revisión, devolución al cliente, envío a aprobación, aprobación /
   rechazo / cancelación, generación de PDFs.
+- **Flujo de Financiamiento (segundo filtro) completo**: backend
+  (`admin/financiamiento`) + las 5 pantallas (Mesa de Control, Asignación de
+  analistas, Mis Casos, Validación, Comité). Una solicitud recorre todo el ciclo
+  hasta `APROBADO` / `RECHAZADO` desde la UI. El rol `SUPERVISOR` opera la etapa
+  de Validación.
 - Catálogo de configuración: programas de crédito (con documentos y
   secciones requeridas configurables), tipos de documento (con
   edición/borrado protegido), usuarios, grupos de gestión, logs de
@@ -224,24 +248,17 @@ ver §6.
 
 ### 6.2 A medio construir / con huecos conocidos
 
-- **El estatus `EN_FINANCIAMIENTO` es un destino sin salida**: no hay ningún
-  endpoint que lo mueva a `APROBADO` (ni a `RECHAZADO` desde ahí). Una
-  solicitud que llega a financiamiento se queda ahí.
-- El rol `SUPERVISOR` existe en el modelo de datos y en el JWT pero no tiene
-  ninguna pantalla, permiso de ruta específico ni color de badge asignado en
-  la UI.
-- Paginación no unificada entre módulos del backend (`pageSize` vs `limit`,
-  `items`/`pagination` vs `data`/`meta`) — documentado y modelado en el
-  frontend, pero no corregido en el backend (ver `KNOWN-ISSUES.md`).
+- **Financiamiento — Fase 3 pendiente:** no se captura un dictamen financiero
+  estructurado (monto/plazo/tasa aprobados, capacidad de pago, observaciones);
+  hoy cada transición solo lleva un motivo de texto libre.
+- El rol `SUPERVISOR` ya opera la etapa de Validación (backend + nav + ruta por
+  defecto `/dashboard/financiamiento/validacion` + badge), pero fuera de eso
+  sigue sin un alcance propio distinto de Admin (actividad #10 del plan).
 - Hay una duplicidad histórica de rutas (`/unauthorized` y
   `/dashboard/unauthorized`) pendiente de limpiar.
 
 ### 6.3 No construido todavía
 
-- **Módulo de Financiamiento** (segundo filtro: Mesa de Control, Asignación
-  a analistas, Mis Casos, Comité de Crédito). Ya está en el menú de
-  navegación y en las rutas por defecto de rol, pero **no existe ni una sola
-  pantalla ni un módulo de backend para él**.
 - **Módulo de Soporte** (tickets, reportes de problema, base de
   conocimiento). Mismo caso: está en el menú, no hay nada construido detrás.
 - Notificaciones al cliente (correo o push) cuando cambia el estatus de su
@@ -284,9 +301,9 @@ las reglas con las que corre todo lo anterior.
 
 ## 8. Áreas de oportunidad
 
-1. **El ciclo de negocio no cierra.** Sin el módulo de Financiamiento ni la
-   transición `EN_FINANCIAMIENTO → APROBADO/RECHAZADO`, ninguna solicitud
-   puede terminar aprobada por el sistema. Es la brecha más importante.
+1. **El ciclo de negocio ya cierra de punta a punta** (Promoción +
+   Financiamiento, backend y UI). Falta la **Fase 3** de Financiamiento: captura
+   de un dictamen financiero estructurado en vez de solo un motivo de texto.
 2. **El cliente no se entera de nada si no entra a revisar.** No hay
    notificaciones — un rechazo de documento o una devolución para corrección
    puede pasar inadvertido días.
@@ -300,18 +317,15 @@ las reglas con las que corre todo lo anterior.
    en contenedores.
 6. **Sesión de un solo JWT de 8 horas, sin refresh.** A las 8 horas el
    usuario tiene que volver a iniciar sesión sin aviso previo.
-7. **Paginación inconsistente entre módulos del backend** (ver
-   `KNOWN-ISSUES.md`) — cada listado del front tiene que adaptarse al shape
-   que le toque.
-8. **Sin reportes/analítica de negocio**: no hay forma de ver, por ejemplo,
+7. **Sin reportes/analítica de negocio**: no hay forma de ver, por ejemplo,
    tiempo promedio de resolución, tasa de aprobación por programa o carga
    por gestor, más allá de las stats puntuales que ya expone Promoción.
-9. **Rol `SUPERVISOR` sin definir.** Está en el modelo pero nadie ha decidido
+8. **Rol `SUPERVISOR` sin definir.** Está en el modelo pero nadie ha decidido
    qué debe poder ver/hacer que un Admin no.
-10. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
-    pendiente en su momento): los DTOs de respuesta del backend no están
-    verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
-    enums lo están.
+9. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
+   pendiente en su momento): los DTOs de respuesta del backend no están
+   verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
+   enums lo están.
 
 ## 9. Plan de trabajo
 
@@ -321,21 +335,23 @@ distintos: negocio/back vs. calidad/infra).
 
 ### 1. Construir el módulo de Financiamiento (segundo filtro)
 
-- **Descripción:** Backend: módulo `admin/financiamiento` con mesa de
-  control, asignación a analistas y las transiciones
-  `EN_FINANCIAMIENTO → APROBADO` / `EN_FINANCIAMIENTO → RECHAZADO`
-  (con su historial de estatus, igual que el resto). Frontend: las 4
-  pantallas que ya están en el menú (Mesa de Control, Asignación, Mis Casos,
-  Comité de Crédito), reusando los patrones ya existentes de Promoción
-  (tablas, filtros, timeline).
-- **Objetivo:** Cerrar el ciclo de vida de la solicitud para que pueda llegar
-  a un estatus final de verdad (`APROBADO`).
-- **Beneficio/impacto:** Es la pieza que falta para que el sistema resuelva
-  el proceso de negocio completo, no solo el primer filtro.
-- **Prioridad:** Alta.
-- **Resultado esperado:** Una solicitud puede recorrer todo el flujo,
-  incluyendo el análisis financiero, y terminar `APROBADO` o `RECHAZADO`
-  sin intervención manual fuera del sistema.
+- **Fase 1 — COMPLETADA (backend + máquina de estados).** 4 estatus nuevos
+  (`EN_ASIGNACION`, `EN_ANALISIS`, `EN_VALIDACION`, `EN_COMITE`) + modelo
+  `AsignacionFinanciamiento`. Helpers de estado extraídos a
+  `admin/_shared/solicitud-estado.ts` (compartidos con Promoción). Módulo
+  `admin/financiamiento`: listados por etapa, asignación de analista, y las
+  transiciones — incluyendo `EN_COMITE → APROBADO` y `→ RECHAZADO` desde
+  validación/comité. Actor de la etapa de Validación: rol `SUPERVISOR`.
+- **Fase 2 — COMPLETADA (frontend).** Feature `financiamiento` con las 5
+  pantallas (Mesa de Control, Asignación, Mis Casos, Validación, Comité) + página
+  de detalle, reusando `SolicitudesTable`, `FilterBar`, `SolicitudTimeline` y
+  `useListadoPromocion` de `promocion`. "Validación" agregada a `nav.config.ts`;
+  `SUPERVISOR` con ruta por defecto `/dashboard/financiamiento/validacion` y
+  badge. Diálogo de asignación de analista con carga por analista.
+- **Fase 3 — OPCIONAL / PENDIENTE.** Captura de dictamen financiero (monto/plazo/
+  tasa aprobados, capacidad de pago, observaciones) — otra migración.
+- **Resultado esperado — ALCANZADO:** una solicitud recorre todo el flujo hasta
+  `APROBADO`/`RECHAZADO` desde la UI, sin intervención manual fuera del sistema.
 
 ### 2. Notificaciones al solicitante
 
@@ -442,8 +458,8 @@ distintos: negocio/back vs. calidad/infra).
 
 - **Descripción:** Continuar el trabajo de contrato de tipos (que hoy cubre
   los 20 enums) a los shapes de respuesta completos, tipándolos contra
-  `Prisma.XGetPayload<...>` y unificando los dos formatos de paginación
-  documentados en `KNOWN-ISSUES.md`.
+  `Prisma.XGetPayload<...>`. (La paginación ya quedó unificada en
+  `{ data, pagination }` — ver §4.3.)
 - **Objetivo:** Que un cambio en el `include`/`select` de una consulta de
   Prisma se note en `tsc` del frontend en vez de romperse en producción en
   silencio.

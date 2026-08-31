@@ -19,14 +19,14 @@ const DEFAULT_FILTERS: LogFilters = {
   busqueda: '',
 };
 
-const DEFAULT_LIMITE = 20;
+const DEFAULT_PAGE_SIZE = 20;
 
 // `busqueda` es solo un chip de UI: el backend no lo recibe, así que no entra
 // en la query key (cambiarlo no dispara refetch).
-function toQueryParams(filters: LogFilters, pagina: number): LogsQueryParams {
+function toQueryParams(filters: LogFilters, page: number): LogsQueryParams {
   return {
-    pagina,
-    limite: DEFAULT_LIMITE,
+    page,
+    pageSize: DEFAULT_PAGE_SIZE,
     ...(filters.accion && { accion: filters.accion }),
     ...(filters.modulo && { modulo: filters.modulo }),
     ...(filters.usuarioId && { usuarioId: filters.usuarioId }),
@@ -66,10 +66,10 @@ export function useLogs() {
   });
 
   const paginacion = {
-    pagina: data?.pagina ?? pagina,
-    limite: data?.limite ?? DEFAULT_LIMITE,
-    total: data?.total ?? 0,
-    totalPaginas: data?.totalPaginas ?? 0,
+    page: data?.pagination.page ?? pagina,
+    pageSize: data?.pagination.pageSize ?? DEFAULT_PAGE_SIZE,
+    total: data?.pagination.total ?? 0,
+    totalPages: data?.pagination.totalPages ?? 0,
   };
 
   const updateFilter = useCallback(
@@ -108,7 +108,7 @@ export function useLogs() {
   );
 
   return {
-    logs: data?.logs ?? [],
+    logs: data?.data ?? [],
     resumen,
     paginacion,
     filters,

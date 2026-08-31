@@ -26,6 +26,9 @@ interface PageHeaderProps {
   breadcrumbs?: BreadcrumbItem[]
   backHref?: string
   back?: boolean
+  /** Handler propio para el botón regresar (p. ej. para marcar la dirección de
+   *  la animación antes de `router.back()`). Tiene prioridad sobre `back`. */
+  onBack?: () => void
   action?: PageAction
   actions?: PageAction[]
   children?: React.ReactNode
@@ -39,6 +42,7 @@ export function PageHeader({
   breadcrumbs,
   backHref,
   back,
+  onBack,
   action,
   actions,
   children,
@@ -66,13 +70,13 @@ export function PageHeader({
           </Button>
         )}
 
-        {/* Botón regresar — historial */}
-        {!backHref && back && (
+        {/* Botón regresar — handler propio o historial */}
+        {!backHref && (back || onBack) && (
           <Button
             variant="ghost"
             size="icon"
             className="h-8 w-8 shrink-0 mt-0.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            onClick={() => router.back()}
+            onClick={onBack ?? (() => router.back())}
             aria-label="Regresar"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -150,9 +154,11 @@ export function PageHeader({
                 onClick={act.onClick}
                 disabled={act.loading}
                 className={cn(
-                  'gap-1.5 h-8 text-xs border-border/60',
-                  'hover:bg-accent hover:text-accent-foreground hover:border-primary/20',
-                  'transition-colors'
+                  'gap-1.5 h-8 text-xs transition-colors',
+                  // Los overrides de borde/hover solo aplican a botones "planos";
+                  // un CTA con variante explícita (default/destructive) conserva su estilo.
+                  (!act.variant || act.variant === 'outline' || act.variant === 'ghost') &&
+                    'border-border/60 hover:bg-accent hover:text-accent-foreground hover:border-primary/20',
                 )}
               >
                 {act.icon && (

@@ -10,8 +10,8 @@ import {
     TipoVivienda
 } from '@/shared/types/solicitudes.types'
 import { EstatusDocumento } from '@/shared/types/documento.types'
-import type { PaginacionMeta, RespuestaConMeta } from '@/shared/types/api'
-export type { PaginacionMeta }
+import type { PaginacionData, RespuestaPaginada } from '@/shared/types/api'
+export type { PaginacionData }
 
 export interface GestorAsignado {
     id: string
@@ -53,11 +53,16 @@ export interface SolicitudPromocion {
         gestor: PersonalResumen
         fechaAsignacion: string
     }
+    /** Solo en listados de Financiamiento; en Promoción siempre indefinido. */
+    analistaAsignado?: {
+        analista: PersonalResumen
+        fechaAsignacion: string
+    } | null
     creadoEn: string
     actualizadoEn: string
 }
 
-export type SolicitudesPromocionResponse = RespuestaConMeta<SolicitudPromocion>
+export type SolicitudesPromocionResponse = RespuestaPaginada<SolicitudPromocion>
 
 export interface StatsPromocion {
     total: number
@@ -70,7 +75,7 @@ export interface StatsPromocion {
 
 export interface FiltrosPromocion {
     page: number
-    limit: number
+    pageSize: number
     estatus?: EstatusSolicitud | ''
     tipoPersona?: TipoPersona | ''
     sector?: Sector | ''
@@ -83,7 +88,7 @@ export interface FiltrosPromocion {
 }
 export interface FiltrosMisCasos {
     page?: number
-    limit?: number
+    pageSize?: number
     estatus?: string
     tipoPersona?: string
     sector?: string
@@ -95,7 +100,7 @@ export interface FiltrosMisCasos {
 }
 export interface FiltrosAprobacion {
     page: number
-    limit: number
+    pageSize: number
     tipoPersona?: string
     sector?: string
     tamanoEmpresa?: string
@@ -117,26 +122,18 @@ export interface TipoDocumentoInfo {
 }
 
 export interface DocumentoRequeridoPrograma {
-    id: string
     tipoDocumentoId: string
     esObligatorio: boolean
     aplicaA: 'FISICA' | 'MORAL' | 'AMBOS' | null
     tipoDocumento: TipoDocumentoInfo
 }
 
+// Proyección mínima que devuelve `GET /admin/promocion/:id` para el programa
+// (`select: { id, nombre, documentosRequeridos }`). El catálogo completo de
+// programas (montos, tasas, `secciones[]`) vive en `features/settings`.
 export interface ProgramaDetalle {
     id: string
     nombre: string
-    descripcion: string
-    montoMinimo: number
-    montoMaximo: number
-    tasaOrdinaria: number
-    tasaMoratoria: number
-    tasaAnual: number
-    plazoMinimoMeses: number
-    plazoMaximoMeses: number
-    aval: 'NO_REQUIERE' | 'OPCIONAL' | 'OBLIGATORIO'
-    garantia: 'NO_REQUIERE' | 'OPCIONAL' | 'OBLIGATORIO'
     documentosRequeridos: DocumentoRequeridoPrograma[]
 }
 
@@ -221,10 +218,19 @@ export interface TimelineReasignacion {
     comentario: string | null
 }
 
+export interface TimelineAsignacionFinanciamiento {
+    tipo: 'ASIGNACION_FINANCIAMIENTO'
+    fecha: string
+    analista: PersonalResumen
+    asignadoPor: PersonalResumen | null
+    activa: boolean
+}
+
 export type TimelineEvento =
     | TimelineCambioEstatus
     | TimelineAsignacion
     | TimelineReasignacion
+    | TimelineAsignacionFinanciamiento
 
 // ── Solicitud con toda la información (vista de detalle) ───────────────────
 export interface DatosPersona {
@@ -283,6 +289,20 @@ export interface SolicitudDetalle {
 
     metricas: MetricasDocumentos
     gestorAsignado: AsignacionDetalle | null
+    analistaAsignado: AsignacionFinanciamientoDetalle | null
     historialAsignaciones: AsignacionDetalle[]
     timeline: TimelineEvento[]
+}
+
+export interface AsignacionFinanciamientoDetalle {
+    id: string
+    solicitudId: string
+    analistaId: string
+    asignadoPorId: string | null
+    activa: boolean
+    fechaAsignacion: string
+    fechaReasignacion: string | null
+    motivoReasignacion: string | null
+    analista: PersonalResumen
+    asignadoPor: PersonalResumen | null
 }

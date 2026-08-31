@@ -3,10 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/shared/components/ui/button'
+import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
 import { SolicitudesTable } from '@/features/solicitudes/components/SolicitudesTable'
 import { useMisSolicitudes } from '@/features/solicitudes/hooks/useMisSolicitudes'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
-import { Plus, RefreshCw, AlertCircle, AlertTriangle } from 'lucide-react'
+import { Plus, AlertCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 import { ESTATUS_FINALES } from '@/shared/types/solicitudes.types'
 import {
@@ -38,32 +39,20 @@ export default function MisSolicitudesPage() {
   }
 
   return (
-    <div className={`${claseAnimacion} flex flex-col gap-6 px-4 py-6`}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Mis solicitudes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Consulta y da seguimiento a tus solicitudes de crédito.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-muted-foreground"
-            onClick={refetch}
-            disabled={isLoading}
-          >
-            <RefreshCw className={cn('w-3.5 h-3.5', isLoading && 'animate-spin')} />
-            Actualizar
-          </Button>
-          <Button size="sm" className="gap-2" onClick={handleNuevaSolicitud}>
-            <Plus className="w-4 h-4" />
-            Nueva solicitud
-          </Button>
-        </div>
-      </div>
+    <div className={cn(claseAnimacion, 'space-y-6')}>
+      <PageHeader
+        title="Mis solicitudes"
+        description="Consulta y da seguimiento a tus solicitudes de crédito."
+        actions={[
+          RefreshAction(refetch, isLoading),
+          {
+            label: 'Nueva solicitud',
+            onClick: handleNuevaSolicitud,
+            icon: <Plus className="h-3.5 w-3.5" />,
+            variant: 'default',
+          },
+        ]}
+      />
 
       {/* Error */}
       {error && (

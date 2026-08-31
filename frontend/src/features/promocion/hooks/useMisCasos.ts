@@ -7,7 +7,7 @@ import type { FiltrosMisCasos } from '@/features/promocion/types/solicitud.types
 
 const FILTROS_INICIALES: FiltrosMisCasos = {
     page: 1,
-    limit: 10,
+    pageSize: 10,
     estatus: '',
     tipoPersona: '',
     sector: '',

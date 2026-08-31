@@ -1,8 +1,9 @@
 import prisma from "@config/db";
 import { FiltrosLogDto } from "./logs.schema";
 import { AppError } from "@middlewares/error.middleware";
+import { paginado } from "@utils/pagination";
 export const listarLogs = async (filtros: FiltrosLogDto) => {
-  const { accion, modulo, usuarioId, fechaInicio, fechaFin, pagina, limite } =
+  const { accion, modulo, usuarioId, fechaInicio, fechaFin, page, pageSize } =
     filtros;
 
   const where = {
@@ -24,8 +25,8 @@ export const listarLogs = async (filtros: FiltrosLogDto) => {
   const logs = await prisma.logAuditoria.findMany({
     where,
     orderBy: { creadoEn: "desc" },
-    skip: (pagina - 1) * limite,
-    take: limite,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
     include: {
       usuario: {
         select: {
@@ -40,13 +41,7 @@ export const listarLogs = async (filtros: FiltrosLogDto) => {
     },
   });
 
-  return {
-    logs,
-    total,
-    pagina,
-    limite,
-    totalPaginas: Math.ceil(total / limite),
-  };
+  return paginado(logs, page, pageSize, total);
 };
 
 export const obtenerLogPorId = async (id: string) => {

@@ -2,6 +2,7 @@
 
 // src/app/(dashboard)/dashboard/page.tsx
 import { useAuthStore } from "@/shared/stores/auth.store";
+import { PageHeader } from "@/shared/components/common/PageHeader";
 import {
   FileText,
   Clock,
@@ -28,25 +29,25 @@ interface StatCard {
 }
 
 const ADMIN_STATS: StatCard[] = [
-  { label: "Total Solicitudes", value: "—", sub: "este mes", icon: FileText, color: "text-blue-500" },
-  { label: "Pendientes", value: "—", sub: "por revisar", icon: Clock, color: "text-amber-500" },
-  { label: "Aprobadas", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-emerald-500" },
-  { label: "Rechazadas", value: "—", sub: "este mes", icon: XCircle, color: "text-red-500" },
-  { label: "Usuarios Activos", value: "—", sub: "registrados", icon: Users, color: "text-purple-500" },
-  { label: "Programas", value: "—", sub: "activos", icon: Building2, color: "text-indigo-500" },
+  { label: "Total Solicitudes", value: "—", sub: "este mes", icon: FileText, color: "text-info" },
+  { label: "Pendientes", value: "—", sub: "por revisar", icon: Clock, color: "text-warning" },
+  { label: "Aprobadas", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-success" },
+  { label: "Rechazadas", value: "—", sub: "este mes", icon: XCircle, color: "text-destructive" },
+  { label: "Usuarios Activos", value: "—", sub: "registrados", icon: Users, color: "text-primary" },
+  { label: "Programas", value: "—", sub: "activos", icon: Building2, color: "text-primary" },
 ];
 
 const ANALISTA_STATS: StatCard[] = [
-  { label: "Mis Casos", value: "—", sub: "asignados", icon: FileText, color: "text-blue-500" },
-  { label: "En Revisión", value: "—", sub: "en proceso", icon: ActivitySquare, color: "text-amber-500" },
-  { label: "Completados", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-emerald-500" },
-  { label: "En Mesa", value: "—", sub: "por revisar", icon: Clock, color: "text-purple-500" },
+  { label: "Mis Casos", value: "—", sub: "asignados", icon: FileText, color: "text-info" },
+  { label: "En Revisión", value: "—", sub: "en proceso", icon: ActivitySquare, color: "text-warning" },
+  { label: "Completados", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-success" },
+  { label: "En Mesa", value: "—", sub: "por revisar", icon: Clock, color: "text-primary" },
 ];
 
 const CLIENTE_STATS: StatCard[] = [
-  { label: "Mis Solicitudes", value: "—", sub: "total", icon: FileText, color: "text-blue-500" },
-  { label: "En Proceso", value: "—", sub: "activas", icon: TrendingUp, color: "text-amber-500" },
-  { label: "Aprobadas", value: "—", sub: "historial", icon: CheckCircle2, color: "text-emerald-500" },
+  { label: "Mis Solicitudes", value: "—", sub: "total", icon: FileText, color: "text-info" },
+  { label: "En Proceso", value: "—", sub: "activas", icon: TrendingUp, color: "text-warning" },
+  { label: "Aprobadas", value: "—", sub: "historial", icon: CheckCircle2, color: "text-success" },
   { label: "Borradores", value: "—", sub: "por enviar", icon: Clock, color: "text-muted-foreground" },
 ];
 
@@ -62,20 +63,11 @@ export default function DashboardPage() {
   const welcomeTitle = rol ? ROLE_WELCOME[rol] : "Dashboard";
 
   return (
-    <div className="space-y-8">
-      {/* Welcome */}
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground">
-          {welcomeTitle}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Bienvenido,{" "}
-          <span className="font-medium text-foreground">
-            {usuario?.nombre} {usuario?.apellidoPaterno}
-          </span>
-          . Aquí está el resumen de tu actividad.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={welcomeTitle}
+        description={`Bienvenido, ${usuario?.nombre ?? ""} ${usuario?.apellidoPaterno ?? ""}. Aquí está el resumen de tu actividad.`.trim()}
+      />
 
       {/* Stats grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -112,7 +104,7 @@ export default function DashboardPage() {
             No hay actividad reciente
           </p>
           <p className="text-xs text-muted-foreground/60">
-            Los datos aparecerán aquí una vez que conectes con el backend
+            Aquí verás los últimos movimientos de solicitudes y expedientes.
           </p>
         </div>
       </div>
