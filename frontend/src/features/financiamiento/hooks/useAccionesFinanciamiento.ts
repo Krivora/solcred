@@ -37,10 +37,8 @@ export function useAccionesFinanciamiento({ onSuccess }: Options = {}) {
       ejecutar(() => financiamientoApi.pasarAAsignacion(id, { motivo }),
         'Solicitud pasada a asignación', 'Error al pasar a asignación'),
 
-    // Asignación
-    asignar: (id: string, analistaId: string, motivo?: string) =>
-      ejecutar(() => financiamientoApi.asignar(id, analistaId, motivo),
-        'Analista asignado', 'Error al asignar el analista'),
+    // (La asignación de analista vive en la pantalla de Asignación —
+    //  useAsignacionAnalistas + AsignarAnalistaSheet, con soporte de lote.)
 
     // Analista
     enviarAValidacion: (id: string, motivo?: string) =>

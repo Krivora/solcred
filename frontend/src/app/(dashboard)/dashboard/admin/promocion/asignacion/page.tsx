@@ -140,6 +140,8 @@ export default function AsignacionPage() {
         !!filtros.tipoPersona ||
         !!filtros.sector ||
         !!filtros.tamanoEmpresa ||
+        !!filtros.gestorId ||
+        !!filtros.asignacion ||
         !!filtros.fechaDesde ||
         !!filtros.fechaHasta
 
@@ -216,6 +218,7 @@ export default function AsignacionPage() {
                         cargando={cargando}
                         error={error}
                         grupos={grupos}
+                        gestores={gestores}
                         seleccionadas={seleccionadas}
                         todoSeleccionado={todoSeleccionado}
                         asignandoId={asignandoId}

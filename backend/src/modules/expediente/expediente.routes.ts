@@ -25,7 +25,7 @@ router.use(autenticar);
 
 router.get(
     "/:solicitudId",
-    autorizar("ADMIN", "ANALISTA", "GESTOR", "CLIENTE"),
+    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE"),
     validate(paramsSolicitud, "params"),
     expedienteController.obtenerExpediente
 );
@@ -44,7 +44,7 @@ router.patch(
 
 router.get(
     "/:solicitudId/documentos/:tipoDocumentoId/historial",
-    autorizar("ADMIN", "ANALISTA", "GESTOR", "CLIENTE"),
+    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE"),
     validate(paramsHistorial, "params"),
     expedienteController.obtenerHistorialDocumento
 );

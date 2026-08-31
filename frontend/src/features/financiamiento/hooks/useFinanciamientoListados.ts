@@ -30,17 +30,8 @@ export function useMesaControl(filtrosIniciales?: Partial<FiltrosFinanciamiento>
   )
 }
 
-export function useAsignacionFinanciamiento(filtrosIniciales?: Partial<FiltrosFinanciamiento>) {
-  return useListadoPromocion<FiltrosFinanciamiento>(
-    {
-      queryKey: financiamientoKeys.asignacion,
-      queryFn: (f) => financiamientoApi.listarAsignacion(f),
-      filtrosIniciales: FILTROS_INICIALES,
-      errorMsg: 'No se pudieron cargar las solicitudes por asignar.',
-    },
-    filtrosIniciales,
-  )
-}
+// La pantalla de Asignación usa `useAsignacionAnalistas` (hook imperativo,
+// espejo del de Promoción) — no `useListadoPromocion`.
 
 export function useMisCasosFinanciamiento(filtrosIniciales?: Partial<FiltrosFinanciamiento>) {
   return useListadoPromocion<FiltrosFinanciamiento>(
@@ -86,15 +77,6 @@ export function useFinanciamientoStats() {
     queryFn: () => financiamientoApi.stats(),
   })
   return { stats: data ?? null, cargando: isLoading }
-}
-
-export function useAnalistas() {
-  const { data, isLoading } = useQuery({
-    queryKey: financiamientoKeys.analistas(),
-    queryFn: () => financiamientoApi.analistas(),
-    staleTime: 60_000,
-  })
-  return { analistas: data ?? [], cargando: isLoading }
 }
 
 export function useFinanciamientoDetalle(id: string) {

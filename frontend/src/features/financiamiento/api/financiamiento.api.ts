@@ -4,13 +4,15 @@ import type {
   SolicitudFinanciamiento,
   SolicitudFinanciamientoDetalle,
   FiltrosFinanciamiento,
+  FiltrosAsignacionFinanciamiento,
   FinanciamientoStats,
   AnalistaConCarga,
+  ResultadoAsignacion,
 } from '@/features/financiamiento/types/financiamiento.types'
 
 const BASE = '/admin/financiamiento'
 
-function qs(filtros: Partial<FiltrosFinanciamiento> = {}): string {
+function qs(filtros: Record<string, unknown> = {}): string {
   const params = new URLSearchParams()
   Object.entries(filtros).forEach(([k, v]) => {
     if (v !== undefined && v !== '') params.set(k, String(v))
@@ -32,7 +34,7 @@ export const financiamientoApi = {
   // ── Listados ───────────────────────────────────────────────────────────────
   listarMesaControl: (f?: Partial<FiltrosFinanciamiento>) =>
     apiAuth<Listado>(`${BASE}/mesa-control${qs(f)}`),
-  listarAsignacion: (f?: Partial<FiltrosFinanciamiento>) =>
+  listarParaAsignacion: (f?: Partial<FiltrosAsignacionFinanciamiento>) =>
     apiAuth<Listado>(`${BASE}/asignacion${qs(f)}`),
   listarMisCasos: (f?: Partial<FiltrosFinanciamiento>) =>
     apiAuth<Listado>(`${BASE}/mis-casos${qs(f)}`),
@@ -50,8 +52,11 @@ export const financiamientoApi = {
     apiAuth(`${BASE}/${id}/regresar-aprobacion`, { method: 'PATCH', body: dto }),
   pasarAAsignacion: (id: string, dto: AccionOpcionalDto = {}) =>
     apiAuth(`${BASE}/${id}/pasar-asignacion`, { method: 'PATCH', body: dto }),
-  asignar: (id: string, analistaId: string, motivo?: string) =>
-    apiAuth(`${BASE}/${id}/asignar`, { method: 'PATCH', body: { analistaId, motivo } }),
+  asignarAnalistas: (solicitudIds: string[], analistaId: string, motivo?: string) =>
+    apiAuth<ResultadoAsignacion[]>(`${BASE}/asignar`, {
+      method: 'POST',
+      body: { solicitudIds, analistaId, motivo },
+    }),
   enviarAValidacion: (id: string, dto: AccionOpcionalDto = {}) =>
     apiAuth(`${BASE}/${id}/enviar-validacion`, { method: 'PATCH', body: dto }),
   regresarAAnalista: (id: string, dto: AccionConMotivoDto) =>

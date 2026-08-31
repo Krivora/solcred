@@ -55,9 +55,9 @@ uno digital, trazable y auditable, que:
 |---|---|---|
 | **Cliente** | `CLIENTE` | Llena y envía su solicitud, sube documentos a su expediente, consulta su estatus. |
 | **Gestor** | `PERSONAL` / `GESTOR` | Primer filtro ("Promoción"): revisa datos y documentos de las solicitudes que le asignan, las corrige/devuelve o las manda a aprobación. |
-| **Analista** | `PERSONAL` / `ANALISTA` | Segundo filtro ("Financiamiento"): recibe casos asignados (Mis Casos), hace el análisis financiero y los envía a validación. |
+| **Analista** | `PERSONAL` / `ANALISTA` | Segundo filtro ("Financiamiento"): recibe casos asignados (Mis Casos), hace el **análisis financiero** (herramienta de 5 pestañas; hoy: Situación Financiera — Balance General + Estado de Resultados a 4 periodos —, Ajustes del Crédito y Comentario) y los envía a validación. |
 | **Admin** | `PERSONAL` / `ADMIN` | Ve y hace todo lo anterior, además de administrar el catálogo del sistema: programas de crédito, tipos de documento, usuarios, grupos de gestión y logs de auditoría. |
-| **Supervisor** | `PERSONAL` / `SUPERVISOR` | Opera la etapa de **Validación** de Financiamiento (revisa el análisis del analista antes del comité). Fuera de eso aún sin alcance propio distinto de Admin. |
+| **Supervisor** | `PERSONAL` / `SUPERVISOR` | Opera la **Mesa de Control** (revisión de info/docs al recibir el caso de aprobación: lo pasa a asignación o lo regresa) y la etapa de **Validación** de Financiamiento (revisa el análisis del analista antes del comité). Fuera de eso aún sin alcance propio distinto de Admin. |
 
 ### 3.2 Ciclo de vida de una solicitud
 
@@ -86,7 +86,7 @@ EN_APROBACION                EN_CORRECCION  → el cliente corrige y reenvía
    │  (comité envía a financiamiento)
    ▼
 ─── FINANCIAMIENTO ─────────────────────────────────────────────────────
-EN_FINANCIAMIENTO         Mesa de Control: revisión adicional de info/docs
+EN_FINANCIAMIENTO         Mesa de Control (SUPERVISOR): revisión adicional de info/docs
    │  (mesa pasa a asignación)         └──(regresa a aprobación)──► EN_APROBACION
    ▼
 EN_ASIGNACION             cola de asignación de analista
@@ -200,8 +200,9 @@ automatizadas — ver §8.
 | `expediente` | Expediente digital: consulta de estatus/metricas de documentos, validación (aprobar/rechazar) por parte de gestores/admin. |
 | `uploads` | Subida y descarga de los archivos PDF del expediente, con verificación de propiedad (el cliente solo ve las suyas). |
 | `admin/promocion` | La cola de trabajo del primer filtro: listar, stats, detalle, y las transiciones de estatus (devolver, enviar a aprobación, regresar al promotor, enviar a financiamiento, cancelar, rechazar). Genera también los PDF de tarjeta informativa, carta de rechazo y acuse de entrega. |
-| `admin/asignacion` | Asigna solicitudes a gestores — automática (por reglas de `GrupoGestion`/`ReglaGrupo`) o manual — y reporta la carga de trabajo por gestor. |
-| `admin/financiamiento` | Segundo filtro. Listados por etapa (Mesa de Control, Asignación, Mis Casos del analista, Validación, Comité), asignación manual de analistas (`AsignacionFinanciamiento`, con carga por analista), y todas las transiciones de estatus del área — hasta `APROBADO` / `RECHAZADO`. Comparte la máquina de estados con Promoción vía `admin/_shared/solicitud-estado.ts`. |
+| `admin/asignacion` | Asigna solicitudes a gestores — automática (por reglas de `GrupoGestion`/`ReglaGrupo`) o manual, individual o en lote — y reporta la carga de trabajo por gestor. El listado filtra por estatus, asignado/sin asignar y **por gestor** (para reasignar en bloque todas las de un gestor a otro). |
+| `admin/financiamiento` | Segundo filtro. Listados por etapa (Mesa de Control, Asignación, Mis Casos del analista, Validación, Comité), **asignación y reasignación en lote** de analistas (`POST /asignar` con `solicitudIds[]`; reasignar conserva el estatus, la asignación previa queda inactiva con fecha/motivo), carga por analista, y todas las transiciones de estatus del área — hasta `APROBADO` / `RECHAZADO`. Comparte la máquina de estados con Promoción vía `admin/_shared/solicitud-estado.ts`. |
+| `admin/analisis` | Análisis financiero del analista. Un `Analisis` por solicitud, con una columna `Json` por pestaña (Situación Financiera, Ajustes del Crédito, Criterios de Evaluación, Amortización) + `comentario`. `GET /:solicitudId` (lo crea vacío en el primer acceso del analista asignado; devuelve `editable` y un `origen` con lo que pidió el cliente + los límites del programa, para precargar la pestaña Ajustes del Crédito), `PATCH /:solicitudId` upsert por pestaña (con validación de rango del programa para `ajustesCredito`). Edición solo si la solicitud está `EN_ANALISIS` y el caller es el analista asignado (o ADMIN). |
 | `admin/grupos` | CRUD de grupos de gestión y sus reglas de asignación automática (por sector, tamaño de empresa, tipo de persona, monto, programa). |
 | `admin/programas` | CRUD de programas de crédito (montos, tasas, plazos, qué secciones del formulario aplican y con qué obligatoriedad) y del catálogo de tipos de documento (crear/editar/eliminar — el borrado se bloquea si el tipo está en uso). |
 | `admin/usuarios` | Listado y administración de usuarios del staff: cambiar rol, revocar acceso, desactivar. |
@@ -215,7 +216,8 @@ automatizadas — ver §8.
 | `solicitudes` | Todo el flujo del cliente: formulario multi-paso homologado (mismo header ícono+título+contexto en los 10 pasos), edición de borradores, listado con paginación y animaciones de transición entre vistas. |
 | `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación. |
 | `promocion` | Cola de solicitudes, asignación (con paginación y columna de gestores de tamaño fijo), aprobación, mis casos, histórico, detalle de solicitud con timeline. |
-| `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline` de `promocion` y el hook base `useListadoPromocion`. |
+| `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. La Asignación replica la de Promoción (dos columnas, selección múltiple, panel de analistas con carga, sheet de asignación, diálogo de progreso) y permite reasignar en lote. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline`, `AsignacionMasivaDialog` y `useListadoPromocion` de `promocion`. |
+| `analisis` | Herramienta de análisis financiero del analista (desde "Mis Casos" → "Realizar Análisis"). Shell de 5 pestañas (Situación Financiera, Ajustes del Crédito, Criterios de Evaluación, Amortización, Comentario); implementada la de **Situación Financiera**: captura del Balance General y el Estado de Resultados a 4 periodos (Año-2, Año-1, Parcial anualizable, Proyección), con totales/subtotales automáticos (Utilidad Bruta, EBIT, Utilidad Neta, sumas de Activo/Pasivo/Capital), indicador de cuadre del balance por periodo, autoguardado con debounce y export CSV. **Ajustes del Crédito** (precarga lo que pidió el cliente y deja al analista ajustar condiciones —plazo, gracia, tasa—, conceptos y garantías con CRUD completo; valida contra los límites del programa y muestra cobertura de garantía) y **Comentario** (texto libre) también implementadas. Las otras 2 pestañas (Criterios de Evaluación, Amortización) son stub. |
 | `settings` | Programas de crédito (alta/edición con documentos requeridos y secciones), catálogo de tipos de documento (grid de tarjetas, editar/eliminar), usuarios, grupos de gestión, logs. |
 
 No existe todavía una feature `soporte` en el frontend — ver §6.

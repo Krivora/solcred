@@ -397,6 +397,7 @@ export const ModelName = {
   TipoDocumento: 'TipoDocumento',
   ProgramaDocumento: 'ProgramaDocumento',
   Solicitud: 'Solicitud',
+  Analisis: 'Analisis',
   DatosSolicitante: 'DatosSolicitante',
   DatosAval: 'DatosAval',
   DatosCredito: 'DatosCredito',
@@ -423,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "analisis" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1386,6 +1387,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SolicitudCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SolicitudCountAggregateOutputType> | number
+        }
+      }
+    }
+    Analisis: {
+      payload: Prisma.$AnalisisPayload<ExtArgs>
+      fields: Prisma.AnalisisFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalisisFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalisisFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalisisFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalisisFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        findMany: {
+          args: Prisma.AnalisisFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>[]
+        }
+        create: {
+          args: Prisma.AnalisisCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        createMany: {
+          args: Prisma.AnalisisCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalisisCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalisisDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        update: {
+          args: Prisma.AnalisisUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalisisDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalisisUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalisisUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalisisUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalisisPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalisisAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalisis>
+        }
+        groupBy: {
+          args: Prisma.AnalisisGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalisisGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalisisCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalisisCountAggregateOutputType> | number
         }
       }
     }
@@ -2426,6 +2501,22 @@ export const SolicitudScalarFieldEnum = {
 export type SolicitudScalarFieldEnum = (typeof SolicitudScalarFieldEnum)[keyof typeof SolicitudScalarFieldEnum]
 
 
+export const AnalisisScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  analistaId: 'analistaId',
+  situacionFinanciera: 'situacionFinanciera',
+  ajustesCredito: 'ajustesCredito',
+  criteriosEvaluacion: 'criteriosEvaluacion',
+  amortizacion: 'amortizacion',
+  comentario: 'comentario',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type AnalisisScalarFieldEnum = (typeof AnalisisScalarFieldEnum)[keyof typeof AnalisisScalarFieldEnum]
+
+
 export const DatosSolicitanteScalarFieldEnum = {
   id: 'id',
   solicitudId: 'solicitudId',
@@ -2919,6 +3010,20 @@ export type ListEnumTamanoEmpresaFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'NivelEstudio'
  */
 export type EnumNivelEstudioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NivelEstudio'>
@@ -3041,20 +3146,6 @@ export type EnumModuloLogFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'ModuloLog[]'
  */
 export type ListEnumModuloLogFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModuloLog[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 /**
@@ -3180,6 +3271,7 @@ export type GlobalOmitConfig = {
   tipoDocumento?: Prisma.TipoDocumentoOmit
   programaDocumento?: Prisma.ProgramaDocumentoOmit
   solicitud?: Prisma.SolicitudOmit
+  analisis?: Prisma.AnalisisOmit
   datosSolicitante?: Prisma.DatosSolicitanteOmit
   datosAval?: Prisma.DatosAvalOmit
   datosCredito?: Prisma.DatosCreditoOmit

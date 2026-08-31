@@ -239,6 +239,9 @@ model AsignacionFinanciamiento {
   asignadoPor   Personal? @relation("FinanciamientoAsignadoPor", fields: [asignadoPorId], references: [id])
   asignadoPorId String?
 
+  // Invariante: como máximo una fila `activa` por `solicitudId`. Prisma no
+  // expresa índices únicos parciales; se garantiza en `asignarAnalistas`
+  // serializando con `SELECT ... FOR UPDATE` sobre la Solicitud.
   activa             Boolean   @default(true)
   fechaAsignacion    DateTime  @default(now())
   fechaReasignacion  DateTime?
@@ -299,6 +302,7 @@ model Personal {
 
   asignacionesFinanciamiento AsignacionFinanciamiento[] @relation("FinanciamientoComoAnalista")
   financiamientoAsignadoPor  AsignacionFinanciamiento[] @relation("FinanciamientoAsignadoPor")
+  analisis                   Analisis[]                 @relation("AnalisisComoAnalista")
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
@@ -409,9 +413,32 @@ model Solicitud {
   historialEstatus           HistorialEstatus[]
   asignaciones               AsignacionSolicitud[]
   asignacionesFinanciamiento AsignacionFinanciamiento[]
+  analisis                   Analisis?
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
+}
+
+// Análisis financiero del analista (segundo filtro). Un análisis por solicitud.
+// Cada pestaña de la herramienta se guarda como JSON — el frontend es la fuente
+// de verdad del esquema interno; los cálculos (totales, KPIs) se hacen en cliente.
+model Analisis {
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
+  analista    Personal  @relation("AnalisisComoAnalista", fields: [analistaId], references: [id])
+  analistaId  String
+
+  situacionFinanciera Json?
+  ajustesCredito      Json?
+  criteriosEvaluacion Json?
+  amortizacion        Json?
+  comentario          String?
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([analistaId])
 }
 
 // ─────────────────────────────────────────
