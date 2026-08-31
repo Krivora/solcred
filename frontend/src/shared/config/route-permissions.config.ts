@@ -19,7 +19,8 @@ function flattenNavConfig(items: NavItem[]): RoutePermission[] {
 
 // Rutas dinámicas / de flujo que no viven en el sidebar
 const EXTRA_ROUTES: RoutePermission[] = [
-    { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR'] },
+    { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR'] },
+    { pattern: '/dashboard/financiamiento/solicitud/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR'] },
     { pattern: '/dashboard/usuarios/expediente/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/nueva', roles: ['CLIENTE'] },
@@ -33,7 +34,7 @@ const DEFAULT_ROUTE_BY_ROLE: Record<RolAplicacion, string> = {
     ADMIN: '/dashboard',
     GESTOR: '/dashboard/admin/promocion/mis-casos',
     ANALISTA: '/dashboard/financiamiento/mis-casos',
-    SUPERVISOR: '/dashboard', // ── NUEVO: faltaba, Rol ya incluía SUPERVISOR en el schema ──
+    SUPERVISOR: '/dashboard/financiamiento/validacion',
     CLIENTE: '/dashboard/usuarios/solicitudes',
 };
 

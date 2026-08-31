@@ -61,7 +61,7 @@ function CargaDistribucion({ gestores }: { gestores: GestorConCarga[] }) {
 
 const FILTROS_INICIALES: FiltrosAsignacion = {
     page: 1,
-    limit: 20,
+    pageSize: 20,
     estatus: 'PENDIENTE,EN_REVISION',
 }
 export default function AsignacionPage() {

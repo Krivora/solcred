@@ -8,6 +8,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormValues } from '@/shared/schemas/auth.schema';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
 import { Button } from '@/shared/components/ui/button';
 import { FormError } from '@/shared/components/common/FormError';
 
@@ -24,39 +25,37 @@ export function LoginForm() {
   });
 
   return (
-    <form onSubmit={handleSubmit(login)} className="flex flex-col gap-5" noValidate>
+    <form onSubmit={handleSubmit(login)} className="flex flex-col gap-4" noValidate>
       <FormError message={error} />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="correo" className="text-sm font-medium text-[#1C2833]">
-          Correo electrónico <span className="text-red-500" aria-hidden="true">*</span>
-        </label>
+        <Label htmlFor="correo">Correo electrónico</Label>
         <Input
           id="correo"
           type="email"
           autoComplete="email"
-          placeholder="tu@correo.com"
+          placeholder="nombre@empresa.com"
+          className="h-10"
           aria-invalid={!!errors.correo}
           aria-describedby={errors.correo ? 'correo-error' : undefined}
           {...register('correo')}
         />
         {errors.correo && (
-          <p id="correo-error" role="alert" className="text-xs text-red-500">
+          <p id="correo-error" role="alert" className="text-xs text-destructive">
             {errors.correo.message}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="contrasena" className="text-sm font-medium text-[#1C2833]">
-          Contraseña <span className="text-red-500" aria-hidden="true">*</span>
-        </label>
+        <Label htmlFor="contrasena">Contraseña</Label>
         <div className="relative">
           <Input
             id="contrasena"
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
-            placeholder="••••••••"
+            placeholder="Tu contraseña"
+            className="h-10 pr-10"
             aria-invalid={!!errors.contrasena}
             aria-describedby={errors.contrasena ? 'contrasena-error' : undefined}
             {...register('contrasena')}
@@ -65,13 +64,13 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7F8C8D] hover:text-[#1B4F72] transition-colors"
+            className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
           >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
         {errors.contrasena && (
-          <p id="contrasena-error" role="alert" className="text-xs text-red-500">
+          <p id="contrasena-error" role="alert" className="text-xs text-destructive">
             {errors.contrasena.message}
           </p>
         )}
@@ -79,17 +78,18 @@ export function LoginForm() {
 
       <Button
         type="submit"
+        size="lg"
         disabled={isLoading}
         aria-busy={isLoading}
-        className="w-full h-11 bg-[#1B4F72] hover:bg-[#154360] text-white rounded-xl mt-1"
+        className="mt-2 h-10 w-full hover:bg-primary/90"
       >
-        {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+        {isLoading ? 'Verificando…' : 'Iniciar sesión'}
       </Button>
 
-      <p className="text-center text-sm text-[#7F8C8D]">
+      <p className="mt-1 text-center text-sm text-muted-foreground">
         ¿No tienes cuenta?{' '}
-        <Link href="/registro" className="text-[#1B4F72] font-medium hover:underline">
-          Regístrate aquí
+        <Link href="/registro" className="font-medium text-primary hover:underline">
+          Regístrate
         </Link>
       </p>
     </form>

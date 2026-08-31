@@ -2,6 +2,9 @@
 
 Sistema de solicitudes de crédito.
 
+> Documentación general del proyecto (qué es, cómo funciona, arquitectura,
+> estado actual y hoja de ruta): [`DOCUMENTACION.md`](./DOCUMENTACION.md).
+
 | Carpeta | Stack |
 |---|---|
 | `frontend/` | Next.js 16 (App Router, Turbopack), React 19, TanStack Query. Ver `frontend/AGENTS.md`. |

@@ -9,4 +9,4 @@ export const ESTATUS_FINALES: EstatusSolicitud[] = ['CANCELADO', 'RECHAZADO', 'A
 
 // El sobre de API y los bloques de paginación viven en `@/shared/types/api`.
 // Se re-exportan aquí por compatibilidad con imports existentes.
-export type { ApiResponse, PaginacionData, PaginacionMeta, RespuestaPaginada, RespuestaConMeta } from './api'
+export type { ApiResponse, PaginacionData, RespuestaPaginada } from './api'

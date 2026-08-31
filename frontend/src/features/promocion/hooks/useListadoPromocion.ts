@@ -4,22 +4,22 @@ import { useState, useCallback } from 'react'
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import type {
     SolicitudPromocion,
-    PaginacionMeta,
+    PaginacionData,
 } from '@/features/promocion/types/solicitud.types'
 
 interface FiltrosBase {
     page?: number
-    limit?: number
+    pageSize?: number
 }
 
 interface ListadoConfig<F extends FiltrosBase> {
     queryKey: (filtros: F) => readonly unknown[]
-    queryFn: (filtros: F) => Promise<{ data: SolicitudPromocion[]; meta: PaginacionMeta }>
+    queryFn: (filtros: F) => Promise<{ data: SolicitudPromocion[]; pagination: PaginacionData }>
     filtrosIniciales: F
     errorMsg: string
 }
 
-const META_INICIAL: PaginacionMeta = { total: 0, page: 1, limit: 10, totalPages: 0 }
+const META_INICIAL: PaginacionData = { total: 0, page: 1, pageSize: 10, totalPages: 0 }
 
 /**
  * Base compartida de los listados paginados+filtrados de promoción
@@ -54,12 +54,12 @@ export function useListadoPromocion<F extends FiltrosBase>(
 
     const hayFiltrosActivos = Object.entries(filtros).some(
         ([key, value]) =>
-            !['page', 'limit'].includes(key) && value !== '' && value !== undefined,
+            !['page', 'pageSize'].includes(key) && value !== '' && value !== undefined,
     )
 
     return {
         solicitudes: data?.data ?? [],
-        meta: data?.meta ?? META_INICIAL,
+        meta: data?.pagination ?? META_INICIAL,
         filtros,
         cargando,
         error: isError ? config.errorMsg : null,

@@ -229,6 +229,8 @@ export type PersonalWhereInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
   asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
   documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoListRelationFilter
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoListRelationFilter
 }
 
 export type PersonalOrderByWithRelationInput = {
@@ -249,6 +251,8 @@ export type PersonalOrderByWithRelationInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
   asignacionesDadas?: Prisma.AsignacionSolicitudOrderByRelationAggregateInput
   documentosValidados?: Prisma.DocumentoSolicitudOrderByRelationAggregateInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoOrderByRelationAggregateInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoOrderByRelationAggregateInput
 }
 
 export type PersonalWhereUniqueInput = Prisma.AtLeast<{
@@ -272,6 +276,8 @@ export type PersonalWhereUniqueInput = Prisma.AtLeast<{
   asignacionesGestor?: Prisma.AsignacionSolicitudListRelationFilter
   asignacionesDadas?: Prisma.AsignacionSolicitudListRelationFilter
   documentosValidados?: Prisma.DocumentoSolicitudListRelationFilter
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoListRelationFilter
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoListRelationFilter
 }, "id" | "userId">
 
 export type PersonalOrderByWithAggregationInput = {
@@ -322,6 +328,8 @@ export type PersonalCreateInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateInput = {
@@ -340,6 +348,8 @@ export type PersonalUncheckedCreateInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUpdateInput = {
@@ -358,6 +368,8 @@ export type PersonalUpdateInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateInput = {
@@ -376,6 +388,8 @@ export type PersonalUncheckedUpdateInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalCreateManyInput = {
@@ -518,6 +532,36 @@ export type PersonalUpdateOneWithoutAsignacionesDadasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalUpdateToOneWithWhereWithoutAsignacionesDadasInput, Prisma.PersonalUpdateWithoutAsignacionesDadasInput>, Prisma.PersonalUncheckedUpdateWithoutAsignacionesDadasInput>
 }
 
+export type PersonalCreateNestedOneWithoutAsignacionesFinanciamientoInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutAsignacionesFinanciamientoInput
+  connect?: Prisma.PersonalWhereUniqueInput
+}
+
+export type PersonalCreateNestedOneWithoutFinanciamientoAsignadoPorInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutFinanciamientoAsignadoPorInput
+  connect?: Prisma.PersonalWhereUniqueInput
+}
+
+export type PersonalUpdateOneRequiredWithoutAsignacionesFinanciamientoNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutAsignacionesFinanciamientoInput
+  upsert?: Prisma.PersonalUpsertWithoutAsignacionesFinanciamientoInput
+  connect?: Prisma.PersonalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalUpdateToOneWithWhereWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUpdateWithoutAsignacionesFinanciamientoInput>, Prisma.PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput>
+}
+
+export type PersonalUpdateOneWithoutFinanciamientoAsignadoPorNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutFinanciamientoAsignadoPorInput
+  upsert?: Prisma.PersonalUpsertWithoutFinanciamientoAsignadoPorInput
+  disconnect?: Prisma.PersonalWhereInput | boolean
+  delete?: Prisma.PersonalWhereInput | boolean
+  connect?: Prisma.PersonalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalUpdateToOneWithWhereWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUpdateWithoutFinanciamientoAsignadoPorInput>, Prisma.PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput>
+}
+
 export type PersonalCreateNestedOneWithoutUsuarioInput = {
   create?: Prisma.XOR<Prisma.PersonalCreateWithoutUsuarioInput, Prisma.PersonalUncheckedCreateWithoutUsuarioInput>
   connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutUsuarioInput
@@ -643,6 +687,8 @@ export type PersonalCreateWithoutGruposGestionInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutGruposGestionInput = {
@@ -660,6 +706,8 @@ export type PersonalUncheckedCreateWithoutGruposGestionInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutGruposGestionInput = {
@@ -693,6 +741,8 @@ export type PersonalUpdateWithoutGruposGestionInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutGruposGestionInput = {
@@ -710,6 +760,8 @@ export type PersonalUncheckedUpdateWithoutGruposGestionInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalCreateWithoutAsignacionesGestorInput = {
@@ -727,6 +779,8 @@ export type PersonalCreateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAsignacionesGestorInput = {
@@ -744,6 +798,8 @@ export type PersonalUncheckedCreateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAsignacionesGestorInput = {
@@ -766,6 +822,8 @@ export type PersonalCreateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAsignacionesDadasInput = {
@@ -783,6 +841,8 @@ export type PersonalUncheckedCreateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAsignacionesDadasInput = {
@@ -816,6 +876,8 @@ export type PersonalUpdateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAsignacionesGestorInput = {
@@ -833,6 +895,8 @@ export type PersonalUncheckedUpdateWithoutAsignacionesGestorInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUpsertWithoutAsignacionesDadasInput = {
@@ -861,6 +925,8 @@ export type PersonalUpdateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAsignacionesDadasInput = {
@@ -878,6 +944,192 @@ export type PersonalUncheckedUpdateWithoutAsignacionesDadasInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
+}
+
+export type PersonalCreateWithoutAsignacionesFinanciamientoInput = {
+  id?: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  usuario: Prisma.UsuarioCreateNestedOneWithoutPersonalInput
+  supervisor?: Prisma.PersonalCreateNestedOneWithoutSubordinadosInput
+  subordinados?: Prisma.PersonalCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
+  id?: string
+  userId: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  supervisorId?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  subordinados?: Prisma.PersonalUncheckedCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type PersonalCreateOrConnectWithoutAsignacionesFinanciamientoInput = {
+  where: Prisma.PersonalWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput>
+}
+
+export type PersonalCreateWithoutFinanciamientoAsignadoPorInput = {
+  id?: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  usuario: Prisma.UsuarioCreateNestedOneWithoutPersonalInput
+  supervisor?: Prisma.PersonalCreateNestedOneWithoutSubordinadosInput
+  subordinados?: Prisma.PersonalCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+}
+
+export type PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput = {
+  id?: string
+  userId: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  supervisorId?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  subordinados?: Prisma.PersonalUncheckedCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+}
+
+export type PersonalCreateOrConnectWithoutFinanciamientoAsignadoPorInput = {
+  where: Prisma.PersonalWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput>
+}
+
+export type PersonalUpsertWithoutAsignacionesFinanciamientoInput = {
+  update: Prisma.XOR<Prisma.PersonalUpdateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput>
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput>
+  where?: Prisma.PersonalWhereInput
+}
+
+export type PersonalUpdateToOneWithWhereWithoutAsignacionesFinanciamientoInput = {
+  where?: Prisma.PersonalWhereInput
+  data: Prisma.XOR<Prisma.PersonalUpdateWithoutAsignacionesFinanciamientoInput, Prisma.PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput>
+}
+
+export type PersonalUpdateWithoutAsignacionesFinanciamientoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutPersonalNestedInput
+  supervisor?: Prisma.PersonalUpdateOneWithoutSubordinadosNestedInput
+  subordinados?: Prisma.PersonalUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
+}
+
+export type PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supervisorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinados?: Prisma.PersonalUncheckedUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
+}
+
+export type PersonalUpsertWithoutFinanciamientoAsignadoPorInput = {
+  update: Prisma.XOR<Prisma.PersonalUpdateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput>
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput>
+  where?: Prisma.PersonalWhereInput
+}
+
+export type PersonalUpdateToOneWithWhereWithoutFinanciamientoAsignadoPorInput = {
+  where?: Prisma.PersonalWhereInput
+  data: Prisma.XOR<Prisma.PersonalUpdateWithoutFinanciamientoAsignadoPorInput, Prisma.PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput>
+}
+
+export type PersonalUpdateWithoutFinanciamientoAsignadoPorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutPersonalNestedInput
+  supervisor?: Prisma.PersonalUpdateOneWithoutSubordinadosNestedInput
+  subordinados?: Prisma.PersonalUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+}
+
+export type PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supervisorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinados?: Prisma.PersonalUncheckedUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
 }
 
 export type PersonalCreateWithoutUsuarioInput = {
@@ -895,6 +1147,8 @@ export type PersonalCreateWithoutUsuarioInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutUsuarioInput = {
@@ -912,6 +1166,8 @@ export type PersonalUncheckedCreateWithoutUsuarioInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutUsuarioInput = {
@@ -945,6 +1201,8 @@ export type PersonalUpdateWithoutUsuarioInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutUsuarioInput = {
@@ -962,6 +1220,8 @@ export type PersonalUncheckedUpdateWithoutUsuarioInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalCreateWithoutSubordinadosInput = {
@@ -979,6 +1239,8 @@ export type PersonalCreateWithoutSubordinadosInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutSubordinadosInput = {
@@ -996,6 +1258,8 @@ export type PersonalUncheckedCreateWithoutSubordinadosInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutSubordinadosInput = {
@@ -1018,6 +1282,8 @@ export type PersonalCreateWithoutSupervisorInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutSupervisorInput = {
@@ -1035,6 +1301,8 @@ export type PersonalUncheckedCreateWithoutSupervisorInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutSupervisorInput = {
@@ -1073,6 +1341,8 @@ export type PersonalUpdateWithoutSubordinadosInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutSubordinadosInput = {
@@ -1090,6 +1360,8 @@ export type PersonalUncheckedUpdateWithoutSubordinadosInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUpsertWithWhereUniqueWithoutSupervisorInput = {
@@ -1139,6 +1411,8 @@ export type PersonalCreateWithoutDocumentosValidadosInput = {
   gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutDocumentosValidadosInput = {
@@ -1156,6 +1430,8 @@ export type PersonalUncheckedCreateWithoutDocumentosValidadosInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutDocumentosValidadosInput = {
@@ -1189,6 +1465,8 @@ export type PersonalUpdateWithoutDocumentosValidadosInput = {
   gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutDocumentosValidadosInput = {
@@ -1206,6 +1484,8 @@ export type PersonalUncheckedUpdateWithoutDocumentosValidadosInput = {
   gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalCreateManySupervisorInput = {
@@ -1235,6 +1515,8 @@ export type PersonalUpdateWithoutSupervisorInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutSupervisorInput = {
@@ -1252,6 +1534,8 @@ export type PersonalUncheckedUpdateWithoutSupervisorInput = {
   asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
   asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
   documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateManyWithoutSupervisorInput = {
@@ -1277,6 +1561,8 @@ export type PersonalCountOutputType = {
   asignacionesGestor: number
   asignacionesDadas: number
   documentosValidados: number
+  asignacionesFinanciamiento: number
+  financiamientoAsignadoPor: number
 }
 
 export type PersonalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1285,6 +1571,8 @@ export type PersonalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   asignacionesGestor?: boolean | PersonalCountOutputTypeCountAsignacionesGestorArgs
   asignacionesDadas?: boolean | PersonalCountOutputTypeCountAsignacionesDadasArgs
   documentosValidados?: boolean | PersonalCountOutputTypeCountDocumentosValidadosArgs
+  asignacionesFinanciamiento?: boolean | PersonalCountOutputTypeCountAsignacionesFinanciamientoArgs
+  financiamientoAsignadoPor?: boolean | PersonalCountOutputTypeCountFinanciamientoAsignadoPorArgs
 }
 
 /**
@@ -1332,6 +1620,20 @@ export type PersonalCountOutputTypeCountDocumentosValidadosArgs<ExtArgs extends 
   where?: Prisma.DocumentoSolicitudWhereInput
 }
 
+/**
+ * PersonalCountOutputType without action
+ */
+export type PersonalCountOutputTypeCountAsignacionesFinanciamientoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AsignacionFinanciamientoWhereInput
+}
+
+/**
+ * PersonalCountOutputType without action
+ */
+export type PersonalCountOutputTypeCountFinanciamientoAsignadoPorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AsignacionFinanciamientoWhereInput
+}
+
 
 export type PersonalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1351,6 +1653,8 @@ export type PersonalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   asignacionesGestor?: boolean | Prisma.Personal$asignacionesGestorArgs<ExtArgs>
   asignacionesDadas?: boolean | Prisma.Personal$asignacionesDadasArgs<ExtArgs>
   documentosValidados?: boolean | Prisma.Personal$documentosValidadosArgs<ExtArgs>
+  asignacionesFinanciamiento?: boolean | Prisma.Personal$asignacionesFinanciamientoArgs<ExtArgs>
+  financiamientoAsignadoPor?: boolean | Prisma.Personal$financiamientoAsignadoPorArgs<ExtArgs>
   _count?: boolean | Prisma.PersonalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["personal"]>
 
@@ -1406,6 +1710,8 @@ export type PersonalInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   asignacionesGestor?: boolean | Prisma.Personal$asignacionesGestorArgs<ExtArgs>
   asignacionesDadas?: boolean | Prisma.Personal$asignacionesDadasArgs<ExtArgs>
   documentosValidados?: boolean | Prisma.Personal$documentosValidadosArgs<ExtArgs>
+  asignacionesFinanciamiento?: boolean | Prisma.Personal$asignacionesFinanciamientoArgs<ExtArgs>
+  financiamientoAsignadoPor?: boolean | Prisma.Personal$financiamientoAsignadoPorArgs<ExtArgs>
   _count?: boolean | Prisma.PersonalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PersonalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1427,6 +1733,8 @@ export type $PersonalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     asignacionesGestor: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
     asignacionesDadas: Prisma.$AsignacionSolicitudPayload<ExtArgs>[]
     documentosValidados: Prisma.$DocumentoSolicitudPayload<ExtArgs>[]
+    asignacionesFinanciamiento: Prisma.$AsignacionFinanciamientoPayload<ExtArgs>[]
+    financiamientoAsignadoPor: Prisma.$AsignacionFinanciamientoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1840,6 +2148,8 @@ export interface Prisma__PersonalClient<T, Null = never, ExtArgs extends runtime
   asignacionesGestor<T extends Prisma.Personal$asignacionesGestorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$asignacionesGestorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacionesDadas<T extends Prisma.Personal$asignacionesDadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$asignacionesDadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentosValidados<T extends Prisma.Personal$documentosValidadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$documentosValidadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentoSolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  asignacionesFinanciamiento<T extends Prisma.Personal$asignacionesFinanciamientoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$asignacionesFinanciamientoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionFinanciamientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  financiamientoAsignadoPor<T extends Prisma.Personal$financiamientoAsignadoPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$financiamientoAsignadoPorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionFinanciamientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2416,6 +2726,54 @@ export type Personal$documentosValidadosArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.DocumentoSolicitudScalarFieldEnum | Prisma.DocumentoSolicitudScalarFieldEnum[]
+}
+
+/**
+ * Personal.asignacionesFinanciamiento
+ */
+export type Personal$asignacionesFinanciamientoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AsignacionFinanciamiento
+   */
+  select?: Prisma.AsignacionFinanciamientoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AsignacionFinanciamiento
+   */
+  omit?: Prisma.AsignacionFinanciamientoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AsignacionFinanciamientoInclude<ExtArgs> | null
+  where?: Prisma.AsignacionFinanciamientoWhereInput
+  orderBy?: Prisma.AsignacionFinanciamientoOrderByWithRelationInput | Prisma.AsignacionFinanciamientoOrderByWithRelationInput[]
+  cursor?: Prisma.AsignacionFinanciamientoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AsignacionFinanciamientoScalarFieldEnum | Prisma.AsignacionFinanciamientoScalarFieldEnum[]
+}
+
+/**
+ * Personal.financiamientoAsignadoPor
+ */
+export type Personal$financiamientoAsignadoPorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AsignacionFinanciamiento
+   */
+  select?: Prisma.AsignacionFinanciamientoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AsignacionFinanciamiento
+   */
+  omit?: Prisma.AsignacionFinanciamientoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AsignacionFinanciamientoInclude<ExtArgs> | null
+  where?: Prisma.AsignacionFinanciamientoWhereInput
+  orderBy?: Prisma.AsignacionFinanciamientoOrderByWithRelationInput | Prisma.AsignacionFinanciamientoOrderByWithRelationInput[]
+  cursor?: Prisma.AsignacionFinanciamientoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AsignacionFinanciamientoScalarFieldEnum | Prisma.AsignacionFinanciamientoScalarFieldEnum[]
 }
 
 /**

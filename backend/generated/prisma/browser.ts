@@ -43,6 +43,11 @@ export type GrupoGestor = Prisma.GrupoGestorModel
  */
 export type AsignacionSolicitud = Prisma.AsignacionSolicitudModel
 /**
+ * Model AsignacionFinanciamiento
+ * 
+ */
+export type AsignacionFinanciamiento = Prisma.AsignacionFinanciamientoModel
+/**
  * Model Usuario
  * 
  */

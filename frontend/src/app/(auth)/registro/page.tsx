@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { AuthCard } from '@/features/auth/components/AuthCard';
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
 
 export const metadata: Metadata = {
@@ -8,12 +9,8 @@ export const metadata: Metadata = {
 
 export default function RegistroPage() {
   return (
-    <>
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-[#1C2833]">Crear cuenta</h2>
-        <p className="text-sm text-[#7F8C8D] mt-1">Completa tus datos para registrarte</p>
-      </div>
+    <AuthCard title="Crear cuenta" subtitle="Registra tus datos para solicitar un crédito.">
       <RegisterForm />
-    </>
+    </AuthCard>
   );
 }

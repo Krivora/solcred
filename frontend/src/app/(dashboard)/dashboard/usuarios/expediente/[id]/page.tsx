@@ -14,6 +14,7 @@ import { HistorialDocumentoSheet } from '@/features/expediente/components/Histor
 
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
+import { PageHeader } from '@/shared/components/common/PageHeader'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 import { ArrowLeft, FolderOpen, AlertTriangle } from 'lucide-react'
@@ -130,38 +131,18 @@ export default function ExpedientePage({
 
     return (
         <div className={`${claseAnimacion} space-y-5`}>
-            {/* Header */}
-            <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 mt-0.5"
-                        onClick={handleRegresar}
-                        aria-label="Regresar"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-
-                    <div className="rounded-xl bg-primary/10 p-2.5 ring-1 ring-primary/20">
-                        <FolderOpen className="h-5 w-5 text-primary" />
-                    </div>
-
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                            Expediente digital
-                        </h1>
-
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                            {expediente
-                                ? `Folio ${expediente.folio} · ${expediente.programa.nombre}`
-                                : loading
-                                    ? 'Cargando información...'
-                                    : 'Gestión de documentos del crédito'}
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                onBack={handleRegresar}
+                icon={<FolderOpen className="h-4.5 w-4.5 text-primary" />}
+                title="Expediente digital"
+                description={
+                    expediente
+                        ? `Folio ${expediente.folio} · ${expediente.programa.nombre}`
+                        : loading
+                            ? 'Cargando información…'
+                            : 'Gestión de documentos del crédito'
+                }
+            />
 
             {/* Loading */}
             {loading && <ExpedienteSkeleton />}

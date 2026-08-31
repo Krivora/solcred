@@ -10,7 +10,7 @@ import { cn } from "@/shared/lib/cn";
 const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Inicio",
   promocion: "Promoción",
-  solicitudes: "Lista de Solicitudes",
+  solicitudes: "Solicitudes",
   pendientes: "Pendientes de Aprobación",
   "mis-casos": "Mis Casos",
   financiamiento: "Financiamiento",
@@ -59,6 +59,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
+          aria-label="Abrir menú"
           className="h-8 w-8 shrink-0 lg:hidden"
           onClick={onOpenMobileMenu}
         >
@@ -96,6 +97,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         <Button
           variant="outline"
           size="lg"
+          aria-label="Buscar"
           className="hidden md:flex items-center gap-2 text-muted-foreground h-8 px-3 text-xs"
         >
           <Search className="h-3.5 w-3.5" />
@@ -106,14 +108,13 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         </Button>
 
         {/* Search icon only (mobile/tablet) */}
-        <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
+        <Button variant="ghost" size="icon" aria-label="Buscar" className="h-8 w-8 md:hidden">
           <Search className="h-4 w-4" />
         </Button>
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative h-8 w-8">
+        <Button variant="ghost" size="icon" aria-label="Notificaciones" className="h-8 w-8">
           <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
         </Button>
 
         {/* Avatar */}

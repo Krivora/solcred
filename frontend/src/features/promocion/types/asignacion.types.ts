@@ -119,7 +119,7 @@ export const CAMPOS_LISTA: CampoRegla[] = [
 ]
 export interface FiltrosAsignacion {
     page: number
-    limit: number
+    pageSize: number
     estatus?: string
     tipoPersona?: string
     sector?: string
@@ -166,5 +166,5 @@ export interface SolicitudAsignacion {
     } | null
 }
 
-// `{ data, meta: { limit } }` — estilo admin/promocion. Ver @/shared/types/api.
-export type { RespuestaConMeta as PaginatedResponse } from '@/shared/types/api'
+// `{ data, pagination }` — envoltorio único. Ver @/shared/types/api.
+export type { RespuestaPaginada as PaginatedResponse } from '@/shared/types/api'

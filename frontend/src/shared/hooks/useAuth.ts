@@ -34,7 +34,6 @@ export function useAuth() {
         } catch (err: unknown) {
             const message = getErrorMessage(err)
             setError(message)
-            authToast.loginError(message)
         } finally {
             setIsLoading(false)
         }

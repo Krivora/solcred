@@ -26,18 +26,24 @@ enum TipoPersona {
   FISICA
   MORAL
 }
+
 enum TipoPersonaDocumento {
   FISICA
   MORAL
   AMBOS
 }
+
 enum EstatusSolicitud {
   BORRADOR
   PENDIENTE
   EN_REVISION
   EN_CORRECCION
-  EN_FINANCIAMIENTO
+  EN_FINANCIAMIENTO // financiamiento: Mesa de Control
   EN_APROBACION
+  EN_ASIGNACION // financiamiento: cola de asignación de analista
+  EN_ANALISIS // financiamiento: analista trabajando el caso
+  EN_VALIDACION // financiamiento: análisis en validación
+  EN_COMITE // financiamiento: comité de crédito
   APROBADO
   RECHAZADO
   CANCELADO
@@ -88,10 +94,11 @@ enum TipoVivienda {
   RENTADA
   PAGANDO
 }
+
 enum OperadorRegla {
   IGUAL
   DIFERENTE
-  EN_LISTA      // valor es JSON array: ["FISICA","MORAL"]
+  EN_LISTA // valor es JSON array: ["FISICA","MORAL"]
   MAYOR_QUE
   MENOR_QUE
   MAYOR_IGUAL
@@ -105,6 +112,7 @@ enum CampoRegla {
   PROGRAMA_ID
   MONTO_SOLICITADO
 }
+
 enum EstatusDocumento {
   PENDIENTE
   APROBADO
@@ -121,6 +129,7 @@ enum TipoGarantia {
   PRENDARIA
   HIPOTECARIA
 }
+
 enum TipoLocal {
   PROPIO
   RENTADO
@@ -139,56 +148,57 @@ enum SeccionSolicitud {
 }
 
 model HistorialEstatus {
-  id          String           @id @default(uuid())
-  solicitud   Solicitud        @relation(fields: [solicitudId], references: [id])
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
   solicitudId String
 
   estatusAnterior EstatusSolicitud
   estatusNuevo    EstatusSolicitud
   motivo          String?
 
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId   String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId String
 
-  creadoEn    DateTime @default(now())
+  creadoEn DateTime @default(now())
 
   @@index([solicitudId])
 }
+
 model GrupoGestion {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   nombre      String
   descripcion String?
-  activo      Boolean  @default(true)
-  prioridad   Int      @default(0) // mayor número = mayor prioridad al evaluar
+  activo      Boolean @default(true)
+  prioridad   Int     @default(0) // mayor número = mayor prioridad al evaluar
 
-  reglas      ReglaGrupo[]
-  gestores    GrupoGestor[]
+  reglas       ReglaGrupo[]
+  gestores     GrupoGestor[]
   asignaciones AsignacionSolicitud[]
 
-  creadoEn    DateTime @default(now())
+  creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 }
 
 model ReglaGrupo {
-  id       String        @id @default(uuid())
-  grupo    GrupoGestion  @relation(fields: [grupoId], references: [id], onDelete: Cascade)
-  grupoId  String
+  id      String       @id @default(uuid())
+  grupo   GrupoGestion @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  grupoId String
 
   campo    CampoRegla
   operador OperadorRegla
-  valor    String        // siempre string, el motor lo castea según el campo
+  valor    String // siempre string, el motor lo castea según el campo
 
   creadoEn DateTime @default(now())
 }
 
 model GrupoGestor {
-  grupo      GrupoGestion @relation(fields: [grupoId], references: [id], onDelete: Cascade)
-  grupoId    String
-  gestor     Personal     @relation(fields: [gestorId], references: [id])
-  gestorId   String
-  activo     Boolean      @default(true)
+  grupo    GrupoGestion @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  grupoId  String
+  gestor   Personal     @relation(fields: [gestorId], references: [id])
+  gestorId String
+  activo   Boolean      @default(true)
 
-  asignadoEn DateTime     @default(now())
+  asignadoEn DateTime @default(now())
 
   @@id([grupoId, gestorId])
 }
@@ -205,13 +215,36 @@ model AsignacionSolicitud {
   asignadoPor   Personal? @relation("AsignacionesComoSupervisor", fields: [asignadoPorId], references: [id])
   asignadoPorId String?
 
-  activa        Boolean   @default(true)
-  fechaAsignacion DateTime @default(now())
-  fechaReasignacion DateTime?
+  activa             Boolean   @default(true)
+  fechaAsignacion    DateTime  @default(now())
+  fechaReasignacion  DateTime?
   motivoReasignacion String?
 
   @@index([gestorId])
   @@index([grupoId])
+  @@index([solicitudId])
+}
+
+// Asignación de una solicitud a un analista dentro del área de Financiamiento.
+// Espejo ligero de AsignacionSolicitud, sin grupo: Financiamiento no usa el
+// motor de reglas (GrupoGestion / ReglaGrupo), la asignación es manual.
+model AsignacionFinanciamiento {
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String
+
+  analista   Personal @relation("FinanciamientoComoAnalista", fields: [analistaId], references: [id])
+  analistaId String
+
+  asignadoPor   Personal? @relation("FinanciamientoAsignadoPor", fields: [asignadoPorId], references: [id])
+  asignadoPorId String?
+
+  activa             Boolean   @default(true)
+  fechaAsignacion    DateTime  @default(now())
+  fechaReasignacion  DateTime?
+  motivoReasignacion String?
+
+  @@index([analistaId])
   @@index([solicitudId])
 }
 
@@ -220,53 +253,55 @@ model AsignacionSolicitud {
 // ─────────────────────────────────────────
 
 model Usuario {
-  id              String      @id @default(uuid())
-  correo          String      @unique
-  contrasena      String
-  tipoUsuario     TipoUsuario @default(CLIENTE)
-  tipoPersona     TipoPersona
+  id          String      @id @default(uuid())
+  correo      String      @unique
+  contrasena  String
+  tipoUsuario TipoUsuario @default(CLIENTE)
+  tipoPersona TipoPersona
 
   nombre          String
   apellidoPaterno String
   apellidoMaterno String
-  curp            String?     @unique
-  rfc             String?     @unique
+  curp            String? @unique
+  rfc             String? @unique
 
-  activo          Boolean     @default(true)
-  creadoEn        DateTime    @default(now())
-  actualizadoEn   DateTime    @updatedAt
+  activo        Boolean  @default(true)
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 
-  solicitudes     Solicitud[]
-  logs            LogAuditoria[]
+  solicitudes      Solicitud[]
+  logs             LogAuditoria[]
   historialEstatus HistorialEstatus[]
 
-  personal        Personal?
+  personal Personal?
 }
 
-
 model Personal {
-  id            String        @id @default(uuid())
-  usuario       Usuario       @relation(fields: [userId], references: [id])
-  userId        String        @unique
+  id      String  @id @default(uuid())
+  usuario Usuario @relation(fields: [userId], references: [id])
+  userId  String  @unique
 
-  rol           Rol
-  departamento  String?
-  extension     String?
+  rol          Rol
+  departamento String?
+  extension    String?
 
-  supervisor    Personal?     @relation("Jerarquia", fields: [supervisorId], references: [id])
-  supervisorId  String?
-  subordinados  Personal[]    @relation("Jerarquia")
+  supervisor   Personal?  @relation("Jerarquia", fields: [supervisorId], references: [id])
+  supervisorId String?
+  subordinados Personal[] @relation("Jerarquia")
 
-  fechaIngreso  DateTime      @default(now())
-  activo        Boolean       @default(true)
+  fechaIngreso DateTime @default(now())
+  activo       Boolean  @default(true)
 
   gruposGestion       GrupoGestor[]
   asignacionesGestor  AsignacionSolicitud[] @relation("AsignacionesComoGestor")
   asignacionesDadas   AsignacionSolicitud[] @relation("AsignacionesComoSupervisor")
   documentosValidados DocumentoSolicitud[]  @relation("DocumentosValidados")
 
-  creadoEn      DateTime      @default(now())
-  actualizadoEn DateTime      @updatedAt
+  asignacionesFinanciamiento AsignacionFinanciamiento[] @relation("FinanciamientoComoAnalista")
+  financiamientoAsignadoPor  AsignacionFinanciamiento[] @relation("FinanciamientoAsignadoPor")
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 
   @@index([rol])
   @@index([departamento])
@@ -277,32 +312,32 @@ model Personal {
 // ─────────────────────────────────────────
 
 model Programa {
-  id                    String      @id @default(uuid())
-  nombre                String
-  descripcion           String
-  objetivo              String
+  id          String @id @default(uuid())
+  nombre      String
+  descripcion String
+  objetivo    String
 
-  permitePersonaFisica  Boolean     @default(true)
-  permitePersonaMoral   Boolean     @default(true)
+  permitePersonaFisica Boolean @default(true)
+  permitePersonaMoral  Boolean @default(true)
 
-  montoMinimo           Float
-  montoMaximo           Float
+  montoMinimo Float
+  montoMaximo Float
 
-  tasaOrdinaria         Float
-  tasaMoratoria         Float
-  tasaAnual             Float
+  tasaOrdinaria Float
+  tasaMoratoria Float
+  tasaAnual     Float
 
-  plazoMinimoMeses      Int
-  plazoMaximoMeses      Int
+  plazoMinimoMeses Int
+  plazoMaximoMeses Int
 
-  datosFinancierosCompletos Boolean @default(false)
-  activo                Boolean     @default(true)
-  creadoEn              DateTime    @default(now())
-  actualizadoEn         DateTime    @updatedAt
+  datosFinancierosCompletos Boolean  @default(false)
+  activo                    Boolean  @default(true)
+  creadoEn                  DateTime @default(now())
+  actualizadoEn             DateTime @updatedAt
 
-  documentosRequeridos  ProgramaDocumento[]
-  secciones             ProgramaSeccion[]
-  solicitudes           Solicitud[]
+  documentosRequeridos ProgramaDocumento[]
+  secciones            ProgramaSeccion[]
+  solicitudes          Solicitud[]
 }
 
 model ProgramaSeccion {
@@ -312,34 +347,35 @@ model ProgramaSeccion {
   seccion       SeccionSolicitud
   requerimiento Requerimiento    @default(NO_REQUIERE)
 
-  creadoEn      DateTime         @default(now())
-  actualizadoEn DateTime         @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 
   @@unique([programaId, seccion])
   @@index([programaId])
 }
+
 // ─────────────────────────────────────────
 // TIPOS DE DOCUMENTO
 // ─────────────────────────────────────────
 
 model TipoDocumento {
-  id          String               @id @default(uuid())
-  nombre      String               @unique
+  id          String   @id @default(uuid())
+  nombre      String   @unique
   descripcion String?
-  creadoEn    DateTime             @default(now())
+  creadoEn    DateTime @default(now())
 
-  programas   ProgramaDocumento[]
-  documentos  DocumentoSolicitud[]
+  programas  ProgramaDocumento[]
+  documentos DocumentoSolicitud[]
 }
 
 model ProgramaDocumento {
-  id              String        @id @default(uuid())
-  programa        Programa      @relation(fields: [programaId], references: [id])
+  id              String                @id @default(uuid())
+  programa        Programa              @relation(fields: [programaId], references: [id])
   programaId      String
-  tipoDocumento   TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
+  tipoDocumento   TipoDocumento         @relation(fields: [tipoDocumentoId], references: [id])
   tipoDocumentoId String
-  esObligatorio   Boolean       @default(true)
-  aplicaA         TipoPersonaDocumento?  // null = aplica a ambos tipos de persona
+  esObligatorio   Boolean               @default(true)
+  aplicaA         TipoPersonaDocumento? // null = aplica a ambos tipos de persona
 
   @@unique([programaId, tipoDocumentoId])
 }
@@ -349,155 +385,155 @@ model ProgramaDocumento {
 // ─────────────────────────────────────────
 
 model Solicitud {
-  id              String           @id @default(uuid())
-  folio           String           @unique  // ← nuevo
+  id    String @id @default(uuid())
+  folio String @unique // ← nuevo
 
-  programa        Programa         @relation(fields: [programaId], references: [id])
-  programaId      String
-  solicitante     Usuario          @relation(fields: [solicitanteId], references: [id])
-  solicitanteId   String
+  programa      Programa @relation(fields: [programaId], references: [id])
+  programaId    String
+  solicitante   Usuario  @relation(fields: [solicitanteId], references: [id])
+  solicitanteId String
 
-  estatus         EstatusSolicitud @default(BORRADOR)
-  tipoPersona     TipoPersona?
-  sector          Sector?
-  tamanoEmpresa   TamanoEmpresa?
+  estatus       EstatusSolicitud @default(BORRADOR)
+  tipoPersona   TipoPersona?
+  sector        Sector?
+  tamanoEmpresa TamanoEmpresa?
 
-  datosSolicitante DatosSolicitante?
-  datosAval        DatosAval?
-  datosCredito DatosCredito?
-  datosGarantia    DatosGarantia?
-  datosNegocio       DatosNegocio?
-  datosMercado       DatosMercado?
-  datosBancarios     DatosBancarios?
-  documentos       DocumentoSolicitud[]
-  historialEstatus  HistorialEstatus[]
-  asignaciones AsignacionSolicitud[]
+  datosSolicitante           DatosSolicitante?
+  datosAval                  DatosAval?
+  datosCredito               DatosCredito?
+  datosGarantia              DatosGarantia?
+  datosNegocio               DatosNegocio?
+  datosMercado               DatosMercado?
+  datosBancarios             DatosBancarios?
+  documentos                 DocumentoSolicitud[]
+  historialEstatus           HistorialEstatus[]
+  asignaciones               AsignacionSolicitud[]
+  asignacionesFinanciamiento AsignacionFinanciamiento[]
 
-  creadoEn        DateTime         @default(now())
-  actualizadoEn   DateTime         @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
-
 
 // ─────────────────────────────────────────
 // DATOS GENERALES DEL SOLICITANTE
 // ─────────────────────────────────────────
 model DatosSolicitante {
-  id                String        @id @default(uuid())
-  solicitud         Solicitud     @relation(fields: [solicitudId], references: [id])
-  solicitudId       String        @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  nombre            String
-  apellidoPaterno   String
-  apellidoMaterno   String
-  curp              String?
-  rfc               String?
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  curp            String?
+  rfc             String?
 
-  telefono          String?
-  celular           String?
-  correo            String?
+  telefono String?
+  celular  String?
+  correo   String?
 
-  calle             String?
-  numeroExterior    String?
-  numeroInterior    String?
-  colonia           String?
-  ciudad            String?
-  estado            String?
-  codigoPostal      String?
+  calle          String?
+  numeroExterior String?
+  numeroInterior String?
+  colonia        String?
+  ciudad         String?
+  estado         String?
+  codigoPostal   String?
 
-  nivelEstudio      NivelEstudio?
-  universidad       String?
-  estadoCivil       EstadoCivil?
+  nivelEstudio NivelEstudio?
+  universidad  String?
+  estadoCivil  EstadoCivil?
 
-  nombreConyuge         String?
-  numeroINE             String?
+  nombreConyuge String?
+  numeroINE     String?
 
-  tipoVivienda          TipoVivienda?
+  tipoVivienda TipoVivienda?
 
-  aniosDomicilioActual  Int?
+  aniosDomicilioActual   Int?
   aniosDomicilioAnterior Int?
 
-  creadoEn          DateTime      @default(now())
-  actualizadoEn     DateTime      @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model DatosAval {
-  id                String        @id @default(uuid())
-  solicitud         Solicitud     @relation(fields: [solicitudId], references: [id])
-  solicitudId       String        @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  nombre            String
-  apellidoPaterno   String
-  apellidoMaterno   String
-  curp              String?
-  rfc               String?
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  curp            String?
+  rfc             String?
 
-  telefono          String?
-  celular           String?
-  correo            String?
+  telefono String?
+  celular  String?
+  correo   String?
 
-  calle             String?
-  numeroExterior    String?
-  numeroInterior    String?
-  colonia           String?
-  ciudad            String?
-  estado            String?
-  codigoPostal      String?
+  calle          String?
+  numeroExterior String?
+  numeroInterior String?
+  colonia        String?
+  ciudad         String?
+  estado         String?
+  codigoPostal   String?
 
-  nivelEstudio      NivelEstudio?
-  universidad       String?
-  estadoCivil       EstadoCivil?
+  nivelEstudio NivelEstudio?
+  universidad  String?
+  estadoCivil  EstadoCivil?
 
-  nombreConyuge         String?
-  numeroINE             String?
+  nombreConyuge String?
+  numeroINE     String?
 
-  tipoVivienda          TipoVivienda?
+  tipoVivienda TipoVivienda?
 
-  aniosDomicilioActual  Int?
+  aniosDomicilioActual   Int?
   aniosDomicilioAnterior Int?
 
-  creadoEn          DateTime      @default(now())
-  actualizadoEn     DateTime      @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model DatosCredito {
-  id            String    @id @default(uuid())
-  solicitud     Solicitud @relation(fields: [solicitudId], references: [id])
-  solicitudId   String    @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  plazoMeses    Int
-  mesesGracia   Int       @default(0)
+  plazoMeses  Int
+  mesesGracia Int @default(0)
 
-  conceptos     ConceptoCredito[]
+  conceptos ConceptoCredito[]
 
-  creadoEn      DateTime  @default(now())
-  actualizadoEn DateTime  @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model ConceptoCredito {
-  id             String           @id @default(uuid())
-  datosCredito   DatosCredito     @relation(fields: [datosCreditoId], references: [id], onDelete: Cascade)
+  id             String       @id @default(uuid())
+  datosCredito   DatosCredito @relation(fields: [datosCreditoId], references: [id], onDelete: Cascade)
   datosCreditoId String
 
-  categoria      CategoriaCredito
-  concepto       String           // el "para qué" (ej. "Compra de torno CNC")
-  monto          Float
+  categoria CategoriaCredito
+  concepto  String // el "para qué" (ej. "Compra de torno CNC")
+  monto     Float
 
-  creadoEn       DateTime         @default(now())
-  actualizadoEn  DateTime         @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 
   @@index([datosCreditoId])
   @@index([datosCreditoId, categoria])
 }
 
 model DatosGarantia {
-  id            String      @id @default(uuid())
-  solicitud     Solicitud   @relation(fields: [solicitudId], references: [id])
-  solicitudId   String      @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  garantias     Garantia[]
+  garantias Garantia[]
 
-  creadoEn      DateTime    @default(now())
-  actualizadoEn DateTime    @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model Garantia {
@@ -505,115 +541,116 @@ model Garantia {
   datosGarantia   DatosGarantia @relation(fields: [datosGarantiaId], references: [id], onDelete: Cascade)
   datosGarantiaId String
 
-  tipo            TipoGarantia
+  tipo TipoGarantia
 
   // Comunes a ambos tipos
   nombrePropietario String
   valor             Float
-  descripcion       String?       // texto libre: qué es, estado, etc.
+  descripcion       String? // texto libre: qué es, estado, etc.
 
   // ── Solo PRENDARIA (bien mueble: vehículo, maquinaria, equipo) ──
-  marca             String?
-  modelo            String?
-  anio              Int?
-  numeroSerie       String?       // VIN / número de serie / factura
+  marca       String?
+  modelo      String?
+  anio        Int?
+  numeroSerie String? // VIN / número de serie / factura
 
   // ── Solo HIPOTECARIA (inmueble) ──
-  calle             String?
-  numeroExterior    String?
-  numeroInterior    String?
-  colonia           String?
-  ciudad            String?
-  estado            String?
-  codigoPostal      String?
-  numeroEscritura   String?
-  folioReal         String?       // folio real / registro público de la propiedad
+  calle           String?
+  numeroExterior  String?
+  numeroInterior  String?
+  colonia         String?
+  ciudad          String?
+  estado          String?
+  codigoPostal    String?
+  numeroEscritura String?
+  folioReal       String? // folio real / registro público de la propiedad
 
-  creadoEn        DateTime      @default(now())
-  actualizadoEn   DateTime      @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 
   @@index([datosGarantiaId])
   @@index([datosGarantiaId, tipo])
 }
 
 model DatosNegocio {
-  id                  String     @id @default(uuid())
-  solicitud           Solicitud  @relation(fields: [solicitudId], references: [id])
-  solicitudId         String     @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  razonSocial         String?
-  rfcNegocio          String?
-  nombreNegocio       String?
+  razonSocial   String?
+  rfcNegocio    String?
+  nombreNegocio String?
 
   // Domicilio del negocio
-  domicilioNegocio    String?
+  domicilioNegocio      String?
   numeroExteriorNegocio String?
   numeroInteriorNegocio String?
-  coloniaLocal        String?
-  codigoPostalLocal   String?
-  municipioLocal      String?
-  estadoLocal         String?
+  coloniaLocal          String?
+  codigoPostalLocal     String?
+  municipioLocal        String?
+  estadoLocal           String?
 
-  actividadNegocio    String?
-  areaNegocio         String?
+  actividadNegocio String?
+  areaNegocio      String?
 
-  empleosConservados  Int?
-  empleosNuevos       Int?
+  empleosConservados Int?
+  empleosNuevos      Int?
 
   fechaInicioOperaciones DateTime?
-  antiguedadNegocio   Int?
+  antiguedadNegocio      Int?
 
-  tipoLocal           TipoLocal?
+  tipoLocal TipoLocal?
 
-  experienciaActividadSolicitante   Int?
-  experienciaEmpresarioSolicitante  Int?
+  experienciaActividadSolicitante  Int?
+  experienciaEmpresarioSolicitante Int?
 
-  actualExporta       Boolean?
-  obtuvoExperiencia   Boolean?
-  negocioConsidera    String?
+  actualExporta     Boolean?
+  obtuvoExperiencia Boolean?
+  negocioConsidera  String?
 
   telefonoRecadosNegocio String?
   telefonoFijoNegocio    String?
 
-  creadoEn            DateTime   @default(now())
-  actualizadoEn       DateTime   @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model DatosMercado {
-  id                        String    @id @default(uuid())
-  solicitud                 Solicitud @relation(fields: [solicitudId], references: [id])
-  solicitudId               String    @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  principalesProductos      String?   // texto libre: qué vende/produce
+  principalesProductos String? // texto libre: qué vende/produce
 
   // Distribución por tipo de cliente (% que debe sumar 100)
-  porcentajeMayoristas      Float?
-  porcentajeDetallistas     Float?
-  porcentajeClienteFinal    Float?
+  porcentajeMayoristas   Float?
+  porcentajeDetallistas  Float?
+  porcentajeClienteFinal Float?
 
   // Cobertura geográfica (% que debe sumar 100)
-  coberturaLocal            Float?
-  coberturaRegional         Float?
-  coberturaEstatal          Float?
-  coberturaNacional         Float?
-  coberturaExportacion      Float?
+  coberturaLocal       Float?
+  coberturaRegional    Float?
+  coberturaEstatal     Float?
+  coberturaNacional    Float?
+  coberturaExportacion Float?
 
-  creadoEn                  DateTime  @default(now())
-  actualizadoEn             DateTime  @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
 
 model DatosBancarios {
-  id            String    @id @default(uuid())
-  solicitud     Solicitud @relation(fields: [solicitudId], references: [id])
-  solicitudId   String    @unique
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String    @unique
 
-  banco         String
-  numeroCuenta  String?
-  clabe         String
+  banco        String
+  numeroCuenta String?
+  clabe        String
 
-  creadoEn      DateTime  @default(now())
-  actualizadoEn DateTime  @updatedAt
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
 }
+
 model DocumentoSolicitud {
   id              String        @id @default(uuid())
   solicitud       Solicitud     @relation(fields: [solicitudId], references: [id])
@@ -655,15 +692,15 @@ enum ModuloLog {
 }
 
 model LogAuditoria {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   accion      AccionLog
   modulo      ModuloLog
   descripcion String
-  entidadId   String?    // ID del recurso afectado
-  usuarioId   String?    // null si aún no está autenticado (ej: login fallido)
+  entidadId   String? // ID del recurso afectado
+  usuarioId   String? // null si aún no está autenticado (ej: login fallido)
   ip          String?
   userAgent   String?
-  metadata    Json?      // datos extra si se necesitan
-  creadoEn    DateTime   @default(now())
+  metadata    Json? // datos extra si se necesitan
+  creadoEn    DateTime  @default(now())
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
 }

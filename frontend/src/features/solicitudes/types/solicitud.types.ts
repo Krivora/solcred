@@ -182,8 +182,7 @@ export interface Solicitud {
 }
 
 // Shape exacto de la respuesta de GET /clientes/solicitudes (paginada).
-// OJO: el controller usa `items` (no `data`) — ver KNOWN-ISSUES.md.
 export interface SolicitudesPaginadas {
-  items: Solicitud[]
+  data: Solicitud[]
   pagination: PaginacionData
 }

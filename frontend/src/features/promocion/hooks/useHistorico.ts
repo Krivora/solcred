@@ -7,7 +7,7 @@ import type { FiltrosAprobacion } from '@/features/promocion/types/solicitud.typ
 
 const FILTROS_INICIALES: FiltrosAprobacion = {
     page: 1,
-    limit: 10,
+    pageSize: 10,
     tipoPersona: '',
     sector: '',
     tamanoEmpresa: '',

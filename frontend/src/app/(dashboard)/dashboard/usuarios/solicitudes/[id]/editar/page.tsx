@@ -8,9 +8,5 @@ interface Props {
 export default async function EditarSolicitudPage({ params }: Props) {
     const { id } = await params
 
-    return (
-        <div className="p-6">
-            <EditarSolicitudForm solicitudId={id} />
-        </div>
-    )
+    return <EditarSolicitudForm solicitudId={id} />
 }

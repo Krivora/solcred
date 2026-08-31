@@ -1,57 +1,22 @@
 // ─── Estatus ──────────────────────────────────────────────────────────────────
 
+// El estilo por estatus vive en `@/shared/config/estatus.tokens`. Aquí se
+// re-expone con la forma `{ label, className, dotClass }` que ya consumen las
+// tablas y el timeline de promoción.
+import { ESTATUS_SOLICITUD, TONE } from './estatus.tokens'
+
 export interface EstatusStyle {
     label: string
     className: string
     dotClass: string
 }
-export const ESTATUS_STYLES: Record<string, EstatusStyle> = {
-    BORRADOR: {
-        label: 'Borrador',
-        className: 'border-border/60 text-muted-foreground bg-muted/40',
-        dotClass: 'bg-muted-foreground/50',
-    },
-    PENDIENTE: {
-        label: 'Pendiente',
-        className: 'border-amber-300/70 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30',
-        dotClass: 'bg-amber-500',
-    },
-    EN_REVISION: {
-        label: 'En revisión',
-        className: 'border-primary/30 text-primary bg-primary/5',
-        dotClass: 'bg-primary',
-    },
-    EN_CORRECCION: {
-        label: 'En corrección',
-        className: 'border-orange-300/70 text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30',
-        dotClass: 'bg-orange-500',
-    },
-    RECHAZADO: {
-        label: 'Rechazado',
-        className: 'border-red-300/70 text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30',
-        dotClass: 'bg-red-500',
-    },
-    EN_APROBACION: {
-        label: 'En aprobación',
-        className: 'border-violet-300/70 text-violet-700 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30',
-        dotClass: 'bg-violet-500',
-    },
-    EN_FINANCIAMIENTO: {
-        label: 'En financiamiento',
-        className: 'border-sky-300/70 text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30',
-        dotClass: 'bg-sky-500',
-    },
-    APROBADO: {
-        label: 'Aprobado',
-        className: 'border-emerald-300/70 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30',
-        dotClass: 'bg-emerald-500',
-    },
-    CANCELADO: {
-        label: 'Cancelado',
-        className: 'border-destructive/30 text-destructive bg-destructive/5',
-        dotClass: 'bg-destructive',
-    },
-}
+
+export const ESTATUS_STYLES: Record<string, EstatusStyle> = Object.fromEntries(
+    Object.entries(ESTATUS_SOLICITUD).map(([estatus, { label, tone }]) => [
+        estatus,
+        { label, className: TONE[tone].badge, dotClass: TONE[tone].solid },
+    ]),
+) as Record<string, EstatusStyle>
 
 // ─── Sector ───────────────────────────────────────────────────────────────────
 

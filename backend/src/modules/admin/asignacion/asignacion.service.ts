@@ -2,6 +2,7 @@ import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { CampoRegla, EstatusSolicitud, OperadorRegla } from "../../../../generated/prisma/client";
 import { AsignarManualDto } from "./asignacion.schema";
+import { paginado } from "@utils/pagination";
 const ESTATUS_REVISION: EstatusSolicitud[] = ["EN_REVISION"];
 
 // ─── Tipos internos ──────────────────────────────────────────────────────────
@@ -16,7 +17,7 @@ interface SolicitudParaEvaluar {
 
 interface FiltrosAsignacion {
     page: number;
-    limit: number;
+    pageSize: number;
     estatus?: string;
     tipoPersona?: string;
     sector?: string;
@@ -38,7 +39,7 @@ export interface ResultadoAsignacion {
 export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
     const {
         page,
-        limit,
+        pageSize,
         estatus,
         tipoPersona,
         sector,
@@ -52,7 +53,7 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
         grupoId,
     } = filtros;
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * pageSize;
     const where: any = {};
 
     if (estatus) {
@@ -113,7 +114,7 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
         prisma.solicitud.findMany({
             where,
             skip,
-            take: limit,
+            take: pageSize,
             orderBy: { creadoEn: "desc" },
             include: {
                 programa: { select: { id: true, nombre: true } },
@@ -177,15 +178,7 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
         };
     });
 
-    return {
-        data,
-        meta: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        },
-    };
+    return paginado(data, page, pageSize, total);
 };
 const evaluarRegla = async (
     regla: { campo: CampoRegla; operador: OperadorRegla; valor: string },

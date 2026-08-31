@@ -26,7 +26,6 @@ import {
     Upload,
     Loader2,
     CheckCircle2,
-    Clock3,
     FileText,
 } from 'lucide-react'
 import type {
@@ -36,6 +35,7 @@ import type {
 import { uploadsApi } from '@/shared/api/uploads.api'
 import { ApiError } from '@/shared/api/client'
 import { cn } from '@/shared/lib/cn'
+import { estatusDocumento, TONE } from '@/shared/config/estatus.tokens'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -67,38 +67,12 @@ const DIALOG_INICIAL: DialogState = {
     accion: 'APROBADO',
 }
 
-// Estilo por estatus: chip guía de la fila, tinte sutil de fila y color de barra.
-const ESTATUS_META: Record<
-    string,
-    { icon: React.ElementType; chip: string; rowTint: string; bar: string }
-> = {
-    APROBADO: {
-        icon: CheckCircle2,
-        chip: 'bg-emerald-500/10 text-emerald-600 ring-emerald-500/25 dark:text-emerald-400',
-        rowTint: '',
-        bar: 'bg-emerald-500',
-    },
-    PENDIENTE: {
-        icon: Clock3,
-        chip: 'bg-amber-500/10 text-amber-600 ring-amber-500/25 dark:text-amber-400',
-        rowTint: '',
-        bar: 'bg-amber-500',
-    },
-    RECHAZADO: {
-        icon: XCircle,
-        chip: 'bg-red-500/10 text-red-500 ring-red-500/25 dark:text-red-400',
-        rowTint: 'bg-red-500/[0.035]',
-        bar: 'bg-red-500',
-    },
-    NO_SUBIDO: {
-        icon: Upload,
-        chip: 'bg-muted text-muted-foreground/60 ring-border',
-        rowTint: '',
-        bar: 'bg-muted-foreground/25',
-    },
+// Estilo por estatus derivado del módulo de tokens: chip con ícono, tinte de
+// fila y color de barra de composición.
+const metaDe = (estatus: string) => {
+    const { tone, icon } = estatusDocumento(estatus)
+    return { icon, chip: TONE[tone].chip, rowTint: TONE[tone].rowTint, bar: TONE[tone].solid }
 }
-
-const metaDe = (estatus: string) => ESTATUS_META[estatus] ?? ESTATUS_META.NO_SUBIDO
 
 function EstatusChip({ estatus, className }: { estatus: string; className?: string }) {
     const { icon: Icon, chip } = metaDe(estatus)

@@ -14,6 +14,11 @@ export const ROLE_CONFIG: Record<string, { label: string; className: string }> =
         className:
             "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
     },
+    SUPERVISOR: {
+        label: "Supervisor",
+        className:
+            "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300",
+    },
     CLIENTE: {
         label: "Cliente",
         className:

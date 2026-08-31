@@ -31,10 +31,10 @@ interface LogsTableProps {
   logs: LogAuditoria[];
   loading: boolean;
   paginacion: {
-    pagina: number;
-    limite: number;
+    page: number;
+    pageSize: number;
     total: number;
-    totalPaginas: number;
+    totalPages: number;
   };
   onPageChange: (page: number) => void;
   onViewDetail: (log: LogAuditoria) => void;
@@ -49,7 +49,7 @@ export function LogsTable({
   onViewDetail,
   onRefresh,
 }: LogsTableProps) {
-  const { pagina, total, totalPaginas, limite } = paginacion;
+  const { page: pagina, total, totalPages: totalPaginas, pageSize: limite } = paginacion;
   const desde = (pagina - 1) * limite + 1;
   const hasta = Math.min(pagina * limite, total);
 

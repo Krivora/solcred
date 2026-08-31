@@ -1,6 +1,7 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { RolAplicacion } from "@middlewares/roles.middleware"; // ajustar si la ruta real difiere
+import { paginado } from "@utils/pagination";
 import { generarFolio } from "./helper/generar-folio"; // reutilizando el helper que ya existe
 import {
     CambiarEstatusDto,
@@ -258,10 +259,7 @@ export const listarSolicitudes = async (
         prisma.solicitud.count({ where }),
     ]);
 
-    return {
-        data: solicitudes,
-        pagination: { page, pageSize: take, total, totalPages: Math.ceil(total / take) },
-    };
+    return paginado(solicitudes, page, take, total);
 };
 
 export const obtenerSolicitudPorId = async (

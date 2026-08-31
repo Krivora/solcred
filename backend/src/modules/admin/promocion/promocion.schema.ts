@@ -4,7 +4,7 @@ export const cambiarEstatusSchema = z.object({
   estatus: z.enum([
     "PENDIENTE",
     "EN_REVISION",
-    "EN_CORRECION",
+    "EN_CORRECCION",
     "EN_FINANCIAMIENTO",
     "EN_APROBACION",
     "APROBADO",

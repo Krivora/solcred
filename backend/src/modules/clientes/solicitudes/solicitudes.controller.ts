@@ -82,12 +82,7 @@ export const listar = async (
             req,
         });
 
-        res.status(200).json(
-            ok("Solicitudes obtenidas", {
-                items: resultado.data,
-                pagination: resultado.pagination,
-            })
-        );
+        res.status(200).json(ok("Solicitudes obtenidas", resultado));
     } catch (error) {
         next(error);
     }

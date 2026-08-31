@@ -8,7 +8,7 @@ import type { FiltrosPromocion } from '@/features/promocion/types/solicitud.type
 
 const FILTROS_INICIALES: FiltrosPromocion = {
   page: 1,
-  limit: 10,
+  pageSize: 10,
   estatus: '',
   tipoPersona: '',
   sector: '',
@@ -67,12 +67,12 @@ export function useSolicitudesPromocion(filtrosIniciales?: Partial<FiltrosPromoc
 
   const hayFiltrosActivos = Object.entries(filtros).some(
     ([key, value]) =>
-      !['page', 'limit'].includes(key) && value !== '' && value !== undefined
+      !['page', 'pageSize'].includes(key) && value !== '' && value !== undefined
   )
 
   return {
     solicitudes: listadoData?.data ?? [],
-    meta: listadoData?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
+    meta: listadoData?.pagination ?? { total: 0, page: 1, pageSize: 20, totalPages: 0 },
     stats: stats ?? null,
     gestores,
     filtros,

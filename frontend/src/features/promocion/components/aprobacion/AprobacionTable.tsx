@@ -6,11 +6,11 @@ import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/
 import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
 import { AccionSolicitudDialog, type AccionTipo } from '@/features/promocion/components/common/AccionSolicitudDialog'
 import { useAccionesSolicitud } from '@/features/promocion/hooks/useAccionesSolicitud'
-import type { SolicitudPromocion, PaginacionMeta } from '@/features/promocion/types/solicitud.types'
+import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
 
 interface Props {
   solicitudes: SolicitudPromocion[]
-  meta: PaginacionMeta
+  meta: PaginacionData
   cargando: boolean
   onPaginar: (page: number) => void
   onRefresh: () => void

@@ -1,14 +1,14 @@
+import { PageHeader } from '@/shared/components/common/PageHeader'
 import { NuevaSolicitudForm } from '@/features/solicitudes/components/NuevaSolicitudForm'
 
 export default function NuevaSolicitudPage() {
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Nueva solicitud</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Completa los pasos para registrar tu solicitud de crédito
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Nueva solicitud"
+        description="Completa los pasos para registrar tu solicitud de crédito."
+        backHref="/dashboard/usuarios/solicitudes"
+      />
       <NuevaSolicitudForm />
     </div>
   )

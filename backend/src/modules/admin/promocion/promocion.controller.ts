@@ -11,6 +11,7 @@ import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjet
 import { mapearSolicitudAPDF } from "./promocion.service";
 import { AppError } from "@/middlewares/error.middleware";
 import { acuseEntregaExpedienteTemplate } from "@/shared/pdf/templates/acuse-entrega-expediente.template";
+import { parsearPaginacionQuery } from "@utils/pagination";
 
 
 export const gestoresPromocion = async (
@@ -34,8 +35,6 @@ export const listarPromocion = async (
 ): Promise<void> => {
   try {
     const {
-      page = "1",
-      limit = "20",
       estatus,
       tipoPersona,
       sector,
@@ -48,8 +47,7 @@ export const listarPromocion = async (
     } = req.query;
 
     const filtros = {
-      page: parseInt(page as string),
-      limit: Math.min(parseInt(limit as string), 100), // tope de seguridad
+      ...parsearPaginacionQuery(req.query),
       estatus: estatus as string | undefined,
       tipoPersona: tipoPersona as string | undefined,
       sector: sector as string | undefined,
@@ -89,8 +87,6 @@ export const listarMisCasos = async (
     }
 
     const {
-      page = "1",
-      limit = "20",
       estatus,
       tipoPersona,
       sector,
@@ -103,8 +99,7 @@ export const listarMisCasos = async (
 
     const filtros = {
       gestorId: personalId, // ── FIX ──
-      page: parseInt(page as string),
-      limit: Math.min(parseInt(limit as string), 100),
+      ...parsearPaginacionQuery(req.query),
       estatus: estatus as string | undefined,
       tipoPersona: tipoPersona as string | undefined,
       sector: sector as string | undefined,
@@ -138,13 +133,12 @@ export const listarAprobacion = async (
 ): Promise<void> => {
   try {
     const {
-      page = "1", limit = "20", tipoPersona, sector,
+      tipoPersona, sector,
       tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda,
     } = req.query;
 
     const filtros = {
-      page: parseInt(page as string),
-      limit: Math.min(parseInt(limit as string), 100),
+      ...parsearPaginacionQuery(req.query),
       tipoPersona: tipoPersona as string | undefined,
       sector: sector as string | undefined,
       tamanoEmpresa: tamanoEmpresa as string | undefined,
@@ -177,13 +171,12 @@ export const listarHistorico = async (
 ): Promise<void> => {
   try {
     const {
-      page = "1", limit = "20", tipoPersona, sector,
+      tipoPersona, sector,
       tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda,
     } = req.query;
 
     const filtros = {
-      page: parseInt(page as string),
-      limit: Math.min(parseInt(limit as string), 100),
+      ...parsearPaginacionQuery(req.query),
       tipoPersona: tipoPersona as string | undefined,
       sector: sector as string | undefined,
       tamanoEmpresa: tamanoEmpresa as string | undefined,
@@ -269,7 +262,7 @@ export const devolverAlSolicitante = async (
       usuarioId: req.usuario!.id,
       entidadId: solicitud.id,
       req,
-      metadata: { estatus: "EN_CORRECION", motivo: req.body.motivo },
+      metadata: { estatus: "EN_CORRECCION", motivo: req.body.motivo },
     });
     res.status(200).json(ok("Solicitud devuelta al solicitante", solicitud));
   } catch (error) {

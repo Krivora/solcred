@@ -8,8 +8,21 @@ import { Eye, EyeOff } from 'lucide-react';
 import { registerSchema, type RegisterFormValues } from '@/shared/schemas/auth.schema';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Input } from '@/shared/components/ui/input';
+import { Label } from '@/shared/components/ui/label';
 import { Button } from '@/shared/components/ui/button';
 import { FormError } from '@/shared/components/common/FormError';
+import { cn } from '@/shared/lib/cn';
+
+const Req = () => (
+  <span aria-hidden="true" className="text-destructive">
+    {' '}*
+  </span>
+);
+
+const TIPOS = [
+  { value: 'FISICA', label: 'Persona física' },
+  { value: 'MORAL', label: 'Persona moral' },
+] as const;
 
 export function RegisterForm() {
   const { register: registerUser, isLoading, error } = useAuth();
@@ -31,120 +44,152 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit(registerUser)} className="flex flex-col gap-4" noValidate>
       <FormError message={error} />
 
-      {/* Tipo persona */}
+      {/* Tipo de persona */}
       <fieldset>
-        <legend className="text-sm font-medium text-[#1C2833] mb-2">
-          Tipo de persona <span className="text-red-500" aria-hidden="true">*</span>
+        <legend className="mb-2 text-sm font-medium text-foreground">
+          Tipo de persona
+          <Req />
         </legend>
-        <div className="flex gap-3">
-          {(['FISICA', 'MORAL'] as const).map((tipo) => (
+        <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-input">
+          {TIPOS.map(({ value, label }, i) => (
             <label
-              key={tipo}
-              className={`flex-1 flex items-center justify-center h-10 rounded-xl border cursor-pointer text-sm font-medium transition-all duration-150 ${
-                tipoPersona === tipo
-                  ? 'bg-[#1B4F72] text-white border-[#1B4F72]'
-                  : 'border-[#D5D8DC] text-[#1C2833] hover:border-[#1B4F72]/40'
-              }`}
+              key={value}
+              className={cn(
+                'flex cursor-pointer items-center justify-center px-3 py-2 text-sm font-medium transition-colors',
+                i === 0 && 'border-r border-input',
+                tipoPersona === value
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
+              )}
             >
-              <input type="radio" value={tipo} className="sr-only" {...register('tipoPersona')} />
-              {tipo === 'FISICA' ? 'Persona Física' : 'Persona Moral'}
+              <input type="radio" value={value} className="sr-only" {...register('tipoPersona')} />
+              {label}
             </label>
           ))}
         </div>
         {errors.tipoPersona && (
-          <p role="alert" className="text-xs text-red-500 mt-1">{errors.tipoPersona.message}</p>
+          <p role="alert" className="mt-1 text-xs text-destructive">{errors.tipoPersona.message}</p>
         )}
       </fieldset>
 
       {/* Nombre */}
-
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="nombre" className="text-sm font-medium text-[#1C2833]">
-          Nombre(s) <span className="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <Input id="nombre" placeholder="Juan" autoComplete="given-name" {...register('nombre')} />
-        {errors.nombre && <p role="alert" className="text-xs text-red-500">{errors.nombre.message}</p>}
+        <Label htmlFor="nombre">
+          Nombre(s)
+          <Req />
+        </Label>
+        <Input id="nombre" className="h-10" placeholder="Juan" autoComplete="given-name" {...register('nombre')} />
+        {errors.nombre && <p role="alert" className="text-xs text-destructive">{errors.nombre.message}</p>}
       </div>
+
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="apellidoPaterno" className="text-sm font-medium text-[#1C2833]">
-            Ap. paterno <span className="text-red-500" aria-hidden="true">*</span>
-          </label>
-          <Input id="apellidoPaterno" placeholder="García" autoComplete="family-name" {...register('apellidoPaterno')} />
-          {errors.apellidoPaterno && <p role="alert" className="text-xs text-red-500">{errors.apellidoPaterno.message}</p>}
+          <Label htmlFor="apellidoPaterno">
+            Ap. paterno
+            <Req />
+          </Label>
+          <Input
+            id="apellidoPaterno"
+            className="h-10"
+            placeholder="García"
+            autoComplete="family-name"
+            {...register('apellidoPaterno')}
+          />
+          {errors.apellidoPaterno && (
+            <p role="alert" className="text-xs text-destructive">{errors.apellidoPaterno.message}</p>
+          )}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="apellidoMaterno" className="text-sm font-medium text-[#1C2833]">
-            Ap. materno <span className="text-red-500" aria-hidden="true">*</span>
-          </label>
-          <Input id="apellidoMaterno" placeholder="López" {...register('apellidoMaterno')} />
-          {errors.apellidoMaterno && <p role="alert" className="text-xs text-red-500">{errors.apellidoMaterno.message}</p>}
+          <Label htmlFor="apellidoMaterno">
+            Ap. materno
+            <Req />
+          </Label>
+          <Input id="apellidoMaterno" className="h-10" placeholder="López" {...register('apellidoMaterno')} />
+          {errors.apellidoMaterno && (
+            <p role="alert" className="text-xs text-destructive">{errors.apellidoMaterno.message}</p>
+          )}
         </div>
       </div>
 
       {/* Correo */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="correo-reg" className="text-sm font-medium text-[#1C2833]">
-          Correo electrónico <span className="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <Input id="correo-reg" type="email" autoComplete="email" placeholder="tu@correo.com" {...register('correo')} />
-        {errors.correo && <p role="alert" className="text-xs text-red-500">{errors.correo.message}</p>}
+        <Label htmlFor="correo-reg">
+          Correo electrónico
+          <Req />
+        </Label>
+        <Input
+          id="correo-reg"
+          type="email"
+          autoComplete="email"
+          placeholder="nombre@empresa.com"
+          className="h-10"
+          {...register('correo')}
+        />
+        {errors.correo && <p role="alert" className="text-xs text-destructive">{errors.correo.message}</p>}
       </div>
 
       {/* Contraseña */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="contrasena-reg" className="text-sm font-medium text-[#1C2833]">
-          Contraseña <span className="text-red-500" aria-hidden="true">*</span>
-        </label>
+        <Label htmlFor="contrasena-reg">
+          Contraseña
+          <Req />
+        </Label>
         <div className="relative">
           <Input
             id="contrasena-reg"
             type={showPassword ? 'text' : 'password'}
             autoComplete="new-password"
-            placeholder="Mín. 8 caracteres"
+            placeholder="Mínimo 8 caracteres"
+            className="h-10 pr-10"
             {...register('contrasena')}
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7F8C8D] hover:text-[#1B4F72] transition-colors"
+            className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
           >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
-        {errors.contrasena
-          ? <p role="alert" className="text-xs text-red-500">{errors.contrasena.message}</p>
-          : <p className="text-xs text-[#7F8C8D]">Debe incluir mayúscula, minúscula, número y símbolo</p>
-        }
+        {errors.contrasena ? (
+          <p role="alert" className="text-xs text-destructive">{errors.contrasena.message}</p>
+        ) : (
+          <p className="text-xs text-muted-foreground">Debe incluir mayúscula, minúscula, número y símbolo.</p>
+        )}
       </div>
 
       {/* CURP y RFC */}
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="curp" className="text-sm font-medium text-[#1C2833]">CURP <span className="text-[#7F8C8D] font-normal">(opcional)</span></label>
-          <Input id="curp" placeholder="XXXX000000XXXXXX00" {...register('curp')} />
-          {errors.curp && <p role="alert" className="text-xs text-red-500">{errors.curp.message}</p>}
+          <Label htmlFor="curp">
+            CURP <span className="font-normal text-muted-foreground">(opcional)</span>
+          </Label>
+          <Input id="curp" className="h-10" placeholder="XXXX000000XXXXXX00" {...register('curp')} />
+          {errors.curp && <p role="alert" className="text-xs text-destructive">{errors.curp.message}</p>}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="rfc" className="text-sm font-medium text-[#1C2833]">RFC <span className="text-[#7F8C8D] font-normal">(opcional)</span></label>
-          <Input id="rfc" placeholder="XXXX000000XXX" {...register('rfc')} />
-          {errors.rfc && <p role="alert" className="text-xs text-red-500">{errors.rfc.message}</p>}
+          <Label htmlFor="rfc">
+            RFC <span className="font-normal text-muted-foreground">(opcional)</span>
+          </Label>
+          <Input id="rfc" className="h-10" placeholder="XXXX000000XXX" {...register('rfc')} />
+          {errors.rfc && <p role="alert" className="text-xs text-destructive">{errors.rfc.message}</p>}
         </div>
       </div>
 
       <Button
         type="submit"
+        size="lg"
         disabled={isLoading}
         aria-busy={isLoading}
-        className="w-full h-11 bg-[#1B4F72] hover:bg-[#154360] text-white rounded-xl mt-1"
+        className="mt-2 h-10 w-full hover:bg-primary/90"
       >
-        {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
+        {isLoading ? 'Creando cuenta…' : 'Crear cuenta'}
       </Button>
 
-      <p className="text-center text-sm text-[#7F8C8D]">
+      <p className="mt-1 text-center text-sm text-muted-foreground">
         ¿Ya tienes cuenta?{' '}
-        <Link href="/login" className="text-[#1B4F72] font-medium hover:underline">
+        <Link href="/login" className="font-medium text-primary hover:underline">
           Inicia sesión
         </Link>
       </p>

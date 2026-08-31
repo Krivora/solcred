@@ -85,7 +85,7 @@ export const navConfig: NavItem[] = [
   {
     label: "Financiamiento",
     icon: BadgeDollarSign,
-    roles: ["ADMIN", "ANALISTA"],
+    roles: ["ADMIN", "ANALISTA", "SUPERVISOR"],
     children: [
       {
         label: "Mesa de Control",
@@ -104,6 +104,12 @@ export const navConfig: NavItem[] = [
         href: "/dashboard/financiamiento/mis-casos",
         icon: FolderKanban,
         roles: ["ANALISTA"],
+      },
+      {
+        label: "Validación",
+        href: "/dashboard/financiamiento/validacion",
+        icon: ClipboardClock,
+        roles: ["ADMIN", "SUPERVISOR"],
       },
       {
         label: "Comité de Crédito",
