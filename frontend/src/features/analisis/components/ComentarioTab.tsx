@@ -1,41 +1,84 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquareText } from 'lucide-react'
+import { ClipboardList, CreditCard, LineChart, MapPin, MessageSquareText } from 'lucide-react'
 import { Textarea } from '@/shared/components/ui/textarea'
 import { Label } from '@/shared/components/ui/label'
+import type { ComentarioData } from '@/features/analisis/types/analisis.types'
 
 interface Props {
-  inicial: string | null
+  inicial: ComentarioData | null
   editable: boolean
-  onGuardar: (texto: string) => void
+  onGuardar: (data: ComentarioData) => void
 }
 
+const SECCIONES: {
+  key: keyof ComentarioData
+  label: string
+  icon: typeof ClipboardList
+  placeholder: string
+}[] = [
+  {
+    key: 'antecedentes',
+    label: 'Antecedentes',
+    icon: ClipboardList,
+    placeholder: 'Historial del cliente con la institución: créditos previos, comportamiento de pago, relación comercial…',
+  },
+  {
+    key: 'buroCredito',
+    label: 'Buró de Crédito',
+    icon: CreditCard,
+    placeholder: 'Lectura del reporte: score, atrasos, líneas activas, endeudamiento con otras instituciones…',
+  },
+  {
+    key: 'situacionFinanciera',
+    label: 'Situación Financiera',
+    icon: LineChart,
+    placeholder: 'Lectura cualitativa del balance y el estado de resultados, más allá de los números de esa pestaña…',
+  },
+  {
+    key: 'visita',
+    label: 'Visita',
+    icon: MapPin,
+    placeholder: 'Hallazgos de la visita al negocio o domicilio: instalaciones, operación, inventario visible…',
+  },
+  {
+    key: 'opinionAnalista',
+    label: 'Opinión del Analista',
+    icon: MessageSquareText,
+    placeholder: 'Conclusión y recomendación del analista sobre el caso…',
+  },
+]
+
 export function ComentarioTab({ inicial, editable, onGuardar }: Props) {
-  const [texto, setTexto] = useState(inicial ?? '')
+  const [datos, setDatos] = useState<ComentarioData>(() => ({ ...inicial }))
+
+  const actualizar = (key: keyof ComentarioData, texto: string) => {
+    const next = { ...datos, [key]: texto }
+    setDatos(next)
+    if (editable) onGuardar(next)
+  }
 
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm space-y-2">
-      <div className="flex items-center gap-2">
-        <MessageSquareText className="h-4 w-4 text-primary" />
-        <Label htmlFor="analisis-comentario" className="text-sm font-bold text-primary">
-          Comentario del análisis
-        </Label>
-      </div>
-      <p className="text-xs text-muted-foreground">
-        Notas y conclusiones del analista sobre el caso. Se guarda automáticamente.
-      </p>
-      <Textarea
-        id="analisis-comentario"
-        value={texto}
-        disabled={!editable}
-        onChange={(e) => {
-          setTexto(e.target.value)
-          if (editable) onGuardar(e.target.value)
-        }}
-        placeholder="Escribe aquí tus observaciones…"
-        className="min-h-[220px] resize-y text-sm"
-      />
+    <div className="space-y-4">
+      {SECCIONES.map(({ key, label, icon: Icon, placeholder }) => (
+        <div key={key} className="space-y-2 rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Icon className="h-4 w-4 text-primary" />
+            <Label htmlFor={`comentario-${key}`} className="text-sm font-bold text-primary">
+              {label}
+            </Label>
+          </div>
+          <Textarea
+            id={`comentario-${key}`}
+            value={datos[key] ?? ''}
+            disabled={!editable}
+            onChange={(e) => actualizar(key, e.target.value)}
+            placeholder={placeholder}
+            className="min-h-[120px] resize-y text-sm"
+          />
+        </div>
+      ))}
     </div>
   )
 }

@@ -239,7 +239,7 @@ export const guardarTab = async (
     solicitud.asignacionesFinanciamiento.find((a) => a.activa)?.analistaId ?? personalId;
   if (!analistaId) throw new AppError("No hay analista asignado a esta solicitud", 422);
 
-  const valor = tab === "comentario" ? (data as string) : (data as Prisma.InputJsonValue);
+  const valor = data as Prisma.InputJsonValue;
 
   return prisma.analisis.upsert({
     where: { solicitudId },

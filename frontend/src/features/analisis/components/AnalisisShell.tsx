@@ -1,15 +1,17 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { ArrowLeft, Loader2, Check, CloudOff, Lock, FileSpreadsheet } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/components/ui/tabs'
 import { ESTATUS_STYLES } from '@/shared/config/solicitudes.config'
 import { cn } from '@/shared/lib/cn'
-import { TabEnConstruccion } from './TabEnConstruccion'
 import { ComentarioTab } from './ComentarioTab'
 import { SituacionFinancieraTab } from './situacion-financiera/SituacionFinancieraTab'
 import { AjustesCreditoTab } from './ajustes-credito/AjustesCreditoTab'
+import { CriteriosEvaluacionTab } from './criterios-evaluacion/CriteriosEvaluacionTab'
+import { AmortizacionTab } from './amortizacion/AmortizacionTab'
 import type { EstadoGuardado } from '@/features/analisis/hooks/useAnalisis'
 import type { Analisis, AnalisisContexto, AnalisisOrigen } from '@/features/analisis/types/analisis.types'
 
@@ -52,6 +54,10 @@ export function AnalisisShell({ contexto, analisis, origen, editable, guardado, 
   const router = useRouter()
   const estatus = ESTATUS_STYLES[contexto.estatus] ?? ESTATUS_STYLES.BORRADOR
 
+  // Controlado (en vez de defaultValue) para poder saltar a Situación
+  // Financiera desde el estado vacío de Criterios de Evaluación.
+  const [tab, setTab] = useState<(typeof TABS)[number]['key']>('situacionFinanciera')
+
   return (
     <div className="p-6">
       <div className="space-y-5">
@@ -88,7 +94,7 @@ export function AnalisisShell({ contexto, analisis, origen, editable, guardado, 
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="situacionFinanciera" className="gap-4">
+        <Tabs value={tab} onValueChange={(v) => setTab(v as (typeof TABS)[number]['key'])} className="gap-4">
           <TabsList className="flex w-full flex-wrap">
             {TABS.map((t) => (
               <TabsTrigger key={t.key} value={t.key}>{t.label}</TabsTrigger>
@@ -114,14 +120,32 @@ export function AnalisisShell({ contexto, analisis, origen, editable, guardado, 
             />
           </TabsContent>
 
-          <TabsContent value="criteriosEvaluacion"><TabEnConstruccion nombre="Criterios de Evaluación" /></TabsContent>
-          <TabsContent value="amortizacion"><TabEnConstruccion nombre="Amortización" /></TabsContent>
+          <TabsContent value="criteriosEvaluacion" forceMount className="data-[state=inactive]:hidden">
+            <CriteriosEvaluacionTab
+              situacionFinanciera={analisis.situacionFinanciera}
+              inicial={analisis.criteriosEvaluacion}
+              editable={editable}
+              onGuardar={(data) => onGuardarTab('criteriosEvaluacion', data)}
+              onIrASituacionFinanciera={() => setTab('situacionFinanciera')}
+            />
+          </TabsContent>
+
+          <TabsContent value="amortizacion" forceMount className="data-[state=inactive]:hidden">
+            <AmortizacionTab
+              ajustesGuardados={analisis.ajustesCredito}
+              origen={origen.ajustesCredito}
+              inicial={analisis.amortizacion}
+              editable={editable}
+              onGuardar={(data) => onGuardarTab('amortizacion', data)}
+              onIrAAjustesCredito={() => setTab('ajustesCredito')}
+            />
+          </TabsContent>
 
           <TabsContent value="comentario" forceMount className="data-[state=inactive]:hidden">
             <ComentarioTab
               inicial={analisis.comentario}
               editable={editable}
-              onGuardar={(texto) => onGuardarTab('comentario', texto)}
+              onGuardar={(data) => onGuardarTab('comentario', data)}
             />
           </TabsContent>
         </Tabs>
