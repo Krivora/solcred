@@ -170,3 +170,100 @@ export interface AcuseEntregaExpedientePDFData {
     entrega: { nombre: string; cargo: string };
     reviso: { nombre: string; cargo: string };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Informe Ejecutivo de Crédito (financiamiento: comité, validación, analista)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface PeriodoSituacionPDF {
+    etiqueta: string;
+    ventas: number;
+    costos: number;
+    utilBruta: number;
+    gastosOperativos: number;
+    ebit: number;
+    utilNeta: number;
+    capacidadPago: number | null;
+}
+
+export interface InformeEjecutivoPDFData {
+    folio: string;
+    fecha: string;
+    programa: string;
+    estatus: string;
+
+    identificacion: {
+        solicitante: string;
+        nombreComercial: string | null;
+        rfc: string | null;
+        tipoPersona: string | null;
+        actividad: string | null;
+        ubicacion: string | null;
+        asesor: string | null;
+        analista: string | null;
+        antiguedadNegocio: string | null;
+        experiencia: string | null;
+        empleosActuales: number | null;
+        empleosNuevos: number | null;
+        conAntecedentes: boolean;
+    };
+
+    aval: {
+        tiene: boolean;
+        nombre: string | null;
+    };
+
+    objetivo: {
+        destino: string;
+        objetivoPrograma: string | null;
+        montoSolicitado: number;
+        montoAjustado: number;
+    };
+
+    condiciones: {
+        monto: number;
+        plazoMeses: number;
+        mesesGracia: number;
+        tasaAnual: number;
+        tasaOrdinaria: number;
+        tasaMoratoria: number;
+        pagoMensual: number | null;
+        totalPagar: number | null;
+        totalIntereses: number | null;
+    };
+
+    programaInversion: {
+        filas: { categoria: string; concepto: string; monto: number; participacion: number }[];
+        total: number;
+    };
+
+    situacion: {
+        ejecutivo: PeriodoSituacionPDF | null;
+        proyectado: PeriodoSituacionPDF | null;
+    };
+
+    garantia:
+        | { requiere: false; nota: string }
+        | {
+              requiere: true;
+              valorTotal: number;
+              cobertura: number | null;
+              filas: {
+                  tipo: string;
+                  propietario: string;
+                  valor: number;
+                  descripcion: string | null;
+                  detalle: string | null;
+              }[];
+          };
+
+    comentarios: {
+        antecedentes: string | null;
+        buroCredito: string | null;
+        situacionFinanciera: string | null;
+        visita: string | null;
+        opinionAnalista: string | null;
+    };
+
+    firmas: { nombre: string; cargo: string }[];
+}

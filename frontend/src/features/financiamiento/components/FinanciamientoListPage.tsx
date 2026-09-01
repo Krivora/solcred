@@ -7,6 +7,7 @@ import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 import { FinanciamientoFiltros } from '@/features/financiamiento/components/FinanciamientoFiltros'
 import { FinanciamientoTabla, type AccionDef } from '@/features/financiamiento/components/FinanciamientoTabla'
+import { useInformeEjecutivo } from '@/features/analisis/hooks/useInformeEjecutivo'
 import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
 import type { FiltrosFinanciamiento } from '@/features/financiamiento/types/financiamiento.types'
 
@@ -31,12 +32,15 @@ interface Props {
   mostrarColumnaAnalista?: boolean
   vacio: { icon: ReactNode; titulo: string; descripcion: string }
   enlaceAnalisis?: (id: string) => string
+  /** Agrega la acción de fila "Informe Ejecutivo" (etapas con análisis en curso). */
+  mostrarInforme?: boolean
 }
 
 export function FinanciamientoListPage({
-  titulo, descripcion, hook, acciones, mostrarColumnaAnalista, vacio, enlaceAnalisis,
+  titulo, descripcion, hook, acciones, mostrarColumnaAnalista, vacio, enlaceAnalisis, mostrarInforme,
 }: Props) {
   const claseAnimacion = useNavAnimation('')
+  const informe = useInformeEjecutivo()
 
   return (
     <div className={`${claseAnimacion} mx-auto max-w-8xl space-y-6`}>
@@ -81,6 +85,8 @@ export function FinanciamientoListPage({
         mostrarColumnaAnalista={mostrarColumnaAnalista}
         vacio={vacio}
         enlaceAnalisis={enlaceAnalisis}
+        onInformeEjecutivo={mostrarInforme ? informe.generar : undefined}
+        informeGenerandoId={informe.generandoId}
       />
     </div>
   )

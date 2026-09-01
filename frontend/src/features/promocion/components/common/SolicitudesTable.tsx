@@ -38,6 +38,9 @@ export interface SolicitudesTableConfig {
 
   /** Opcional: si se provee, se agrega columna de documentos (ej. Histórico) */
   renderDocumentos?: (solicitudId: string, estatus: SolicitudPromocion['estatus']) => ReactNode
+
+  /** Opcional: botón de la columna "Informe" (junto a PDF), ej. informe ejecutivo. */
+  renderInforme?: (solicitudId: string) => ReactNode
 }
 
 interface Props {
@@ -112,6 +115,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     vacioCopy,
     renderAcciones,
     renderDocumentos,
+    renderInforme,
   } = config
 
   // Calculamos cuántas columnas hay para el skeleton
@@ -120,6 +124,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     + (mostrarColumnaAnalista ? 1 : 0)
     + (mostrarColumnaEstatus ? 1 : 0)
     + (mostrarColumnaPdf ? 1 : 0)
+    + (renderInforme ? 1 : 0)
     + (renderDocumentos ? 1 : 0)
     + (renderAcciones ? 1 : 0)
     + 2 // Exp, PDF (estas dos siempre están)
@@ -185,6 +190,11 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
               {mostrarColumnaPdf && (
                 <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
                   PDF
+                </TableHead>
+              )}
+              {renderInforme && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-16">
+                  Informe
                 </TableHead>
               )}
               {renderDocumentos && (
@@ -362,6 +372,11 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                           </>
                         )}
                       </Button>
+                    </TableCell>
+                  )}
+                  {renderInforme && (
+                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                      {renderInforme(sol.id)}
                     </TableCell>
                   )}
                   {renderDocumentos && (

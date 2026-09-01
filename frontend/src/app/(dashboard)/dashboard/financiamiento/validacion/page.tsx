@@ -13,6 +13,7 @@ export default function ValidacionPage() {
       descripcion="Revisión del análisis del analista antes de pasar al comité"
       hook={hook}
       mostrarColumnaAnalista
+      mostrarInforme
       acciones={[
         {
           tipo: 'enviar_comite',

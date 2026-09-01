@@ -2,7 +2,8 @@
 
 import { useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calculator } from 'lucide-react'
+import { Calculator, FileBarChart2, Loader2 } from 'lucide-react'
+import { Button } from '@/shared/components/ui/button'
 import { DropdownMenuItem, DropdownMenuSeparator } from '@/shared/components/ui/dropdown-menu'
 import { SolicitudesTable } from '@/features/promocion/components/common/SolicitudesTable'
 import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
@@ -33,10 +34,14 @@ interface Props {
   vacio: { icon: ReactNode; titulo: string; descripcion: string }
   /** Si viene, agrega un item "Realizar Análisis" al inicio del dropdown. */
   enlaceAnalisis?: (id: string) => string
+  /** Si viene, agrega la columna "Informe" (junto a PDF) que descarga el PDF ejecutivo. */
+  onInformeEjecutivo?: (id: string) => void
+  informeGenerandoId?: string | null
 }
 
 export function FinanciamientoTabla({
-  solicitudes, meta, cargando, onPaginar, onRefresh, acciones, mostrarColumnaAnalista, vacio, enlaceAnalisis,
+  solicitudes, meta, cargando, onPaginar, onRefresh, acciones, mostrarColumnaAnalista, vacio,
+  enlaceAnalisis, onInformeEjecutivo, informeGenerandoId,
 }: Props) {
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -94,25 +99,41 @@ export function FinanciamientoTabla({
           mostrarColumnaPdf: true,
           labelFecha: 'Recibida',
           vacioCopy: vacio,
+          renderInforme: onInformeEjecutivo
+            ? (id) => (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  title="Informe ejecutivo (PDF para el comité)"
+                  disabled={informeGenerandoId === id}
+                  onClick={() => onInformeEjecutivo(id)}
+                >
+                  {informeGenerandoId === id
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <FileBarChart2 className="h-4 w-4" />}
+                </Button>
+              )
+            : undefined,
           renderAcciones: (acciones.length || enlaceAnalisis)
             ? (id) => (
                 <>
                   {enlaceAnalisis && (
-                    <>
-                      <DropdownMenuItem
-                        className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
-                        onClick={() => { sessionStorage.setItem('nav-direction', 'adelante'); router.push(enlaceAnalisis(id)) }}
-                      >
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover/item:bg-primary/15">
-                          <Calculator className="h-3.5 w-3.5" />
-                        </div>
-                        <div className="flex flex-col gap-0">
-                          <span className="text-xs font-medium leading-tight text-foreground">Realizar Análisis</span>
-                          <span className="text-[11px] text-muted-foreground leading-tight">Abrir la herramienta de análisis financiero</span>
-                        </div>
-                      </DropdownMenuItem>
-                      {acciones.length > 0 && <DropdownMenuSeparator className="my-1 bg-border/60" />}
-                    </>
+                    <DropdownMenuItem
+                      className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
+                      onClick={() => { sessionStorage.setItem('nav-direction', 'adelante'); router.push(enlaceAnalisis(id)) }}
+                    >
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary group-hover/item:bg-primary/15">
+                        <Calculator className="h-3.5 w-3.5" />
+                      </div>
+                      <div className="flex flex-col gap-0">
+                        <span className="text-xs font-medium leading-tight text-foreground">Realizar Análisis</span>
+                        <span className="text-[11px] text-muted-foreground leading-tight">Abrir la herramienta de análisis financiero</span>
+                      </div>
+                    </DropdownMenuItem>
+                  )}
+                  {enlaceAnalisis && acciones.length > 0 && (
+                    <DropdownMenuSeparator className="my-1 bg-border/60" />
                   )}
                   {acciones.map((a) => (
                     <span key={a.tipo}>

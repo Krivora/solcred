@@ -21,3 +21,44 @@ export const guardarTabSchema = z.object({
 });
 
 export type GuardarTabDto = z.infer<typeof guardarTabSchema>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Informe Ejecutivo
+//
+// El frontend calcula los números que hoy solo viven en sus `lib/` (amortización
+// y situación financiera mensualizada) y los manda ya resueltos. El backend arma
+// el resto del informe con la solicitud + el análisis persistido.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const periodoResumenSchema = z.object({
+  etiqueta: z.string(),
+  ventas: z.number(),
+  costos: z.number(),
+  utilBruta: z.number(),
+  gastosOperativos: z.number(),
+  ebit: z.number(),
+  utilNeta: z.number(),
+  /** EBIT mensual ÷ pago mensual de la amortización. */
+  capacidadPago: z.number().nullable(),
+});
+
+export const informeEjecutivoSchema = z.object({
+  amortizacion: z
+    .object({
+      montoFinanciado: z.number(),
+      plazoMeses: z.number(),
+      mesesGracia: z.number(),
+      tasaAnual: z.number(),
+      pagoOrdinario: z.number(),
+      totalIntereses: z.number(),
+      totalPagado: z.number(),
+    })
+    .nullable(),
+  situacion: z.object({
+    ejecutivo: periodoResumenSchema.nullable(),
+    proyectado: periodoResumenSchema.nullable(),
+  }),
+});
+
+export type InformeEjecutivoInput = z.infer<typeof informeEjecutivoSchema>;
+export type PeriodoResumenInput = z.infer<typeof periodoResumenSchema>;
