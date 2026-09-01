@@ -28,7 +28,6 @@ export type AnalisisMinAggregateOutputType = {
   id: string | null
   solicitudId: string | null
   analistaId: string | null
-  comentario: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -37,7 +36,6 @@ export type AnalisisMaxAggregateOutputType = {
   id: string | null
   solicitudId: string | null
   analistaId: string | null
-  comentario: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -61,7 +59,6 @@ export type AnalisisMinAggregateInputType = {
   id?: true
   solicitudId?: true
   analistaId?: true
-  comentario?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -70,7 +67,6 @@ export type AnalisisMaxAggregateInputType = {
   id?: true
   solicitudId?: true
   analistaId?: true
-  comentario?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -169,7 +165,7 @@ export type AnalisisGroupByOutputType = {
   ajustesCredito: runtime.JsonValue | null
   criteriosEvaluacion: runtime.JsonValue | null
   amortizacion: runtime.JsonValue | null
-  comentario: string | null
+  comentario: runtime.JsonValue | null
   creadoEn: Date
   actualizadoEn: Date
   _count: AnalisisCountAggregateOutputType | null
@@ -203,7 +199,7 @@ export type AnalisisWhereInput = {
   ajustesCredito?: Prisma.JsonNullableFilter<"Analisis">
   criteriosEvaluacion?: Prisma.JsonNullableFilter<"Analisis">
   amortizacion?: Prisma.JsonNullableFilter<"Analisis">
-  comentario?: Prisma.StringNullableFilter<"Analisis"> | string | null
+  comentario?: Prisma.JsonNullableFilter<"Analisis">
   creadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -236,7 +232,7 @@ export type AnalisisWhereUniqueInput = Prisma.AtLeast<{
   ajustesCredito?: Prisma.JsonNullableFilter<"Analisis">
   criteriosEvaluacion?: Prisma.JsonNullableFilter<"Analisis">
   amortizacion?: Prisma.JsonNullableFilter<"Analisis">
-  comentario?: Prisma.StringNullableFilter<"Analisis"> | string | null
+  comentario?: Prisma.JsonNullableFilter<"Analisis">
   creadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
   solicitud?: Prisma.XOR<Prisma.SolicitudScalarRelationFilter, Prisma.SolicitudWhereInput>
@@ -270,7 +266,7 @@ export type AnalisisScalarWhereWithAggregatesInput = {
   ajustesCredito?: Prisma.JsonNullableWithAggregatesFilter<"Analisis">
   criteriosEvaluacion?: Prisma.JsonNullableWithAggregatesFilter<"Analisis">
   amortizacion?: Prisma.JsonNullableWithAggregatesFilter<"Analisis">
-  comentario?: Prisma.StringNullableWithAggregatesFilter<"Analisis"> | string | null
+  comentario?: Prisma.JsonNullableWithAggregatesFilter<"Analisis">
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Analisis"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"Analisis"> | Date | string
 }
@@ -281,7 +277,7 @@ export type AnalisisCreateInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAnalisisInput
@@ -296,7 +292,7 @@ export type AnalisisUncheckedCreateInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -307,7 +303,7 @@ export type AnalisisUpdateInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAnalisisNestedInput
@@ -322,7 +318,7 @@ export type AnalisisUncheckedUpdateInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -335,7 +331,7 @@ export type AnalisisCreateManyInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -346,7 +342,7 @@ export type AnalisisUpdateManyMutationInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -359,7 +355,7 @@ export type AnalisisUncheckedUpdateManyInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -396,7 +392,6 @@ export type AnalisisMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   solicitudId?: Prisma.SortOrder
   analistaId?: Prisma.SortOrder
-  comentario?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -405,7 +400,6 @@ export type AnalisisMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   solicitudId?: Prisma.SortOrder
   analistaId?: Prisma.SortOrder
-  comentario?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -490,7 +484,7 @@ export type AnalisisCreateWithoutAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitud: Prisma.SolicitudCreateNestedOneWithoutAnalisisInput
@@ -503,7 +497,7 @@ export type AnalisisUncheckedCreateWithoutAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -545,7 +539,7 @@ export type AnalisisScalarWhereInput = {
   ajustesCredito?: Prisma.JsonNullableFilter<"Analisis">
   criteriosEvaluacion?: Prisma.JsonNullableFilter<"Analisis">
   amortizacion?: Prisma.JsonNullableFilter<"Analisis">
-  comentario?: Prisma.StringNullableFilter<"Analisis"> | string | null
+  comentario?: Prisma.JsonNullableFilter<"Analisis">
   creadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Analisis"> | Date | string
 }
@@ -556,7 +550,7 @@ export type AnalisisCreateWithoutSolicitudInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   analista: Prisma.PersonalCreateNestedOneWithoutAnalisisInput
@@ -569,7 +563,7 @@ export type AnalisisUncheckedCreateWithoutSolicitudInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -596,7 +590,7 @@ export type AnalisisUpdateWithoutSolicitudInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   analista?: Prisma.PersonalUpdateOneRequiredWithoutAnalisisNestedInput
@@ -609,7 +603,7 @@ export type AnalisisUncheckedUpdateWithoutSolicitudInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -621,7 +615,7 @@ export type AnalisisCreateManyAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -632,7 +626,7 @@ export type AnalisisUpdateWithoutAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitud?: Prisma.SolicitudUpdateOneRequiredWithoutAnalisisNestedInput
@@ -645,7 +639,7 @@ export type AnalisisUncheckedUpdateWithoutAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -657,7 +651,7 @@ export type AnalisisUncheckedUpdateManyWithoutAnalistaInput = {
   ajustesCredito?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   criteriosEvaluacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   amortizacion?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  comentario?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comentario?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -750,7 +744,7 @@ export type $AnalisisPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     ajustesCredito: runtime.JsonValue | null
     criteriosEvaluacion: runtime.JsonValue | null
     amortizacion: runtime.JsonValue | null
-    comentario: string | null
+    comentario: runtime.JsonValue | null
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["analisis"]>
@@ -1185,7 +1179,7 @@ export interface AnalisisFieldRefs {
   readonly ajustesCredito: Prisma.FieldRef<"Analisis", 'Json'>
   readonly criteriosEvaluacion: Prisma.FieldRef<"Analisis", 'Json'>
   readonly amortizacion: Prisma.FieldRef<"Analisis", 'Json'>
-  readonly comentario: Prisma.FieldRef<"Analisis", 'String'>
+  readonly comentario: Prisma.FieldRef<"Analisis", 'Json'>
   readonly creadoEn: Prisma.FieldRef<"Analisis", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"Analisis", 'DateTime'>
 }

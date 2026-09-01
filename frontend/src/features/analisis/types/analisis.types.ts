@@ -98,6 +98,50 @@ export interface AnalisisOrigen {
   ajustesCredito: AjustesCreditoOrigen
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Criterios de Evaluación
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Todo lo demás en esta pestaña (razones de liquidez, endeudamiento,
+ * rentabilidad, cobertura) se recalcula en vivo desde `situacionFinanciera` —
+ * ver `lib/criterios-evaluacion.ts`. Lo único que persiste es la lectura del
+ * analista, para que nunca quede una cifra guardada desincronizada del balance.
+ */
+export interface CriteriosEvaluacionData {
+  observaciones?: string
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Amortización
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * La tabla en sí se recalcula en vivo desde `ajustesCredito` (o, si el analista
+ * aún no ha guardado ajustes, desde `origen.ajustesCredito`) — ver
+ * `lib/amortizacion.ts`. Lo único que persiste aquí es lo que no se puede
+ * derivar de otra pestaña: la fecha de dispersión (ancla el calendario de
+ * pagos) y la observación del analista.
+ */
+export interface AmortizacionData {
+  /** Fecha ISO (yyyy-mm-dd) estimada de dispersión. Sin ella, las filas solo muestran "Mes N". */
+  fechaDispersion?: string | null
+  observaciones?: string
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Comentario
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Las 5 secciones del comentario del analista — cada una autoguardada por separado. */
+export interface ComentarioData {
+  antecedentes?: string
+  buroCredito?: string
+  situacionFinanciera?: string
+  visita?: string
+  opinionAnalista?: string
+}
+
 export interface AnalisisContexto {
   folio: string
   estatus: string
@@ -112,9 +156,9 @@ export interface Analisis {
   solicitudId: string
   situacionFinanciera: SituacionFinancieraData | null
   ajustesCredito: AjustesCreditoData | null
-  criteriosEvaluacion: Record<string, unknown> | null
-  amortizacion: Record<string, unknown> | null
-  comentario: string | null
+  criteriosEvaluacion: CriteriosEvaluacionData | null
+  amortizacion: AmortizacionData | null
+  comentario: ComentarioData | null
 }
 
 export interface AnalisisResponse {

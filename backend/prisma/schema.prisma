@@ -433,7 +433,10 @@ model Analisis {
   ajustesCredito      Json?
   criteriosEvaluacion Json?
   amortizacion        Json?
-  comentario          String?
+  // Objeto con las 5 secciones de la pestaña Comentario (antecedentes, buró de
+  // crédito, situación financiera, visita, opinión del analista) — ver
+  // `ComentarioData` en el frontend.
+  comentario          Json?
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
