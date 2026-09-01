@@ -15,6 +15,7 @@ import dashboardRoutes from "./modules/admin/dashboard/dashboard.routes";
 import asignacionRoutes from "./modules/admin/asignacion/asignacion.routes"
 import grupoRoutes from "./modules/admin/grupos/grupos.routes"
 import logsRoutes from "./modules/admin/logs/logs.routes";
+import reportesRoutes from "./modules/admin/reportes/reportes.routes";
 
 import expedienteRoutes from "./modules/expediente/expediente.routes";
 import uploadsRouter from "./modules/uploads/uploads.routes";
@@ -61,6 +62,7 @@ app.use("/api/admin/grupos", grupoRoutes);
 app.use("/api/admin/logs", logsRoutes);
 app.use("/api/admin/programas", programasRoutes);
 app.use("/api/admin/promocion", promocionRoutes);
+app.use("/api/admin/reportes", reportesRoutes);
 app.use("/api/admin/usuarios", usuariosRoutes);
 
 app.use("/api/expediente", expedienteRoutes);

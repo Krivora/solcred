@@ -16,6 +16,7 @@ import {
   TicketCheck,
   LifeBuoy,
   BadgeDollarSign,
+  FileSpreadsheet,
   Settings2,
 } from "lucide-react";
 import { RolAplicacion } from "@/shared/types/auth.types";
@@ -118,6 +119,13 @@ export const navConfig: NavItem[] = [
         roles: ["ADMIN"],
       },
     ],
+  },
+  {
+    label: "Reportes",
+    href: "/dashboard/admin/reportes",
+    icon: FileSpreadsheet,
+    roles: ["ADMIN"],
+    exact: true,
   },
   {
     label: "Soporte",
