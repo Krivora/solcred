@@ -1,113 +1,38 @@
-"use client";
+'use client'
 
-// src/app/(dashboard)/dashboard/page.tsx
-import { useAuthStore } from "@/shared/stores/auth.store";
-import { PageHeader } from "@/shared/components/common/PageHeader";
-import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  TrendingUp,
-  Users,
-  Building2,
-  ActivitySquare,
-} from "lucide-react";
+import Link from 'next/link'
+import { useAuthStore } from '@/shared/stores/auth.store'
+import { PageHeader } from '@/shared/components/common/PageHeader'
+import { Button } from '@/shared/components/ui/button'
+import { PanoramaDashboard } from '@/features/dashboard/components/PanoramaDashboard'
 
-const ROLE_WELCOME: Record<string, string> = {
-  ADMIN: "Panel de Administración",
-  ANALISTA: "Panel de Análisis",
-  CLIENTE: "Mi Portal de Crédito",
-};
-
-interface StatCard {
-  label: string;
-  value: string;
-  sub: string;
-  icon: React.ElementType;
-  color: string;
+const AREA_POR_ROL: Record<string, { label: string; href: string }> = {
+  GESTOR: { label: 'Ir a Mis Casos', href: '/dashboard/admin/promocion/mis-casos' },
+  ANALISTA: { label: 'Ir a Mis Casos', href: '/dashboard/financiamiento/mis-casos' },
+  SUPERVISOR: { label: 'Ir a Validación', href: '/dashboard/financiamiento/validacion' },
+  CLIENTE: { label: 'Ir a Mis Solicitudes', href: '/dashboard/usuarios/solicitudes' },
 }
 
-const ADMIN_STATS: StatCard[] = [
-  { label: "Total Solicitudes", value: "—", sub: "este mes", icon: FileText, color: "text-info" },
-  { label: "Pendientes", value: "—", sub: "por revisar", icon: Clock, color: "text-warning" },
-  { label: "Aprobadas", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-success" },
-  { label: "Rechazadas", value: "—", sub: "este mes", icon: XCircle, color: "text-destructive" },
-  { label: "Usuarios Activos", value: "—", sub: "registrados", icon: Users, color: "text-primary" },
-  { label: "Programas", value: "—", sub: "activos", icon: Building2, color: "text-primary" },
-];
-
-const ANALISTA_STATS: StatCard[] = [
-  { label: "Mis Casos", value: "—", sub: "asignados", icon: FileText, color: "text-info" },
-  { label: "En Revisión", value: "—", sub: "en proceso", icon: ActivitySquare, color: "text-warning" },
-  { label: "Completados", value: "—", sub: "este mes", icon: CheckCircle2, color: "text-success" },
-  { label: "En Mesa", value: "—", sub: "por revisar", icon: Clock, color: "text-primary" },
-];
-
-const CLIENTE_STATS: StatCard[] = [
-  { label: "Mis Solicitudes", value: "—", sub: "total", icon: FileText, color: "text-info" },
-  { label: "En Proceso", value: "—", sub: "activas", icon: TrendingUp, color: "text-warning" },
-  { label: "Aprobadas", value: "—", sub: "historial", icon: CheckCircle2, color: "text-success" },
-  { label: "Borradores", value: "—", sub: "por enviar", icon: Clock, color: "text-muted-foreground" },
-];
-
-const STATS_BY_ROLE: Record<string, StatCard[]> = {
-  ADMIN: ADMIN_STATS,
-  ANALISTA: ANALISTA_STATS,
-  CLIENTE: CLIENTE_STATS,
-};
-
 export default function DashboardPage() {
-  const { usuario, rol } = useAuthStore();
-  const stats = rol ? (STATS_BY_ROLE[rol] ?? []) : [];
-  const welcomeTitle = rol ? ROLE_WELCOME[rol] : "Dashboard";
+  const { usuario, rol } = useAuthStore()
+
+  if (rol === 'ADMIN') {
+    return <PanoramaDashboard />
+  }
+
+  const area = rol ? AREA_POR_ROL[rol] : undefined
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title={welcomeTitle}
-        description={`Bienvenido, ${usuario?.nombre ?? ""} ${usuario?.apellidoPaterno ?? ""}. Aquí está el resumen de tu actividad.`.trim()}
+        title={`Hola, ${usuario?.nombre ?? ''}`.trim()}
+        description="Desde aquí puedes ir directo a tu área de trabajo."
       />
-
-      {/* Stats grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {stat.label}
-                </p>
-                <div className="rounded-lg bg-muted p-1.5">
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{stat.sub}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Placeholder recent activity */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h3 className="text-sm font-semibold text-foreground mb-4">
-          Actividad Reciente
-        </h3>
-        <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
-          <ActivitySquare className="h-8 w-8 text-muted-foreground/30" />
-          <p className="text-sm text-muted-foreground">
-            No hay actividad reciente
-          </p>
-          <p className="text-xs text-muted-foreground/60">
-            Aquí verás los últimos movimientos de solicitudes y expedientes.
-          </p>
-        </div>
-      </div>
+      {area && (
+        <Button asChild>
+          <Link href={area.href}>{area.label}</Link>
+        </Button>
+      )}
     </div>
-  );
+  )
 }
