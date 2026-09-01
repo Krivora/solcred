@@ -4,7 +4,9 @@ import { registrarLog } from "@utils/audit";
 import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import { ok } from "@utils/response";
 import * as analisisService from "./analisis.service";
-import { guardarTabSchema } from "./analisis.schema";
+import { guardarTabSchema, informeEjecutivoSchema } from "./analisis.schema";
+import { informeEjecutivoTemplate } from "@/shared/pdf/templates/informe-ejecutivo.template";
+import { generarPDFDesdeHTML } from "@/shared/pdf/pdf.service";
 
 export const obtener = async (req: RequestAutenticado, res: Response, next: NextFunction) => {
   try {
@@ -43,6 +45,37 @@ export const guardarTab = async (req: RequestAutenticado, res: Response, next: N
     });
 
     res.status(200).json(ok("Pestaña guardada", analisis));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const generarInformeEjecutivo = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const solicitudId = req.params.solicitudId as string;
+    const input = informeEjecutivoSchema.parse(req.body);
+
+    const data = await analisisService.armarInformeEjecutivo(solicitudId, input);
+    const html = informeEjecutivoTemplate(data);
+    const pdfBuffer = await generarPDFDesdeHTML(html);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.SOLICITUDES,
+      descripcion: `Informe ejecutivo generado para solicitud: ${solicitudId}`,
+      usuarioId: req.usuario!.id,
+      entidadId: solicitudId,
+      req,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="informe-ejecutivo-${data.folio}.pdf"`);
+    res.setHeader("Content-Length", pdfBuffer.length.toString());
+    res.status(200).send(pdfBuffer);
   } catch (error) {
     next(error);
   }

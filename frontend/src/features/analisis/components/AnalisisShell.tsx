@@ -2,11 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Loader2, Check, CloudOff, Lock, FileSpreadsheet } from 'lucide-react'
+import { ArrowLeft, Loader2, Check, CloudOff, Lock, FileSpreadsheet, FileText } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/components/ui/tabs'
 import { ESTATUS_STYLES } from '@/shared/config/solicitudes.config'
 import { cn } from '@/shared/lib/cn'
+import { useInformeEjecutivo } from '@/features/analisis/hooks/useInformeEjecutivo'
 import { ComentarioTab } from './ComentarioTab'
 import { SituacionFinancieraTab } from './situacion-financiera/SituacionFinancieraTab'
 import { AjustesCreditoTab } from './ajustes-credito/AjustesCreditoTab'
@@ -53,6 +54,7 @@ interface Props {
 export function AnalisisShell({ contexto, analisis, origen, editable, guardado, onGuardarTab }: Props) {
   const router = useRouter()
   const estatus = ESTATUS_STYLES[contexto.estatus] ?? ESTATUS_STYLES.BORRADOR
+  const informe = useInformeEjecutivo()
 
   // Controlado (en vez de defaultValue) para poder saltar a Situación
   // Financiera desde el estado vacío de Criterios de Evaluación.
@@ -88,8 +90,22 @@ export function AnalisisShell({ contexto, analisis, origen, editable, guardado, 
               </p>
             </div>
           </div>
-          <div className="mt-1 shrink-0">
+          <div className="mt-1 flex shrink-0 items-center gap-3">
             <IndicadorGuardado estado={guardado} editable={editable} />
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5"
+              disabled={informe.generandoId === analisis.solicitudId}
+              onClick={() => informe.generar(analisis.solicitudId)}
+            >
+              {informe.generandoId === analisis.solicitudId ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <FileText className="h-3.5 w-3.5" />
+              )}
+              Informe Ejecutivo
+            </Button>
           </div>
         </div>
 

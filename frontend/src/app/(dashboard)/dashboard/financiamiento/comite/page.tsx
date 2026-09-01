@@ -13,6 +13,7 @@ export default function ComitePage() {
       descripcion="Decisión final: aprobar o rechazar el crédito"
       hook={hook}
       mostrarColumnaAnalista
+      mostrarInforme
       acciones={[
         {
           tipo: 'aprobar',

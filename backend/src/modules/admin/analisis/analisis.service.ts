@@ -1,7 +1,9 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { Prisma } from "../../../../generated/prisma/client";
-import type { AnalisisTab } from "./analisis.schema";
+import type { AnalisisTab, InformeEjecutivoInput } from "./analisis.schema";
+import type { InformeEjecutivoPDFData } from "@/shared/pdf/pdf.types";
+import { FIRMANTES_INFORME_EJECUTIVO } from "./informe-firmas.config";
 
 const GARANTIA_CAMPOS = {
   tipo: true,
@@ -246,4 +248,271 @@ export const guardarTab = async (
     create: { solicitudId, analistaId, [tab]: valor },
     update: { [tab]: valor },
   });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Informe Ejecutivo de Crédito
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CATEGORIA_LABEL: Record<string, string> = {
+  CAPITAL: "Capital de trabajo",
+  MAQUINARIA_EQUIPO: "Maquinaria y equipo",
+  REMODELACION: "Remodelación",
+};
+
+const NOMBRE_PERSONAL = {
+  select: {
+    usuario: { select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true } },
+  },
+} as const;
+
+const SELECT_INFORME = {
+  id: true,
+  folio: true,
+  estatus: true,
+  tipoPersona: true,
+  solicitanteId: true,
+  programa: {
+    select: {
+      nombre: true,
+      objetivo: true,
+      tasaOrdinaria: true,
+      tasaMoratoria: true,
+      tasaAnual: true,
+      plazoMinimoMeses: true,
+      secciones: { select: { seccion: true, requerimiento: true } },
+    },
+  },
+  datosSolicitante: {
+    select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true, rfc: true },
+  },
+  datosAval: {
+    select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+  },
+  datosNegocio: {
+    select: {
+      nombreNegocio: true,
+      actividadNegocio: true,
+      municipioLocal: true,
+      estadoLocal: true,
+      antiguedadNegocio: true,
+      experienciaActividadSolicitante: true,
+      experienciaEmpresarioSolicitante: true,
+      empleosConservados: true,
+      empleosNuevos: true,
+    },
+  },
+  datosCredito: {
+    select: {
+      plazoMeses: true,
+      mesesGracia: true,
+      conceptos: {
+        select: { categoria: true, concepto: true, monto: true },
+        orderBy: { creadoEn: "asc" },
+      },
+    },
+  },
+  datosGarantia: {
+    select: { garantias: { select: GARANTIA_CAMPOS, orderBy: { creadoEn: "asc" } } },
+  },
+  asignaciones: { where: { activa: true }, take: 1, select: { gestor: NOMBRE_PERSONAL } },
+  asignacionesFinanciamiento: {
+    where: { activa: true },
+    take: 1,
+    select: { analista: NOMBRE_PERSONAL },
+  },
+} satisfies Prisma.SolicitudSelect;
+
+type SolicitudInforme = Prisma.SolicitudGetPayload<{ select: typeof SELECT_INFORME }>;
+
+const nombreCompleto = (
+  u: { nombre: string; apellidoPaterno: string; apellidoMaterno: string } | null | undefined,
+): string | null =>
+  u ? `${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno}`.replace(/\s+/g, " ").trim() : null;
+
+interface CondicionesJSON {
+  plazoMeses: number;
+  mesesGracia: number;
+  tasaAnual: number;
+}
+interface ConceptoJSON {
+  categoria: string;
+  concepto: string;
+  monto: number;
+}
+type GarantiaJSON = Prisma.GarantiaGetPayload<{ select: typeof GARANTIA_CAMPOS }>;
+interface AjustesJSON {
+  condiciones: CondicionesJSON;
+  conceptos: ConceptoJSON[];
+  garantias: GarantiaJSON[];
+}
+
+/** Ajustes guardados por el analista, o —si aún no hay— lo que pidió el cliente. */
+function resolverAjustes(s: SolicitudInforme, ajustesCredito: unknown): AjustesJSON {
+  const guardado = ajustesCredito as Partial<AjustesJSON> | null;
+  if (guardado && guardado.condiciones && Array.isArray(guardado.conceptos)) {
+    return {
+      condiciones: guardado.condiciones,
+      conceptos: guardado.conceptos,
+      garantias: Array.isArray(guardado.garantias) ? guardado.garantias : [],
+    };
+  }
+  return {
+    condiciones: {
+      plazoMeses: s.datosCredito?.plazoMeses ?? s.programa.plazoMinimoMeses,
+      mesesGracia: s.datosCredito?.mesesGracia ?? 0,
+      tasaAnual: s.programa.tasaAnual,
+    },
+    conceptos: (s.datosCredito?.conceptos ?? []).map((c) => ({
+      categoria: c.categoria,
+      concepto: c.concepto,
+      monto: c.monto,
+    })),
+    garantias: (s.datosGarantia?.garantias ?? []).map((g) => ({ ...g })),
+  };
+}
+
+function detalleGarantia(g: GarantiaJSON): string | null {
+  const partes =
+    g.tipo === "PRENDARIA"
+      ? [g.marca, g.modelo, g.anio ? String(g.anio) : null, g.numeroSerie ? `Serie ${g.numeroSerie}` : null]
+      : [
+          [g.calle, g.numeroExterior && `#${g.numeroExterior}`, g.colonia].filter(Boolean).join(" "),
+          [g.ciudad, g.estado].filter(Boolean).join(", "),
+          g.numeroEscritura ? `Escritura ${g.numeroEscritura}` : null,
+          g.folioReal ? `Folio real ${g.folioReal}` : null,
+        ];
+  const txt = partes.filter(Boolean).join(" · ");
+  return txt || null;
+}
+
+export const armarInformeEjecutivo = async (
+  solicitudId: string,
+  input: InformeEjecutivoInput,
+): Promise<InformeEjecutivoPDFData> => {
+  const solicitud = await prisma.solicitud.findUnique({
+    where: { id: solicitudId },
+    select: SELECT_INFORME,
+  });
+  if (!solicitud) throw new AppError("Solicitud no encontrada", 404);
+
+  const analisis = await prisma.analisis.findUnique({ where: { solicitudId } });
+  const ajustes = resolverAjustes(solicitud, analisis?.ajustesCredito ?? null);
+  const comentario = (analisis?.comentario ?? {}) as Record<string, string | undefined>;
+
+  const conceptosOriginales = solicitud.datosCredito?.conceptos ?? [];
+  const montoSolicitado = conceptosOriginales.reduce((a, c) => a + c.monto, 0);
+  const montoAjustado = ajustes.conceptos.reduce((a, c) => a + (c.monto || 0), 0);
+
+  const antecedentes = await prisma.solicitud.count({
+    where: { solicitanteId: solicitud.solicitanteId, estatus: "APROBADO", id: { not: solicitudId } },
+  });
+
+  const dn = solicitud.datosNegocio;
+  const ubicacion = [dn?.municipioLocal, dn?.estadoLocal].filter(Boolean).join(", ") || null;
+  const anios = (n: number | null | undefined) =>
+    n != null ? `${n} ${n === 1 ? "año" : "años"}` : null;
+  const antiguedad = anios(dn?.antiguedadNegocio);
+  const experiencia = anios(
+    dn?.experienciaActividadSolicitante ?? dn?.experienciaEmpresarioSolicitante,
+  );
+
+  const categorias = [...new Set(ajustes.conceptos.map((c) => c.categoria))];
+  const destino =
+    categorias.map((c) => CATEGORIA_LABEL[c] ?? c).join(", ") || "No especificado";
+
+  const filasInversion = ajustes.conceptos.map((c) => ({
+    categoria: CATEGORIA_LABEL[c.categoria] ?? c.categoria,
+    concepto: c.concepto || "—",
+    monto: c.monto || 0,
+    participacion: montoAjustado > 0 ? ((c.monto || 0) / montoAjustado) * 100 : 0,
+  }));
+
+  const seccionGarantia = solicitud.programa.secciones.find((x) => x.seccion === "GARANTIA");
+  const programaNoRequiereGarantia = seccionGarantia?.requerimiento === "NO_REQUIERE";
+
+  const valorGarantias = ajustes.garantias.reduce((a, g) => a + (g.valor || 0), 0);
+  const garantia: InformeEjecutivoPDFData["garantia"] =
+    ajustes.garantias.length === 0
+      ? {
+          requiere: false,
+          nota: programaNoRequiereGarantia
+            ? `El programa ${solicitud.programa.nombre} no requiere garantía.`
+            : "No se registraron garantías para esta operación.",
+        }
+      : {
+          requiere: true,
+          valorTotal: valorGarantias,
+          cobertura: montoAjustado > 0 ? valorGarantias / montoAjustado : null,
+          filas: ajustes.garantias.map((g) => ({
+            tipo: g.tipo === "PRENDARIA" ? "Prendaria" : "Hipotecaria",
+            propietario: g.nombrePropietario,
+            valor: g.valor || 0,
+            descripcion: g.descripcion,
+            detalle: detalleGarantia(g),
+          })),
+        };
+
+  return {
+    folio: solicitud.folio,
+    fecha: new Date().toLocaleDateString("es-MX", { day: "2-digit", month: "long", year: "numeric" }),
+    programa: solicitud.programa.nombre,
+    estatus: solicitud.estatus,
+
+    identificacion: {
+      solicitante: nombreCompleto(solicitud.datosSolicitante) ?? "—",
+      nombreComercial: dn?.nombreNegocio ?? null,
+      rfc: solicitud.datosSolicitante?.rfc ?? null,
+      tipoPersona: solicitud.tipoPersona === "MORAL" ? "Persona moral" : solicitud.tipoPersona === "FISICA" ? "Persona física" : null,
+      actividad: dn?.actividadNegocio ?? null,
+      ubicacion,
+      asesor: nombreCompleto(solicitud.asignaciones[0]?.gestor?.usuario),
+      analista: nombreCompleto(solicitud.asignacionesFinanciamiento[0]?.analista?.usuario),
+      antiguedadNegocio: antiguedad,
+      experiencia,
+      empleosActuales: dn?.empleosConservados ?? null,
+      empleosNuevos: dn?.empleosNuevos ?? null,
+      conAntecedentes: antecedentes > 0,
+    },
+
+    aval: {
+      tiene: !!solicitud.datosAval,
+      nombre: nombreCompleto(solicitud.datosAval),
+    },
+
+    objetivo: {
+      destino,
+      objetivoPrograma: solicitud.programa.objetivo,
+      montoSolicitado,
+      montoAjustado,
+    },
+
+    condiciones: {
+      monto: montoAjustado,
+      plazoMeses: ajustes.condiciones.plazoMeses,
+      mesesGracia: ajustes.condiciones.mesesGracia,
+      tasaAnual: ajustes.condiciones.tasaAnual,
+      tasaOrdinaria: solicitud.programa.tasaOrdinaria,
+      tasaMoratoria: solicitud.programa.tasaMoratoria,
+      pagoMensual: input.amortizacion?.pagoOrdinario ?? null,
+      totalPagar: input.amortizacion?.totalPagado ?? null,
+      totalIntereses: input.amortizacion?.totalIntereses ?? null,
+    },
+
+    programaInversion: { filas: filasInversion, total: montoAjustado },
+
+    situacion: input.situacion,
+
+    garantia,
+
+    comentarios: {
+      antecedentes: comentario.antecedentes ?? null,
+      buroCredito: comentario.buroCredito ?? null,
+      situacionFinanciera: comentario.situacionFinanciera ?? null,
+      visita: comentario.visita ?? null,
+      opinionAnalista: comentario.opinionAnalista ?? null,
+    },
+
+    firmas: FIRMANTES_INFORME_EJECUTIVO.map((fm) => ({ ...fm })),
+  };
 };
