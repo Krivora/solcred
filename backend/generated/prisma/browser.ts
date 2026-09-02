@@ -175,3 +175,11 @@ export type TicketEvento = Prisma.TicketEventoModel
  * 
  */
 export type TicketSlaPolitica = Prisma.TicketSlaPoliticaModel
+/**
+ * Model Comunicacion
+ * Registro de un contacto (llamada, correo, etc.) del personal con un cliente,
+ * siempre ligado a una solicitud. Módulo interno: el cliente no lo ve.
+ * `clienteId` se denormaliza desde `Solicitud.solicitanteId` para poder
+ * consultar el historial completo de un cliente (varias solicitudes) por índice.
+ */
+export type Comunicacion = Prisma.ComunicacionModel

@@ -234,6 +234,7 @@ export type PersonalWhereInput = {
   analisis?: Prisma.AnalisisListRelationFilter
   ticketsAsignados?: Prisma.TicketListRelationFilter
   ticketsAsignadosPor?: Prisma.TicketListRelationFilter
+  comunicacionesRegistradas?: Prisma.ComunicacionListRelationFilter
 }
 
 export type PersonalOrderByWithRelationInput = {
@@ -259,6 +260,7 @@ export type PersonalOrderByWithRelationInput = {
   analisis?: Prisma.AnalisisOrderByRelationAggregateInput
   ticketsAsignados?: Prisma.TicketOrderByRelationAggregateInput
   ticketsAsignadosPor?: Prisma.TicketOrderByRelationAggregateInput
+  comunicacionesRegistradas?: Prisma.ComunicacionOrderByRelationAggregateInput
 }
 
 export type PersonalWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type PersonalWhereUniqueInput = Prisma.AtLeast<{
   analisis?: Prisma.AnalisisListRelationFilter
   ticketsAsignados?: Prisma.TicketListRelationFilter
   ticketsAsignadosPor?: Prisma.TicketListRelationFilter
+  comunicacionesRegistradas?: Prisma.ComunicacionListRelationFilter
 }, "id" | "userId">
 
 export type PersonalOrderByWithAggregationInput = {
@@ -342,6 +345,7 @@ export type PersonalCreateInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateInput = {
@@ -365,6 +369,7 @@ export type PersonalUncheckedCreateInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUpdateInput = {
@@ -388,6 +393,7 @@ export type PersonalUpdateInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateInput = {
@@ -411,6 +417,7 @@ export type PersonalUncheckedUpdateInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateManyInput = {
@@ -739,6 +746,20 @@ export type PersonalUpdateOneWithoutTicketsAsignadosPorNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalUpdateToOneWithWhereWithoutTicketsAsignadosPorInput, Prisma.PersonalUpdateWithoutTicketsAsignadosPorInput>, Prisma.PersonalUncheckedUpdateWithoutTicketsAsignadosPorInput>
 }
 
+export type PersonalCreateNestedOneWithoutComunicacionesRegistradasInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedCreateWithoutComunicacionesRegistradasInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutComunicacionesRegistradasInput
+  connect?: Prisma.PersonalWhereUniqueInput
+}
+
+export type PersonalUpdateOneRequiredWithoutComunicacionesRegistradasNestedInput = {
+  create?: Prisma.XOR<Prisma.PersonalCreateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedCreateWithoutComunicacionesRegistradasInput>
+  connectOrCreate?: Prisma.PersonalCreateOrConnectWithoutComunicacionesRegistradasInput
+  upsert?: Prisma.PersonalUpsertWithoutComunicacionesRegistradasInput
+  connect?: Prisma.PersonalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PersonalUpdateToOneWithWhereWithoutComunicacionesRegistradasInput, Prisma.PersonalUpdateWithoutComunicacionesRegistradasInput>, Prisma.PersonalUncheckedUpdateWithoutComunicacionesRegistradasInput>
+}
+
 export type PersonalCreateWithoutGruposGestionInput = {
   id?: string
   rol: $Enums.Rol
@@ -759,6 +780,7 @@ export type PersonalCreateWithoutGruposGestionInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutGruposGestionInput = {
@@ -781,6 +803,7 @@ export type PersonalUncheckedCreateWithoutGruposGestionInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutGruposGestionInput = {
@@ -819,6 +842,7 @@ export type PersonalUpdateWithoutGruposGestionInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutGruposGestionInput = {
@@ -841,6 +865,7 @@ export type PersonalUncheckedUpdateWithoutGruposGestionInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutAsignacionesGestorInput = {
@@ -863,6 +888,7 @@ export type PersonalCreateWithoutAsignacionesGestorInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAsignacionesGestorInput = {
@@ -885,6 +911,7 @@ export type PersonalUncheckedCreateWithoutAsignacionesGestorInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAsignacionesGestorInput = {
@@ -912,6 +939,7 @@ export type PersonalCreateWithoutAsignacionesDadasInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAsignacionesDadasInput = {
@@ -934,6 +962,7 @@ export type PersonalUncheckedCreateWithoutAsignacionesDadasInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAsignacionesDadasInput = {
@@ -972,6 +1001,7 @@ export type PersonalUpdateWithoutAsignacionesGestorInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAsignacionesGestorInput = {
@@ -994,6 +1024,7 @@ export type PersonalUncheckedUpdateWithoutAsignacionesGestorInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUpsertWithoutAsignacionesDadasInput = {
@@ -1027,6 +1058,7 @@ export type PersonalUpdateWithoutAsignacionesDadasInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAsignacionesDadasInput = {
@@ -1049,6 +1081,7 @@ export type PersonalUncheckedUpdateWithoutAsignacionesDadasInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutAsignacionesFinanciamientoInput = {
@@ -1071,6 +1104,7 @@ export type PersonalCreateWithoutAsignacionesFinanciamientoInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
@@ -1093,6 +1127,7 @@ export type PersonalUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAsignacionesFinanciamientoInput = {
@@ -1120,6 +1155,7 @@ export type PersonalCreateWithoutFinanciamientoAsignadoPorInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput = {
@@ -1142,6 +1178,7 @@ export type PersonalUncheckedCreateWithoutFinanciamientoAsignadoPorInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutFinanciamientoAsignadoPorInput = {
@@ -1180,6 +1217,7 @@ export type PersonalUpdateWithoutAsignacionesFinanciamientoInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
@@ -1202,6 +1240,7 @@ export type PersonalUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUpsertWithoutFinanciamientoAsignadoPorInput = {
@@ -1235,6 +1274,7 @@ export type PersonalUpdateWithoutFinanciamientoAsignadoPorInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput = {
@@ -1257,6 +1297,7 @@ export type PersonalUncheckedUpdateWithoutFinanciamientoAsignadoPorInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutUsuarioInput = {
@@ -1279,6 +1320,7 @@ export type PersonalCreateWithoutUsuarioInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutUsuarioInput = {
@@ -1301,6 +1343,7 @@ export type PersonalUncheckedCreateWithoutUsuarioInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutUsuarioInput = {
@@ -1339,6 +1382,7 @@ export type PersonalUpdateWithoutUsuarioInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutUsuarioInput = {
@@ -1361,6 +1405,7 @@ export type PersonalUncheckedUpdateWithoutUsuarioInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutSubordinadosInput = {
@@ -1383,6 +1428,7 @@ export type PersonalCreateWithoutSubordinadosInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutSubordinadosInput = {
@@ -1405,6 +1451,7 @@ export type PersonalUncheckedCreateWithoutSubordinadosInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutSubordinadosInput = {
@@ -1432,6 +1479,7 @@ export type PersonalCreateWithoutSupervisorInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutSupervisorInput = {
@@ -1454,6 +1502,7 @@ export type PersonalUncheckedCreateWithoutSupervisorInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutSupervisorInput = {
@@ -1497,6 +1546,7 @@ export type PersonalUpdateWithoutSubordinadosInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutSubordinadosInput = {
@@ -1519,6 +1569,7 @@ export type PersonalUncheckedUpdateWithoutSubordinadosInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUpsertWithWhereUniqueWithoutSupervisorInput = {
@@ -1573,6 +1624,7 @@ export type PersonalCreateWithoutAnalisisInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutAnalisisInput = {
@@ -1595,6 +1647,7 @@ export type PersonalUncheckedCreateWithoutAnalisisInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutAnalisisInput = {
@@ -1633,6 +1686,7 @@ export type PersonalUpdateWithoutAnalisisInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutAnalisisInput = {
@@ -1655,6 +1709,7 @@ export type PersonalUncheckedUpdateWithoutAnalisisInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutDocumentosValidadosInput = {
@@ -1677,6 +1732,7 @@ export type PersonalCreateWithoutDocumentosValidadosInput = {
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutDocumentosValidadosInput = {
@@ -1699,6 +1755,7 @@ export type PersonalUncheckedCreateWithoutDocumentosValidadosInput = {
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutDocumentosValidadosInput = {
@@ -1737,6 +1794,7 @@ export type PersonalUpdateWithoutDocumentosValidadosInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutDocumentosValidadosInput = {
@@ -1759,6 +1817,7 @@ export type PersonalUncheckedUpdateWithoutDocumentosValidadosInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalCreateWithoutTicketsAsignadosInput = {
@@ -1781,6 +1840,7 @@ export type PersonalCreateWithoutTicketsAsignadosInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutTicketsAsignadosInput = {
@@ -1803,6 +1863,7 @@ export type PersonalUncheckedCreateWithoutTicketsAsignadosInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutTicketsAsignadosInput = {
@@ -1830,6 +1891,7 @@ export type PersonalCreateWithoutTicketsAsignadosPorInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
   analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
+  comunicacionesRegistradas?: Prisma.ComunicacionCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalUncheckedCreateWithoutTicketsAsignadosPorInput = {
@@ -1852,6 +1914,7 @@ export type PersonalUncheckedCreateWithoutTicketsAsignadosPorInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
   ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutRegistradoPorInput
 }
 
 export type PersonalCreateOrConnectWithoutTicketsAsignadosPorInput = {
@@ -1890,6 +1953,7 @@ export type PersonalUpdateWithoutTicketsAsignadosInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutTicketsAsignadosInput = {
@@ -1912,6 +1976,7 @@ export type PersonalUncheckedUpdateWithoutTicketsAsignadosInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUpsertWithoutTicketsAsignadosPorInput = {
@@ -1945,6 +2010,7 @@ export type PersonalUpdateWithoutTicketsAsignadosPorInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutTicketsAsignadosPorInput = {
@@ -1967,6 +2033,115 @@ export type PersonalUncheckedUpdateWithoutTicketsAsignadosPorInput = {
   financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
+}
+
+export type PersonalCreateWithoutComunicacionesRegistradasInput = {
+  id?: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  usuario: Prisma.UsuarioCreateNestedOneWithoutPersonalInput
+  supervisor?: Prisma.PersonalCreateNestedOneWithoutSubordinadosInput
+  subordinados?: Prisma.PersonalCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutAsignadoPorInput
+  analisis?: Prisma.AnalisisCreateNestedManyWithoutAnalistaInput
+  ticketsAsignados?: Prisma.TicketCreateNestedManyWithoutAgenteInput
+  ticketsAsignadosPor?: Prisma.TicketCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type PersonalUncheckedCreateWithoutComunicacionesRegistradasInput = {
+  id?: string
+  userId: string
+  rol: $Enums.Rol
+  departamento?: string | null
+  extension?: string | null
+  supervisorId?: string | null
+  fechaIngreso?: Date | string
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  subordinados?: Prisma.PersonalUncheckedCreateNestedManyWithoutSupervisorInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutGestorInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutAsignadoPorInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutValidadoPorInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAnalistaInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutAsignadoPorInput
+  analisis?: Prisma.AnalisisUncheckedCreateNestedManyWithoutAnalistaInput
+  ticketsAsignados?: Prisma.TicketUncheckedCreateNestedManyWithoutAgenteInput
+  ticketsAsignadosPor?: Prisma.TicketUncheckedCreateNestedManyWithoutAsignadoPorInput
+}
+
+export type PersonalCreateOrConnectWithoutComunicacionesRegistradasInput = {
+  where: Prisma.PersonalWhereUniqueInput
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedCreateWithoutComunicacionesRegistradasInput>
+}
+
+export type PersonalUpsertWithoutComunicacionesRegistradasInput = {
+  update: Prisma.XOR<Prisma.PersonalUpdateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedUpdateWithoutComunicacionesRegistradasInput>
+  create: Prisma.XOR<Prisma.PersonalCreateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedCreateWithoutComunicacionesRegistradasInput>
+  where?: Prisma.PersonalWhereInput
+}
+
+export type PersonalUpdateToOneWithWhereWithoutComunicacionesRegistradasInput = {
+  where?: Prisma.PersonalWhereInput
+  data: Prisma.XOR<Prisma.PersonalUpdateWithoutComunicacionesRegistradasInput, Prisma.PersonalUncheckedUpdateWithoutComunicacionesRegistradasInput>
+}
+
+export type PersonalUpdateWithoutComunicacionesRegistradasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutPersonalNestedInput
+  supervisor?: Prisma.PersonalUpdateOneWithoutSubordinadosNestedInput
+  subordinados?: Prisma.PersonalUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUpdateManyWithoutAsignadoPorNestedInput
+  analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
+  ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
+  ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+}
+
+export type PersonalUncheckedUpdateWithoutComunicacionesRegistradasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.EnumRolFieldUpdateOperationsInput | $Enums.Rol
+  departamento?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extension?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supervisorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fechaIngreso?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subordinados?: Prisma.PersonalUncheckedUpdateManyWithoutSupervisorNestedInput
+  gruposGestion?: Prisma.GrupoGestorUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesGestor?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutGestorNestedInput
+  asignacionesDadas?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  documentosValidados?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutValidadoPorNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAnalistaNestedInput
+  financiamientoAsignadoPor?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
+  ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
+  ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
 }
 
 export type PersonalCreateManySupervisorInput = {
@@ -2001,6 +2176,7 @@ export type PersonalUpdateWithoutSupervisorInput = {
   analisis?: Prisma.AnalisisUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateWithoutSupervisorInput = {
@@ -2023,6 +2199,7 @@ export type PersonalUncheckedUpdateWithoutSupervisorInput = {
   analisis?: Prisma.AnalisisUncheckedUpdateManyWithoutAnalistaNestedInput
   ticketsAsignados?: Prisma.TicketUncheckedUpdateManyWithoutAgenteNestedInput
   ticketsAsignadosPor?: Prisma.TicketUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  comunicacionesRegistradas?: Prisma.ComunicacionUncheckedUpdateManyWithoutRegistradoPorNestedInput
 }
 
 export type PersonalUncheckedUpdateManyWithoutSupervisorInput = {
@@ -2053,6 +2230,7 @@ export type PersonalCountOutputType = {
   analisis: number
   ticketsAsignados: number
   ticketsAsignadosPor: number
+  comunicacionesRegistradas: number
 }
 
 export type PersonalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2066,6 +2244,7 @@ export type PersonalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   analisis?: boolean | PersonalCountOutputTypeCountAnalisisArgs
   ticketsAsignados?: boolean | PersonalCountOutputTypeCountTicketsAsignadosArgs
   ticketsAsignadosPor?: boolean | PersonalCountOutputTypeCountTicketsAsignadosPorArgs
+  comunicacionesRegistradas?: boolean | PersonalCountOutputTypeCountComunicacionesRegistradasArgs
 }
 
 /**
@@ -2148,6 +2327,13 @@ export type PersonalCountOutputTypeCountTicketsAsignadosPorArgs<ExtArgs extends 
   where?: Prisma.TicketWhereInput
 }
 
+/**
+ * PersonalCountOutputType without action
+ */
+export type PersonalCountOutputTypeCountComunicacionesRegistradasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ComunicacionWhereInput
+}
+
 
 export type PersonalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2172,6 +2358,7 @@ export type PersonalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   analisis?: boolean | Prisma.Personal$analisisArgs<ExtArgs>
   ticketsAsignados?: boolean | Prisma.Personal$ticketsAsignadosArgs<ExtArgs>
   ticketsAsignadosPor?: boolean | Prisma.Personal$ticketsAsignadosPorArgs<ExtArgs>
+  comunicacionesRegistradas?: boolean | Prisma.Personal$comunicacionesRegistradasArgs<ExtArgs>
   _count?: boolean | Prisma.PersonalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["personal"]>
 
@@ -2232,6 +2419,7 @@ export type PersonalInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   analisis?: boolean | Prisma.Personal$analisisArgs<ExtArgs>
   ticketsAsignados?: boolean | Prisma.Personal$ticketsAsignadosArgs<ExtArgs>
   ticketsAsignadosPor?: boolean | Prisma.Personal$ticketsAsignadosPorArgs<ExtArgs>
+  comunicacionesRegistradas?: boolean | Prisma.Personal$comunicacionesRegistradasArgs<ExtArgs>
   _count?: boolean | Prisma.PersonalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PersonalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2258,6 +2446,7 @@ export type $PersonalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     analisis: Prisma.$AnalisisPayload<ExtArgs>[]
     ticketsAsignados: Prisma.$TicketPayload<ExtArgs>[]
     ticketsAsignadosPor: Prisma.$TicketPayload<ExtArgs>[]
+    comunicacionesRegistradas: Prisma.$ComunicacionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2676,6 +2865,7 @@ export interface Prisma__PersonalClient<T, Null = never, ExtArgs extends runtime
   analisis<T extends Prisma.Personal$analisisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$analisisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalisisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ticketsAsignados<T extends Prisma.Personal$ticketsAsignadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$ticketsAsignadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ticketsAsignadosPor<T extends Prisma.Personal$ticketsAsignadosPorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$ticketsAsignadosPorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comunicacionesRegistradas<T extends Prisma.Personal$comunicacionesRegistradasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Personal$comunicacionesRegistradasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComunicacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3372,6 +3562,30 @@ export type Personal$ticketsAsignadosPorArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.TicketScalarFieldEnum | Prisma.TicketScalarFieldEnum[]
+}
+
+/**
+ * Personal.comunicacionesRegistradas
+ */
+export type Personal$comunicacionesRegistradasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comunicacion
+   */
+  select?: Prisma.ComunicacionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comunicacion
+   */
+  omit?: Prisma.ComunicacionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ComunicacionInclude<ExtArgs> | null
+  where?: Prisma.ComunicacionWhereInput
+  orderBy?: Prisma.ComunicacionOrderByWithRelationInput | Prisma.ComunicacionOrderByWithRelationInput[]
+  cursor?: Prisma.ComunicacionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ComunicacionScalarFieldEnum | Prisma.ComunicacionScalarFieldEnum[]
 }
 
 /**

@@ -11,6 +11,14 @@ import { DatosGeneralesCard } from '@/features/expediente/components/DatosGenera
 import { MetricasExpedientePanel } from '@/features/expediente/components/MetricasExpedienteBar'
 import { TablaDocumentos } from '@/features/expediente/components/TablaDocumentos'
 import { HistorialDocumentoSheet } from '@/features/expediente/components/HistorialDocumentoSheet'
+import { ComunicacionesPanel } from '@/features/crm/components/ComunicacionesPanel'
+
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '@/shared/components/ui/tabs'
 
 import { Button } from '@/shared/components/ui/button'
 import { Skeleton } from '@/shared/components/ui/skeleton'
@@ -114,6 +122,18 @@ export default function ExpedientePage({
             : usuario?.personal?.rol === 'GESTOR'
                 ? '/dashboard/admin/promocion/mis-casos'
                 : '/dashboard/admin/promocion/solicitudes'
+
+    // Quién puede REGISTRAR comunicaciones (el backend lo valida igual por
+    // solicitud): staff de promoción/financiamiento, o el gestor asignado.
+    const rolActual = usuario?.personal?.rol
+    const puedeRegistrarComunicaciones =
+        rolActual === 'ADMIN' ||
+        rolActual === 'ENCARGADO_PROMOCION' ||
+        rolActual === 'ENCARGADO_FINANCIAMIENTO' ||
+        rolActual === 'MESA_CONTROL' ||
+        (rolActual === 'GESTOR' &&
+            !!expediente?.gestor?.id &&
+            expediente.gestor.id === usuario?.personal?.id)
 
     const handleVerHistorial = (
         tipoDocumentoId: string,
@@ -220,20 +240,36 @@ export default function ExpedientePage({
                             expediente={expediente}
                         />
 
-                        <TablaDocumentos
-                            solicitudId={solicitudId}
-                            documentos={expediente.documentos}
-                            validando={validando}
-                            subiendo={subiendo}
-                            rolUsuario={usuario?.personal?.rol ?? ''}
-                            gestorAsignadoId={
-                                expediente.gestor?.id ?? null
-                            }
-                            usuarioId={usuario?.personal?.id ?? ''}
-                            onValidar={validarDocumento}
-                            onSubir={subirDocumento}
-                            onVerHistorial={handleVerHistorial}
-                        />
+                        <Tabs defaultValue="documentos" className="gap-4">
+                            <TabsList>
+                                <TabsTrigger value="documentos">Documentos</TabsTrigger>
+                                <TabsTrigger value="comunicaciones">Comunicaciones</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="documentos">
+                                <TablaDocumentos
+                                    solicitudId={solicitudId}
+                                    documentos={expediente.documentos}
+                                    validando={validando}
+                                    subiendo={subiendo}
+                                    rolUsuario={usuario?.personal?.rol ?? ''}
+                                    gestorAsignadoId={
+                                        expediente.gestor?.id ?? null
+                                    }
+                                    usuarioId={usuario?.personal?.id ?? ''}
+                                    onValidar={validarDocumento}
+                                    onSubir={subirDocumento}
+                                    onVerHistorial={handleVerHistorial}
+                                />
+                            </TabsContent>
+
+                            <TabsContent value="comunicaciones">
+                                <ComunicacionesPanel
+                                    solicitudId={solicitudId}
+                                    puedeRegistrar={puedeRegistrarComunicaciones}
+                                />
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
             )}

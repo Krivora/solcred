@@ -126,6 +126,11 @@ export const MODULO_CONFIG: Record<ModuloLog, ModuloConfig> = {
     className: 'bg-[color:var(--chart-1)]/10 text-[color:var(--chart-1)] border-[color:var(--chart-1)]/30',
     icon: 'LifeBuoy',
   },
+  CRM: {
+    label: 'CRM',
+    className: 'bg-[color:var(--chart-2)]/10 text-[color:var(--chart-2)] border-[color:var(--chart-2)]/30',
+    icon: 'MessagesSquare',
+  },
 };
 
 // ─────────────────────────────────────────

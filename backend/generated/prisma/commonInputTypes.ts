@@ -762,6 +762,57 @@ export type EnumTicketTipoEventoWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
 }
 
+export type EnumComunicacionTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel> | $Enums.ComunicacionTipo
+}
+
+export type EnumComunicacionMotivoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+}
+
+export type EnumComunicacionResultadoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel> | $Enums.ComunicacionResultado
+}
+
+export type EnumComunicacionTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+}
+
+export type EnumComunicacionMotivoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+}
+
+export type EnumComunicacionResultadoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionResultado
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1472,6 +1523,57 @@ export type NestedEnumTicketTipoEventoWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel> | $Enums.ComunicacionTipo
+}
+
+export type NestedEnumComunicacionMotivoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+}
+
+export type NestedEnumComunicacionResultadoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel> | $Enums.ComunicacionResultado
+}
+
+export type NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionResultado
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
 }
 
 

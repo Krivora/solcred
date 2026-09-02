@@ -286,6 +286,8 @@ model Usuario {
   ticketsAdjuntos    TicketAdjunto[]    @relation("TicketsAdjuntos")
   ticketsEventos     TicketEvento[]     @relation("TicketsEventos")
 
+  comunicaciones Comunicacion[] @relation("ComunicacionesCliente")
+
   personal Personal?
 }
 
@@ -338,6 +340,8 @@ model Personal {
 
   ticketsAsignados    Ticket[] @relation("TicketsAsignados")
   ticketsAsignadosPor Ticket[] @relation("TicketsAsignadosPor")
+
+  comunicacionesRegistradas Comunicacion[] @relation("ComunicacionesRegistradas")
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
@@ -449,6 +453,7 @@ model Solicitud {
   asignaciones               AsignacionSolicitud[]
   asignacionesFinanciamiento AsignacionFinanciamiento[]
   analisis                   Analisis?
+  comunicaciones             Comunicacion[]
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
@@ -755,6 +760,7 @@ enum ModuloLog {
   SOLICITUDES
   DOCUMENTOS
   SOPORTE
+  CRM
 }
 
 model LogAuditoria {
@@ -934,4 +940,71 @@ model TicketSlaPolitica {
   resolucionMinutos Int
   activa            Boolean         @default(true)
   actualizadoEn     DateTime        @updatedAt
+}
+
+// ─────────────────────────────────────────
+// CRM (COMUNICACIONES CON EL CLIENTE)
+// ─────────────────────────────────────────
+
+enum ComunicacionTipo {
+  LLAMADA
+  CORREO
+  MENSAJE
+  PRESENCIAL
+  OTRO
+}
+
+enum ComunicacionMotivo {
+  ACTUALIZACION_DOCUMENTACION
+  DOCUMENTACION_FALTANTE
+  CONFIRMACION_INFORMACION
+  SEGUIMIENTO_SOLICITUD
+  CONFIRMACION_INTERES
+  NOTIFICACION_AVANCE
+  ACLARACION_INFORMACION
+  NOTIFICACION_INCIDENCIA
+  RECORDATORIO_PENDIENTE
+  OTRO
+}
+
+enum ComunicacionResultado {
+  CONTACTADO
+  NO_CONTACTADO
+  SOLICITA_RECONTACTO
+  CONFIRMA_CONTINUIDAD
+  DESISTE
+  DOCUMENTACION_PENDIENTE
+  DOCUMENTACION_ENVIADA
+  INFORMACION_ACLARADA
+  SIN_RESPUESTA
+  OTRO
+}
+
+/// Registro de un contacto (llamada, correo, etc.) del personal con un cliente,
+/// siempre ligado a una solicitud. Módulo interno: el cliente no lo ve.
+/// `clienteId` se denormaliza desde `Solicitud.solicitanteId` para poder
+/// consultar el historial completo de un cliente (varias solicitudes) por índice.
+model Comunicacion {
+  id          String    @id @default(uuid())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  solicitudId String
+  cliente     Usuario   @relation("ComunicacionesCliente", fields: [clienteId], references: [id])
+  clienteId   String
+
+  registradoPor   Personal @relation("ComunicacionesRegistradas", fields: [registradoPorId], references: [id])
+  registradoPorId String
+
+  fechaContacto DateTime // editable; el service usa `now()` si no se envía
+  tipo          ComunicacionTipo
+  motivo        ComunicacionMotivo
+  resultado     ComunicacionResultado
+  observaciones String?
+
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+  editadoEn     DateTime? // se marca al editar (solo el autor puede)
+
+  @@index([solicitudId, fechaContacto])
+  @@index([clienteId, fechaContacto])
+  @@index([registradoPorId])
 }

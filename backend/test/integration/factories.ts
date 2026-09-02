@@ -89,3 +89,28 @@ export async function crearSolicitud(
     data: { folio, solicitanteId, programaId, estatus: "PENDIENTE", tipoPersona: "FISICA", ...over },
   });
 }
+
+/** Una comunicación del CRM ligada a una solicitud + cliente + personal. */
+export async function crearComunicacion(args: {
+  solicitudId: string;
+  clienteId: string;
+  registradoPorId: string;
+  fechaContacto?: Date;
+  tipo?: string;
+  motivo?: string;
+  resultado?: string;
+  observaciones?: string | null;
+}) {
+  return prisma.comunicacion.create({
+    data: {
+      solicitudId: args.solicitudId,
+      clienteId: args.clienteId,
+      registradoPorId: args.registradoPorId,
+      fechaContacto: args.fechaContacto ?? new Date(),
+      tipo: (args.tipo ?? "LLAMADA") as never,
+      motivo: (args.motivo ?? "SEGUIMIENTO_SOLICITUD") as never,
+      resultado: (args.resultado ?? "CONTACTADO") as never,
+      observaciones: args.observaciones ?? null,
+    },
+  });
+}

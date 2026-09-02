@@ -16,6 +16,7 @@ import type * as Front from '../frontend/src/shared/types/domain.enums'
 
 import type * as SolContract from '../backend/src/modules/clientes/solicitudes/solicitudes.contract'
 import type * as ExpContract from '../backend/src/modules/expediente/expediente.contract'
+import type * as CrmContract from '../backend/src/modules/crm/crm.contract'
 import type {
   Solicitud as FrontSolicitud,
   SolicitudListItem as FrontSolicitudListItem,
@@ -30,6 +31,10 @@ import type {
   Expediente as FrontExpediente,
   DocumentoConValidacionRaw as FrontDocumentoConValidacion,
 } from '../frontend/src/features/expediente/types/expediente.types'
+import type {
+  Comunicacion as FrontComunicacion,
+  ResumenComunicaciones as FrontResumenComunicaciones,
+} from '../frontend/src/features/crm/types/crm.types'
 
 type IgualA<A, B> = [A] extends [B]
   ? [B] extends [A]
@@ -60,6 +65,9 @@ type _AccionLog = Assert<IgualA<Prisma.AccionLog, Front.AccionLog>>
 type _ModuloLog = Assert<IgualA<Prisma.ModuloLog, Front.ModuloLog>>
 type _OperadorRegla = Assert<IgualA<Prisma.OperadorRegla, Front.OperadorRegla>>
 type _CampoRegla = Assert<IgualA<Prisma.CampoRegla, Front.CampoRegla>>
+type _ComunicacionTipo = Assert<IgualA<Prisma.ComunicacionTipo, Front.ComunicacionTipo>>
+type _ComunicacionMotivo = Assert<IgualA<Prisma.ComunicacionMotivo, Front.ComunicacionMotivo>>
+type _ComunicacionResultado = Assert<IgualA<Prisma.ComunicacionResultado, Front.ComunicacionResultado>>
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHAPES DE RESPUESTA — solicitud y expediente
@@ -103,6 +111,13 @@ type _Expediente = Assert<Satisface<ExpContract.ExpedienteResponse, FrontExpedie
 // PATCH /expediente/:id/documentos/:docId/validar · GET .../historial
 type _DocumentoValidacion = Assert<
   Satisface<ExpContract.DocumentoConValidacion, FrontDocumentoConValidacion>
+>
+
+// GET /crm/comunicaciones (fila del listado paginado) · POST · PATCH /:id
+type _Comunicacion = Assert<Satisface<CrmContract.ComunicacionResponse, FrontComunicacion>>
+// GET /crm/solicitudes/:id/resumen
+type _ResumenComunicaciones = Assert<
+  Satisface<CrmContract.ResumenComunicaciones, FrontResumenComunicaciones>
 >
 
 // Sub-formularios: PUT /clientes/solicitudes/:id/{solicitante,aval,credito,...}

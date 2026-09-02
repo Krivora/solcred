@@ -22,6 +22,7 @@ import expedienteRoutes from "./modules/expediente/expediente.routes";
 import uploadsRouter from "./modules/uploads/uploads.routes";
 import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
 import soporteRoutes from "./modules/soporte/soporte.routes";
+import crmRoutes from "./modules/crm/crm.routes";
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
@@ -82,6 +83,9 @@ app.use("/api/clientes/solicitudes", solicitudesRoutes);
 
 // ── Soporte (tickets) — cliente y staff ─────────────────
 app.use("/api/soporte", soporteRoutes);
+
+// ── CRM (comunicaciones con el cliente) — solo staff ────
+app.use("/api/crm", crmRoutes);
 
 
 // ── 404 ────────────────────────────────────
