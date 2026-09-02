@@ -91,7 +91,7 @@ EN_APROBACION                EN_CORRECCION  → el cliente corrige y reenvía
    │  (comité envía a financiamiento)
    ▼
 ─── FINANCIAMIENTO ─────────────────────────────────────────────────────
-EN_FINANCIAMIENTO         Mesa de Control (SUPERVISOR): revisión adicional de info/docs
+EN_FINANCIAMIENTO         Mesa de Control (MESA_CONTROL): revisión adicional de info/docs
    │  (mesa pasa a asignación)         └──(regresa a aprobación)──► EN_APROBACION
    ▼
 EN_ASIGNACION             cola de asignación de analista
@@ -244,10 +244,20 @@ automatizadas — ver §8.
 ### 6.1 Terminado y funcional
 
 - Autenticación y control de acceso por rol (rutas protegidas cliente ↔
-  staff, permisos por sección). Modelo de 8 roles con navegación, ruta por
+  staff, permisos por sección). Modelo de 9 roles con navegación, ruta por
   defecto, badge y `autorizar` en cada endpoint: `ADMIN`, `GESTOR`,
   `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
-  `MESA_CONTROL`, `SOPORTE`, `CLIENTE` (+ `SUPERVISOR` histórico) — ver §3.1.
+  `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y
+  `CLIENTE` — ver §3.1.
+- **Solo lectura de `SUPERVISOR` + revisión de seguridad** (ver
+  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)): `SUPERVISOR` ve lo mismo que
+  un `ADMIN` pero no ejecuta ninguna acción — bloqueo de raíz en el backend
+  (middleware `soloLecturaSupervisor`) y ocultación completa de controles en
+  el frontend (incluye detalle/formulario de programa, `DocumentosPrograma` y
+  bloqueo de las rutas de alta/edición). Además: rate-limit dedicado en
+  `POST /auth/login` y `/auth/registro`, `app.set("trust proxy")`, política de
+  contraseñas centralizada (`auth.schema.ts` → `contrasenaSchema`) y
+  expiración de sesión configurable por rol (`config/sesion.config.ts`).
 - Flujo completo del cliente: crear solicitud → llenar los 8 pasos → enviar →
   subir documentos → ver estatus.
 - Flujo de Promoción (primer filtro) completo: cola, asignación (automática y
@@ -256,8 +266,9 @@ automatizadas — ver §8.
 - **Flujo de Financiamiento (segundo filtro) completo**: backend
   (`admin/financiamiento`) + las 5 pantallas (Mesa de Control, Asignación de
   analistas, Mis Casos, Validación, Comité). Una solicitud recorre todo el ciclo
-  hasta `APROBADO` / `RECHAZADO` desde la UI. El rol `SUPERVISOR` opera la etapa
-  de Validación.
+  hasta `APROBADO` / `RECHAZADO` desde la UI. Cada etapa la operan los roles de
+  área (`MESA_CONTROL`, `ENCARGADO_FINANCIAMIENTO`, `ANALISTA`) o `ADMIN` — ver
+  §3.1.
 - Catálogo de configuración: programas de crédito (con documentos y
   secciones requeridas configurables), tipos de documento (con
   edición/borrado protegido), usuarios, grupos de gestión, logs de
@@ -295,20 +306,11 @@ automatizadas — ver §8.
 - **Financiamiento — Fase 3 pendiente:** no se captura un dictamen financiero
   estructurado (monto/plazo/tasa aprobados, capacidad de pago, observaciones);
   hoy cada transición solo lleva un motivo de texto libre.
-- El modelo de roles se amplió con cuatro roles de área
-  (`ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`, `MESA_CONTROL`,
-  `SOPORTE`) más `SUPERVISOR` redefinido como **ADMIN de solo lectura** — ver
-  §3.1. El backend lo bloquea de raíz y el frontend ya oculta/deshabilita los
-  controles de acción en toda la UI (listas de Promoción/Financiamiento,
-  asignación, configuración, detalle y formulario de programa,
-  `DocumentosPrograma`). Las rutas de alta/edición de programa
-  (`/programas/nuevo`, `/programas/:id/editar`) redirigen a `SUPERVISOR` a
-  `/unauthorized`; el formulario, además, queda inerte por defensa en
-  profundidad. La herramienta de análisis ya era de solo lectura para
-  `SUPERVISOR` (el backend devuelve `editable: false` y todos los controles
-  penden de esa bandera; solo quedan visibles el Informe Ejecutivo y los
-  export CSV, que no mutan). La revisión de seguridad general está en
-  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md).
+- Seguridad — pendientes evaluados y **no** implementados (ver
+  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md) §5): lockout por cuenta tras N
+  intentos fallidos, respuesta genérica en `POST /registro` (hoy `409` revela
+  si el correo existe), CSP explícita de la API, y verificación de
+  `COOKIE_SECURE=true` en el despliegue de producción.
 - Soporte — pendientes menores (fase de pulido): auto-cierre de tickets
   `RESUELTO` sin respuesta (necesita un cron externo o evaluación perezosa),
   CSAT en la UI al cerrar, contador de "no leídos" en el nav, y el enganche de
@@ -350,7 +352,7 @@ De punta a punta, una solicitud atraviesa el sistema así:
    **rechazarla** (`RECHAZADO`, se genera carta de rechazo) o **cancelarla**
    (`CANCELADO`).
 6. En **Financiamiento** (segundo filtro, ver §3.2) la solicitud pasa por
-   Mesa de Control (`SUPERVISOR`), asignación de analista, análisis financiero
+   Mesa de Control (`MESA_CONTROL`), asignación de analista, análisis financiero
    (`EN_ANALISIS`), validación (`EN_VALIDACION`) y comité (`EN_COMITE`) hasta
    quedar `APROBADO` o `RECHAZADO`.
 7. En cada paso queda un registro en el **historial de estatus** (quién,
@@ -378,22 +380,14 @@ las reglas con las que corre todo lo anterior.
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
-6. **Cobertura de solo lectura en el frontend.** *(Cerrado.)* `SUPERVISOR` es
-   "ADMIN de solo lectura" con enforcement total en el backend y ocultación de
-   controles completa en el frontend (ver §6.2). La revisión de seguridad
-   general quedó documentada en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md):
-   se implementó rate-limit dedicado en `login`/`registro`, `trust proxy`,
-   política de contraseñas centralizada y expiración de sesión por rol; el
-   resto (lockout por cuenta, CSP de API, enumeración en registro) queda
-   listado ahí como pendiente evaluado.
-7. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
+6. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
    pendiente en su momento): los DTOs de respuesta del backend no están
    verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
    enums lo están.
 
 ## 9. Plan de trabajo
 
-Seis actividades concretas, en el orden en que aportan más valor si se
+Cinco actividades concretas, en el orden en que aportan más valor si se
 ejecutan en secuencia (aunque varias pueden correr en paralelo por equipos
 distintos: negocio/back vs. calidad/infra).
 
@@ -404,10 +398,14 @@ distintos: negocio/back vs. calidad/infra).
 > módulo de Reportes con filtros multi-selección y exportación a Excel); la
 > **sesión con refresh token** (access token de 15 min + refresh token opaco
 > en cookie `httpOnly` con rotación, detección de reuso y ventana deslizante
-> de 7 días; renovación transparente en el front, ver §4.1); y el **módulo de
-> Soporte / tickets** (modelo + SLA + adjuntos + conversación + dos vistas de
-> frontend, ver §5.1/§5.2 — solo quedan pendientes de pulido: correo,
-> auto-cierre y CSAT en la UI).
+> configurable por rol; renovación transparente en el front, ver §4.1); el
+> **módulo de Soporte / tickets** (modelo + SLA + adjuntos + conversación +
+> dos vistas de frontend, ver §5.1/§5.2 — solo quedan pendientes de pulido:
+> correo, auto-cierre y CSAT en la UI); y el **cierre de solo lectura de
+> `SUPERVISOR` + revisión de seguridad** (ocultación de controles completa en
+> el frontend, rate-limit en `login`/`registro`, `trust proxy`, política de
+> contraseñas centralizada y expiración de sesión por rol; hallazgos no
+> implementados listados en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)).
 
 ### 1. Notificaciones al solicitante
 
@@ -486,30 +484,6 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Los tipos de respuesta de, al menos, los endpoints
   de solicitud y expediente, están verificados contra el modelo real de
   Prisma.
-
-### 6. Cerrar solo lectura de `SUPERVISOR` y revisión de seguridad — *hecho*
-
-- **Descripción:** El modelo de roles ya quedó definido y completo: `ADMIN`,
-  `GESTOR`, `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
-  `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y `CLIENTE`,
-  todos con navegación, permisos de ruta (front + `autorizar` en back), ruta
-  por defecto y badge (ver §3.1).
-- **Entregado:**
-  - Residual de ocultación de controles para `SUPERVISOR` cerrado: detalle y
-    formulario de programa, `DocumentosPrograma`, y bloqueo de ruta en
-    `/programas/nuevo` y `/programas/:id/editar` (ver §6.2). La herramienta de
-    análisis ya era de solo lectura vía la bandera `editable` del backend.
-  - Revisión de seguridad general en
-    [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md): rate-limit dedicado en
-    `login`/`registro`, `app.set("trust proxy")`, política de contraseñas
-    centralizada (`auth.schema.ts` → `contrasenaSchema`, en paridad con el
-    front) y expiración de sesión configurable por rol
-    (`config/sesion.config.ts`). Hallazgos no implementados (lockout por
-    cuenta, CSP de API, fuga menor de enumeración en `registro`, verificación
-    de `COOKIE_SECURE` en prod) quedan listados y justificados ahí.
-- **Prioridad:** Baja.
-- **Resultado esperado:** Ningún control de acción visible para `SUPERVISOR` y
-  los puntos de la revisión de seguridad atendidos o documentados. ✅
 
 ---
 
