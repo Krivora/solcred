@@ -13,6 +13,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Badge } from "@/shared/components/ui/badge";
 import { cn } from "@/shared/lib/cn";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 import { programaToast } from "@/shared/lib/toaster";
 import { Card } from "./form/Card";
 import { Divider } from "./form/Divider";
@@ -45,6 +46,9 @@ const defaultValues: ProgramaFormData = {
 
 export function ProgramaForm({ programa }: ProgramaFormProps) {
     const router = useRouter();
+    // Defensa en profundidad: la ruta ya redirige a SUPERVISOR fuera de
+    // /nuevo y /:id/editar, pero si llegara igual, el form queda inerte.
+    const soloLectura = useEsSoloLectura();
     const [loading, setLoading] = useState(false);
     // En alta, los documentos se juntan en borrador y se adjuntan tras crear el
     // programa. En edición, DocumentosPrograma los persiste al instante.
@@ -63,6 +67,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
     });
 
     const onSubmit = async (data: ProgramaFormData) => {
+        if (soloLectura) return;
         if (!data.permitePersonaFisica && !data.permitePersonaMoral) {
             programaToast.faltaTipoSolicitante();
             return;
@@ -113,6 +118,7 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6 max-w-8xl mx-auto">
+          <fieldset disabled={soloLectura} className="m-0 min-w-0 space-y-6 border-0 p-0">
 
             {/* Row 1: Info general + Tipo de persona */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -291,12 +297,13 @@ export function ProgramaForm({ programa }: ProgramaFormProps) {
                     <Button type="button" variant="outline" size="sm" onClick={() => router.back()} disabled={loading}>
                         Cancelar
                     </Button>
-                    <Button type="submit" size="sm" disabled={loading} className="min-w-32">
+                    <Button type="submit" size="sm" disabled={loading || soloLectura} className="min-w-32">
                         {loading && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
                         {programa ? "Guardar cambios" : "Crear programa"}
                     </Button>
                 </div>
             </div>
+          </fieldset>
         </form>
     );
 }

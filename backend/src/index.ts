@@ -26,6 +26,13 @@ import soporteRoutes from "./modules/soporte/soporte.routes";
 const app = express();
 const PORT = process.env.PORT ?? 4000;
 
+// Detrás de un proxy (Nginx / load balancer) el rate-limit y el registro de IP
+// de auditoría necesitan confiar en `X-Forwarded-For`. Se limita a los saltos
+// declarados (número), nunca `true` (que aceptaría un XFF falsificado por el
+// cliente). `TRUST_PROXY=0` lo desactiva para correr sin proxy.
+const TRUST_PROXY = Number(process.env.TRUST_PROXY ?? 1);
+app.set("trust proxy", Number.isFinite(TRUST_PROXY) ? TRUST_PROXY : 1);
+
 // ── Seguridad ──────────────────────────────
 app.use(helmet());
 app.use(

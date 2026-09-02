@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+/**
+ * Política de contraseñas del sistema. Fuente única: la usan el registro y
+ * cualquier flujo futuro de alta/cambio de contraseña. En paridad con la del
+ * frontend (`shared/schemas/auth.schema.ts`).
+ *
+ * El login NO la aplica a propósito: solo comprueba que venga una contraseña,
+ * para no bloquear cuentas creadas antes de endurecer la política.
+ */
+export const contrasenaSchema = z
+  .string({ message: "La contraseña es requerida" })
+  .min(8, "La contraseña debe tener al menos 8 caracteres")
+  .max(128, "La contraseña no puede exceder 128 caracteres")
+  .regex(/[a-z]/, "Debe contener al menos una minúscula")
+  .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
+  .regex(/[0-9]/, "Debe contener al menos un número")
+  .regex(/[^a-zA-Z0-9]/, "Debe contener al menos un carácter especial");
+
 export const loginSchema = z.object({
   correo: z
     .string({ message: "El correo es requerido" })
@@ -8,7 +25,7 @@ export const loginSchema = z.object({
     .trim(),
   contrasena: z
     .string({ message: "La contraseña es requerida" })
-    .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    .min(1, "La contraseña es requerida"),
 });
 
 export const registroSchema = z.object({
@@ -17,12 +34,7 @@ export const registroSchema = z.object({
     .email("Correo inválido")
     .toLowerCase()
     .trim(),
-  contrasena: z
-    .string({ message: "La contraseña es requerida" })
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
-    .regex(/[0-9]/, "Debe contener al menos un número")
-    .regex(/[^a-zA-Z0-9]/, "Debe contener al menos un carácter especial"),
+  contrasena: contrasenaSchema,
   tipoPersona: z.enum(["FISICA", "MORAL"], {
     message: "El tipo de persona es requerido",
   }),

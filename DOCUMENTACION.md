@@ -152,7 +152,7 @@ propias:
 | Runtime / lenguaje | Node.js + TypeScript, ejecutado con `tsx` (dev) / compilado con `tsc` (prod) |
 | Framework HTTP | Express 5 |
 | Base de datos | PostgreSQL, vía Prisma ORM 7 (`@prisma/adapter-pg`) |
-| Autenticación | JWT propio (`jsonwebtoken`) de vida corta (access token, 15 min) + **refresh token** opaco en cookie `httpOnly` (`sc_refresh`, ámbito `/api/auth`), con rotación en cada uso, detección de reuso por familia y ventana deslizante de 7 días. Persistido en `SesionRefresh` (solo el hash SHA-256). El front renueva el access token de forma transparente al recibir un 401 `TOKEN_EXPIRADO`. |
+| Autenticación | JWT propio (`jsonwebtoken`) de vida corta (access token, 15 min) + **refresh token** opaco en cookie `httpOnly` (`sc_refresh`, ámbito `/api/auth`), con rotación en cada uso, detección de reuso por familia y **ventana deslizante configurable por rol** (`config/sesion.config.ts`: 30 d cliente, 7 d staff operativo, 2 d staff sensible —ADMIN/SUPERVISOR/ENCARGADO_*—; overridable por env). Persistido en `SesionRefresh` (solo el hash SHA-256). El front renueva el access token de forma transparente al recibir un 401 `TOKEN_EXPIRADO`. Rate-limit dedicado en `login` (10/15 min, solo fallidos) y `registro` (5/h). |
 | Contraseñas | `bcryptjs` |
 | Subida de archivos | `multer` en memoria + validación de magic bytes antes de escribir a disco (`uploads/expedientes/`, almacenamiento **local**, no en la nube) |
 | Generación de PDF | `puppeteer` sobre plantillas HTML propias |
@@ -298,12 +298,17 @@ automatizadas — ver §8.
 - El modelo de roles se amplió con cuatro roles de área
   (`ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`, `MESA_CONTROL`,
   `SOPORTE`) más `SUPERVISOR` redefinido como **ADMIN de solo lectura** — ver
-  §3.1. El backend lo bloquea de raíz; en el frontend la ocultación de
-  botones cubre las acciones principales (listas de Promoción/Financiamiento,
-  asignación, alta/edición/borrado de configuración). Residual conocido: el
-  formulario de programa (`ProgramaForm`), `DocumentosPrograma` y la
-  herramienta de análisis muestran sus botones aunque al pulsarlos el backend
-  responde 403 con un toast.
+  §3.1. El backend lo bloquea de raíz y el frontend ya oculta/deshabilita los
+  controles de acción en toda la UI (listas de Promoción/Financiamiento,
+  asignación, configuración, detalle y formulario de programa,
+  `DocumentosPrograma`). Las rutas de alta/edición de programa
+  (`/programas/nuevo`, `/programas/:id/editar`) redirigen a `SUPERVISOR` a
+  `/unauthorized`; el formulario, además, queda inerte por defensa en
+  profundidad. La herramienta de análisis ya era de solo lectura para
+  `SUPERVISOR` (el backend devuelve `editable: false` y todos los controles
+  penden de esa bandera; solo quedan visibles el Informe Ejecutivo y los
+  export CSV, que no mutan). La revisión de seguridad general está en
+  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md).
 - Soporte — pendientes menores (fase de pulido): auto-cierre de tickets
   `RESUELTO` sin respuesta (necesita un cron externo o evaluación perezosa),
   CSAT en la UI al cerrar, contador de "no leídos" en el nav, y el enganche de
@@ -373,10 +378,14 @@ las reglas con las que corre todo lo anterior.
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
-6. **Cobertura de solo lectura en el frontend.** `SUPERVISOR` ya es "ADMIN de
-   solo lectura" con enforcement total en el backend, pero la ocultación de
-   botones en el frontend cubre lo principal, no el 100% (ver residual en
-   §6.2). Falta cerrar esos casos y una revisión de seguridad general.
+6. **Cobertura de solo lectura en el frontend.** *(Cerrado.)* `SUPERVISOR` es
+   "ADMIN de solo lectura" con enforcement total en el backend y ocultación de
+   controles completa en el frontend (ver §6.2). La revisión de seguridad
+   general quedó documentada en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md):
+   se implementó rate-limit dedicado en `login`/`registro`, `trust proxy`,
+   política de contraseñas centralizada y expiración de sesión por rol; el
+   resto (lockout por cuenta, CSP de API, enumeración en registro) queda
+   listado ahí como pendiente evaluado.
 7. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
    pendiente en su momento): los DTOs de respuesta del backend no están
    verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
@@ -478,26 +487,37 @@ distintos: negocio/back vs. calidad/infra).
   de solicitud y expediente, están verificados contra el modelo real de
   Prisma.
 
-### 6. Cerrar solo lectura de `SUPERVISOR` y revisión de seguridad
+### 6. Cerrar solo lectura de `SUPERVISOR` y revisión de seguridad — *hecho*
 
 - **Descripción:** El modelo de roles ya quedó definido y completo: `ADMIN`,
   `GESTOR`, `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
   `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y `CLIENTE`,
   todos con navegación, permisos de ruta (front + `autorizar` en back), ruta
-  por defecto y badge (ver §3.1). Queda: cerrar el residual de ocultación de
-  botones para `SUPERVISOR` (ver §6.2) y hacer una revisión de seguridad
-  general (rate limiting por endpoint sensible, política de contraseñas,
-  expiración de sesión configurable por rol).
-- **Objetivo:** Que el modo solo lectura sea coherente en toda la UI y
-  endurecer la capa de seguridad.
+  por defecto y badge (ver §3.1).
+- **Entregado:**
+  - Residual de ocultación de controles para `SUPERVISOR` cerrado: detalle y
+    formulario de programa, `DocumentosPrograma`, y bloqueo de ruta en
+    `/programas/nuevo` y `/programas/:id/editar` (ver §6.2). La herramienta de
+    análisis ya era de solo lectura vía la bandera `editable` del backend.
+  - Revisión de seguridad general en
+    [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md): rate-limit dedicado en
+    `login`/`registro`, `app.set("trust proxy")`, política de contraseñas
+    centralizada (`auth.schema.ts` → `contrasenaSchema`, en paridad con el
+    front) y expiración de sesión configurable por rol
+    (`config/sesion.config.ts`). Hallazgos no implementados (lockout por
+    cuenta, CSP de API, fuga menor de enumeración en `registro`, verificación
+    de `COOKIE_SECURE` en prod) quedan listados y justificados ahí.
 - **Prioridad:** Baja.
 - **Resultado esperado:** Ningún control de acción visible para `SUPERVISOR` y
-  los puntos de la revisión de seguridad atendidos o documentados.
+  los puntos de la revisión de seguridad atendidos o documentados. ✅
 
 ---
 
 *Este documento describe el estado del proyecto en la fecha indicada arriba.
 Para la lista viva de deuda técnica ya identificada (no la hoja de ruta, sino
 los detalles de implementación) ver [`KNOWN-ISSUES.md`](./KNOWN-ISSUES.md).
-Para las instrucciones de desarrollo (scripts, contrato de tipos, hook de
-pre-push) ver [`README.md`](./README.md).*
+Para la revisión de seguridad (solo lectura de `SUPERVISOR`, rate limiting,
+contraseñas, sesión por rol y pendientes evaluados) ver
+[`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md). Para las instrucciones de
+desarrollo (scripts, contrato de tipos, hook de pre-push) ver
+[`README.md`](./README.md).*

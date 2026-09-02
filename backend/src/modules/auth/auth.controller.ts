@@ -7,6 +7,7 @@ import {
   opcionesCookieRefresh,
   opcionesLimpiarCookieRefresh,
 } from "../../utils/refresh";
+import type { RolAplicacion } from "../../utils/jwt";
 import * as authService from "./auth.service";
 import type { ContextoSesion } from "./auth.service";
 import { ok } from "../../utils/response";
@@ -21,8 +22,12 @@ const contextoSesion = (req: Request): ContextoSesion => {
   return { ip, userAgent: req.headers["user-agent"] ?? null };
 };
 
-const enviarCookieRefresh = (res: Response, refreshToken: string): void => {
-  res.cookie(REFRESH_COOKIE, refreshToken, opcionesCookieRefresh());
+const enviarCookieRefresh = (
+  res: Response,
+  refreshToken: string,
+  rol: RolAplicacion
+): void => {
+  res.cookie(REFRESH_COOKIE, refreshToken, opcionesCookieRefresh(rol));
 };
 
 export const registro = async (
@@ -56,7 +61,7 @@ export const login = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { usuario, token, refreshToken } = await authService.iniciarSesion(
+    const { usuario, token, refreshToken, rol } = await authService.iniciarSesion(
       req.body,
       contextoSesion(req)
     );
@@ -70,7 +75,7 @@ export const login = async (
       req,
     });
 
-    enviarCookieRefresh(res, refreshToken);
+    enviarCookieRefresh(res, refreshToken, rol);
     res.status(200).json(ok("Inicio de sesión exitoso", { usuario, token }));
   } catch (error) {
     await registrarLog({
@@ -92,12 +97,12 @@ export const refresh = async (
 ): Promise<void> => {
   try {
     const rawToken = req.cookies?.[REFRESH_COOKIE] as string | undefined;
-    const { usuario, token, refreshToken } = await authService.refrescarSesion(
+    const { usuario, token, refreshToken, rol } = await authService.refrescarSesion(
       rawToken,
       contextoSesion(req)
     );
 
-    enviarCookieRefresh(res, refreshToken);
+    enviarCookieRefresh(res, refreshToken, rol);
     res.status(200).json(ok("Sesión renovada", { usuario, token }));
   } catch (error) {
     // Cualquier fallo de refresh deja la sesión sin cookie: el cliente cae a /login.
