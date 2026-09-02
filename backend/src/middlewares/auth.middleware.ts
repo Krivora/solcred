@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verificarToken, JwtPayload } from "../utils/jwt";
+import { verificarToken, JwtPayload, TokenExpiradoError } from "../utils/jwt";
 import { AppError } from "./error.middleware";
 
 export interface RequestAutenticado extends Request {
@@ -22,7 +22,11 @@ export const autenticar = (
   try {
     req.usuario = verificarToken(token);
     next();
-  } catch {
-    throw new AppError("Token inválido o expirado", 401);
+  } catch (error) {
+    if (error instanceof TokenExpiradoError) {
+      // El cliente usa este código para disparar el refresh transparente.
+      throw new AppError("Token expirado", 401, "TOKEN_EXPIRADO");
+    }
+    throw new AppError("Token inválido", 401);
   }
 };

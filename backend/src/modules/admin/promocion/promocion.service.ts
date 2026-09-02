@@ -602,6 +602,11 @@ const cargoPorRol = (rol: string): string => {
     ADMIN: "Administrador",
     ANALISTA: "Analista de Crédito",
     GESTOR: "Gestor",
+    SUPERVISOR: "Supervisor",
+    ENCARGADO_PROMOCION: "Encargado de Promoción",
+    ENCARGADO_FINANCIAMIENTO: "Encargado de Financiamiento",
+    MESA_CONTROL: "Mesa de Control",
+    SOPORTE: "Soporte",
   };
   return cargos[rol] ?? rol;
 };

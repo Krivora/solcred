@@ -391,6 +391,7 @@ export const ModelName = {
   AsignacionSolicitud: 'AsignacionSolicitud',
   AsignacionFinanciamiento: 'AsignacionFinanciamiento',
   Usuario: 'Usuario',
+  SesionRefresh: 'SesionRefresh',
   Personal: 'Personal',
   Programa: 'Programa',
   ProgramaSeccion: 'ProgramaSeccion',
@@ -408,7 +409,12 @@ export const ModelName = {
   DatosMercado: 'DatosMercado',
   DatosBancarios: 'DatosBancarios',
   DocumentoSolicitud: 'DocumentoSolicitud',
-  LogAuditoria: 'LogAuditoria'
+  LogAuditoria: 'LogAuditoria',
+  Ticket: 'Ticket',
+  TicketComentario: 'TicketComentario',
+  TicketAdjunto: 'TicketAdjunto',
+  TicketEvento: 'TicketEvento',
+  TicketSlaPolitica: 'TicketSlaPolitica'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -424,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "analisis" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "sesionRefresh" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "analisis" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria" | "ticket" | "ticketComentario" | "ticketAdjunto" | "ticketEvento" | "ticketSlaPolitica"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -943,6 +949,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UsuarioCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UsuarioCountAggregateOutputType> | number
+        }
+      }
+    }
+    SesionRefresh: {
+      payload: Prisma.$SesionRefreshPayload<ExtArgs>
+      fields: Prisma.SesionRefreshFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SesionRefreshFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SesionRefreshFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        findFirst: {
+          args: Prisma.SesionRefreshFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SesionRefreshFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        findMany: {
+          args: Prisma.SesionRefreshFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>[]
+        }
+        create: {
+          args: Prisma.SesionRefreshCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        createMany: {
+          args: Prisma.SesionRefreshCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SesionRefreshCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>[]
+        }
+        delete: {
+          args: Prisma.SesionRefreshDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        update: {
+          args: Prisma.SesionRefreshUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        deleteMany: {
+          args: Prisma.SesionRefreshDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SesionRefreshUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SesionRefreshUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>[]
+        }
+        upsert: {
+          args: Prisma.SesionRefreshUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SesionRefreshPayload>
+        }
+        aggregate: {
+          args: Prisma.SesionRefreshAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSesionRefresh>
+        }
+        groupBy: {
+          args: Prisma.SesionRefreshGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SesionRefreshGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SesionRefreshCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SesionRefreshCountAggregateOutputType> | number
         }
       }
     }
@@ -2278,6 +2358,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Ticket: {
+      payload: Prisma.$TicketPayload<ExtArgs>
+      fields: Prisma.TicketFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TicketFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TicketFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        findFirst: {
+          args: Prisma.TicketFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TicketFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        findMany: {
+          args: Prisma.TicketFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>[]
+        }
+        create: {
+          args: Prisma.TicketCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        createMany: {
+          args: Prisma.TicketCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TicketCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>[]
+        }
+        delete: {
+          args: Prisma.TicketDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        update: {
+          args: Prisma.TicketUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        deleteMany: {
+          args: Prisma.TicketDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TicketUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TicketUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>[]
+        }
+        upsert: {
+          args: Prisma.TicketUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketPayload>
+        }
+        aggregate: {
+          args: Prisma.TicketAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTicket>
+        }
+        groupBy: {
+          args: Prisma.TicketGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TicketCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketCountAggregateOutputType> | number
+        }
+      }
+    }
+    TicketComentario: {
+      payload: Prisma.$TicketComentarioPayload<ExtArgs>
+      fields: Prisma.TicketComentarioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TicketComentarioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TicketComentarioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        findFirst: {
+          args: Prisma.TicketComentarioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TicketComentarioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        findMany: {
+          args: Prisma.TicketComentarioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>[]
+        }
+        create: {
+          args: Prisma.TicketComentarioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        createMany: {
+          args: Prisma.TicketComentarioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TicketComentarioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>[]
+        }
+        delete: {
+          args: Prisma.TicketComentarioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        update: {
+          args: Prisma.TicketComentarioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        deleteMany: {
+          args: Prisma.TicketComentarioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TicketComentarioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TicketComentarioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>[]
+        }
+        upsert: {
+          args: Prisma.TicketComentarioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketComentarioPayload>
+        }
+        aggregate: {
+          args: Prisma.TicketComentarioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTicketComentario>
+        }
+        groupBy: {
+          args: Prisma.TicketComentarioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketComentarioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TicketComentarioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketComentarioCountAggregateOutputType> | number
+        }
+      }
+    }
+    TicketAdjunto: {
+      payload: Prisma.$TicketAdjuntoPayload<ExtArgs>
+      fields: Prisma.TicketAdjuntoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TicketAdjuntoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TicketAdjuntoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        findFirst: {
+          args: Prisma.TicketAdjuntoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TicketAdjuntoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        findMany: {
+          args: Prisma.TicketAdjuntoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>[]
+        }
+        create: {
+          args: Prisma.TicketAdjuntoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        createMany: {
+          args: Prisma.TicketAdjuntoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TicketAdjuntoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>[]
+        }
+        delete: {
+          args: Prisma.TicketAdjuntoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        update: {
+          args: Prisma.TicketAdjuntoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        deleteMany: {
+          args: Prisma.TicketAdjuntoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TicketAdjuntoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TicketAdjuntoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>[]
+        }
+        upsert: {
+          args: Prisma.TicketAdjuntoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketAdjuntoPayload>
+        }
+        aggregate: {
+          args: Prisma.TicketAdjuntoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTicketAdjunto>
+        }
+        groupBy: {
+          args: Prisma.TicketAdjuntoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketAdjuntoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TicketAdjuntoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketAdjuntoCountAggregateOutputType> | number
+        }
+      }
+    }
+    TicketEvento: {
+      payload: Prisma.$TicketEventoPayload<ExtArgs>
+      fields: Prisma.TicketEventoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TicketEventoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TicketEventoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        findFirst: {
+          args: Prisma.TicketEventoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TicketEventoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        findMany: {
+          args: Prisma.TicketEventoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>[]
+        }
+        create: {
+          args: Prisma.TicketEventoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        createMany: {
+          args: Prisma.TicketEventoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TicketEventoCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>[]
+        }
+        delete: {
+          args: Prisma.TicketEventoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        update: {
+          args: Prisma.TicketEventoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        deleteMany: {
+          args: Prisma.TicketEventoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TicketEventoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TicketEventoUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>[]
+        }
+        upsert: {
+          args: Prisma.TicketEventoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketEventoPayload>
+        }
+        aggregate: {
+          args: Prisma.TicketEventoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTicketEvento>
+        }
+        groupBy: {
+          args: Prisma.TicketEventoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketEventoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TicketEventoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketEventoCountAggregateOutputType> | number
+        }
+      }
+    }
+    TicketSlaPolitica: {
+      payload: Prisma.$TicketSlaPoliticaPayload<ExtArgs>
+      fields: Prisma.TicketSlaPoliticaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TicketSlaPoliticaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TicketSlaPoliticaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        findFirst: {
+          args: Prisma.TicketSlaPoliticaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TicketSlaPoliticaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        findMany: {
+          args: Prisma.TicketSlaPoliticaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>[]
+        }
+        create: {
+          args: Prisma.TicketSlaPoliticaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        createMany: {
+          args: Prisma.TicketSlaPoliticaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TicketSlaPoliticaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>[]
+        }
+        delete: {
+          args: Prisma.TicketSlaPoliticaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        update: {
+          args: Prisma.TicketSlaPoliticaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        deleteMany: {
+          args: Prisma.TicketSlaPoliticaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TicketSlaPoliticaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TicketSlaPoliticaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>[]
+        }
+        upsert: {
+          args: Prisma.TicketSlaPoliticaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TicketSlaPoliticaPayload>
+        }
+        aggregate: {
+          args: Prisma.TicketSlaPoliticaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTicketSlaPolitica>
+        }
+        groupBy: {
+          args: Prisma.TicketSlaPoliticaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketSlaPoliticaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TicketSlaPoliticaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TicketSlaPoliticaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2411,6 +2861,23 @@ export const UsuarioScalarFieldEnum = {
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const SesionRefreshScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  tokenHash: 'tokenHash',
+  familia: 'familia',
+  expiraEn: 'expiraEn',
+  revocadoEn: 'revocadoEn',
+  reemplazadoPor: 'reemplazadoPor',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  usadoEn: 'usadoEn',
+  creadoEn: 'creadoEn'
+} as const
+
+export type SesionRefreshScalarFieldEnum = (typeof SesionRefreshScalarFieldEnum)[keyof typeof SesionRefreshScalarFieldEnum]
 
 
 export const PersonalScalarFieldEnum = {
@@ -2743,6 +3210,93 @@ export const LogAuditoriaScalarFieldEnum = {
 } as const
 
 export type LogAuditoriaScalarFieldEnum = (typeof LogAuditoriaScalarFieldEnum)[keyof typeof LogAuditoriaScalarFieldEnum]
+
+
+export const TicketScalarFieldEnum = {
+  id: 'id',
+  folio: 'folio',
+  titulo: 'titulo',
+  descripcion: 'descripcion',
+  categoria: 'categoria',
+  prioridad: 'prioridad',
+  estatus: 'estatus',
+  solicitanteId: 'solicitanteId',
+  agenteId: 'agenteId',
+  asignadoPorId: 'asignadoPorId',
+  slaArrancadoEn: 'slaArrancadoEn',
+  slaRespuestaLimite: 'slaRespuestaLimite',
+  slaResolucionLimite: 'slaResolucionLimite',
+  primeraRespuestaEn: 'primeraRespuestaEn',
+  slaRespuestaCumplida: 'slaRespuestaCumplida',
+  slaResolucionCumplida: 'slaResolucionCumplida',
+  pausadoSegundos: 'pausadoSegundos',
+  pausadoDesde: 'pausadoDesde',
+  resueltoEn: 'resueltoEn',
+  cerradoEn: 'cerradoEn',
+  reabierto: 'reabierto',
+  calificacion: 'calificacion',
+  calificacionComentario: 'calificacionComentario',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
+
+
+export const TicketComentarioScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  autorId: 'autorId',
+  autorTipo: 'autorTipo',
+  cuerpo: 'cuerpo',
+  esNotaInterna: 'esNotaInterna',
+  creadoEn: 'creadoEn',
+  editadoEn: 'editadoEn'
+} as const
+
+export type TicketComentarioScalarFieldEnum = (typeof TicketComentarioScalarFieldEnum)[keyof typeof TicketComentarioScalarFieldEnum]
+
+
+export const TicketAdjuntoScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  comentarioId: 'comentarioId',
+  urlArchivo: 'urlArchivo',
+  nombreArchivo: 'nombreArchivo',
+  nombreOriginal: 'nombreOriginal',
+  tipoMime: 'tipoMime',
+  tamanoBytes: 'tamanoBytes',
+  subidoPorId: 'subidoPorId',
+  subidoEn: 'subidoEn'
+} as const
+
+export type TicketAdjuntoScalarFieldEnum = (typeof TicketAdjuntoScalarFieldEnum)[keyof typeof TicketAdjuntoScalarFieldEnum]
+
+
+export const TicketEventoScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  tipo: 'tipo',
+  actorId: 'actorId',
+  descripcion: 'descripcion',
+  valorAnterior: 'valorAnterior',
+  valorNuevo: 'valorNuevo',
+  creadoEn: 'creadoEn'
+} as const
+
+export type TicketEventoScalarFieldEnum = (typeof TicketEventoScalarFieldEnum)[keyof typeof TicketEventoScalarFieldEnum]
+
+
+export const TicketSlaPoliticaScalarFieldEnum = {
+  id: 'id',
+  prioridad: 'prioridad',
+  respuestaMinutos: 'respuestaMinutos',
+  resolucionMinutos: 'resolucionMinutos',
+  activa: 'activa',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type TicketSlaPoliticaScalarFieldEnum = (typeof TicketSlaPoliticaScalarFieldEnum)[keyof typeof TicketSlaPoliticaScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3148,6 +3702,76 @@ export type EnumModuloLogFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 export type ListEnumModuloLogFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModuloLog[]'>
     
 
+
+/**
+ * Reference to a field of type 'TicketCategoria'
+ */
+export type EnumTicketCategoriaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketCategoria'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketCategoria[]'
+ */
+export type ListEnumTicketCategoriaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketCategoria[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketPrioridad'
+ */
+export type EnumTicketPrioridadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketPrioridad'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketPrioridad[]'
+ */
+export type ListEnumTicketPrioridadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketPrioridad[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketEstatus'
+ */
+export type EnumTicketEstatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketEstatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketEstatus[]'
+ */
+export type ListEnumTicketEstatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketEstatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketAutorTipo'
+ */
+export type EnumTicketAutorTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketAutorTipo'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketAutorTipo[]'
+ */
+export type ListEnumTicketAutorTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketAutorTipo[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketTipoEvento'
+ */
+export type EnumTicketTipoEventoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketTipoEvento'>
+    
+
+
+/**
+ * Reference to a field of type 'TicketTipoEvento[]'
+ */
+export type ListEnumTicketTipoEventoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketTipoEvento[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3265,6 +3889,7 @@ export type GlobalOmitConfig = {
   asignacionSolicitud?: Prisma.AsignacionSolicitudOmit
   asignacionFinanciamiento?: Prisma.AsignacionFinanciamientoOmit
   usuario?: Prisma.UsuarioOmit
+  sesionRefresh?: Prisma.SesionRefreshOmit
   personal?: Prisma.PersonalOmit
   programa?: Prisma.ProgramaOmit
   programaSeccion?: Prisma.ProgramaSeccionOmit
@@ -3283,6 +3908,11 @@ export type GlobalOmitConfig = {
   datosBancarios?: Prisma.DatosBancariosOmit
   documentoSolicitud?: Prisma.DocumentoSolicitudOmit
   logAuditoria?: Prisma.LogAuditoriaOmit
+  ticket?: Prisma.TicketOmit
+  ticketComentario?: Prisma.TicketComentarioOmit
+  ticketAdjunto?: Prisma.TicketAdjuntoOmit
+  ticketEvento?: Prisma.TicketEventoOmit
+  ticketSlaPolitica?: Prisma.TicketSlaPoliticaOmit
 }
 
 /* Types for Logging */

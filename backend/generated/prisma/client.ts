@@ -75,6 +75,14 @@ export type AsignacionFinanciamiento = Prisma.AsignacionFinanciamientoModel
  */
 export type Usuario = Prisma.UsuarioModel
 /**
+ * Model SesionRefresh
+ * Sesiones de refresh token (rotación + ventana deslizante).
+ * El token opaco nunca se guarda en claro: solo su hash SHA-256.
+ * `familia` agrupa la cadena de rotaciones de un mismo login para poder
+ * revocarla completa si se detecta reuso de un token ya rotado.
+ */
+export type SesionRefresh = Prisma.SesionRefreshModel
+/**
  * Model Personal
  * 
  */
@@ -164,3 +172,28 @@ export type DocumentoSolicitud = Prisma.DocumentoSolicitudModel
  * 
  */
 export type LogAuditoria = Prisma.LogAuditoriaModel
+/**
+ * Model Ticket
+ * 
+ */
+export type Ticket = Prisma.TicketModel
+/**
+ * Model TicketComentario
+ * 
+ */
+export type TicketComentario = Prisma.TicketComentarioModel
+/**
+ * Model TicketAdjunto
+ * 
+ */
+export type TicketAdjunto = Prisma.TicketAdjuntoModel
+/**
+ * Model TicketEvento
+ * 
+ */
+export type TicketEvento = Prisma.TicketEventoModel
+/**
+ * Model TicketSlaPolitica
+ * 
+ */
+export type TicketSlaPolitica = Prisma.TicketSlaPoliticaModel

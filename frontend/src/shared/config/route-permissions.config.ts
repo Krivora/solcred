@@ -17,25 +17,41 @@ function flattenNavConfig(items: NavItem[]): RoutePermission[] {
     });
 }
 
+// SUPERVISOR ve lo mismo que ADMIN (solo lectura): se añade a toda ruta que
+// permita ADMIN, igual que en nav.config.
+const conSupervisor = (roles: RolAplicacion[]): RolAplicacion[] =>
+    roles.includes('ADMIN') && !roles.includes('SUPERVISOR')
+        ? [...roles, 'SUPERVISOR']
+        : roles;
+
 // Rutas dinámicas / de flujo que no viven en el sidebar
 const EXTRA_ROUTES: RoutePermission[] = [
-    { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR'] },
-    { pattern: '/dashboard/financiamiento/solicitud/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR'] },
-    { pattern: '/dashboard/financiamiento/analisis/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR'] },
+    { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR', 'ENCARGADO_PROMOCION', 'ENCARGADO_FINANCIAMIENTO', 'MESA_CONTROL'] },
+    { pattern: '/dashboard/financiamiento/solicitud/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR', 'ENCARGADO_FINANCIAMIENTO', 'MESA_CONTROL'] },
+    { pattern: '/dashboard/financiamiento/analisis/:id', roles: ['ADMIN', 'ANALISTA', 'SUPERVISOR', 'ENCARGADO_FINANCIAMIENTO'] },
     { pattern: '/dashboard/usuarios/expediente/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/:id', roles: ['CLIENTE'] },
     { pattern: '/dashboard/usuarios/solicitudes/nueva', roles: ['CLIENTE'] },
-    { pattern: '/dashboard/admin/configuracion', roles: ['ADMIN'] },
-    { pattern: '/dashboard/admin/configuracion/:section', roles: ['ADMIN'] },
-    { pattern: '/dashboard/admin/configuracion/programas/:id', roles: ['ADMIN'] },
-    { pattern: '/dashboard/admin/configuracion/programas/:id/editar', roles: ['ADMIN'] },
+    // Detalle de ticket: cualquiera puede navegar; la API valida la pertenencia.
+    {
+        pattern: '/dashboard/soporte/tickets/:id',
+        roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR', 'ENCARGADO_PROMOCION', 'ENCARGADO_FINANCIAMIENTO', 'MESA_CONTROL', 'SOPORTE', 'CLIENTE'],
+    },
+    { pattern: '/dashboard/admin/configuracion', roles: ['ADMIN', 'SUPERVISOR'] },
+    { pattern: '/dashboard/admin/configuracion/:section', roles: ['ADMIN', 'SUPERVISOR'] },
+    { pattern: '/dashboard/admin/configuracion/programas/:id', roles: ['ADMIN', 'SUPERVISOR'] },
+    { pattern: '/dashboard/admin/configuracion/programas/:id/editar', roles: ['ADMIN', 'SUPERVISOR'] },
 ];
 
 const DEFAULT_ROUTE_BY_ROLE: Record<RolAplicacion, string> = {
     ADMIN: '/dashboard',
     GESTOR: '/dashboard/admin/promocion/mis-casos',
     ANALISTA: '/dashboard/financiamiento/mis-casos',
-    SUPERVISOR: '/dashboard/financiamiento/validacion',
+    SUPERVISOR: '/dashboard',
+    ENCARGADO_PROMOCION: '/dashboard/admin/promocion/solicitudes',
+    ENCARGADO_FINANCIAMIENTO: '/dashboard/financiamiento/validacion',
+    MESA_CONTROL: '/dashboard/financiamiento/mesa-control',
+    SOPORTE: '/dashboard/soporte/mis-tickets',
     CLIENTE: '/dashboard/usuarios/solicitudes',
 };
 
@@ -46,7 +62,7 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
     ...flattenNavConfig(navConfig),
     { pattern: settingsNavItem.href!, roles: settingsNavItem.roles },
     ...EXTRA_ROUTES,
-];
+].map((r) => ({ ...r, roles: conSupervisor(r.roles) }));
 
 function patternToRegex(pattern: string): RegExp {
     const escaped = pattern

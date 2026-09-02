@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { autenticar } from "@middlewares/auth.middleware";
-import { autorizar } from "@middlewares/roles.middleware";
+import { autorizar, soloLecturaSupervisor } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import { crearGrupoSchema, actualizarGrupoSchema } from "./grupos.schema";
 import * as gruposController from "./grupos.controller";
@@ -8,7 +8,8 @@ import * as gruposController from "./grupos.controller";
 const router = Router();
 
 router.use(autenticar);
-router.use(autorizar("ADMIN"));
+router.use(soloLecturaSupervisor);
+router.use(autorizar("ADMIN", "SUPERVISOR"));
 
 router.get("/", gruposController.listarGrupos);
 router.get("/:id", gruposController.obtenerGrupoPorId);

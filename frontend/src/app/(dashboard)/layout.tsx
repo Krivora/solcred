@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "@/shared/components/layout/sidebar/Sidebar";
 import { Header } from "@/shared/components/layout/Header";
+import { ModoSoloLecturaBanner } from "@/shared/components/layout/ModoSoloLecturaBanner";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { QueryProvider } from '@/shared/providers/QueryProvider'
 export default function DashboardLayout({
@@ -68,6 +69,7 @@ export default function DashboardLayout({
           */}
           <QueryProvider>
             <div className="px-3 py-4 sm:px-6 sm:py-6">
+              <ModoSoloLecturaBanner />
               {children}
             </div>
           </QueryProvider>

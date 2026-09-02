@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { autenticar } from "@middlewares/auth.middleware";
-import { autorizar } from "@middlewares/roles.middleware";
+import { autorizar, soloLecturaSupervisor } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import {
   accionConMotivoSchema,
@@ -12,27 +12,42 @@ import * as ctrl from "./financiamiento.controller";
 const router = Router();
 
 router.use(autenticar);
+// SUPERVISOR entra a todos los listados (aparece en las constantes de abajo)
+// pero este guard le bloquea cualquier transición: es solo lectura.
+router.use(soloLecturaSupervisor);
+
+// Opera Mesa de Control: ADMIN + SUPERVISOR (lectura) + rol dedicado.
+const MESA_CONTROL = ["ADMIN", "SUPERVISOR", "MESA_CONTROL"] as const;
+// Opera Validación / Comité: ADMIN + SUPERVISOR (lectura) + encargado de área.
+const VALIDACION = ["ADMIN", "SUPERVISOR", "ENCARGADO_FINANCIAMIENTO"] as const;
+// Asigna analistas: ADMIN + encargado de área (+ SUPERVISOR solo para ver).
+const ASIGNACION = ["ADMIN", "ENCARGADO_FINANCIAMIENTO", "SUPERVISOR"] as const;
+// Cualquiera que consulta el detalle de un caso de Financiamiento.
+const LECTURA = [
+  "ADMIN", "ANALISTA", "SUPERVISOR",
+  "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL",
+] as const;
 
 // ─── Listados por etapa ──────────────────────────────────────────────────────
-router.get("/stats",        autorizar("ADMIN", "ANALISTA", "SUPERVISOR"), ctrl.stats);
-router.get("/analistas",    autorizar("ADMIN"),                            ctrl.listarAnalistas);
-router.get("/mesa-control", autorizar("ADMIN", "SUPERVISOR"),              ctrl.listarMesaControl);
-router.get("/asignacion",   autorizar("ADMIN"),                            ctrl.listarAsignacion);
-router.get("/mis-casos",    autorizar("ANALISTA"),                         ctrl.listarMisCasos);
-router.get("/validacion",   autorizar("ADMIN", "SUPERVISOR"),              ctrl.listarValidacion);
-router.get("/comite",       autorizar("ADMIN"),                            ctrl.listarComite);
-router.get("/:id",          autorizar("ADMIN", "ANALISTA", "SUPERVISOR"),  ctrl.obtenerPorId);
+router.get("/stats",        autorizar(...LECTURA),                ctrl.stats);
+router.get("/analistas",    autorizar(...ASIGNACION),             ctrl.listarAnalistas);
+router.get("/mesa-control", autorizar(...MESA_CONTROL),           ctrl.listarMesaControl);
+router.get("/asignacion",   autorizar(...ASIGNACION),             ctrl.listarAsignacion);
+router.get("/mis-casos",    autorizar("ANALISTA"),                ctrl.listarMisCasos);
+router.get("/validacion",   autorizar(...VALIDACION),             ctrl.listarValidacion);
+router.get("/comite",       autorizar(...VALIDACION),             ctrl.listarComite);
+router.get("/:id",          autorizar(...LECTURA),                ctrl.obtenerPorId);
 
 // ─── Asignación (bulk / reasignación) ────────────────────────────────────────
 router.post("/asignar",
-  autorizar("ADMIN"), validate(asignarAnalistasSchema), ctrl.asignarAnalistas);
+  autorizar(...ASIGNACION), validate(asignarAnalistasSchema), ctrl.asignarAnalistas);
 
 // ─── Transiciones ────────────────────────────────────────────────────────────
 // Mesa de Control
 router.patch("/:id/regresar-aprobacion",
-  autorizar("ADMIN", "SUPERVISOR"), validate(accionConMotivoSchema), ctrl.regresarAAprobacion);
+  autorizar(...MESA_CONTROL), validate(accionConMotivoSchema), ctrl.regresarAAprobacion);
 router.patch("/:id/pasar-asignacion",
-  autorizar("ADMIN", "SUPERVISOR"), validate(accionOpcionalSchema), ctrl.pasarAAsignacion);
+  autorizar(...MESA_CONTROL), validate(accionOpcionalSchema), ctrl.pasarAAsignacion);
 
 // Analista
 router.patch("/:id/enviar-validacion",
@@ -40,14 +55,14 @@ router.patch("/:id/enviar-validacion",
 
 // Validación
 router.patch("/:id/regresar-analista",
-  autorizar("ADMIN", "SUPERVISOR"), validate(accionConMotivoSchema), ctrl.regresarAAnalista);
+  autorizar(...VALIDACION), validate(accionConMotivoSchema), ctrl.regresarAAnalista);
 router.patch("/:id/enviar-comite",
-  autorizar("ADMIN", "SUPERVISOR"), validate(accionOpcionalSchema), ctrl.enviarAComite);
+  autorizar(...VALIDACION), validate(accionOpcionalSchema), ctrl.enviarAComite);
 
 // Comité
 router.patch("/:id/regresar-validacion",
-  autorizar("ADMIN"), validate(accionConMotivoSchema), ctrl.regresarAValidacion);
+  autorizar(...VALIDACION), validate(accionConMotivoSchema), ctrl.regresarAValidacion);
 router.patch("/:id/aprobar",
-  autorizar("ADMIN"), validate(accionOpcionalSchema), ctrl.aprobar);
+  autorizar(...VALIDACION), validate(accionOpcionalSchema), ctrl.aprobar);
 
 export default router;

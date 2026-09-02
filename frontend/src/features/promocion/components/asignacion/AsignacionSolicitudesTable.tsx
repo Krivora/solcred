@@ -9,6 +9,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/shared/components/ui/table'
 import { cn } from '@/shared/lib/cn'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 import {
     ESTATUS_STYLES,
     SECTOR_LABELS,
@@ -201,18 +202,21 @@ function SolicitudRow({
 }: SolicitudRowProps) {
     const asignandoEsta = asignandoId === solicitud.id
     const monto = formatMonto(solicitud.montoSolicitado)
+    const soloLectura = useEsSoloLectura()
     return (
         <TableRow
-            onClick={() => onSeleccionar(solicitud.id)}
+            onClick={soloLectura ? undefined : () => onSeleccionar(solicitud.id)}
             className={cn(
-                'cursor-pointer transition-colors duration-100 border-b border-border/40 last:border-0 group',
+                'transition-colors duration-100 border-b border-border/40 last:border-0 group',
+                !soloLectura && 'cursor-pointer',
                 seleccionada
                     ? 'bg-primary/5 border-l-2 border-l-primary'
                     : 'hover:bg-accent/40'
             )}
         >
-            {/* Checkbox */}
+            {/* Checkbox — oculto en modo solo lectura */}
             <TableCell className="py-3">
+                {!soloLectura && (
                 <div className={cn(
                     'w-4 h-4 rounded border flex items-center justify-center transition-colors',
                     seleccionada
@@ -223,6 +227,7 @@ function SolicitudRow({
                         <span className="text-primary-foreground text-[9px]">✓</span>
                     )}
                 </div>
+                )}
             </TableCell>
 
             {/* Folio */}
@@ -299,8 +304,9 @@ function SolicitudRow({
                 )}
             </TableCell>
 
-            {/* Asignar rápido */}
+            {/* Asignar rápido — oculto en modo solo lectura */}
             <TableCell className="py-3" onClick={e => e.stopPropagation()}>
+                {!soloLectura && (
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
@@ -320,6 +326,7 @@ function SolicitudRow({
                         <p className="text-xs">Asignación automática</p>
                     </TooltipContent>
                 </Tooltip>
+                )}
             </TableCell>
         </TableRow>
     )

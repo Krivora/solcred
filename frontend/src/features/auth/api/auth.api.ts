@@ -1,4 +1,4 @@
-import { apiRequest } from '@/shared/api/client';
+import { apiAuth, apiRequest } from '@/shared/api/client';
 import type {
   LoginCredentials,
   LoginResponseData,
@@ -19,6 +19,12 @@ export const authApi = {
       body: credentials,
     }),
 
-  perfil: (token: string) =>
-    apiRequest<Usuario>('/auth/perfil', { token }),
+  perfil: () => apiAuth<Usuario>('/auth/perfil'),
+
+  /** Rota el refresh token (cookie httpOnly) y devuelve un access token nuevo. */
+  refresh: () =>
+    apiRequest<LoginResponseData>('/auth/refresh', { method: 'POST' }),
+
+  /** Revoca la sesión de refresh en el servidor. Best-effort. */
+  logout: () => apiRequest<null>('/auth/logout', { method: 'POST' }),
 };

@@ -10,10 +10,16 @@ import { UPLOADS_BASE_DIR } from "@config/multer.config";
 // CONSTANTES
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ROLES_PERMITIDOS = ["CLIENTE", "GESTOR", "ADMIN", "ANALISTA", "SUPERVISOR"] as const;
+const ROLES_PERMITIDOS = [
+    "CLIENTE", "GESTOR", "ADMIN", "ANALISTA", "SUPERVISOR",
+    "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL",
+] as const;
 type RolPermitido = (typeof ROLES_PERMITIDOS)[number];
 
-const ROLES_CON_ACCESO_HISTORIAL = ["GESTOR", "ADMIN", "ANALISTA", "SUPERVISOR", "CLIENTE"] as const;
+const ROLES_CON_ACCESO_HISTORIAL = [
+    "GESTOR", "ADMIN", "ANALISTA", "SUPERVISOR", "CLIENTE",
+    "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL",
+] as const;
 
 const ESTATUS_PERMITIDOS_PARA_SUBIR = [
     "BORRADOR",

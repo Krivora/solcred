@@ -10,6 +10,7 @@ import {
     SelectValue,
 } from '@/shared/components/ui/select'
 import { cn } from '@/shared/lib/cn'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 import type { GrupoGestion } from '@/features/settings/types/grupos.types'
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -43,12 +44,14 @@ export function SolicitudesToolbar({
     onAsignarManual,
     onCambiarGrupo,
 }: SolicitudesToolbarProps) {
-    const haySeleccion = seleccionadas.size > 0
+    const soloLectura = useEsSoloLectura()
+    const haySeleccion = seleccionadas.size > 0 && !soloLectura
 
     return (
         <div className="px-4 py-3 border-b border-border/40 flex items-center gap-3">
 
-            {/* Checkbox seleccionar todos */}
+            {/* Checkbox seleccionar todos — oculto en modo solo lectura */}
+            {!soloLectura && (
             <div
                 onClick={onToggleTodos}
                 className={cn(
@@ -65,6 +68,7 @@ export function SolicitudesToolbar({
                     <span className="text-primary text-[9px]">—</span>
                 )}
             </div>
+            )}
 
             {/* Acciones según selección */}
             {haySeleccion ? (

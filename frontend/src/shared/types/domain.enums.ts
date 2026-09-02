@@ -6,8 +6,8 @@
 export type TipoUsuario = 'CLIENTE' | 'PERSONAL'
 export const TIPO_USUARIO_VALUES = ['CLIENTE', 'PERSONAL'] as const satisfies readonly TipoUsuario[]
 
-export type Rol = 'ADMIN' | 'ANALISTA' | 'GESTOR' | 'SUPERVISOR'
-export const ROL_VALUES = ['ADMIN', 'ANALISTA', 'GESTOR', 'SUPERVISOR'] as const satisfies readonly Rol[]
+export type Rol = 'ADMIN' | 'ANALISTA' | 'GESTOR' | 'SUPERVISOR' | 'ENCARGADO_PROMOCION' | 'ENCARGADO_FINANCIAMIENTO' | 'MESA_CONTROL' | 'SOPORTE'
+export const ROL_VALUES = ['ADMIN', 'ANALISTA', 'GESTOR', 'SUPERVISOR', 'ENCARGADO_PROMOCION', 'ENCARGADO_FINANCIAMIENTO', 'MESA_CONTROL', 'SOPORTE'] as const satisfies readonly Rol[]
 
 export type TipoPersona = 'FISICA' | 'MORAL'
 export const TIPO_PERSONA_VALUES = ['FISICA', 'MORAL'] as const satisfies readonly TipoPersona[]
@@ -54,11 +54,26 @@ export const SECCION_SOLICITUD_VALUES = ['SOLICITANTE', 'AVAL', 'CREDITO', 'GARA
 export type AccionLog = 'CREAR' | 'ACTUALIZAR' | 'ELIMINAR' | 'CONSULTAR' | 'LOGIN' | 'LOGOUT' | 'ERROR'
 export const ACCION_LOG_VALUES = ['CREAR', 'ACTUALIZAR', 'ELIMINAR', 'CONSULTAR', 'LOGIN', 'LOGOUT', 'ERROR'] as const satisfies readonly AccionLog[]
 
-export type ModuloLog = 'AUTH' | 'USUARIOS' | 'PROGRAMAS' | 'SOLICITUDES' | 'DOCUMENTOS'
-export const MODULO_LOG_VALUES = ['AUTH', 'USUARIOS', 'PROGRAMAS', 'SOLICITUDES', 'DOCUMENTOS'] as const satisfies readonly ModuloLog[]
+export type ModuloLog = 'AUTH' | 'USUARIOS' | 'PROGRAMAS' | 'SOLICITUDES' | 'DOCUMENTOS' | 'SOPORTE'
+export const MODULO_LOG_VALUES = ['AUTH', 'USUARIOS', 'PROGRAMAS', 'SOLICITUDES', 'DOCUMENTOS', 'SOPORTE'] as const satisfies readonly ModuloLog[]
 
 export type OperadorRegla = 'IGUAL' | 'DIFERENTE' | 'EN_LISTA' | 'MAYOR_QUE' | 'MENOR_QUE' | 'MAYOR_IGUAL' | 'MENOR_IGUAL'
 export const OPERADOR_REGLA_VALUES = ['IGUAL', 'DIFERENTE', 'EN_LISTA', 'MAYOR_QUE', 'MENOR_QUE', 'MAYOR_IGUAL', 'MENOR_IGUAL'] as const satisfies readonly OperadorRegla[]
 
 export type CampoRegla = 'TIPO_PERSONA' | 'SECTOR' | 'TAMANO_EMPRESA' | 'PROGRAMA_ID' | 'MONTO_SOLICITADO'
 export const CAMPO_REGLA_VALUES = ['TIPO_PERSONA', 'SECTOR', 'TAMANO_EMPRESA', 'PROGRAMA_ID', 'MONTO_SOLICITADO'] as const satisfies readonly CampoRegla[]
+
+export type TicketEstatus = 'NUEVO' | 'ASIGNADO' | 'EN_PROGRESO' | 'ESPERANDO_CLIENTE' | 'RESUELTO' | 'CERRADO' | 'CANCELADO'
+export const TICKET_ESTATUS_VALUES = ['NUEVO', 'ASIGNADO', 'EN_PROGRESO', 'ESPERANDO_CLIENTE', 'RESUELTO', 'CERRADO', 'CANCELADO'] as const satisfies readonly TicketEstatus[]
+
+export type TicketPrioridad = 'BAJA' | 'MEDIA' | 'ALTA' | 'URGENTE'
+export const TICKET_PRIORIDAD_VALUES = ['BAJA', 'MEDIA', 'ALTA', 'URGENTE'] as const satisfies readonly TicketPrioridad[]
+
+export type TicketCategoria = 'SOPORTE_TECNICO' | 'INCIDENTE' | 'DUDA_USO' | 'ACCESO_PERMISOS' | 'PRESTAMO_EQUIPO' | 'SOLICITUD_INFORMACION' | 'OTRO'
+export const TICKET_CATEGORIA_VALUES = ['SOPORTE_TECNICO', 'INCIDENTE', 'DUDA_USO', 'ACCESO_PERMISOS', 'PRESTAMO_EQUIPO', 'SOLICITUD_INFORMACION', 'OTRO'] as const satisfies readonly TicketCategoria[]
+
+export type TicketTipoEvento = 'CREADO' | 'ASIGNADO' | 'REASIGNADO' | 'CAMBIO_ESTATUS' | 'CAMBIO_PRIORIDAD' | 'CAMBIO_CATEGORIA' | 'COMENTARIO' | 'NOTA_INTERNA' | 'ADJUNTO' | 'SLA_INCUMPLIDO' | 'REABIERTO' | 'CERRADO' | 'CANCELADO'
+export const TICKET_TIPO_EVENTO_VALUES = ['CREADO', 'ASIGNADO', 'REASIGNADO', 'CAMBIO_ESTATUS', 'CAMBIO_PRIORIDAD', 'CAMBIO_CATEGORIA', 'COMENTARIO', 'NOTA_INTERNA', 'ADJUNTO', 'SLA_INCUMPLIDO', 'REABIERTO', 'CERRADO', 'CANCELADO'] as const satisfies readonly TicketTipoEvento[]
+
+export type TicketAutorTipo = 'SOLICITANTE' | 'AGENTE' | 'SISTEMA'
+export const TICKET_AUTOR_TIPO_VALUES = ['SOLICITANTE', 'AGENTE', 'SISTEMA'] as const satisfies readonly TicketAutorTipo[]

@@ -58,6 +58,7 @@ export const ModelName = {
   AsignacionSolicitud: 'AsignacionSolicitud',
   AsignacionFinanciamiento: 'AsignacionFinanciamiento',
   Usuario: 'Usuario',
+  SesionRefresh: 'SesionRefresh',
   Personal: 'Personal',
   Programa: 'Programa',
   ProgramaSeccion: 'ProgramaSeccion',
@@ -75,7 +76,12 @@ export const ModelName = {
   DatosMercado: 'DatosMercado',
   DatosBancarios: 'DatosBancarios',
   DocumentoSolicitud: 'DocumentoSolicitud',
-  LogAuditoria: 'LogAuditoria'
+  LogAuditoria: 'LogAuditoria',
+  Ticket: 'Ticket',
+  TicketComentario: 'TicketComentario',
+  TicketAdjunto: 'TicketAdjunto',
+  TicketEvento: 'TicketEvento',
+  TicketSlaPolitica: 'TicketSlaPolitica'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -188,6 +194,23 @@ export const UsuarioScalarFieldEnum = {
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
+
+
+export const SesionRefreshScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  tokenHash: 'tokenHash',
+  familia: 'familia',
+  expiraEn: 'expiraEn',
+  revocadoEn: 'revocadoEn',
+  reemplazadoPor: 'reemplazadoPor',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  usadoEn: 'usadoEn',
+  creadoEn: 'creadoEn'
+} as const
+
+export type SesionRefreshScalarFieldEnum = (typeof SesionRefreshScalarFieldEnum)[keyof typeof SesionRefreshScalarFieldEnum]
 
 
 export const PersonalScalarFieldEnum = {
@@ -520,6 +543,93 @@ export const LogAuditoriaScalarFieldEnum = {
 } as const
 
 export type LogAuditoriaScalarFieldEnum = (typeof LogAuditoriaScalarFieldEnum)[keyof typeof LogAuditoriaScalarFieldEnum]
+
+
+export const TicketScalarFieldEnum = {
+  id: 'id',
+  folio: 'folio',
+  titulo: 'titulo',
+  descripcion: 'descripcion',
+  categoria: 'categoria',
+  prioridad: 'prioridad',
+  estatus: 'estatus',
+  solicitanteId: 'solicitanteId',
+  agenteId: 'agenteId',
+  asignadoPorId: 'asignadoPorId',
+  slaArrancadoEn: 'slaArrancadoEn',
+  slaRespuestaLimite: 'slaRespuestaLimite',
+  slaResolucionLimite: 'slaResolucionLimite',
+  primeraRespuestaEn: 'primeraRespuestaEn',
+  slaRespuestaCumplida: 'slaRespuestaCumplida',
+  slaResolucionCumplida: 'slaResolucionCumplida',
+  pausadoSegundos: 'pausadoSegundos',
+  pausadoDesde: 'pausadoDesde',
+  resueltoEn: 'resueltoEn',
+  cerradoEn: 'cerradoEn',
+  reabierto: 'reabierto',
+  calificacion: 'calificacion',
+  calificacionComentario: 'calificacionComentario',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
+
+
+export const TicketComentarioScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  autorId: 'autorId',
+  autorTipo: 'autorTipo',
+  cuerpo: 'cuerpo',
+  esNotaInterna: 'esNotaInterna',
+  creadoEn: 'creadoEn',
+  editadoEn: 'editadoEn'
+} as const
+
+export type TicketComentarioScalarFieldEnum = (typeof TicketComentarioScalarFieldEnum)[keyof typeof TicketComentarioScalarFieldEnum]
+
+
+export const TicketAdjuntoScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  comentarioId: 'comentarioId',
+  urlArchivo: 'urlArchivo',
+  nombreArchivo: 'nombreArchivo',
+  nombreOriginal: 'nombreOriginal',
+  tipoMime: 'tipoMime',
+  tamanoBytes: 'tamanoBytes',
+  subidoPorId: 'subidoPorId',
+  subidoEn: 'subidoEn'
+} as const
+
+export type TicketAdjuntoScalarFieldEnum = (typeof TicketAdjuntoScalarFieldEnum)[keyof typeof TicketAdjuntoScalarFieldEnum]
+
+
+export const TicketEventoScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  tipo: 'tipo',
+  actorId: 'actorId',
+  descripcion: 'descripcion',
+  valorAnterior: 'valorAnterior',
+  valorNuevo: 'valorNuevo',
+  creadoEn: 'creadoEn'
+} as const
+
+export type TicketEventoScalarFieldEnum = (typeof TicketEventoScalarFieldEnum)[keyof typeof TicketEventoScalarFieldEnum]
+
+
+export const TicketSlaPoliticaScalarFieldEnum = {
+  id: 'id',
+  prioridad: 'prioridad',
+  respuestaMinutos: 'respuestaMinutos',
+  resolucionMinutos: 'resolucionMinutos',
+  activa: 'activa',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type TicketSlaPoliticaScalarFieldEnum = (typeof TicketSlaPoliticaScalarFieldEnum)[keyof typeof TicketSlaPoliticaScalarFieldEnum]
 
 
 export const SortOrder = {

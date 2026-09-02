@@ -15,8 +15,10 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useProgramas } from "@/features/settings/hooks/useProgramas";
 import { ProgramaCard } from "@/features/settings/components/programas/ProgramaCard";
 import { PageHeader } from "@/shared/components/common/PageHeader";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 
 export default function ProgramasPage() {
+    const soloLectura = useEsSoloLectura();
     const { programas, cargando: loading, error, recargar, activar, desactivar } = useProgramas();
     const [search, setSearch] = useState("");
     const [filtro, setFiltro] = useState<"todos" | "activos" | "inactivos">("todos");
@@ -78,12 +80,14 @@ export default function ProgramasPage() {
                         <SelectItem value="inactivos">Inactivos</SelectItem>
                     </SelectContent>
                 </Select>
-                <Button asChild className="w-full sm:w-auto">
-                    <Link href="/dashboard/admin/configuracion/programas/nuevo">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Nuevo programa
-                    </Link>
-                </Button>
+                {!soloLectura && (
+                    <Button asChild className="w-full sm:w-auto">
+                        <Link href="/dashboard/admin/configuracion/programas/nuevo">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Nuevo programa
+                        </Link>
+                    </Button>
+                )}
             </div>
             {loading ? (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -109,7 +113,7 @@ export default function ProgramasPage() {
                             {search ? "Ningún programa coincide con tu búsqueda." : "Aún no hay programas registrados."}
                         </p>
                     </div>
-                    {!search && (
+                    {!search && !soloLectura && (
                         <Button asChild size="sm">
                             <Link href="/dashboard/admin/configuracion/programas/nuevo">Crear primer programa</Link>
                         </Button>

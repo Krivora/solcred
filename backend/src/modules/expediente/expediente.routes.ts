@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { autenticar } from "@middlewares/auth.middleware";
-import { autorizar } from "@middlewares/roles.middleware";
+import { autorizar, soloLecturaSupervisor } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import * as expedienteController from "./expediente.controller";
 
@@ -22,10 +22,11 @@ const paramsHistorial = z.object({
 });
 
 router.use(autenticar);
+router.use(soloLecturaSupervisor);
 
 router.get(
     "/:solicitudId",
-    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE"),
+    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE", "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL"),
     validate(paramsSolicitud, "params"),
     expedienteController.obtenerExpediente
 );
@@ -36,7 +37,7 @@ router.get(
 
 router.patch(
     "/:solicitudId/documentos/:documentoId/validar",
-    autorizar("GESTOR"),
+    autorizar("GESTOR", "ENCARGADO_PROMOCION"),
     validate(paramsDocumento, "params"),
     validate(require("./expediente.schema").validarDocumentoSchema),
     expedienteController.validarDocumento
@@ -44,7 +45,7 @@ router.patch(
 
 router.get(
     "/:solicitudId/documentos/:tipoDocumentoId/historial",
-    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE"),
+    autorizar("ADMIN", "ANALISTA", "SUPERVISOR", "GESTOR", "CLIENTE", "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL"),
     validate(paramsHistorial, "params"),
     expedienteController.obtenerHistorialDocumento
 );

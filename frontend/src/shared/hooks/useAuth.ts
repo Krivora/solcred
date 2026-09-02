@@ -59,7 +59,13 @@ export function useAuth() {
             setIsLoading(false)
         }
     }
-    const logout = () => {
+    const logout = async () => {
+        // Revoca la sesión de refresh en el servidor; si falla igual limpiamos local.
+        try {
+            await authApi.logout()
+        } catch {
+            // sin conexión / token ya inválido — no bloquea el cierre local
+        }
         clearAuth()
         authToast.logoutSuccess()
         router.push('/login')

@@ -20,7 +20,7 @@ export function usePerfilUsuario(enabled: boolean): UsePerfilUsuarioReturn {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['auth', 'perfil'],
-    queryFn: () => authApi.perfil(token as string),
+    queryFn: () => authApi.perfil(),
     enabled: enabled && !!token,
     staleTime: Infinity, // el perfil no cambia dentro de una sesión
   })

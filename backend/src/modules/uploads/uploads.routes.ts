@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { autenticar } from "@middlewares/auth.middleware";
-import { autorizar } from "@middlewares/roles.middleware";
+import { autorizar, soloLecturaSupervisor } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import { uploadPdf } from "@config/multer.config";
 import { subirArchivo, descargarArchivo } from "./uploads.controller";
@@ -23,6 +23,7 @@ const paramsDocumento = z.object({
 });
 
 router.use(autenticar);
+router.use(soloLecturaSupervisor);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /uploads/:solicitudId — sube un PDF y crea la versión del documento
@@ -30,7 +31,7 @@ router.use(autenticar);
 // ─────────────────────────────────────────────────────────────────────────────
 router.post(
     "/:solicitudId",
-    autorizar("CLIENTE", "GESTOR", "ANALISTA", "ADMIN"),
+    autorizar("CLIENTE", "GESTOR", "ANALISTA", "ADMIN", "ENCARGADO_PROMOCION"),
     validate(paramsSolicitud, "params"),
     verificarPropietarioSolicitud,
     uploadPdf.single("archivo"),
@@ -44,7 +45,7 @@ router.post(
 router.get(
     "/:solicitudId/:documentoId",
     descargaLimiter,
-    autorizar("CLIENTE", "GESTOR", "ANALISTA", "ADMIN"),
+    autorizar("CLIENTE", "GESTOR", "ANALISTA", "ADMIN", "SUPERVISOR", "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL"),
     validate(paramsDocumento, "params"),
     verificarPropietarioSolicitud,
     descargarArchivo

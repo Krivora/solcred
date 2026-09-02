@@ -121,6 +121,11 @@ export const MODULO_CONFIG: Record<ModuloLog, ModuloConfig> = {
     className: 'bg-[color:var(--chart-5)]/10 text-[color:var(--chart-5)] border-[color:var(--chart-5)]/30',
     icon: 'Paperclip',
   },
+  SOPORTE: {
+    label: 'Soporte',
+    className: 'bg-[color:var(--chart-1)]/10 text-[color:var(--chart-1)] border-[color:var(--chart-1)]/30',
+    icon: 'LifeBuoy',
+  },
 };
 
 // ─────────────────────────────────────────

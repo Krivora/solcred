@@ -9,10 +9,8 @@ import {
   ClipboardClock,
   UserCheck,
   ShieldCheck,
-  BookOpen,
-  AlertCircle,
   FolderInput,
-  MessageSquarePlus,
+  Inbox,
   TicketCheck,
   LifeBuoy,
   BadgeDollarSign,
@@ -31,7 +29,7 @@ export interface NavItem {
   exact?: boolean;
 }
 
-export const navConfig: NavItem[] = [
+const NAV_BASE: NavItem[] = [
   {
     label: "Inicio",
     href: "/dashboard",
@@ -49,25 +47,25 @@ export const navConfig: NavItem[] = [
   {
     label: "Promoción",
     icon: Briefcase,
-    roles: ["ADMIN", "GESTOR"],
+    roles: ["ADMIN", "GESTOR", "ENCARGADO_PROMOCION"],
     children: [
       {
         label: "Solicitudes",
         href: "/dashboard/admin/promocion/solicitudes",
         icon: FileText,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "ENCARGADO_PROMOCION"],
       },
       {
         label: "Asignacion",
         href: "/dashboard/admin/promocion/asignacion",
         icon: FolderInput,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "ENCARGADO_PROMOCION"],
       },
       {
         label: "Aprobación",
         href: "/dashboard/admin/promocion/aprobacion",
         icon: FileCheck,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "ENCARGADO_PROMOCION"],
       },
       {
         label: "Mis Casos",
@@ -79,26 +77,26 @@ export const navConfig: NavItem[] = [
         label: "Historico",
         href: "/dashboard/admin/promocion/historico",
         icon: ClipboardClock,
-        roles: ["ADMIN", "GESTOR"],
+        roles: ["ADMIN", "GESTOR", "ENCARGADO_PROMOCION"],
       },
     ],
   },
   {
     label: "Financiamiento",
     icon: BadgeDollarSign,
-    roles: ["ADMIN", "ANALISTA", "SUPERVISOR"],
+    roles: ["ADMIN", "ANALISTA", "SUPERVISOR", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL"],
     children: [
       {
         label: "Mesa de Control",
         href: "/dashboard/financiamiento/mesa-control",
         icon: ShieldCheck,
-        roles: ["ADMIN", "SUPERVISOR"],
+        roles: ["ADMIN", "SUPERVISOR", "MESA_CONTROL"],
       },
       {
         label: "Asignación",
         href: "/dashboard/financiamiento/asignacion",
         icon: UserCheck,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "ENCARGADO_FINANCIAMIENTO"],
       },
       {
         label: "Mis Casos",
@@ -110,13 +108,13 @@ export const navConfig: NavItem[] = [
         label: "Validación",
         href: "/dashboard/financiamiento/validacion",
         icon: ClipboardClock,
-        roles: ["ADMIN", "SUPERVISOR"],
+        roles: ["ADMIN", "SUPERVISOR", "ENCARGADO_FINANCIAMIENTO"],
       },
       {
         label: "Comité de Crédito",
         href: "/dashboard/financiamiento/comite",
         icon: Users,
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "SUPERVISOR", "ENCARGADO_FINANCIAMIENTO"],
       },
     ],
   },
@@ -130,42 +128,57 @@ export const navConfig: NavItem[] = [
   {
     label: "Soporte",
     icon: LifeBuoy,
-    roles: ["ADMIN", "ANALISTA"],
+    roles: [
+      "ADMIN", "GESTOR", "ANALISTA", "SUPERVISOR",
+      "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL",
+      "SOPORTE", "CLIENTE",
+    ],
     children: [
       {
-        label: "Mis Tickets",
+        // Cola completa de tickets — staff.
+        label: "Tickets",
         href: "/dashboard/soporte/tickets",
+        icon: Inbox,
+        roles: ["ADMIN"], // + SUPERVISOR por la derivación conSupervisor
+      },
+      {
+        // Los propios de cada usuario + creación de nuevos. Todos.
+        label: "Mis Tickets",
+        href: "/dashboard/soporte/mis-tickets",
         icon: TicketCheck,
-        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
-      },
-      {
-        label: "Nuevo Ticket",
-        href: "/dashboard/soporte/nuevo",
-        icon: MessageSquarePlus,
-        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
-      },
-      {
-        label: "Reportar Problema",
-        href: "/dashboard/soporte/reporte",
-        icon: AlertCircle,
-        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
-      },
-      {
-        label: "Base de Conocimiento",
-        href: "/dashboard/soporte/conocimiento",
-        icon: BookOpen,
-        roles: ["ADMIN", "ANALISTA", "CLIENTE"],
+        roles: [
+          "ADMIN", "GESTOR", "ANALISTA", "SUPERVISOR",
+          "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL",
+          "SOPORTE", "CLIENTE",
+        ],
       },
     ],
   },
 ];
 
-// Ítem separado para el fondo del sidebar (solo ADMIN)
+// El rol SUPERVISOR es "ADMIN de solo lectura": ve exactamente lo mismo que un
+// administrador. En vez de repetir "SUPERVISOR" en cada item, se deriva: donde
+// pueda entrar ADMIN, también entra SUPERVISOR (el backend le bloquea las
+// acciones de escritura).
+function conSupervisor(items: NavItem[]): NavItem[] {
+  return items.map((item) => ({
+    ...item,
+    roles:
+      item.roles.includes("ADMIN") && !item.roles.includes("SUPERVISOR")
+        ? [...item.roles, "SUPERVISOR"]
+        : item.roles,
+    children: item.children ? conSupervisor(item.children) : undefined,
+  }));
+}
+
+export const navConfig: NavItem[] = conSupervisor(NAV_BASE);
+
+// Ítem separado para el fondo del sidebar (ADMIN + SUPERVISOR en solo lectura)
 export const settingsNavItem: NavItem = {
   label: "Gestión del Sistema",
   href: "/dashboard/admin/configuracion",
   icon: Settings2,
-  roles: ["ADMIN"],
+  roles: ["ADMIN", "SUPERVISOR"],
 };
 
 export function getNavForRole(role: RolAplicacion): NavItem[] {

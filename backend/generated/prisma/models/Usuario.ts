@@ -249,6 +249,11 @@ export type UsuarioWhereInput = {
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
+  sesionesRefresh?: Prisma.SesionRefreshListRelationFilter
+  ticketsSolicitados?: Prisma.TicketListRelationFilter
+  ticketsComentados?: Prisma.TicketComentarioListRelationFilter
+  ticketsAdjuntos?: Prisma.TicketAdjuntoListRelationFilter
+  ticketsEventos?: Prisma.TicketEventoListRelationFilter
   personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }
 
@@ -269,6 +274,11 @@ export type UsuarioOrderByWithRelationInput = {
   solicitudes?: Prisma.SolicitudOrderByRelationAggregateInput
   logs?: Prisma.LogAuditoriaOrderByRelationAggregateInput
   historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
+  sesionesRefresh?: Prisma.SesionRefreshOrderByRelationAggregateInput
+  ticketsSolicitados?: Prisma.TicketOrderByRelationAggregateInput
+  ticketsComentados?: Prisma.TicketComentarioOrderByRelationAggregateInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoOrderByRelationAggregateInput
+  ticketsEventos?: Prisma.TicketEventoOrderByRelationAggregateInput
   personal?: Prisma.PersonalOrderByWithRelationInput
 }
 
@@ -292,6 +302,11 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
+  sesionesRefresh?: Prisma.SesionRefreshListRelationFilter
+  ticketsSolicitados?: Prisma.TicketListRelationFilter
+  ticketsComentados?: Prisma.TicketComentarioListRelationFilter
+  ticketsAdjuntos?: Prisma.TicketAdjuntoListRelationFilter
+  ticketsEventos?: Prisma.TicketEventoListRelationFilter
   personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }, "id" | "correo" | "curp" | "rfc">
 
@@ -350,6 +365,11 @@ export type UsuarioCreateInput = {
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -370,6 +390,11 @@ export type UsuarioUncheckedCreateInput = {
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -390,6 +415,11 @@ export type UsuarioUpdateInput = {
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -410,6 +440,11 @@ export type UsuarioUncheckedUpdateInput = {
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -541,6 +576,20 @@ export type EnumTipoPersonaFieldUpdateOperationsInput = {
   set?: $Enums.TipoPersona
 }
 
+export type UsuarioCreateNestedOneWithoutSesionesRefreshInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedCreateWithoutSesionesRefreshInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutSesionesRefreshInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutSesionesRefreshNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedCreateWithoutSesionesRefreshInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutSesionesRefreshInput
+  upsert?: Prisma.UsuarioUpsertWithoutSesionesRefreshInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutSesionesRefreshInput, Prisma.UsuarioUpdateWithoutSesionesRefreshInput>, Prisma.UsuarioUncheckedUpdateWithoutSesionesRefreshInput>
+}
+
 export type UsuarioCreateNestedOneWithoutPersonalInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutPersonalInput, Prisma.UsuarioUncheckedCreateWithoutPersonalInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutPersonalInput
@@ -585,6 +634,64 @@ export type UsuarioUpdateOneWithoutLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutLogsInput, Prisma.UsuarioUpdateWithoutLogsInput>, Prisma.UsuarioUncheckedUpdateWithoutLogsInput>
 }
 
+export type UsuarioCreateNestedOneWithoutTicketsSolicitadosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsSolicitadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsSolicitadosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutTicketsSolicitadosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsSolicitadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsSolicitadosInput
+  upsert?: Prisma.UsuarioUpsertWithoutTicketsSolicitadosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutTicketsSolicitadosInput, Prisma.UsuarioUpdateWithoutTicketsSolicitadosInput>, Prisma.UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput>
+}
+
+export type UsuarioCreateNestedOneWithoutTicketsComentadosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsComentadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsComentadosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutTicketsComentadosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsComentadosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsComentadosInput
+  upsert?: Prisma.UsuarioUpsertWithoutTicketsComentadosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutTicketsComentadosInput, Prisma.UsuarioUpdateWithoutTicketsComentadosInput>, Prisma.UsuarioUncheckedUpdateWithoutTicketsComentadosInput>
+}
+
+export type UsuarioCreateNestedOneWithoutTicketsAdjuntosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsAdjuntosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsAdjuntosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutTicketsAdjuntosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsAdjuntosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsAdjuntosInput
+  upsert?: Prisma.UsuarioUpsertWithoutTicketsAdjuntosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutTicketsAdjuntosInput, Prisma.UsuarioUpdateWithoutTicketsAdjuntosInput>, Prisma.UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput>
+}
+
+export type UsuarioCreateNestedOneWithoutTicketsEventosInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsEventosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsEventosInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneWithoutTicketsEventosNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsEventosInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutTicketsEventosInput
+  upsert?: Prisma.UsuarioUpsertWithoutTicketsEventosInput
+  disconnect?: Prisma.UsuarioWhereInput | boolean
+  delete?: Prisma.UsuarioWhereInput | boolean
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutTicketsEventosInput, Prisma.UsuarioUpdateWithoutTicketsEventosInput>, Prisma.UsuarioUncheckedUpdateWithoutTicketsEventosInput>
+}
+
 export type UsuarioCreateWithoutHistorialEstatusInput = {
   id?: string
   correo: string
@@ -601,6 +708,11 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -620,6 +732,11 @@ export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -655,6 +772,11 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -674,6 +796,123 @@ export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutSesionesRefreshInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutSesionesRefreshInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutSesionesRefreshInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedCreateWithoutSesionesRefreshInput>
+}
+
+export type UsuarioUpsertWithoutSesionesRefreshInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedUpdateWithoutSesionesRefreshInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedCreateWithoutSesionesRefreshInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutSesionesRefreshInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutSesionesRefreshInput, Prisma.UsuarioUncheckedUpdateWithoutSesionesRefreshInput>
+}
+
+export type UsuarioUpdateWithoutSesionesRefreshInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutSesionesRefreshInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -694,6 +933,11 @@ export type UsuarioCreateWithoutPersonalInput = {
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
 }
 
 export type UsuarioUncheckedCreateWithoutPersonalInput = {
@@ -713,6 +957,11 @@ export type UsuarioUncheckedCreateWithoutPersonalInput = {
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
 }
 
 export type UsuarioCreateOrConnectWithoutPersonalInput = {
@@ -748,6 +997,11 @@ export type UsuarioUpdateWithoutPersonalInput = {
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutPersonalInput = {
@@ -767,6 +1021,11 @@ export type UsuarioUncheckedUpdateWithoutPersonalInput = {
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
 }
 
 export type UsuarioCreateWithoutSolicitudesInput = {
@@ -785,6 +1044,11 @@ export type UsuarioCreateWithoutSolicitudesInput = {
   actualizadoEn?: Date | string
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -804,6 +1068,11 @@ export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   actualizadoEn?: Date | string
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -839,6 +1108,11 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -858,6 +1132,11 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -877,6 +1156,11 @@ export type UsuarioCreateWithoutLogsInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -896,6 +1180,11 @@ export type UsuarioUncheckedCreateWithoutLogsInput = {
   actualizadoEn?: Date | string
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -931,6 +1220,11 @@ export type UsuarioUpdateWithoutLogsInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -950,6 +1244,459 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutTicketsSolicitadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutTicketsSolicitadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutTicketsSolicitadosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsSolicitadosInput>
+}
+
+export type UsuarioUpsertWithoutTicketsSolicitadosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsSolicitadosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutTicketsSolicitadosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsSolicitadosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput>
+}
+
+export type UsuarioUpdateWithoutTicketsSolicitadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutTicketsComentadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutTicketsComentadosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutTicketsComentadosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsComentadosInput>
+}
+
+export type UsuarioUpsertWithoutTicketsComentadosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsComentadosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsComentadosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutTicketsComentadosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsComentadosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsComentadosInput>
+}
+
+export type UsuarioUpdateWithoutTicketsComentadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutTicketsComentadosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutTicketsAdjuntosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutTicketsAdjuntosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutTicketsAdjuntosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsAdjuntosInput>
+}
+
+export type UsuarioUpsertWithoutTicketsAdjuntosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsAdjuntosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutTicketsAdjuntosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsAdjuntosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput>
+}
+
+export type UsuarioUpdateWithoutTicketsAdjuntosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutTicketsEventosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutTicketsEventosInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutTicketsEventosInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsEventosInput>
+}
+
+export type UsuarioUpsertWithoutTicketsEventosInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsEventosInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedCreateWithoutTicketsEventosInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutTicketsEventosInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutTicketsEventosInput, Prisma.UsuarioUncheckedUpdateWithoutTicketsEventosInput>
+}
+
+export type UsuarioUpdateWithoutTicketsEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutTicketsEventosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -962,12 +1709,22 @@ export type UsuarioCountOutputType = {
   solicitudes: number
   logs: number
   historialEstatus: number
+  sesionesRefresh: number
+  ticketsSolicitados: number
+  ticketsComentados: number
+  ticketsAdjuntos: number
+  ticketsEventos: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitudes?: boolean | UsuarioCountOutputTypeCountSolicitudesArgs
   logs?: boolean | UsuarioCountOutputTypeCountLogsArgs
   historialEstatus?: boolean | UsuarioCountOutputTypeCountHistorialEstatusArgs
+  sesionesRefresh?: boolean | UsuarioCountOutputTypeCountSesionesRefreshArgs
+  ticketsSolicitados?: boolean | UsuarioCountOutputTypeCountTicketsSolicitadosArgs
+  ticketsComentados?: boolean | UsuarioCountOutputTypeCountTicketsComentadosArgs
+  ticketsAdjuntos?: boolean | UsuarioCountOutputTypeCountTicketsAdjuntosArgs
+  ticketsEventos?: boolean | UsuarioCountOutputTypeCountTicketsEventosArgs
 }
 
 /**
@@ -1001,6 +1758,41 @@ export type UsuarioCountOutputTypeCountHistorialEstatusArgs<ExtArgs extends runt
   where?: Prisma.HistorialEstatusWhereInput
 }
 
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountSesionesRefreshArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SesionRefreshWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountTicketsSolicitadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TicketWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountTicketsComentadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TicketComentarioWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountTicketsAdjuntosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TicketAdjuntoWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountTicketsEventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TicketEventoWhereInput
+}
+
 
 export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1019,6 +1811,11 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
+  sesionesRefresh?: boolean | Prisma.Usuario$sesionesRefreshArgs<ExtArgs>
+  ticketsSolicitados?: boolean | Prisma.Usuario$ticketsSolicitadosArgs<ExtArgs>
+  ticketsComentados?: boolean | Prisma.Usuario$ticketsComentadosArgs<ExtArgs>
+  ticketsAdjuntos?: boolean | Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>
+  ticketsEventos?: boolean | Prisma.Usuario$ticketsEventosArgs<ExtArgs>
   personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
@@ -1076,6 +1873,11 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
+  sesionesRefresh?: boolean | Prisma.Usuario$sesionesRefreshArgs<ExtArgs>
+  ticketsSolicitados?: boolean | Prisma.Usuario$ticketsSolicitadosArgs<ExtArgs>
+  ticketsComentados?: boolean | Prisma.Usuario$ticketsComentadosArgs<ExtArgs>
+  ticketsAdjuntos?: boolean | Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>
+  ticketsEventos?: boolean | Prisma.Usuario$ticketsEventosArgs<ExtArgs>
   personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1088,6 +1890,11 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     solicitudes: Prisma.$SolicitudPayload<ExtArgs>[]
     logs: Prisma.$LogAuditoriaPayload<ExtArgs>[]
     historialEstatus: Prisma.$HistorialEstatusPayload<ExtArgs>[]
+    sesionesRefresh: Prisma.$SesionRefreshPayload<ExtArgs>[]
+    ticketsSolicitados: Prisma.$TicketPayload<ExtArgs>[]
+    ticketsComentados: Prisma.$TicketComentarioPayload<ExtArgs>[]
+    ticketsAdjuntos: Prisma.$TicketAdjuntoPayload<ExtArgs>[]
+    ticketsEventos: Prisma.$TicketEventoPayload<ExtArgs>[]
     personal: Prisma.$PersonalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1501,6 +2308,11 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   solicitudes<T extends Prisma.Usuario$solicitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$solicitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitudPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.Usuario$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   historialEstatus<T extends Prisma.Usuario$historialEstatusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$historialEstatusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HistorialEstatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sesionesRefresh<T extends Prisma.Usuario$sesionesRefreshArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$sesionesRefreshArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SesionRefreshPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsSolicitados<T extends Prisma.Usuario$ticketsSolicitadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsSolicitadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsComentados<T extends Prisma.Usuario$ticketsComentadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsComentadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketComentarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsAdjuntos<T extends Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketAdjuntoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketsEventos<T extends Prisma.Usuario$ticketsEventosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsEventosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketEventoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   personal<T extends Prisma.Usuario$personalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$personalArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2006,6 +2818,126 @@ export type Usuario$historialEstatusArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.HistorialEstatusScalarFieldEnum | Prisma.HistorialEstatusScalarFieldEnum[]
+}
+
+/**
+ * Usuario.sesionesRefresh
+ */
+export type Usuario$sesionesRefreshArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SesionRefresh
+   */
+  select?: Prisma.SesionRefreshSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SesionRefresh
+   */
+  omit?: Prisma.SesionRefreshOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SesionRefreshInclude<ExtArgs> | null
+  where?: Prisma.SesionRefreshWhereInput
+  orderBy?: Prisma.SesionRefreshOrderByWithRelationInput | Prisma.SesionRefreshOrderByWithRelationInput[]
+  cursor?: Prisma.SesionRefreshWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SesionRefreshScalarFieldEnum | Prisma.SesionRefreshScalarFieldEnum[]
+}
+
+/**
+ * Usuario.ticketsSolicitados
+ */
+export type Usuario$ticketsSolicitadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Ticket
+   */
+  select?: Prisma.TicketSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Ticket
+   */
+  omit?: Prisma.TicketOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TicketInclude<ExtArgs> | null
+  where?: Prisma.TicketWhereInput
+  orderBy?: Prisma.TicketOrderByWithRelationInput | Prisma.TicketOrderByWithRelationInput[]
+  cursor?: Prisma.TicketWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TicketScalarFieldEnum | Prisma.TicketScalarFieldEnum[]
+}
+
+/**
+ * Usuario.ticketsComentados
+ */
+export type Usuario$ticketsComentadosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TicketComentario
+   */
+  select?: Prisma.TicketComentarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TicketComentario
+   */
+  omit?: Prisma.TicketComentarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TicketComentarioInclude<ExtArgs> | null
+  where?: Prisma.TicketComentarioWhereInput
+  orderBy?: Prisma.TicketComentarioOrderByWithRelationInput | Prisma.TicketComentarioOrderByWithRelationInput[]
+  cursor?: Prisma.TicketComentarioWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TicketComentarioScalarFieldEnum | Prisma.TicketComentarioScalarFieldEnum[]
+}
+
+/**
+ * Usuario.ticketsAdjuntos
+ */
+export type Usuario$ticketsAdjuntosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TicketAdjunto
+   */
+  select?: Prisma.TicketAdjuntoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TicketAdjunto
+   */
+  omit?: Prisma.TicketAdjuntoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TicketAdjuntoInclude<ExtArgs> | null
+  where?: Prisma.TicketAdjuntoWhereInput
+  orderBy?: Prisma.TicketAdjuntoOrderByWithRelationInput | Prisma.TicketAdjuntoOrderByWithRelationInput[]
+  cursor?: Prisma.TicketAdjuntoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TicketAdjuntoScalarFieldEnum | Prisma.TicketAdjuntoScalarFieldEnum[]
+}
+
+/**
+ * Usuario.ticketsEventos
+ */
+export type Usuario$ticketsEventosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TicketEvento
+   */
+  select?: Prisma.TicketEventoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TicketEvento
+   */
+  omit?: Prisma.TicketEventoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TicketEventoInclude<ExtArgs> | null
+  where?: Prisma.TicketEventoWhereInput
+  orderBy?: Prisma.TicketEventoOrderByWithRelationInput | Prisma.TicketEventoOrderByWithRelationInput[]
+  cursor?: Prisma.TicketEventoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TicketEventoScalarFieldEnum | Prisma.TicketEventoScalarFieldEnum[]
 }
 
 /**

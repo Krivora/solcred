@@ -17,6 +17,22 @@ const rolConfig: Record<RolAplicacion, { label: string; className: string }> = {
       "font-medium hover:bg-primary/15",
     ].join(" "),
   },
+  ENCARGADO_PROMOCION: {
+    label: "Enc. Promoción",
+    className: ["bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/25", "hover:bg-teal-500/15"].join(" "),
+  },
+  ENCARGADO_FINANCIAMIENTO: {
+    label: "Enc. Financiamiento",
+    className: ["bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/25", "hover:bg-cyan-500/15"].join(" "),
+  },
+  MESA_CONTROL: {
+    label: "Mesa de Control",
+    className: ["bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25", "hover:bg-rose-500/15"].join(" "),
+  },
+  SOPORTE: {
+    label: "Soporte",
+    className: ["bg-muted text-muted-foreground border-border", "hover:bg-muted"].join(" "),
+  },
   GESTOR: {
     label: "Gestor",
     className: [

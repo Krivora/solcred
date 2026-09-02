@@ -20,6 +20,10 @@ enum Rol {
   ANALISTA
   GESTOR
   SUPERVISOR
+  ENCARGADO_PROMOCION
+  ENCARGADO_FINANCIAMIENTO
+  MESA_CONTROL
+  SOPORTE
 }
 
 enum TipoPersona {
@@ -275,8 +279,36 @@ model Usuario {
   solicitudes      Solicitud[]
   logs             LogAuditoria[]
   historialEstatus HistorialEstatus[]
+  sesionesRefresh  SesionRefresh[]
+
+  ticketsSolicitados Ticket[]           @relation("TicketsSolicitados")
+  ticketsComentados  TicketComentario[] @relation("TicketsComentados")
+  ticketsAdjuntos    TicketAdjunto[]    @relation("TicketsAdjuntos")
+  ticketsEventos     TicketEvento[]     @relation("TicketsEventos")
 
   personal Personal?
+}
+
+/// Sesiones de refresh token (rotación + ventana deslizante).
+/// El token opaco nunca se guarda en claro: solo su hash SHA-256.
+/// `familia` agrupa la cadena de rotaciones de un mismo login para poder
+/// revocarla completa si se detecta reuso de un token ya rotado.
+model SesionRefresh {
+  id             String    @id @default(uuid())
+  usuario        Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId      String
+  tokenHash      String    @unique
+  familia        String
+  expiraEn       DateTime
+  revocadoEn     DateTime?
+  reemplazadoPor String?
+  ip             String?
+  userAgent      String?
+  usadoEn        DateTime?
+  creadoEn       DateTime  @default(now())
+
+  @@index([usuarioId])
+  @@index([familia])
 }
 
 model Personal {
@@ -303,6 +335,9 @@ model Personal {
   asignacionesFinanciamiento AsignacionFinanciamiento[] @relation("FinanciamientoComoAnalista")
   financiamientoAsignadoPor  AsignacionFinanciamiento[] @relation("FinanciamientoAsignadoPor")
   analisis                   Analisis[]                 @relation("AnalisisComoAnalista")
+
+  ticketsAsignados    Ticket[] @relation("TicketsAsignados")
+  ticketsAsignadosPor Ticket[] @relation("TicketsAsignadosPor")
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
@@ -719,6 +754,7 @@ enum ModuloLog {
   PROGRAMAS
   SOLICITUDES
   DOCUMENTOS
+  SOPORTE
 }
 
 model LogAuditoria {
@@ -733,4 +769,169 @@ model LogAuditoria {
   metadata    Json? // datos extra si se necesitan
   creadoEn    DateTime  @default(now())
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+}
+
+// ─────────────────────────────────────────
+// SOPORTE (TICKETS)
+// ─────────────────────────────────────────
+
+enum TicketEstatus {
+  NUEVO
+  ASIGNADO
+  EN_PROGRESO
+  ESPERANDO_CLIENTE
+  RESUELTO
+  CERRADO
+  CANCELADO
+}
+
+enum TicketPrioridad {
+  BAJA
+  MEDIA
+  ALTA
+  URGENTE
+}
+
+enum TicketCategoria {
+  SOPORTE_TECNICO
+  INCIDENTE
+  DUDA_USO
+  ACCESO_PERMISOS
+  PRESTAMO_EQUIPO
+  SOLICITUD_INFORMACION
+  OTRO
+}
+
+enum TicketTipoEvento {
+  CREADO
+  ASIGNADO
+  REASIGNADO
+  CAMBIO_ESTATUS
+  CAMBIO_PRIORIDAD
+  CAMBIO_CATEGORIA
+  COMENTARIO
+  NOTA_INTERNA
+  ADJUNTO
+  SLA_INCUMPLIDO
+  REABIERTO
+  CERRADO
+  CANCELADO
+}
+
+enum TicketAutorTipo {
+  SOLICITANTE
+  AGENTE
+  SISTEMA
+}
+
+model Ticket {
+  id    String @id @default(uuid())
+  folio String @unique // "TKT-2026-0007", secuencia ticket_folio_seq
+
+  titulo      String
+  descripcion String
+  categoria   TicketCategoria
+  prioridad   TicketPrioridad @default(MEDIA)
+  estatus     TicketEstatus   @default(NUEVO)
+
+  solicitante   Usuario   @relation("TicketsSolicitados", fields: [solicitanteId], references: [id])
+  solicitanteId String
+  agente        Personal? @relation("TicketsAsignados", fields: [agenteId], references: [id])
+  agenteId      String? // siempre un Personal con rol ADMIN
+  asignadoPor   Personal? @relation("TicketsAsignadosPor", fields: [asignadoPorId], references: [id])
+  asignadoPorId String?
+
+  // SLA (calculado; se fija al asignar)
+  slaArrancadoEn        DateTime? // momento del primer asignar — base del cálculo
+  slaRespuestaLimite    DateTime?
+  slaResolucionLimite   DateTime?
+  primeraRespuestaEn    DateTime?
+  slaRespuestaCumplida  Boolean?
+  slaResolucionCumplida Boolean?
+  pausadoSegundos       Int       @default(0)
+  pausadoDesde          DateTime?
+
+  resueltoEn DateTime?
+  cerradoEn  DateTime?
+  reabierto  Boolean   @default(false)
+
+  // Satisfacción (CSAT al cerrar)
+  calificacion           Int?
+  calificacionComentario String?
+
+  comentarios TicketComentario[]
+  adjuntos    TicketAdjunto[]
+  eventos     TicketEvento[]
+
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@index([solicitanteId])
+  @@index([agenteId])
+  @@index([estatus])
+  @@index([categoria])
+}
+
+model TicketComentario {
+  id       String @id @default(uuid())
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId String
+
+  autor         Usuario         @relation("TicketsComentados", fields: [autorId], references: [id])
+  autorId       String
+  autorTipo     TicketAutorTipo
+  cuerpo        String
+  esNotaInterna Boolean         @default(false)
+
+  adjuntos  TicketAdjunto[]
+  creadoEn  DateTime  @default(now())
+  editadoEn DateTime?
+
+  @@index([ticketId])
+}
+
+model TicketAdjunto {
+  id           String            @id @default(uuid())
+  ticket       Ticket            @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId     String
+  comentario   TicketComentario? @relation(fields: [comentarioId], references: [id], onDelete: Cascade)
+  comentarioId String? // null = adjunto del ticket (subido al crearlo)
+
+  urlArchivo     String // relativa a uploads/soporte/
+  nombreArchivo  String // generado, legible
+  nombreOriginal String
+  tipoMime       String // application/pdf | image/png | image/jpeg
+  tamanoBytes    Int
+
+  subidoPor   Usuario  @relation("TicketsAdjuntos", fields: [subidoPorId], references: [id])
+  subidoPorId String
+  subidoEn    DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+model TicketEvento {
+  id       String @id @default(uuid())
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId String
+
+  tipo    TicketTipoEvento
+  actor   Usuario? @relation("TicketsEventos", fields: [actorId], references: [id])
+  actorId String? // null = SISTEMA
+
+  descripcion   String
+  valorAnterior String?
+  valorNuevo    String?
+  creadoEn      DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+model TicketSlaPolitica {
+  id                String          @id @default(uuid())
+  prioridad         TicketPrioridad @unique
+  respuestaMinutos  Int
+  resolucionMinutos Int
+  activa            Boolean         @default(true)
+  actualizadoEn     DateTime        @updatedAt
 }
