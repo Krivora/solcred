@@ -14,6 +14,8 @@ export interface ApiResponse<T = null> {
   message: string
   data?: T
   errors?: unknown
+  /** Código legible por el cliente (solo en respuestas de error). */
+  code?: string
 }
 
 /** Bloque de paginación estándar. */

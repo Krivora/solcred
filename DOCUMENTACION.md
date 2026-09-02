@@ -5,7 +5,7 @@
 > de datos, la carga de documentos y (cuando ese módulo exista) el análisis
 > financiero.
 >
-> Última actualización: 31 de agosto de 2026.
+> Última actualización: 2 de septiembre de 2026.
 
 ---
 
@@ -53,11 +53,16 @@ uno digital, trazable y auditable, que:
 
 | Rol | Tipo de usuario | Qué hace en el sistema |
 |---|---|---|
+| *(todos los roles)* | — | Además de lo suyo, **cualquier usuario** puede abrir tickets de **Soporte** y darles seguimiento en "Mis Tickets". Los **agentes** que resuelven tickets son los `ADMIN`. |
 | **Cliente** | `CLIENTE` | Llena y envía su solicitud, sube documentos a su expediente, consulta su estatus. |
 | **Gestor** | `PERSONAL` / `GESTOR` | Primer filtro ("Promoción"): revisa datos y documentos de las solicitudes que le asignan, las corrige/devuelve o las manda a aprobación. |
 | **Analista** | `PERSONAL` / `ANALISTA` | Segundo filtro ("Financiamiento"): recibe casos asignados (Mis Casos), hace el **análisis financiero** (herramienta de 5 pestañas, todas implementadas: Situación Financiera, Ajustes del Crédito, Criterios de Evaluación, Amortización y Comentario) y los envía a validación. |
-| **Admin** | `PERSONAL` / `ADMIN` | Ve y hace todo lo anterior, además de administrar el catálogo del sistema: programas de crédito, tipos de documento, usuarios, grupos de gestión y logs de auditoría. |
-| **Supervisor** | `PERSONAL` / `SUPERVISOR` | Opera la **Mesa de Control** (revisión de info/docs al recibir el caso de aprobación: lo pasa a asignación o lo regresa) y la etapa de **Validación** de Financiamiento (revisa el análisis del analista antes del comité). Fuera de eso aún sin alcance propio distinto de Admin. |
+| **Admin** | `PERSONAL` / `ADMIN` | Ve y hace todo lo anterior, además de administrar el catálogo del sistema (programas de crédito, tipos de documento, usuarios, grupos de gestión, logs) y de **atender los tickets de Soporte** como agente: asignar, priorizar, responder, resolver y cerrar. |
+| **Encargado de Promoción** | `PERSONAL` / `ENCARGADO_PROMOCION` | Jefatura del área de Promoción: ve **todas** las solicitudes (no solo las asignadas a él), opera Asignación y toda la etapa de **Aprobación** (aprobar/enviar a financiamiento, rechazar, regresar al promotor). No trabaja una cola propia de "Mis Casos". |
+| **Encargado de Financiamiento** | `PERSONAL` / `ENCARGADO_FINANCIAMIENTO` | Jefatura del área de Financiamiento: asigna analistas y opera **Validación** y **Comité de Crédito** (hasta `APROBADO` / `RECHAZADO`). No opera Mesa de Control ni el análisis en sí. |
+| **Mesa de Control** | `PERSONAL` / `MESA_CONTROL` | Solo la etapa **Mesa de Control** de Financiamiento: revisa info/docs del caso al llegar de aprobación y lo pasa a asignación o lo regresa. Sin acceso al resto del sistema. |
+| **Supervisor** | `PERSONAL` / `SUPERVISOR` | **ADMIN de solo lectura**: ve exactamente lo mismo que un administrador (todo Promoción, Financiamiento, Reportes, panorama y configuración) pero **no puede ejecutar ninguna acción**. El backend lo bloquea de raíz (middleware `soloLecturaSupervisor`: rechaza todo `POST/PUT/PATCH/DELETE` salvo previsualizar/exportar reporte e informe ejecutivo, que no mutan). El frontend muestra un banner de "modo solo lectura" y oculta los controles de acción. |
+| **Soporte** (usuario interno) | `PERSONAL` / `SOPORTE` | Usuario interno con acceso **únicamente** a "Mis Tickets" (`/dashboard/soporte/*`) — abre y sigue sus propios tickets. No es agente; sin acceso a Promoción, Financiamiento, Reportes ni configuración. |
 
 ### 3.2 Ciclo de vida de una solicitud
 
@@ -147,7 +152,7 @@ propias:
 | Runtime / lenguaje | Node.js + TypeScript, ejecutado con `tsx` (dev) / compilado con `tsc` (prod) |
 | Framework HTTP | Express 5 |
 | Base de datos | PostgreSQL, vía Prisma ORM 7 (`@prisma/adapter-pg`) |
-| Autenticación | JWT propio (`jsonwebtoken`), sesión de un solo token (por defecto 8h), sin refresh token |
+| Autenticación | JWT propio (`jsonwebtoken`) de vida corta (access token, 15 min) + **refresh token** opaco en cookie `httpOnly` (`sc_refresh`, ámbito `/api/auth`), con rotación en cada uso, detección de reuso por familia y ventana deslizante de 7 días. Persistido en `SesionRefresh` (solo el hash SHA-256). El front renueva el access token de forma transparente al recibir un 401 `TOKEN_EXPIRADO`. |
 | Contraseñas | `bcryptjs` |
 | Subida de archivos | `multer` en memoria + validación de magic bytes antes de escribir a disco (`uploads/expedientes/`, almacenamiento **local**, no en la nube) |
 | Generación de PDF | `puppeteer` sobre plantillas HTML propias |
@@ -178,8 +183,8 @@ comunes, config, stores, tipos). Las rutas viven en `src/app/` con dos grupos:
 
 ### 4.3 Contrato de tipos front↔back
 
-Los 20 enums de dominio (estatus, roles, catálogos, etc.) **no se escriben a
-mano en el frontend**: se generan desde `backend/generated/prisma/enums.ts`
+Los 25 enums de dominio (estatus, roles, catálogos, tickets, etc.) **no se
+escriben a mano en el frontend**: se generan desde `backend/generated/prisma/enums.ts`
 (que a su vez viene de `schema.prisma`) con
 `scripts/gen-domain-enums.ts` → `frontend/src/shared/types/domain.enums.ts`.
 Un script de chequeo (`npm run check:contract` desde la raíz) falla si
@@ -203,7 +208,7 @@ automatizadas — ver §8.
 
 | Módulo | Qué resuelve |
 |---|---|
-| `auth` | Registro y login de clientes, perfil autenticado, emisión de JWT. |
+| `auth` | Registro y login de clientes, perfil autenticado, emisión de JWT. Access token corto (15 min) + `POST /auth/refresh` (rota el refresh token de la cookie `httpOnly`, detecta reuso) y `POST /auth/logout` (revoca la familia de sesión). |
 | `clientes/solicitudes` | CRUD de la solicitud desde la óptica del cliente: crear, guardar cada sección del formulario (generales, solicitante, aval, crédito, garantía, negocio, mercado, bancarios), enviar, listar las propias, descargar PDF. |
 | `expediente` | Expediente digital: consulta de estatus/metricas de documentos, validación (aprobar/rechazar) por parte de gestores/admin. |
 | `uploads` | Subida y descarga de los archivos PDF del expediente, con verificación de propiedad (el cliente solo ve las suyas). |
@@ -215,6 +220,9 @@ automatizadas — ver §8.
 | `admin/programas` | CRUD de programas de crédito (montos, tasas, plazos, qué secciones del formulario aplican y con qué obligatoriedad) y del catálogo de tipos de documento (crear/editar/eliminar — el borrado se bloquea si el tipo está en uso). |
 | `admin/usuarios` | Listado y administración de usuarios del staff: cambiar rol, revocar acceso, desactivar. |
 | `admin/logs` | Consulta del log de auditoría (quién hizo qué, cuándo, desde dónde). |
+| `admin/dashboard` | Panorama ejecutivo (solo `ADMIN`): una sola llamada arma KPIs con variación contra el periodo anterior, embudo por etapa, resolución, tendencia, tiempo por etapa (cuellos de botella), cartera por programa, composición de la demanda, carga del equipo, alertas y actividad reciente. Montos desde `ConceptoCredito`, tiempos desde `HistorialEstatus`. |
+| `admin/reportes` | Reportes de negocio (solo `ADMIN`): catálogos de filtro, previsualización paginada y exportación a Excel (`.xlsx`, con `exceljs`) del listado de solicitudes filtrado por estatus, sector, tamaño, tipo de persona, programa, gestor, analista, grupo, rangos de fecha/monto y búsqueda. La exportación tiene un límite de tasa propio por llevar datos personales en bloque. |
+| `soporte` | Módulo de tickets — montado en `/api/soporte` (no bajo `/api/admin`, lo consumen también clientes). Solicitante (cualquier `Usuario`): crear ticket con adjuntos (imagen/PDF, mismo pipeline de *magic bytes* que `uploads`, en `uploads/soporte/`), listar los propios, detalle, comentar, cerrar/reabrir (ventana 7 días), calificar (CSAT). Agente (= `ADMIN`): listar todos + `stats` + `agentes`, asignar/reasignar, cambiar prioridad/categoría/estatus, cancelar, editar políticas de SLA. Máquina de estados en `soporte.estado.ts`; cálculo de SLA (arranque al asignar, pausa en `ESPERANDO_CLIENTE`, incumplimiento perezoso, recálculo por prioridad) en `soporte.sla.ts`. `SUPERVISOR` ve todo pero solo actúa sobre sus propios tickets (allowlist en `soloLecturaSupervisor`). Folio `TKT-2026-0007` (secuencia PG). |
 
 ### 5.2 Frontend (`frontend/src/features/`)
 
@@ -227,15 +235,19 @@ automatizadas — ver §8.
 | `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. La Asignación replica la de Promoción (dos columnas, selección múltiple, panel de analistas con carga, sheet de asignación, diálogo de progreso) y permite reasignar en lote. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline`, `AsignacionMasivaDialog` y `useListadoPromocion` de `promocion`. |
 | `analisis` | Herramienta de análisis financiero del analista (desde "Mis Casos" → "Realizar Análisis"). Shell de 5 pestañas, **todas implementadas**: **Situación Financiera** (captura del Balance General y el Estado de Resultados a 4 periodos —Año-2, Año-1, Parcial anualizable, Proyección—, con totales/subtotales automáticos, indicador de cuadre por periodo, autoguardado con debounce y export CSV); **Ajustes del Crédito** (precarga lo que pidió el cliente y deja al analista ajustar condiciones —plazo, gracia, tasa—, conceptos y garantías con CRUD completo; valida contra los límites del programa y muestra cobertura de garantía); **Criterios de Evaluación** (razones financieras —liquidez, endeudamiento, rentabilidad, cobertura de intereses— calculadas en vivo desde Situación Financiera por periodo, con semáforo bien/atención/riesgo; bloqueada con aviso hasta que haya Situación Financiera capturada); **Amortización** (tabla de pagos a sistema francés —pago fijo, con o sin periodo de gracia— calculada en vivo desde Ajustes del Crédito, con resumen, export CSV y su propio aviso/salto si aún no hay ajustes guardados); **Comentario** (5 secciones independientes, cada una autoguardada por separado: Antecedentes, Buró de Crédito, Situación Financiera, Visita y Opinión del Analista — `Analisis.comentario` es `Json`, no texto plano). En Criterios de Evaluación y Amortización solo persiste la observación escrita del analista — las cifras siempre se recalculan desde su fuente, nunca quedan guardadas y desincronizadas. Desde el header (y como acción de fila en Mis Casos / Validación / Comité) se descarga el **Informe Ejecutivo** en PDF: el front arma el payload con los mismos `lib/` y el back lo renderiza. |
 | `settings` | Programas de crédito (alta/edición con documentos requeridos y secciones), catálogo de tipos de documento (grid de tarjetas, editar/eliminar), usuarios, grupos de gestión, logs. |
-
-No existe todavía una feature `soporte` en el frontend — ver §6.
+| `dashboard` | Panorama ejecutivo de Inicio (solo `ADMIN`): banda de KPIs con sparkline, embudo del proceso, donut de resolución, tendencia de flujo, tiempo por etapa, cartera por programa, composición de la demanda, carga del equipo, panel de alertas y actividad reciente, con selector de periodo (7d/30d/90d/12m). |
+| `reportes` | Módulo de Reportes (solo `ADMIN`, `/dashboard/admin/reportes`): panel de filtros con multi-selección, resumen y tabla de previsualización, y botón de exportación a Excel. |
+| `soporte` | Módulo de tickets. Dos vistas: **Mis Tickets** (todos los roles — sus propios tickets + alta de nuevos con título, categoría, prioridad sugerida y adjuntos PNG/JPEG/PDF) y **Tickets** (`ADMIN`/`SUPERVISOR` — cola completa con filtros y tiles de SLA en riesgo/vencido). Detalle con hilo de conversación (respuestas públicas + notas internas, miniaturas de imagen inline), panel lateral (solicitante, agente, prioridad/categoría editables, chips de SLA con cuenta regresiva, timeline de eventos) y barra de acciones según rol y estatus. `SUPERVISOR` solo ve; sobre sus propios tickets actúa como cualquier solicitante. |
 
 ## 6. Estado actual del proyecto
 
 ### 6.1 Terminado y funcional
 
 - Autenticación y control de acceso por rol (rutas protegidas cliente ↔
-  staff, permisos por sección).
+  staff, permisos por sección). Modelo de 8 roles con navegación, ruta por
+  defecto, badge y `autorizar` en cada endpoint: `ADMIN`, `GESTOR`,
+  `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
+  `MESA_CONTROL`, `SOPORTE`, `CLIENTE` (+ `SUPERVISOR` histórico) — ver §3.1.
 - Flujo completo del cliente: crear solicitud → llenar los 8 pasos → enviar →
   subir documentos → ver estatus.
 - Flujo de Promoción (primer filtro) completo: cola, asignación (automática y
@@ -252,6 +264,28 @@ No existe todavía una feature `soporte` en el frontend — ver §6.
   auditoría.
 - Contrato de tipos front↔back automatizado (generación + chequeo en
   pre-push).
+- **Sesión con refresh token:** access token JWT de 15 min + refresh token
+  opaco en cookie `httpOnly` (`SesionRefresh`, solo hash), con rotación en
+  cada uso, detección de reuso por familia, ventana deslizante de 7 días y
+  revocación en `logout`. El front renueva el access token de forma
+  transparente ante un 401 (`apiAuth` en `shared/api/client.ts`); si la
+  renovación falla, cierra sesión y avisa en `/login?expired=true`.
+- **Dashboard de KPIs y reportes de negocio** (solo `ADMIN`): panorama
+  ejecutivo en Inicio (KPIs con variación contra el periodo anterior, embudo
+  por etapa, resolución, tendencia, tiempo por etapa / cuellos de botella,
+  cartera por programa, composición de la demanda, carga del equipo, alertas
+  y actividad reciente; filtrable por periodo 7d/30d/90d/12m) y módulo de
+  Reportes (`admin/reportes`) con filtros multi-selección —estatus, sector,
+  tamaño, tipo de persona, programa, gestor, analista, grupo, rangos de fecha
+  y monto, búsqueda—, previsualización y exportación a Excel (`.xlsx`, con
+  límite de tasa propio por llevar datos personales en bloque).
+- **Módulo de Soporte (tickets)** completo: modelo (`Ticket` + comentarios,
+  adjuntos, eventos, políticas de SLA), máquina de estados, cálculo de SLA por
+  prioridad (arranque al asignar, pausa en `ESPERANDO_CLIENTE`, incumplimiento
+  perezoso), adjuntos imagen/PDF con validación de *magic bytes*, hilo de
+  conversación con notas internas, y las dos vistas de frontend (Mis Tickets /
+  Tickets) + detalle. Ver §5.1 / §5.2. Pendiente para más adelante: correo
+  (depende de las notificaciones), auto-cierre de resueltos y CSAT en la UI.
 - Consistencia visual reciente: modo oscuro corregido en las vistas que ve el
   cliente, headers de los pasos del formulario homologados, tabla de
   documentos y catálogo de tipos de documento rediseñados.
@@ -261,16 +295,26 @@ No existe todavía una feature `soporte` en el frontend — ver §6.
 - **Financiamiento — Fase 3 pendiente:** no se captura un dictamen financiero
   estructurado (monto/plazo/tasa aprobados, capacidad de pago, observaciones);
   hoy cada transición solo lleva un motivo de texto libre.
-- El rol `SUPERVISOR` ya opera la etapa de Validación (backend + nav + ruta por
-  defecto `/dashboard/financiamiento/validacion` + badge), pero fuera de eso
-  sigue sin un alcance propio distinto de Admin (actividad #10 del plan).
+- El modelo de roles se amplió con cuatro roles de área
+  (`ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`, `MESA_CONTROL`,
+  `SOPORTE`) más `SUPERVISOR` redefinido como **ADMIN de solo lectura** — ver
+  §3.1. El backend lo bloquea de raíz; en el frontend la ocultación de
+  botones cubre las acciones principales (listas de Promoción/Financiamiento,
+  asignación, alta/edición/borrado de configuración). Residual conocido: el
+  formulario de programa (`ProgramaForm`), `DocumentosPrograma` y la
+  herramienta de análisis muestran sus botones aunque al pulsarlos el backend
+  responde 403 con un toast.
+- Soporte — pendientes menores (fase de pulido): auto-cierre de tickets
+  `RESUELTO` sin respuesta (necesita un cron externo o evaluación perezosa),
+  CSAT en la UI al cerrar, contador de "no leídos" en el nav, y el enganche de
+  correo cuando exista el servicio de notificaciones.
 - Hay una duplicidad histórica de rutas (`/unauthorized` y
   `/dashboard/unauthorized`) pendiente de limpiar.
 
 ### 6.3 No construido todavía
 
-- **Módulo de Soporte** (tickets, reportes de problema, base de
-  conocimiento). Mismo caso: está en el menú, no hay nada construido detrás.
+- **Base de conocimiento** (artículos / FAQ). Se sacó del alcance del módulo
+  de Soporte; sería un submódulo aparte.
 - Notificaciones al cliente (correo o push) cuando cambia el estatus de su
   solicitud o le rechazan un documento — hoy solo se entera si entra a
   revisar.
@@ -297,10 +341,14 @@ De punta a punta, una solicitud atraviesa el sistema así:
    reenvía. Cuando todo está en orden, la **envía a aprobación**
    (`EN_APROBACION`).
 5. El **comité/admin** en aprobación decide: regresarla al gestor
-   (`EN_REVISION`), mandarla a financiamiento (`EN_FINANCIAMIENTO`, hoy sin
-   salida — ver §6.1/§6.3), **rechazarla** (`RECHAZADO`, se genera carta de
-   rechazo) o **cancelarla** (`CANCELADO`).
-6. En cada paso queda un registro en el **historial de estatus** (quién,
+   (`EN_REVISION`), mandarla a **financiamiento** (`EN_FINANCIAMIENTO`),
+   **rechazarla** (`RECHAZADO`, se genera carta de rechazo) o **cancelarla**
+   (`CANCELADO`).
+6. En **Financiamiento** (segundo filtro, ver §3.2) la solicitud pasa por
+   Mesa de Control (`SUPERVISOR`), asignación de analista, análisis financiero
+   (`EN_ANALISIS`), validación (`EN_VALIDACION`) y comité (`EN_COMITE`) hasta
+   quedar `APROBADO` o `RECHAZADO`.
+7. En cada paso queda un registro en el **historial de estatus** (quién,
    cuándo, de dónde a dónde, por qué) y, cuando aplica, en el **log de
    auditoría** general — ambos alimentan el timeline que se ve en el detalle
    de la solicitud.
@@ -325,45 +373,34 @@ las reglas con las que corre todo lo anterior.
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
-6. **Sesión de un solo JWT de 8 horas, sin refresh.** A las 8 horas el
-   usuario tiene que volver a iniciar sesión sin aviso previo.
-7. **Sin reportes/analítica de negocio**: no hay forma de ver, por ejemplo,
-   tiempo promedio de resolución, tasa de aprobación por programa o carga
-   por gestor, más allá de las stats puntuales que ya expone Promoción.
-8. **Rol `SUPERVISOR` sin definir.** Está en el modelo pero nadie ha decidido
-   qué debe poder ver/hacer que un Admin no.
-9. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
+6. **Cobertura de solo lectura en el frontend.** `SUPERVISOR` ya es "ADMIN de
+   solo lectura" con enforcement total en el backend, pero la ocultación de
+   botones en el frontend cubre lo principal, no el 100% (ver residual en
+   §6.2). Falta cerrar esos casos y una revisión de seguridad general.
+7. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
    pendiente en su momento): los DTOs de respuesta del backend no están
    verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
    enums lo están.
 
 ## 9. Plan de trabajo
 
-Diez actividades concretas, en el orden en que aportan más valor si se
+Seis actividades concretas, en el orden en que aportan más valor si se
 ejecutan en secuencia (aunque varias pueden correr en paralelo por equipos
 distintos: negocio/back vs. calidad/infra).
 
-### 1. Construir el módulo de Financiamiento (segundo filtro)
+> Ya completadas y retiradas de esta lista: el **módulo de Financiamiento**
+> (segundo filtro — backend + las 5 pantallas; solo queda como opcional la
+> Fase 3, captura de dictamen financiero estructurado, ver §6.2/§8); el
+> **dashboard de KPIs y reportes de negocio** (panorama ejecutivo de Inicio +
+> módulo de Reportes con filtros multi-selección y exportación a Excel); la
+> **sesión con refresh token** (access token de 15 min + refresh token opaco
+> en cookie `httpOnly` con rotación, detección de reuso y ventana deslizante
+> de 7 días; renovación transparente en el front, ver §4.1); y el **módulo de
+> Soporte / tickets** (modelo + SLA + adjuntos + conversación + dos vistas de
+> frontend, ver §5.1/§5.2 — solo quedan pendientes de pulido: correo,
+> auto-cierre y CSAT en la UI).
 
-- **Fase 1 — COMPLETADA (backend + máquina de estados).** 4 estatus nuevos
-  (`EN_ASIGNACION`, `EN_ANALISIS`, `EN_VALIDACION`, `EN_COMITE`) + modelo
-  `AsignacionFinanciamiento`. Helpers de estado extraídos a
-  `admin/_shared/solicitud-estado.ts` (compartidos con Promoción). Módulo
-  `admin/financiamiento`: listados por etapa, asignación de analista, y las
-  transiciones — incluyendo `EN_COMITE → APROBADO` y `→ RECHAZADO` desde
-  validación/comité. Actor de la etapa de Validación: rol `SUPERVISOR`.
-- **Fase 2 — COMPLETADA (frontend).** Feature `financiamiento` con las 5
-  pantallas (Mesa de Control, Asignación, Mis Casos, Validación, Comité) + página
-  de detalle, reusando `SolicitudesTable`, `FilterBar`, `SolicitudTimeline` y
-  `useListadoPromocion` de `promocion`. "Validación" agregada a `nav.config.ts`;
-  `SUPERVISOR` con ruta por defecto `/dashboard/financiamiento/validacion` y
-  badge. Diálogo de asignación de analista con carga por analista.
-- **Fase 3 — OPCIONAL / PENDIENTE.** Captura de dictamen financiero (monto/plazo/
-  tasa aprobados, capacidad de pago, observaciones) — otra migración.
-- **Resultado esperado — ALCANZADO:** una solicitud recorre todo el flujo hasta
-  `APROBADO`/`RECHAZADO` desde la UI, sin intervención manual fuera del sistema.
-
-### 2. Notificaciones al solicitante
+### 1. Notificaciones al solicitante
 
 - **Descripción:** Servicio de notificaciones (correo, y opcionalmente
   push/in-app) disparado en los eventos clave: solicitud recibida, gestor
@@ -378,7 +415,7 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Correo automático en cada evento relevante, con
   copia de los eventos disparados quedando en el log de auditoría.
 
-### 3. Suite de pruebas automatizadas
+### 2. Suite de pruebas automatizadas
 
 - **Descripción:** Pruebas unitarias/de integración en el backend para los
   servicios críticos (transiciones de estatus, asignación automática,
@@ -394,7 +431,7 @@ distintos: negocio/back vs. calidad/infra).
   estatus y el flujo de creación/envío de solicitud, corriendo en local con
   un solo comando.
 
-### 4. Pipeline de CI/CD
+### 3. Pipeline de CI/CD
 
 - **Descripción:** GitHub Actions (u equivalente) que en cada Pull Request
   corra `tsc`, `eslint`, `npm run check:contract` y el build de ambos
@@ -409,7 +446,7 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Checks obligatorios en cada PR y despliegue
   automatizado sin pasos manuales.
 
-### 5. Migrar el almacenamiento de documentos a un proveedor cloud
+### 4. Migrar el almacenamiento de documentos a un proveedor cloud
 
 - **Descripción:** Reemplazar `uploads/expedientes/` (disco local) por un
   bucket (S3, Cloud Storage o similar), manteniendo la validación de magic
@@ -423,51 +460,10 @@ distintos: negocio/back vs. calidad/infra).
   desde el proveedor cloud sin cambios visibles para el usuario, con los
   archivos ya existentes migrados.
 
-### 6. Construir el módulo de Soporte
-
-- **Descripción:** Backend y frontend para las 4 pantallas ya anunciadas en
-  el menú (Mis Tickets, Nuevo Ticket, Reportar Problema, Base de
-  Conocimiento): un CRUD de tickets con estatus e historial, visible para
-  cliente y para staff.
-- **Objetivo:** Dar un canal formal de soporte dentro del propio sistema en
-  vez de fuera de él (correo, WhatsApp, etc.).
-- **Beneficio/impacto:** Centraliza la atención a dudas/incidencias y deja
-  rastro de ellas, igual que ya pasa con las solicitudes de crédito.
-- **Prioridad:** Media.
-- **Resultado esperado:** Un cliente puede levantar un ticket y darle
-  seguimiento dentro del sistema; el staff lo ve y responde desde el panel.
-
-### 7. Sesión más robusta (refresh token)
-
-- **Descripción:** Agregar un refresh token de vida más larga junto al JWT
-  de acceso (corto), con renovación transparente desde el frontend antes de
-  que expire.
-- **Objetivo:** Evitar que la sesión se corte de golpe a las 8 horas.
-- **Beneficio/impacto:** Mejora la experiencia de uso prolongado (por
-  ejemplo, un gestor trabajando toda la jornada) sin sacrificar seguridad.
-- **Prioridad:** Media.
-- **Resultado esperado:** La sesión se mantiene activa mientras el usuario
-  sigue usando el sistema, y expira de forma segura cuando deja de hacerlo.
-
-### 8. Dashboard de KPIs y reportes de negocio
-
-- **Descripción:** Panel con métricas agregadas: tiempo promedio por etapa
-  del flujo, tasa de aprobación/rechazo por programa, carga de trabajo por
-  gestor/analista, cartera solicitada vs. aprobada — con exportación a
-  PDF/Excel.
-- **Objetivo:** Dar visibilidad de negocio más allá de las stats puntuales
-  que ya existen en Promoción.
-- **Beneficio/impacto:** Permite tomar decisiones (redistribuir carga,
-  ajustar reglas de asignación, detectar cuellos de botella) con datos en
-  vez de percepción.
-- **Prioridad:** Media.
-- **Resultado esperado:** Un tablero con los indicadores clave del negocio,
-  filtrable por periodo y programa.
-
-### 9. Reconciliar los DTOs de respuesta del backend
+### 5. Reconciliar los DTOs de respuesta del backend
 
 - **Descripción:** Continuar el trabajo de contrato de tipos (que hoy cubre
-  los 20 enums) a los shapes de respuesta completos, tipándolos contra
+  los 25 enums) a los shapes de respuesta completos, tipándolos contra
   `Prisma.XGetPayload<...>`. (La paginación ya quedó unificada en
   `{ data, pagination }` — ver §4.3.)
 - **Objetivo:** Que un cambio en el `include`/`select` de una consulta de
@@ -482,21 +478,21 @@ distintos: negocio/back vs. calidad/infra).
   de solicitud y expediente, están verificados contra el modelo real de
   Prisma.
 
-### 10. Definir y completar el rol Supervisor
+### 6. Cerrar solo lectura de `SUPERVISOR` y revisión de seguridad
 
-- **Descripción:** Decidir el alcance real del rol `SUPERVISOR` (¿qué ve/
-  aprueba que un Admin no delega?) y completarlo: ruta por defecto con
-  sentido, permisos de navegación, color de badge en la UI, y — de paso —
-  una revisión de seguridad general (rate limiting por endpoint sensible,
-  política de contraseñas, expiración de sesión configurable por rol).
-- **Objetivo:** Que ningún rol del modelo de datos quede a medias en la capa
-  de aplicación.
-- **Beneficio/impacto:** Cierra un hueco de UX/seguridad antes de que alguien
-  intente usar ese rol en producción y se encuentre con una experiencia
-  incompleta.
-- **Prioridad:** Baja-Media.
-- **Resultado esperado:** Un usuario con rol Supervisor tiene una
-  navegación, permisos y apariencia coherentes en todo el sistema.
+- **Descripción:** El modelo de roles ya quedó definido y completo: `ADMIN`,
+  `GESTOR`, `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
+  `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y `CLIENTE`,
+  todos con navegación, permisos de ruta (front + `autorizar` en back), ruta
+  por defecto y badge (ver §3.1). Queda: cerrar el residual de ocultación de
+  botones para `SUPERVISOR` (ver §6.2) y hacer una revisión de seguridad
+  general (rate limiting por endpoint sensible, política de contraseñas,
+  expiración de sesión configurable por rol).
+- **Objetivo:** Que el modo solo lectura sea coherente en toda la UI y
+  endurecer la capa de seguridad.
+- **Prioridad:** Baja.
+- **Resultado esperado:** Ningún control de acción visible para `SUPERVISOR` y
+  los puntos de la revisión de seguridad atendidos o documentados.
 
 ---
 

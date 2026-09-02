@@ -2,6 +2,7 @@
 
 import { UserPlus, Clock, Inbox, AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/components/ui/tooltip'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/components/ui/table'
@@ -60,6 +61,7 @@ interface Props {
 export function AsignacionAnalistaTable({
   solicitudes, seleccionadas, cargando, error, onSeleccionar, onAsignar, onReintentar,
 }: Props) {
+  const soloLectura = useEsSoloLectura()
   if (cargando) return <ListaSkeleton />
   if (error) {
     return (
@@ -99,17 +101,20 @@ export function AsignacionAnalistaTable({
             return (
               <TableRow
                 key={s.id}
-                onClick={() => onSeleccionar(s.id)}
+                onClick={soloLectura ? undefined : () => onSeleccionar(s.id)}
                 className={cn(
-                  'cursor-pointer transition-colors duration-100 border-b border-border/40 last:border-0 group',
+                  'transition-colors duration-100 border-b border-border/40 last:border-0 group',
+                  !soloLectura && 'cursor-pointer',
                   seleccionada ? 'bg-primary/5 border-l-2 border-l-primary' : 'hover:bg-accent/40',
                 )}
               >
                 <TableCell className="py-3">
+                  {!soloLectura && (
                   <div className={cn('w-4 h-4 rounded border flex items-center justify-center transition-colors',
                     seleccionada ? 'bg-primary border-primary' : 'border-border/60 group-hover:border-primary/40')}>
                     {seleccionada && <span className="text-primary-foreground text-[9px]">✓</span>}
                   </div>
+                  )}
                 </TableCell>
                 <TableCell className="py-3">
                   <span className="font-mono text-xs font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">{s.folio}</span>
@@ -150,6 +155,7 @@ export function AsignacionAnalistaTable({
                   </div>
                 </TableCell>
                 <TableCell className="py-3" onClick={(e) => e.stopPropagation()}>
+                  {!soloLectura && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -162,6 +168,7 @@ export function AsignacionAnalistaTable({
                     </TooltipTrigger>
                     <TooltipContent side="left"><p className="text-xs">{s.analistaAsignado ? 'Reasignar analista' : 'Asignar analista'}</p></TooltipContent>
                   </Tooltip>
+                  )}
                 </TableCell>
               </TableRow>
             )

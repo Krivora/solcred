@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useAuthStore } from "@/shared/stores/auth.store";
+import { useAuth } from "@/shared/hooks/useAuth";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -37,7 +38,8 @@ interface BrandMenuProps {
 }
 
 export function BrandMenu({ collapsed, onToggleSidebar }: BrandMenuProps) {
-    const { rol: role, clearAuth: logout } = useAuthStore(); // ── FIX ──
+    const role = useAuthStore((s) => s.rol);
+    const { logout } = useAuth();
     const [themeDialogOpen, setThemeDialogOpen] = useState(false);
     const roleConfig = role ? ROLE_CONFIG[role] : null;
     const trigger = (
@@ -136,7 +138,7 @@ export function BrandMenu({ collapsed, onToggleSidebar }: BrandMenuProps) {
                     </DropdownMenuSub>
 
                     <DropdownMenuItem
-                        onClick={logout}
+                        onClick={() => void logout()}
                         className="text-destructive focus:text-destructive"
                     >
                         <LogOut className="h-4 w-4" />

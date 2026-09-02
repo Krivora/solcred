@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { autenticar } from "@middlewares/auth.middleware";
-import { autorizar } from "@middlewares/roles.middleware";
+import { autorizar, soloLecturaSupervisor } from "@middlewares/roles.middleware";
 import { validate } from "@middlewares/validate.middleware";
 import {
   crearProgramaSchema,
@@ -14,6 +14,7 @@ import * as programasController from "./programas.controller";
 const router = Router();
 
 router.use(autenticar);
+router.use(soloLecturaSupervisor);
 
 // Tipos de documento
 router.get("/tipos-documento", programasController.listarTiposDocumento);

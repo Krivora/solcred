@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import { httpLogger } from "./utils/logger";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -20,6 +21,7 @@ import reportesRoutes from "./modules/admin/reportes/reportes.routes";
 import expedienteRoutes from "./modules/expediente/expediente.routes";
 import uploadsRouter from "./modules/uploads/uploads.routes";
 import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
+import soporteRoutes from "./modules/soporte/soporte.routes";
 
 const app = express();
 const PORT = process.env.PORT ?? 4000;
@@ -46,6 +48,7 @@ app.use(
 // ── Parsers ────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // ── Logger ─────────────────────────────────
 app.use(httpLogger);
@@ -69,6 +72,9 @@ app.use("/api/expediente", expedienteRoutes);
 app.use("/api/uploads", uploadsRouter);
 // ── Rutas Solicitantes ──────────────────────────────────
 app.use("/api/clientes/solicitudes", solicitudesRoutes);
+
+// ── Soporte (tickets) — cliente y staff ─────────────────
+app.use("/api/soporte", soporteRoutes);
 
 
 // ── 404 ────────────────────────────────────

@@ -21,7 +21,11 @@ export const Rol = {
   ADMIN: 'ADMIN',
   ANALISTA: 'ANALISTA',
   GESTOR: 'GESTOR',
-  SUPERVISOR: 'SUPERVISOR'
+  SUPERVISOR: 'SUPERVISOR',
+  ENCARGADO_PROMOCION: 'ENCARGADO_PROMOCION',
+  ENCARGADO_FINANCIAMIENTO: 'ENCARGADO_FINANCIAMIENTO',
+  MESA_CONTROL: 'MESA_CONTROL',
+  SOPORTE: 'SOPORTE'
 } as const
 
 export type Rol = (typeof Rol)[keyof typeof Rol]
@@ -218,7 +222,72 @@ export const ModuloLog = {
   USUARIOS: 'USUARIOS',
   PROGRAMAS: 'PROGRAMAS',
   SOLICITUDES: 'SOLICITUDES',
-  DOCUMENTOS: 'DOCUMENTOS'
+  DOCUMENTOS: 'DOCUMENTOS',
+  SOPORTE: 'SOPORTE'
 } as const
 
 export type ModuloLog = (typeof ModuloLog)[keyof typeof ModuloLog]
+
+
+export const TicketEstatus = {
+  NUEVO: 'NUEVO',
+  ASIGNADO: 'ASIGNADO',
+  EN_PROGRESO: 'EN_PROGRESO',
+  ESPERANDO_CLIENTE: 'ESPERANDO_CLIENTE',
+  RESUELTO: 'RESUELTO',
+  CERRADO: 'CERRADO',
+  CANCELADO: 'CANCELADO'
+} as const
+
+export type TicketEstatus = (typeof TicketEstatus)[keyof typeof TicketEstatus]
+
+
+export const TicketPrioridad = {
+  BAJA: 'BAJA',
+  MEDIA: 'MEDIA',
+  ALTA: 'ALTA',
+  URGENTE: 'URGENTE'
+} as const
+
+export type TicketPrioridad = (typeof TicketPrioridad)[keyof typeof TicketPrioridad]
+
+
+export const TicketCategoria = {
+  SOPORTE_TECNICO: 'SOPORTE_TECNICO',
+  INCIDENTE: 'INCIDENTE',
+  DUDA_USO: 'DUDA_USO',
+  ACCESO_PERMISOS: 'ACCESO_PERMISOS',
+  PRESTAMO_EQUIPO: 'PRESTAMO_EQUIPO',
+  SOLICITUD_INFORMACION: 'SOLICITUD_INFORMACION',
+  OTRO: 'OTRO'
+} as const
+
+export type TicketCategoria = (typeof TicketCategoria)[keyof typeof TicketCategoria]
+
+
+export const TicketTipoEvento = {
+  CREADO: 'CREADO',
+  ASIGNADO: 'ASIGNADO',
+  REASIGNADO: 'REASIGNADO',
+  CAMBIO_ESTATUS: 'CAMBIO_ESTATUS',
+  CAMBIO_PRIORIDAD: 'CAMBIO_PRIORIDAD',
+  CAMBIO_CATEGORIA: 'CAMBIO_CATEGORIA',
+  COMENTARIO: 'COMENTARIO',
+  NOTA_INTERNA: 'NOTA_INTERNA',
+  ADJUNTO: 'ADJUNTO',
+  SLA_INCUMPLIDO: 'SLA_INCUMPLIDO',
+  REABIERTO: 'REABIERTO',
+  CERRADO: 'CERRADO',
+  CANCELADO: 'CANCELADO'
+} as const
+
+export type TicketTipoEvento = (typeof TicketTipoEvento)[keyof typeof TicketTipoEvento]
+
+
+export const TicketAutorTipo = {
+  SOLICITANTE: 'SOLICITANTE',
+  AGENTE: 'AGENTE',
+  SISTEMA: 'SISTEMA'
+} as const
+
+export type TicketAutorTipo = (typeof TicketAutorTipo)[keyof typeof TicketAutorTipo]

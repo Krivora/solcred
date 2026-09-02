@@ -20,6 +20,7 @@ import {
 import { TipoDocumentoDialog } from "@/features/settings/components/programas/TipoDocumentoDialog";
 import { useTiposDocumento } from "@/features/settings/hooks/useProgramas";
 import { PageHeader } from "@/shared/components/common/PageHeader";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 import type { TipoDocumento } from "@/features/settings/types/programa.types";
 
 function TipoCard({
@@ -31,6 +32,7 @@ function TipoCard({
     onEditar: (t: TipoDocumento) => void;
     onEliminar: (t: TipoDocumento) => void;
 }) {
+    const soloLectura = useEsSoloLectura();
     return (
         <div className="group relative flex flex-col rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:border-primary/40">
             <div className="flex items-start gap-3">
@@ -56,6 +58,7 @@ function TipoCard({
                 </div>
             )}
 
+            {!soloLectura && (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
@@ -79,6 +82,7 @@ function TipoCard({
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+            )}
         </div>
     );
 }
@@ -99,6 +103,7 @@ function CardSkeleton() {
 }
 
 export default function DocumentosPage() {
+    const soloLectura = useEsSoloLectura();
     const { tipos, cargando, recargar, actualizar, eliminar, eliminando } = useTiposDocumento();
     const [search, setSearch] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -125,7 +130,7 @@ export default function DocumentosPage() {
                 title="Tipos de documento"
                 description="Catálogo global de documentos requeridos por los programas"
                 backHref="/dashboard/admin/configuracion"
-                action={{
+                action={soloLectura ? undefined : {
                     label: "Nuevo tipo",
                     onClick: () => setDialogOpen(true),
                     icon: <Plus className="h-4 w-4" />,
@@ -174,7 +179,7 @@ export default function DocumentosPage() {
                                 : "Crea el primero para poder asignarlo a los programas"}
                         </p>
                     </div>
-                    {!search && (
+                    {!search && !soloLectura && (
                         <Button size="sm" className="mt-1 gap-2" onClick={() => setDialogOpen(true)}>
                             <Plus className="h-4 w-4" /> Nuevo tipo
                         </Button>

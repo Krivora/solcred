@@ -28,7 +28,10 @@ export const actualizarUsuarioSchema = z.object({
 });
 
 export const cambiarRolSchema = z.object({
-  rol: z.enum(["ADMIN", "ANALISTA", "GESTOR", "SUPERVISOR"], {
+  rol: z.enum([
+    "ADMIN", "ANALISTA", "GESTOR", "SUPERVISOR",
+    "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL", "SOPORTE",
+  ], {
     message: "Rol inválido",
   }),
 });

@@ -53,3 +53,42 @@ export const uploadPdf = multer({
         files: 1,
     },
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SOPORTE — adjuntos de tickets: imágenes (PNG/JPEG) o PDF, hasta 5 por subida.
+// Igual que arriba: memoria + filtro superficial; la validación real de
+// magic bytes vive en el módulo de soporte antes de escribir a disco.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const UPLOADS_SOPORTE_DIR = path.join(process.cwd(), "uploads", "soporte");
+
+/** mimetype declarado → extensiones aceptadas. */
+const TIPOS_SOPORTE = new Map<string, string[]>([
+    ["application/pdf", [".pdf"]],
+    ["image/png", [".png"]],
+    ["image/jpeg", [".jpg", ".jpeg"]],
+]);
+
+const filtroSoporte = (
+    _req: Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+) => {
+    const extension = path.extname(file.originalname).toLowerCase();
+    const extensionesOk = TIPOS_SOPORTE.get(file.mimetype);
+
+    if (!extensionesOk || !extensionesOk.includes(extension)) {
+        return cb(new AppError("Solo se permiten imágenes PNG o JPEG y archivos PDF", 400));
+    }
+
+    cb(null, true);
+};
+
+export const uploadSoporte = multer({
+    storage,
+    fileFilter: filtroSoporte,
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10 MB por archivo
+        files: 5,
+    },
+});

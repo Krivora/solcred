@@ -19,6 +19,26 @@ export const ROLE_CONFIG: Record<string, { label: string; className: string }> =
         className:
             "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300",
     },
+    ENCARGADO_PROMOCION: {
+        label: "Enc. Promoción",
+        className:
+            "bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300",
+    },
+    ENCARGADO_FINANCIAMIENTO: {
+        label: "Enc. Financiamiento",
+        className:
+            "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300",
+    },
+    MESA_CONTROL: {
+        label: "Mesa de Control",
+        className:
+            "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300",
+    },
+    SOPORTE: {
+        label: "Soporte",
+        className:
+            "bg-slate-100 text-slate-800 dark:bg-slate-800/60 dark:text-slate-300",
+    },
     CLIENTE: {
         label: "Cliente",
         className:

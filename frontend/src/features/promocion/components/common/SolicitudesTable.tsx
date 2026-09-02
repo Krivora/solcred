@@ -10,6 +10,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu'
 import { FolderOpen, FileText, MoreHorizontal, Loader2 } from 'lucide-react'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 import { Paginacion } from '@/shared/components/common/Paginacion'
 import {
   ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
@@ -103,6 +104,7 @@ function TableVacio({ icon, titulo, descripcion }: { icon: ReactNode; titulo: st
 export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, config }: Props) {
   const router = useRouter()
   const { descargar, idDescargando } = useDescargarPDF()
+  const soloLectura = useEsSoloLectura()
   const {
     getDetalleUrl = (id: string) => `/dashboard/admin/promocion/solicitud/${id}`,
     getExpedienteUrl,
@@ -113,10 +115,13 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     mostrarColumnaPdf = true,
     labelFecha = 'Recibida',
     vacioCopy,
-    renderAcciones,
+    renderAcciones: renderAccionesConfig,
     renderDocumentos,
     renderInforme,
   } = config
+
+  // El rol SUPERVISOR es solo lectura: sin columna de acciones (transiciones).
+  const renderAcciones = soloLectura ? undefined : renderAccionesConfig
 
   // Calculamos cuántas columnas hay para el skeleton
   const colCount = 6

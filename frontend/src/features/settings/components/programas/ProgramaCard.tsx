@@ -13,6 +13,7 @@ import {
     DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 import type { Programa } from "@/features/settings/types/programa.types";
 
 const avalEsObligatorio = (programa: Programa): boolean =>
@@ -70,6 +71,7 @@ const fmtCompact = (n: number) => {
     return fmt(n);
 };
 export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaCardProps) {
+    const soloLectura = useEsSoloLectura();
     return (
         <div className="group flex flex-col rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md overflow-hidden">
             {/* Top accent strip */}
@@ -105,17 +107,21 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                                 <DropdownMenuItem asChild>
                                     <Link href={`/dashboard/admin/configuracion/programas/${programa.id}`}>Ver detalle</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    disabled={isToggling}
-                                    onClick={() => onToggleActivo?.(programa.id, programa.activo)}
-                                    className={programa.activo ? "text-destructive focus:text-destructive" : ""}
-                                    >
-                                    {programa.activo ? "Desactivar" : "Activar"}
-                                </DropdownMenuItem>
+                                {!soloLectura && (
+                                    <>
+                                        <DropdownMenuItem asChild>
+                                            <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            disabled={isToggling}
+                                            onClick={() => onToggleActivo?.(programa.id, programa.activo)}
+                                            className={programa.activo ? "text-destructive focus:text-destructive" : ""}
+                                        >
+                                            {programa.activo ? "Desactivar" : "Activar"}
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -159,9 +165,11 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
 
             {/* Footer CTA */}
             <div className="flex items-center justify-between gap-2 px-5 py-3 bg-muted/20">
-                <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground px-2" asChild>
-                    <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
-                </Button>
+                {soloLectura ? <span /> : (
+                    <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground px-2" asChild>
+                        <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>Editar</Link>
+                    </Button>
+                )}
                 <Button size="sm" className="h-7 text-xs gap-1" asChild>
                     <Link href={`/dashboard/admin/configuracion/programas/${programa.id}`}>
                         Ver <ArrowRight className="h-3 w-3" />

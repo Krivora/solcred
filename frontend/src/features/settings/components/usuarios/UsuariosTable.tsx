@@ -40,6 +40,7 @@ import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
 import type { Usuario, UsuarioFiltros, TipoPersona } from "@/features/settings/types/usuario.types";
 import type { RolAplicacion } from "@/shared/types/auth.types";
 import { obtenerRolEfectivo } from "@/shared/types/auth.types";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 
 type SortKey = "nombre" | "correo" | "rol" | "creadoEn";
 type SortDir = "asc" | "desc";
@@ -63,6 +64,7 @@ export function UsuariosTable({
   onDesactivar,
   onRecargar,
 }: UsuariosTableProps) {
+  const soloLectura = useEsSoloLectura();
   const [filtros, setFiltros] = useState<UsuarioFiltros>({
     busqueda: "",
     rol: "TODOS",
@@ -155,6 +157,10 @@ export function UsuariosTable({
               <SelectItem value="ANALISTA">Analista</SelectItem>
               <SelectItem value="GESTOR">Gestor</SelectItem>
               <SelectItem value="SUPERVISOR">Supervisor</SelectItem>
+              <SelectItem value="ENCARGADO_PROMOCION">Enc. Promoción</SelectItem>
+              <SelectItem value="ENCARGADO_FINANCIAMIENTO">Enc. Financiamiento</SelectItem>
+              <SelectItem value="MESA_CONTROL">Mesa de Control</SelectItem>
+              <SelectItem value="SOPORTE">Soporte</SelectItem>
               <SelectItem value="CLIENTE">Cliente</SelectItem>
             </SelectContent>
           </Select>
@@ -319,26 +325,30 @@ export function UsuariosTable({
                               <Eye className="mr-2 h-4 w-4" />
                               Ver detalle
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => onCambiarRol(usuario)}>
-                              <Shield className="mr-2 h-4 w-4" />
-                              Cambiar rol
-                            </DropdownMenuItem>
-                             {usuario.personal && (
-                              <DropdownMenuItem onClick={() => onRevocarAcceso(usuario)}>
-                                <ShieldOff className="mr-2 h-4 w-4" />
-                                Revocar acceso
-                              </DropdownMenuItem>
-                            )}
-                            {usuario.activo && (
+                            {!soloLectura && (
                               <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  className="text-destructive focus:text-destructive"
-                                  onClick={() => onDesactivar(usuario)}
-                                >
-                                  <UserX className="mr-2 h-4 w-4" />
-                                  Desactivar
+                                <DropdownMenuItem onClick={() => onCambiarRol(usuario)}>
+                                  <Shield className="mr-2 h-4 w-4" />
+                                  Cambiar rol
                                 </DropdownMenuItem>
+                                {usuario.personal && (
+                                  <DropdownMenuItem onClick={() => onRevocarAcceso(usuario)}>
+                                    <ShieldOff className="mr-2 h-4 w-4" />
+                                    Revocar acceso
+                                  </DropdownMenuItem>
+                                )}
+                                {usuario.activo && (
+                                  <>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                      className="text-destructive focus:text-destructive"
+                                      onClick={() => onDesactivar(usuario)}
+                                    >
+                                      <UserX className="mr-2 h-4 w-4" />
+                                      Desactivar
+                                    </DropdownMenuItem>
+                                  </>
+                                )}
                               </>
                             )}
                           </DropdownMenuContent>

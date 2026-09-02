@@ -68,6 +68,34 @@ const ROLES: RolConfig[] = [
     colorClass: "text-purple-500",
     pillClass: "bg-purple-50 text-purple-700 border-purple-200",
   },
+  {
+    value: "ENCARGADO_PROMOCION",
+    label: "Encargado de Promoción",
+    descripcion: "Ve todas las solicitudes de Promoción, asigna y aprueba.",
+    colorClass: "text-teal-500",
+    pillClass: "bg-teal-50 text-teal-700 border-teal-200",
+  },
+  {
+    value: "ENCARGADO_FINANCIAMIENTO",
+    label: "Encargado de Financiamiento",
+    descripcion: "Asigna analistas, valida y opera el Comité de Crédito.",
+    colorClass: "text-cyan-500",
+    pillClass: "bg-cyan-50 text-cyan-700 border-cyan-200",
+  },
+  {
+    value: "MESA_CONTROL",
+    label: "Mesa de Control",
+    descripcion: "Solo revisa y despacha los casos en Mesa de Control.",
+    colorClass: "text-rose-500",
+    pillClass: "bg-rose-50 text-rose-700 border-rose-200",
+  },
+  {
+    value: "SOPORTE",
+    label: "Soporte",
+    descripcion: "Usuario interno con acceso únicamente al módulo de Soporte.",
+    colorClass: "text-slate-500",
+    pillClass: "bg-slate-50 text-slate-700 border-slate-200",
+  },
 ];
 
 // ─── Utilidad: iniciales ──────────────────────────────────────────────────────

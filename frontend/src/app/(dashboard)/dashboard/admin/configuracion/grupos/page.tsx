@@ -31,6 +31,7 @@ import { cn } from '@/shared/lib/cn'
 import { useUsuarios } from '@/features/settings/hooks/useUsuarios'
 import { PageHeader } from '@/shared/components/common/PageHeader'
 import { obtenerRolEfectivo } from '@/shared/types/auth.types'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -62,6 +63,7 @@ function GrupoCard({
     onEditar: (g: GrupoGestion) => void
     onEliminar: (g: GrupoGestion) => void
 }) {
+    const soloLectura = useEsSoloLectura()
     const esGeneral = grupo.reglas.length === 0
     const gestoresActivos = grupo.gestores.filter(g => g.activo)
 
@@ -144,6 +146,7 @@ function GrupoCard({
                     </span>
                 </div>
 
+                {!soloLectura && (
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                     <Button
                         variant="ghost"
@@ -162,6 +165,7 @@ function GrupoCard({
                         <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                 </div>
+                )}
             </div>
         </div>
     )
@@ -223,6 +227,7 @@ function EliminarDialog({
 }
 
 export default function GruposPage() {
+    const soloLectura = useEsSoloLectura()
     const { grupos, cargando, error, recargar, crear, actualizar, eliminar } = useGrupos()
     const { usuarios } = useUsuarios()
     const [sheetAbierto, setSheetAbierto] = useState(false)
@@ -287,7 +292,7 @@ export default function GruposPage() {
                 title="Grupos de gestión"
                 description="Define grupos con reglas para enrutar solicitudes automáticamente al equipo correcto."
                 backHref="/dashboard/admin/configuracion"
-                action={{
+                action={soloLectura ? undefined : {
                     label: 'Nuevo grupo',
                     onClick: abrirNuevo,
                     icon: <Plus className="h-4 w-4" />,
@@ -353,10 +358,12 @@ export default function GruposPage() {
                             Crea grupos para enrutar solicitudes automáticamente a los gestores adecuados.
                         </p>
                     </div>
-                    <Button onClick={abrirNuevo} variant="outline" className="gap-2 border-border/60">
-                        <Plus className="h-4 w-4" />
-                        Crear primer grupo
-                    </Button>
+                    {!soloLectura && (
+                        <Button onClick={abrirNuevo} variant="outline" className="gap-2 border-border/60">
+                            <Plus className="h-4 w-4" />
+                            Crear primer grupo
+                        </Button>
+                    )}
                 </div>
             )}
 

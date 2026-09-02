@@ -5,7 +5,9 @@ import multer from "multer";
 export class AppError extends Error {
   constructor(
     public message: string,
-    public statusCode: number = 400
+    public statusCode: number = 400,
+    /** Código legible por el cliente (p. ej. "TOKEN_EXPIRADO") para reaccionar sin parsear el mensaje. */
+    public code?: string
   ) {
     super(message);
     this.name = "AppError";
@@ -42,7 +44,7 @@ export const errorMiddleware = (
       return;
   }
   if (err instanceof AppError) {
-    res.status(err.statusCode).json(fail(err.message));
+    res.status(err.statusCode).json(fail(err.message, undefined, err.code));
     return;
   }
 

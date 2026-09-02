@@ -3,6 +3,7 @@
 import { UserCheck, Inbox } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { cn } from '@/shared/lib/cn'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 
 interface Props {
   total: number
@@ -16,10 +17,12 @@ interface Props {
 export function AsignacionAnalistaToolbar({
   total, cargando, seleccionadas, todoSeleccionado, onToggleTodos, onAsignarLote,
 }: Props) {
-  const haySeleccion = seleccionadas.size > 0
+  const soloLectura = useEsSoloLectura()
+  const haySeleccion = seleccionadas.size > 0 && !soloLectura
 
   return (
     <div className="px-4 py-3 border-b border-border/40 flex items-center gap-3">
+      {!soloLectura && (
       <div
         onClick={onToggleTodos}
         className={cn(
@@ -30,6 +33,7 @@ export function AsignacionAnalistaToolbar({
         {todoSeleccionado && <span className="text-primary-foreground text-[9px]">✓</span>}
         {!todoSeleccionado && haySeleccion && <span className="text-primary text-[9px]">—</span>}
       </div>
+      )}
 
       {haySeleccion ? (
         <div className="flex items-center gap-2 flex-1">
