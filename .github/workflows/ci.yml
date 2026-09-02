@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, desarrollo]
+
+# Un run por rama/PR: cancela el anterior si llega un push nuevo.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (tsc · tests · contrato)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Cliente de Prisma en sync
+        run: |
+          npx prisma generate
+          git diff --exit-code -- generated/prisma \
+            || { echo "::error::backend/generated/prisma está desactualizado. Corre 'npx prisma generate' y commitea."; exit 1; }
+
+      - name: Compilar (tsc)
+        run: npm run build
+
+      - name: Typecheck de los tests
+        run: npm run test:types
+
+      - name: Pruebas (unit + integración con PGlite)
+        run: npm run test:all
+
+      - name: Contrato de tipos front↔back
+        working-directory: ${{ github.workspace }}
+        run: npm run check:contract
+
+  frontend:
+    name: Frontend (lint · tests · build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - name: Enums de dominio en sync
+        run: |
+          npm run gen:enums
+          git diff --exit-code -- src/shared/types/domain.enums.ts \
+            || { echo "::error::domain.enums.ts está desactualizado respecto a schema.prisma. Corre 'npm run gen:enums' y commitea."; exit 1; }
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Build (next build)
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"

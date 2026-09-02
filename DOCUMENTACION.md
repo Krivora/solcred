@@ -224,9 +224,28 @@ espejo `frontend/src/shared/types/api.ts`.
 
 Detalle en [`README.md`](./README.md) y `backend/test/`.
 
-### 4.5 Lo que falta en la infraestructura
+### 4.5 CI/CD
 
-No hay contenedores para producción (Docker) ni pipeline de CI/CD — ver §8.
+**CI** — `.github/workflows/ci.yml` (GitHub Actions). En cada `pull_request` y
+en `push` a `main` / `desarrollo`, dos jobs en paralelo:
+
+- `backend`: `npm ci`, `prisma generate` + chequeo de sync de
+  `generated/prisma`, `tsc`, `test:types`, `npm run test:all` (unit +
+  integración con PGlite), `check:contract`.
+- `frontend`: `npm ci`, `gen:enums` + chequeo de sync de `domain.enums.ts`,
+  `lint`, `npm test`, `next build`.
+
+Falta activarlos como *required status checks* en la protección de rama de
+`main` (setting de GitHub, no del repo). Ver [`README.md`](./README.md).
+
+**CD** — pendiente. Bloqueado por el storage en disco local del backend
+(actividad 3) y por que Puppeteer necesita Chromium en runtime; se define el
+`deploy.yml` cuando se resuelva y se elija proveedor.
+
+### 4.6 Lo que falta en la infraestructura
+
+No hay contenedores para producción (Docker) ni despliegue automatizado (CD) —
+ver §8.
 
 ## 5. Módulos y funcionalidades actuales
 
@@ -404,8 +423,10 @@ las reglas con las que corre todo lo anterior.
    Vitest (unit + integración con BD) sobre transiciones de estatus, asignación
    automática, validación de documentos, SLA y cálculo financiero de Análisis
    (ver §4.4). Pendiente: componente / e2e del frontend y sumar módulos.
-4. **Sin CI/CD.** `tsc`, `eslint`, `check:contract`, `npm test` y el build
-   corren en la máquina de quien programa, no en cada Pull Request.
+4. **CI listo, CD pendiente.** El CI (`.github/workflows/ci.yml`) corre `tsc`,
+   `lint`, `check:contract`, `npm test` y los builds en cada PR y push a
+   `main`/`desarrollo`. Falta marcarlos como *required checks* en la protección
+   de rama y definir el despliegue automatizado (ver §4.5).
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
@@ -459,21 +480,21 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Correo automático en cada evento relevante, con
   copia de los eventos disparados quedando en el log de auditoría.
 
-### 2. Pipeline de CI/CD
+### 2. Pipeline de CI/CD — *CI hecho, CD pendiente*
 
-- **Descripción:** GitHub Actions (u equivalente) que en cada Pull Request
-  corra `tsc`, `eslint`, `npm run check:contract`, `npm test` (unit de ambos
-  proyectos + integración del backend con un Postgres de servicio) y el build
-  de ambos proyectos; y que despliegue automáticamente a un ambiente al hacer
-  merge a `main`.
-- **Objetivo:** Que ningún cambio roto llegue a `main` sin que alguien lo
-  note antes de revisar el PR a mano.
-- **Beneficio/impacto:** Reduce el tiempo de revisión y evita que la
-  responsabilidad de "correr todo antes de pushear" recaiga solo en la
-  disciplina de cada quien.
+- **CI (hecho):** `.github/workflows/ci.yml` corre en cada `pull_request` y en
+  `push` a `main`/`desarrollo`: job `backend` (`tsc`, `test:types`,
+  `test:all` con PGlite, `check:contract`, sync de `generated/prisma`) y job
+  `frontend` (`gen:enums` + sync de `domain.enums.ts`, `lint`, `test`,
+  `next build`). Falta un paso manual una sola vez: marcarlos como *required
+  status checks* en la protección de rama de `main` (setting de GitHub).
+- **CD (pendiente):** bloqueado por el storage en disco local del backend
+  (actividad 3) y por Puppeteer/Chromium en runtime. Se define `deploy.yml`
+  (`on: push: [main]` → `prisma migrate deploy` + deploy de front y back) al
+  resolver eso y elegir proveedor. Ver §4.5.
 - **Prioridad:** Alta.
-- **Resultado esperado:** Checks obligatorios en cada PR y despliegue
-  automatizado sin pasos manuales.
+- **Resultado esperado:** Checks obligatorios en cada PR (falta el toggle de
+  GitHub) y despliegue automatizado sin pasos manuales (CD pendiente).
 
 ### 3. Migrar el almacenamiento de documentos a un proveedor cloud
 

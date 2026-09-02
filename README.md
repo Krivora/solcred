@@ -62,8 +62,33 @@ test (`test/integration/pglite-client.ts`). El esquema se aplica ejecutando los
 `prisma/migrations/*` reales, y `vitest.config.mts` aliasa `@config/db` a esa
 instancia para que los servicios usen la misma BD.
 
-> En CI (actividad 3 del plan) la integración correrá contra un Postgres de
-> verdad (service container de GitHub Actions), no PGlite.
+## CI/CD
+
+**CI** — `.github/workflows/ci.yml`. Corre en cada `pull_request` y en `push` a
+`main` / `desarrollo`. Dos jobs en paralelo:
+
+| Job | Pasos |
+|---|---|
+| `backend` | `npm ci` · `prisma generate` + verificar que `generated/prisma` está commiteado al día · `npm run build` (tsc) · `test:types` · `npm run test:all` (unit + integración con PGlite) · `npm run check:contract` |
+| `frontend` | `npm ci` · `gen:enums` + verificar `domain.enums.ts` al día · `npm run lint` · `npm test` · `npm run build` (next build) |
+
+Para que sean **obligatorios**, activar en GitHub → *Settings → Branches →
+Branch protection rule* sobre `main` (y `desarrollo` si se quiere): *Require
+status checks to pass* → marcar `backend` y `frontend`.
+
+**CD** — pendiente. Bloqueado por dos cosas del backend que hay que resolver
+antes de un deploy limpio:
+
+1. **Storage en disco local** (`uploads/`) — no sobrevive en plataformas
+   efímeras. Se resuelve en la actividad 3 del plan (migrar a un bucket).
+2. **Puppeteer** necesita Chromium en el runtime → plataforma con imagen
+   propia / buildpack que lo soporte (Railway, Render, Fly, un contenedor)
+   o `@sparticuz/chromium` si se va serverless.
+
+Plan cuando eso esté: workflow `deploy.yml` con `on: push: branches: [main]`
+que corra migraciones (`prisma migrate deploy` contra la BD de prod) y
+despliegue front y back al proveedor elegido con sus secrets en *Actions
+secrets*.
 
 ## Deuda conocida
 
