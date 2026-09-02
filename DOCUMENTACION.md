@@ -203,10 +203,29 @@ Todos los listados paginados del API responden con el mismo envoltorio
 query params `page` + `pageSize` — ver `backend/src/utils/pagination.ts` y su
 espejo `frontend/src/shared/types/api.ts`.
 
-### 4.4 Lo que falta en la infraestructura
+### 4.4 Pruebas automatizadas
 
-No hay contenedores (Docker), pipeline de CI/CD, ni suite de pruebas
-automatizadas — ver §8.
+**Vitest** en ambos proyectos (`npm test` en cada uno):
+
+- **Frontend** — lógica pura: cálculo financiero de Análisis (amortización a
+  sistema francés, razones financieras / semáforos, validación de rango de los
+  ajustes) y el flujo de pasos del formulario.
+- **Backend `unit`** — sin BD: máquinas de estado (solicitud y ticket), cálculo
+  de SLA de soporte, métricas de expediente, comparadores de reglas de
+  asignación.
+- **Backend `integration`** (`npm run test:int`) — contra un Postgres real
+  (`docker-compose.test.yml`, puerto 55432, `.env.test`; un candado impide tocar
+  cualquier BD que no sea `solcred_test`): transiciones de estatus de Promoción
+  (+ escritura en `HistorialEstatus`), asignación automática (match de reglas,
+  grupo general de respaldo, balanceo por carga, omisión de ya-asignadas),
+  validación de documentos (autorización + estado + motivo) y creación de
+  solicitud (una activa por cliente, folio).
+
+Detalle en [`README.md`](./README.md) y `backend/test/`.
+
+### 4.5 Lo que falta en la infraestructura
+
+No hay contenedores para producción (Docker) ni pipeline de CI/CD — ver §8.
 
 ## 5. Módulos y funcionalidades actuales
 
@@ -331,7 +350,9 @@ automatizadas — ver §8.
 - Notificaciones al cliente (correo o push) cuando cambia el estatus de su
   solicitud o le rechazan un documento — hoy solo se entera si entra a
   revisar.
-- Pruebas automatizadas (no hay ni una) y pipeline de CI/CD.
+- Pipeline de CI/CD (las pruebas ya existen — ver §4.4 — pero corren en local,
+  no en cada PR).
+- Pruebas de componente / e2e del frontend (hoy solo se prueba lógica pura).
 - Almacenamiento de archivos en la nube (hoy es disco local del servidor).
 
 ## 7. Flujo general de operación
@@ -378,11 +399,12 @@ las reglas con las que corre todo lo anterior.
 2. **El cliente no se entera de nada si no entra a revisar.** No hay
    notificaciones — un rechazo de documento o una devolución para corrección
    puede pasar inadvertido días.
-3. **Cero pruebas automatizadas.** Cualquier cambio en las transiciones de
-   estatus, la asignación automática o la validación de documentos se
-   verifica solo a mano.
-4. **Sin CI/CD.** `tsc`, `eslint`, `check:contract` y el build corren en la
-   máquina de quien programa, no en cada Pull Request.
+3. **Pruebas automatizadas — base cubierta, falta ampliar.** Ya hay suite de
+   Vitest (unit + integración con BD) sobre transiciones de estatus, asignación
+   automática, validación de documentos, SLA y cálculo financiero de Análisis
+   (ver §4.4). Pendiente: componente / e2e del frontend y sumar módulos.
+4. **Sin CI/CD.** `tsc`, `eslint`, `check:contract`, `npm test` y el build
+   corren en la máquina de quien programa, no en cada Pull Request.
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
@@ -394,7 +416,7 @@ las reglas con las que corre todo lo anterior.
 
 ## 9. Plan de trabajo
 
-Cuatro actividades concretas, en el orden en que aportan más valor si se
+Tres actividades concretas, en el orden en que aportan más valor si se
 ejecutan en secuencia (aunque varias pueden correr en paralelo por equipos
 distintos: negocio/back vs. calidad/infra).
 
@@ -416,7 +438,10 @@ distintos: negocio/back vs. calidad/infra).
 > **reconciliación de los DTOs de respuesta** de solicitud y expediente
 > (derivados de `Prisma.*GetPayload` en `*.contract.ts` y verificados
 > front↔back en `check:contract`, ver §4.3 — falta extenderlo al resto de
-> módulos, ver §8).
+> módulos, ver §8); y la **suite de pruebas automatizadas** (Vitest: unit sin
+> BD + integración con Postgres en Docker sobre transiciones de estatus,
+> asignación automática, validación de documentos, SLA y cálculo financiero de
+> Análisis, ver §4.4 — pendiente componente/e2e del frontend).
 
 ### 1. Notificaciones al solicitante
 
@@ -433,28 +458,13 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Correo automático en cada evento relevante, con
   copia de los eventos disparados quedando en el log de auditoría.
 
-### 2. Suite de pruebas automatizadas
-
-- **Descripción:** Pruebas unitarias/de integración en el backend para los
-  servicios críticos (transiciones de estatus, asignación automática,
-  validación de documentos, cálculo de métricas) y pruebas de componente/e2e
-  en el frontend para los flujos de cliente y de Promoción.
-- **Objetivo:** Poder cambiar código sin depender solo de verificación
-  manual.
-- **Beneficio/impacto:** Menos regresiones silenciosas, más confianza para
-  refactorizar (por ejemplo, al construir Financiamiento sobre las mismas
-  bases que Promoción).
-- **Prioridad:** Alta.
-- **Resultado esperado:** Cobertura de pruebas sobre las transiciones de
-  estatus y el flujo de creación/envío de solicitud, corriendo en local con
-  un solo comando.
-
-### 3. Pipeline de CI/CD
+### 2. Pipeline de CI/CD
 
 - **Descripción:** GitHub Actions (u equivalente) que en cada Pull Request
-  corra `tsc`, `eslint`, `npm run check:contract` y el build de ambos
-  proyectos; y que despliegue automáticamente a un ambiente al hacer merge a
-  `main`.
+  corra `tsc`, `eslint`, `npm run check:contract`, `npm test` (unit de ambos
+  proyectos + integración del backend con un Postgres de servicio) y el build
+  de ambos proyectos; y que despliegue automáticamente a un ambiente al hacer
+  merge a `main`.
 - **Objetivo:** Que ningún cambio roto llegue a `main` sin que alguien lo
   note antes de revisar el PR a mano.
 - **Beneficio/impacto:** Reduce el tiempo de revisión y evita que la
@@ -464,7 +474,7 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Checks obligatorios en cada PR y despliegue
   automatizado sin pasos manuales.
 
-### 4. Migrar el almacenamiento de documentos a un proveedor cloud
+### 3. Migrar el almacenamiento de documentos a un proveedor cloud
 
 - **Descripción:** Reemplazar `uploads/expedientes/` (disco local) por un
   bucket (S3, Cloud Storage o similar), manteniendo la validación de magic
