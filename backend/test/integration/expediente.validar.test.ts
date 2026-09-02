@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { prisma } from "./prisma";
+import { prisma } from "./pglite-client";
 import {
   crearCliente,
   crearGrupoConGestor,

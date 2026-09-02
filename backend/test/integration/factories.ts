@@ -3,7 +3,7 @@
  * con Prisma (no vía servicios) para montar el escenario de cada test.
  */
 import { randomUUID } from "node:crypto";
-import { prisma } from "./prisma";
+import { prisma } from "./pglite-client";
 
 export async function crearPrograma(over: Record<string, unknown> = {}) {
   return prisma.programa.create({

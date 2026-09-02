@@ -52,14 +52,18 @@ Runner: **Vitest** en ambos proyectos. Cada uno con su `npm test`.
 | Comando | Qué corre |
 |---|---|
 | `npm test` | Suite **unit**: máquinas de estado (solicitud, ticket), SLA, métricas de expediente, comparadores de reglas de asignación. Sin BD. |
-| `npm run test:int` | Suite **integración**: transiciones de estatus, asignación automática, validación de documentos, creación/envío de solicitud, contra un Postgres real. Levanta el contenedor (`pretest:int`) y aplica el esquema automáticamente. |
+| `npm run test:int` | Suite **integración**: transiciones de estatus, asignación automática, validación de documentos, creación de solicitud. |
 | `npm run test:all` | Ambas. |
-| `npm run test:db:down` | Borra el contenedor de pruebas y su volumen. |
+| `npm run test:types` | Typecheck de todo (incluye los tests). |
 
-La integración usa `docker-compose.test.yml` (Postgres efímero en el puerto
-`55432`) y `.env.test`. **Requiere Docker corriendo.** Un candado en
-`test/integration/env.ts` impide que los tests toquen cualquier BD que no sea
-`solcred_test`.
+**La integración no necesita Docker ni un Postgres aparte.** Corre contra
+**PGlite** — Postgres real compilado a WASM, en memoria, dentro del proceso de
+test (`test/integration/pglite-client.ts`). El esquema se aplica ejecutando los
+`prisma/migrations/*` reales, y `vitest.config.mts` aliasa `@config/db` a esa
+instancia para que los servicios usen la misma BD.
+
+> En CI (actividad 3 del plan) la integración correrá contra un Postgres de
+> verdad (service container de GitHub Actions), no PGlite.
 
 ## Deuda conocida
 

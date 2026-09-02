@@ -213,13 +213,14 @@ espejo `frontend/src/shared/types/api.ts`.
 - **Backend `unit`** — sin BD: máquinas de estado (solicitud y ticket), cálculo
   de SLA de soporte, métricas de expediente, comparadores de reglas de
   asignación.
-- **Backend `integration`** (`npm run test:int`) — contra un Postgres real
-  (`docker-compose.test.yml`, puerto 55432, `.env.test`; un candado impide tocar
-  cualquier BD que no sea `solcred_test`): transiciones de estatus de Promoción
+- **Backend `integration`** (`npm run test:int`) — contra **PGlite** (Postgres
+  real en WASM, en memoria; sin Docker ni servidor), con el esquema aplicado
+  desde los `prisma/migrations/*` reales: transiciones de estatus de Promoción
   (+ escritura en `HistorialEstatus`), asignación automática (match de reglas,
   grupo general de respaldo, balanceo por carga, omisión de ya-asignadas),
   validación de documentos (autorización + estado + motivo) y creación de
-  solicitud (una activa por cliente, folio).
+  solicitud (una activa por cliente, folio). En CI correrá contra un Postgres
+  de verdad.
 
 Detalle en [`README.md`](./README.md) y `backend/test/`.
 
@@ -439,9 +440,9 @@ distintos: negocio/back vs. calidad/infra).
 > (derivados de `Prisma.*GetPayload` en `*.contract.ts` y verificados
 > front↔back en `check:contract`, ver §4.3 — falta extenderlo al resto de
 > módulos, ver §8); y la **suite de pruebas automatizadas** (Vitest: unit sin
-> BD + integración con Postgres en Docker sobre transiciones de estatus,
-> asignación automática, validación de documentos, SLA y cálculo financiero de
-> Análisis, ver §4.4 — pendiente componente/e2e del frontend).
+> BD + integración contra PGlite sobre transiciones de estatus, asignación
+> automática, validación de documentos, SLA y cálculo financiero de Análisis,
+> ver §4.4 — pendiente componente/e2e del frontend).
 
 ### 1. Notificaciones al solicitante
 

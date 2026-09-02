@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { prisma } from "./prisma";
+import { prisma } from "./pglite-client";
 import { crearCliente, crearPrograma, crearSolicitud } from "./factories";
 import { crearSolicitud as crearSolicitudService } from "@modules/clientes/solicitudes/solicitudes.service";
 import { AppError } from "@middlewares/error.middleware";
