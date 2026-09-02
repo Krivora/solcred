@@ -31,6 +31,7 @@ import {
 } from "@/shared/components/ui/card";
 
 import { usePrograma } from "@/features/settings/hooks/useProgramas";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 import { ProgramaBadge, TipoPersonaBadge } from "@/features/settings/components/programas/ProgramaBadge";
 import { DocumentosPrograma } from "@/features/settings/components/programas/DocumentosPrograma";
 import { ORDEN_SECCIONES } from "@/features/settings/components/programas/form/SeccionesSelector";
@@ -68,6 +69,7 @@ const REQUERIMIENTO_COLOR: Record<Requerimiento, string> = {
 export default function DetalleProgramaPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
+    const soloLectura = useEsSoloLectura();
     const { programa, loading, isError, toggling, toggle, recargar } = usePrograma(id);
 
     useEffect(() => {
@@ -120,22 +122,24 @@ export default function DetalleProgramaPage() {
                         />
                     </div>
                 </div>
-                <div className="flex shrink-0 gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={toggling}
-                        onClick={handleToggle}
-                    >
-                        {programa.activo ? "Desactivar" : "Activar"}
-                    </Button>
-                    <Button size="sm" asChild>
-                        <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>
-                            <Pencil className="mr-2 h-3.5 w-3.5" />
-                            Editar
-                        </Link>
-                    </Button>
-                </div>
+                {!soloLectura && (
+                    <div className="flex shrink-0 gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={toggling}
+                            onClick={handleToggle}
+                        >
+                            {programa.activo ? "Desactivar" : "Activar"}
+                        </Button>
+                        <Button size="sm" asChild>
+                            <Link href={`/dashboard/admin/configuracion/programas/${programa.id}/editar`}>
+                                <Pencil className="mr-2 h-3.5 w-3.5" />
+                                Editar
+                            </Link>
+                        </Button>
+                    </div>
+                )}
             </div>
 
             {/* ── Descripción ──────────────────────────────────── */}

@@ -18,6 +18,7 @@ import { agregarDocumento, quitarDocumento } from "@/features/settings/api/progr
 import { useTiposDocumento } from "@/features/settings/hooks/useProgramas";
 import type { ProgramaDocumento, AplicaA } from "@/features/settings/types/programa.types";
 import { cn } from "@/shared/lib/cn";
+import { useEsSoloLectura } from "@/shared/lib/permisos";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
@@ -174,6 +175,7 @@ interface EditableProps {
 }
 
 export function DocumentosPrograma({ programaId, documentos: documentosProp, onCambio }: EditableProps) {
+    const soloLectura = useEsSoloLectura();
     const [documentos, setDocumentos] = useState<ProgramaDocumento[]>(documentosProp);
     const esBorrador = !programaId;
     const { tipos: tiposDisponibles, cargando: loadingTipos, recargar: recargarTipos, crear: crearTipo } = useTiposDocumento();
@@ -268,7 +270,8 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
                             )}
                         </div>
                     </div>
-                    {/* Formulario para agregar un documento */}
+                    {/* Formulario para agregar un documento — oculto en modo solo lectura */}
+                    {!soloLectura && (
                     <div className="space-y-2">
                         {/* Fila 1: tipo de documento + crear tipo nuevo */}
                         <div className="flex items-center gap-2">
@@ -347,21 +350,24 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
                             </Button>
                         </div>
                     </div>
+                    )}
                 </div>
                 {/* ── Lista ──────────────────────────────────────────── */}
                 <div className="p-5">
                     <ListaDocumentos
                         documentos={documentos}
-                        onQuitar={handleQuitar}
+                        onQuitar={soloLectura ? undefined : handleQuitar}
                         quitando={quitando}
                     />
                 </div>
             </div>
-            <TipoDocumentoDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                onGuardar={handleNuevoTipo}
-            />
+            {!soloLectura && (
+                <TipoDocumentoDialog
+                    open={dialogOpen}
+                    onOpenChange={setDialogOpen}
+                    onGuardar={handleNuevoTipo}
+                />
+            )}
         </>
     );
 }

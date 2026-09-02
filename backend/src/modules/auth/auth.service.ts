@@ -44,6 +44,7 @@ const rolEfectivo = (usuario: {
 const emitirRefreshToken = async (
   usuarioId: string,
   familia: string,
+  rol: RolAplicacion,
   ctx: ContextoSesion
 ): Promise<string> => {
   const raw = generarRefreshToken();
@@ -53,7 +54,7 @@ const emitirRefreshToken = async (
       usuarioId,
       familia,
       tokenHash: hashRefreshToken(raw),
-      expiraEn: fechaExpiracionRefresh(),
+      expiraEn: fechaExpiracionRefresh(rol),
       ip: ctx.ip ?? null,
       userAgent: ctx.userAgent ?? null,
     },
@@ -133,10 +134,11 @@ export const iniciarSesion = async (
   const refreshToken = await emitirRefreshToken(
     usuario.id,
     crypto.randomUUID(),
+    rol,
     ctx
   );
 
-  return { usuario: usuarioSinContrasena, token, refreshToken };
+  return { usuario: usuarioSinContrasena, token, refreshToken, rol };
 };
 
 /**
@@ -198,7 +200,7 @@ export const refrescarSesion = async (
         usuarioId: sesion.usuarioId,
         familia: sesion.familia,
         tokenHash: nuevoHash,
-        expiraEn: fechaExpiracionRefresh(),
+        expiraEn: fechaExpiracionRefresh(rol),
         ip: ctx.ip ?? null,
         userAgent: ctx.userAgent ?? null,
       },
@@ -212,7 +214,7 @@ export const refrescarSesion = async (
     tipoUsuario: usuario.tipoUsuario,
   });
 
-  return { usuario, token, refreshToken: nuevoRaw };
+  return { usuario, token, refreshToken: nuevoRaw, rol };
 };
 
 /** Cierra la sesión: revoca la familia del refresh token presentado. Idempotente. */

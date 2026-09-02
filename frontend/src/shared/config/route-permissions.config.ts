@@ -24,6 +24,15 @@ const conSupervisor = (roles: RolAplicacion[]): RolAplicacion[] =>
         ? [...roles, 'SUPERVISOR']
         : roles;
 
+// Rutas de acción (alta / edición) que NO deben abrirse a SUPERVISOR aunque
+// las permita ADMIN: el rol es de solo lectura. Se registran aparte para que
+// `conSupervisor` no vuelva a inyectar 'SUPERVISOR', y de primeras en la lista
+// para ganarle al patrón genérico `/programas/:id`.
+const STRICT_ROUTES: RoutePermission[] = [
+    { pattern: '/dashboard/admin/configuracion/programas/nuevo', roles: ['ADMIN'] },
+    { pattern: '/dashboard/admin/configuracion/programas/:id/editar', roles: ['ADMIN'] },
+];
+
 // Rutas dinámicas / de flujo que no viven en el sidebar
 const EXTRA_ROUTES: RoutePermission[] = [
     { pattern: '/dashboard/admin/promocion/expediente/:id', roles: ['ADMIN', 'GESTOR', 'ANALISTA', 'SUPERVISOR', 'ENCARGADO_PROMOCION', 'ENCARGADO_FINANCIAMIENTO', 'MESA_CONTROL'] },
@@ -40,7 +49,6 @@ const EXTRA_ROUTES: RoutePermission[] = [
     { pattern: '/dashboard/admin/configuracion', roles: ['ADMIN', 'SUPERVISOR'] },
     { pattern: '/dashboard/admin/configuracion/:section', roles: ['ADMIN', 'SUPERVISOR'] },
     { pattern: '/dashboard/admin/configuracion/programas/:id', roles: ['ADMIN', 'SUPERVISOR'] },
-    { pattern: '/dashboard/admin/configuracion/programas/:id/editar', roles: ['ADMIN', 'SUPERVISOR'] },
 ];
 
 const DEFAULT_ROUTE_BY_ROLE: Record<RolAplicacion, string> = {
@@ -59,10 +67,14 @@ export function getDefaultRouteForRole(role: RolAplicacion): string {
     return DEFAULT_ROUTE_BY_ROLE[role];
 }
 export const ROUTE_PERMISSIONS: RoutePermission[] = [
-    ...flattenNavConfig(navConfig),
-    { pattern: settingsNavItem.href!, roles: settingsNavItem.roles },
-    ...EXTRA_ROUTES,
-].map((r) => ({ ...r, roles: conSupervisor(r.roles) }));
+    // STRICT_ROUTES primero y sin derivación de SUPERVISOR.
+    ...STRICT_ROUTES,
+    ...[
+        ...flattenNavConfig(navConfig),
+        { pattern: settingsNavItem.href!, roles: settingsNavItem.roles },
+        ...EXTRA_ROUTES,
+    ].map((r) => ({ ...r, roles: conSupervisor(r.roles) })),
+];
 
 function patternToRegex(pattern: string): RegExp {
     const escaped = pattern
