@@ -152,6 +152,16 @@ export interface DatosBancarios {
   clabe: string
 }
 
+/**
+ * Detalle de solicitud del portal del cliente. Espejo de
+ * `backend .../solicitudes.contract.ts` → `SolicitudDetalle` (verificado en
+ * `scripts/check-contract.ts`). Lo devuelven `GET /:id`, `POST /`,
+ * `PUT /:id/generales` y `PATCH /:id/enviar`.
+ *
+ * Los `datos*` son opcionales: en una solicitud recién creada aún no existen.
+ * No trae `gestorAsignado` (el gestor interno solo se expone en Promoción) ni
+ * `documentos` (eso es el expediente).
+ */
 export interface Solicitud {
   id: string
   folio: string
@@ -160,12 +170,14 @@ export interface Solicitud {
   solicitanteId: string
   estatus: EstatusSolicitud
   tipoPersona?: TipoPersona
-  sector?: Sector          // ← corregido: opcional hasta guardar datosGenerales
+  sector?: Sector          // opcional hasta guardar datosGenerales
   tamanoEmpresa?: TamanoEmpresa
   // montoSolicitado / plazoSolicitado eliminados: no existen en el backend.
   // El monto real se calcula desde datosCredito.conceptos (suma de montos);
   // el plazo real es datosCredito.plazoMeses. Derívalos en el frontend
   // con un selector/helper en vez de esperarlos del API.
+  // Los `datos*` faltan (relación aún no creada) → el backend manda `null`,
+  // que en la práctica se trata igual que ausente (`?.` / `??` / `if`).
   datosSolicitante?: DatosPersona & { id: string }
   datosAval?: DatosPersona & { id: string }
   datosCredito?: DatosCredito & { id: string }
@@ -175,14 +187,35 @@ export interface Solicitud {
   datosBancarios?: DatosBancarios & { id: string }
   creadoEn: string
   actualizadoEn: string
-  gestorAsignado?: {
-    id: string
+}
+
+/**
+ * Fila del listado paginado `GET /clientes/solicitudes`. Espejo de
+ * `SolicitudListaItem` del backend — más liviana que `Solicitud` (sin datos de
+ * aval/garantía/negocio/mercado/bancarios y con `programa` reducido).
+ */
+export interface SolicitudListItem {
+  id: string
+  folio: string
+  programaId: string
+  programa: Pick<Programa, 'id' | 'nombre'>
+  solicitanteId: string
+  estatus: EstatusSolicitud
+  tipoPersona?: TipoPersona
+  sector?: Sector
+  tamanoEmpresa?: TamanoEmpresa
+  datosSolicitante?: {
     nombre: string
-  } | null
+    apellidoPaterno: string
+    apellidoMaterno: string
+  }
+  datosCredito?: DatosCredito & { id: string }
+  creadoEn: string
+  actualizadoEn: string
 }
 
 // Shape exacto de la respuesta de GET /clientes/solicitudes (paginada).
 export interface SolicitudesPaginadas {
-  data: Solicitud[]
+  data: SolicitudListItem[]
   pagination: PaginacionData
 }

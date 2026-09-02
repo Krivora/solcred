@@ -187,10 +187,16 @@ Los 25 enums de dominio (estatus, roles, catálogos, tickets, etc.) **no se
 escriben a mano en el frontend**: se generan desde `backend/generated/prisma/enums.ts`
 (que a su vez viene de `schema.prisma`) con
 `scripts/gen-domain-enums.ts` → `frontend/src/shared/types/domain.enums.ts`.
-Un script de chequeo (`npm run check:contract` desde la raíz) falla si
-divergen, y corre automáticamente en un hook de `pre-push`
-(`git config core.hooksPath githooks`). El detalle de esto está en
-`KNOWN-ISSUES.md`.
+
+El chequeo de contrato (`npm run check:contract` desde la raíz — corre en
+`tsc` sin emitir, y en el hook de `pre-push`,
+`git config core.hooksPath githooks`) cubre además los **shapes de respuesta**
+de los endpoints de **solicitud** y **expediente**: el backend deriva sus tipos
+de respuesta de `Prisma.*GetPayload<…>` en archivos `*.contract.ts` (fuente
+única de los `include`/`select`), y `scripts/check-contract.ts` verifica —de
+forma direccional, normalizando `Date → string`— que la respuesta del backend
+satisface lo que el frontend espera. Un cambio en un `include`/`select` rompe
+`tsc` en ambos lados. El detalle está en `KNOWN-ISSUES.md`.
 
 Todos los listados paginados del API responden con el mismo envoltorio
 (`{ data, pagination: { page, pageSize, total, totalPages } }`) y aceptan los
@@ -380,14 +386,15 @@ las reglas con las que corre todo lo anterior.
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
-6. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
-   pendiente en su momento): los DTOs de respuesta del backend no están
-   verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
-   enums lo están.
+6. **Deuda de tipos — parcialmente resuelta.** Los DTOs de respuesta de
+   **solicitud** y **expediente** ya están derivados de `Prisma.*GetPayload<…>`
+   y verificados contra el frontend en `check:contract` (ver §4.3). Falta
+   extender el mismo patrón al resto de módulos (promoción, financiamiento,
+   análisis, soporte, dashboard, reportes).
 
 ## 9. Plan de trabajo
 
-Cinco actividades concretas, en el orden en que aportan más valor si se
+Cuatro actividades concretas, en el orden en que aportan más valor si se
 ejecutan en secuencia (aunque varias pueden correr en paralelo por equipos
 distintos: negocio/back vs. calidad/infra).
 
@@ -405,7 +412,11 @@ distintos: negocio/back vs. calidad/infra).
 > `SUPERVISOR` + revisión de seguridad** (ocultación de controles completa en
 > el frontend, rate-limit en `login`/`registro`, `trust proxy`, política de
 > contraseñas centralizada y expiración de sesión por rol; hallazgos no
-> implementados listados en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)).
+> implementados listados en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)); y la
+> **reconciliación de los DTOs de respuesta** de solicitud y expediente
+> (derivados de `Prisma.*GetPayload` en `*.contract.ts` y verificados
+> front↔back en `check:contract`, ver §4.3 — falta extenderlo al resto de
+> módulos, ver §8).
 
 ### 1. Notificaciones al solicitante
 
@@ -466,24 +477,6 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Los documentos del expediente se suben y descargan
   desde el proveedor cloud sin cambios visibles para el usuario, con los
   archivos ya existentes migrados.
-
-### 5. Reconciliar los DTOs de respuesta del backend
-
-- **Descripción:** Continuar el trabajo de contrato de tipos (que hoy cubre
-  los 25 enums) a los shapes de respuesta completos, tipándolos contra
-  `Prisma.XGetPayload<...>`. (La paginación ya quedó unificada en
-  `{ data, pagination }` — ver §4.3.)
-- **Objetivo:** Que un cambio en el `include`/`select` de una consulta de
-  Prisma se note en `tsc` del frontend en vez de romperse en producción en
-  silencio.
-- **Beneficio/impacto:** Menos bugs de "el campo que esperaba el frontend ya
-  no viene del backend", que es justo el tipo de error que ya se corrigió
-  una vez en el timeline de la solicitud (§6.1 de la bitácora del
-  proyecto).
-- **Prioridad:** Media.
-- **Resultado esperado:** Los tipos de respuesta de, al menos, los endpoints
-  de solicitud y expediente, están verificados contra el modelo real de
-  Prisma.
 
 ---
 

@@ -1,7 +1,22 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { RolAplicacion } from "@middlewares/roles.middleware"; // ajustar si la ruta real difiere
-import { paginado } from "@utils/pagination";
+import { paginado, type RespuestaPaginada } from "@utils/pagination";
+import {
+    INCLUDE_SOLICITUD_DETALLE,
+    INCLUDE_SOLICITUD_LISTA,
+    INCLUDE_SOLICITUD_PDF,
+    type SolicitudDetalle,
+    type SolicitudListaItem,
+    type SolicitudParaPDF,
+    type DatosSolicitanteResp,
+    type DatosAvalResp,
+    type DatosNegocioResp,
+    type DatosMercadoResp,
+    type DatosBancariosResp,
+    type DatosCreditoResp,
+    type DatosGarantiaResp,
+} from "./solicitudes.contract";
 import { generarFolio } from "./helper/generar-folio"; // reutilizando el helper que ya existe
 import {
     CambiarEstatusDto,
@@ -18,76 +33,8 @@ import {
 import { EstatusSolicitud, Prisma, Requerimiento, SeccionSolicitud } from "../../../../generated/prisma/client";
 import { SolicitudPDFData, DatosPersonaPDF } from "../../../shared/pdf/pdf.types";
 
-// Agregar al incluyeTodo existente:
-const incluyeTodo = {
-    programa: {
-        include: {
-            documentosRequeridos: {
-                include: { tipoDocumento: true, },
-
-            },
-            secciones: true,
-        },
-    },
-    datosSolicitante: true,
-    datosAval: true,
-    datosCredito: {
-        include: { conceptos: true },
-    },
-    datosGarantia: {
-        include: { garantias: true },
-    },
-    datosNegocio: true,
-    datosMercado: true,
-    datosBancarios: true,
-    documentos: {
-        include: { tipoDocumento: true },
-    },
-    // Solo la asignación activa; una solicitud no debería tener más de una,
-    // pero take:1 protege el shape aunque la regla de negocio falle algún día.
-    asignaciones: {
-        where: { activa: true },
-        take: 1,
-        include: {
-            gestor: {
-                select: {
-                    id: true,
-                    usuario: {
-                        select: {
-                            nombre: true,
-                            apellidoPaterno: true,
-                            apellidoMaterno: true,
-                        },
-                    },
-                },
-            },
-        },
-    },
-} satisfies Prisma.SolicitudInclude;
-
-// Helper de transformación — reutilizable en obtenerSolicitudPorId y listarSolicitudes
-type AsignacionConGestor = {
-    gestor: {
-        id: string;
-        usuario: {
-            nombre: string;
-            apellidoPaterno: string;
-            apellidoMaterno: string;
-        };
-    };
-};
-
-const mapearGestorAsignado = (
-    asignaciones: AsignacionConGestor[]
-): { id: string; nombre: string } | null => {
-    const activa = asignaciones[0];
-    if (!activa) return null;
-
-    return {
-        id: activa.gestor.id,
-        nombre: `${activa.gestor.usuario.nombre} ${activa.gestor.usuario.apellidoPaterno} ${activa.gestor.usuario.apellidoMaterno}`,
-    };
-};
+// El shape de respuesta (`INCLUDE_SOLICITUD_DETALLE` / `_LISTA`) y sus tipos
+// derivados de Prisma viven en `./solicitudes.contract`.
 
 const ESTATUS_FINALES: EstatusSolicitud[] = ["CANCELADO", "RECHAZADO", "APROBADO"];
 const ESTATUS_EDITABLES: EstatusSolicitud[] = ["BORRADOR", "EN_CORRECCION"];
@@ -193,7 +140,7 @@ const validarSeccionRequerida = (
  * datosCredito y datosGarantia no la usan: necesitan transacción propia
  * para reemplazar arreglos anidados (conceptos/garantias).
  */
-function crearGuardadorSubrecurso<TDto extends Record<string, unknown>>(
+function crearGuardadorSubrecurso<TDto extends Record<string, unknown>, TResult>(
     delegate: {
         upsert: (args: {
             where: { solicitudId: string };
@@ -203,20 +150,22 @@ function crearGuardadorSubrecurso<TDto extends Record<string, unknown>>(
     },
     seccion: SeccionSolicitud,
     mensajeNoRequerido: string
-) {
+): (solicitudId: string, dto: TDto, usuarioId: string) => Promise<TResult> {
     return async (
         solicitudId: string,
         dto: TDto,
         usuarioId: string
-    ) => {
+    ): Promise<TResult> => {
         const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
         validarSeccionRequerida(solicitud.programa, seccion, mensajeNoRequerido);
 
+        // El shape lo garantiza `TResult` (= `Prisma.*GetPayload`), que por
+        // definición no puede divergir del modelo real.
         return delegate.upsert({
             where: { solicitudId },
             create: { ...dto, solicitudId },
             update: dto,
-        });
+        }) as Promise<TResult>;
     };
 }
 
@@ -233,7 +182,7 @@ export const listarSolicitudes = async (
     usuarioId: string,
     rol: RolAplicacion,
     { page = 1, pageSize = 20 }: PaginacionParams = {}
-) => {
+): Promise<RespuestaPaginada<SolicitudListaItem>> => {
     const where: Prisma.SolicitudWhereInput =
         rol === "CLIENTE" ? { solicitanteId: usuarioId } : {};
 
@@ -243,15 +192,7 @@ export const listarSolicitudes = async (
     const [solicitudes, total] = await prisma.$transaction([
         prisma.solicitud.findMany({
             where,
-            include: {
-                programa: { select: { id: true, nombre: true } },
-                datosSolicitante: {
-                    select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
-                },
-                datosCredito: {
-                    include: { conceptos: true },
-                },
-            },
+            include: INCLUDE_SOLICITUD_LISTA,
             orderBy: { creadoEn: "desc" },
             take,
             skip,
@@ -266,12 +207,26 @@ export const obtenerSolicitudPorId = async (
     id: string,
     usuarioId: string,
     rol: RolAplicacion
-) => {
+): Promise<SolicitudDetalle | null> => {
     await obtenerSolicitudVisible(id, usuarioId, rol);
 
     return prisma.solicitud.findUnique({
         where: { id },
-        include: incluyeTodo,
+        include: INCLUDE_SOLICITUD_DETALLE,
+    });
+};
+
+/** Igual que `obtenerSolicitudPorId` pero con `documentos`, para armar el PDF. */
+export const obtenerSolicitudParaPDF = async (
+    id: string,
+    usuarioId: string,
+    rol: RolAplicacion
+): Promise<SolicitudParaPDF | null> => {
+    await obtenerSolicitudVisible(id, usuarioId, rol);
+
+    return prisma.solicitud.findUnique({
+        where: { id },
+        include: INCLUDE_SOLICITUD_PDF,
     });
 };
 
@@ -282,7 +237,7 @@ export const obtenerSolicitudPorId = async (
 export const crearSolicitud = async (
     dto: CrearSolicitudDto,
     solicitanteId: string
-) => {
+): Promise<SolicitudDetalle> => {
     const programa = await prisma.programa.findUnique({
         where: { id: dto.programaId },
     });
@@ -313,15 +268,7 @@ export const crearSolicitud = async (
                 programaId: dto.programaId,
                 solicitanteId,
             },
-            include: {
-                programa: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        secciones: true,
-                    },
-                },
-            },
+            include: INCLUDE_SOLICITUD_DETALLE,
         });
     } catch (err) {
         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
@@ -339,24 +286,16 @@ export const guardarDatosGenerales = async (
     solicitudId: string,
     dto: GuardarDatosGeneralesDto,
     usuarioId: string
-) => {
+): Promise<SolicitudDetalle> => {
     await obtenerSolicitudEditable(solicitudId, usuarioId);
 
     return prisma.solicitud.update({
         where: { id: solicitudId },
         data: dto,
-        include: {
-            programa: {
-                select: {
-                    id: true,
-                    nombre: true,
-                    secciones: true,
-                },
-            },
-        },
+        include: INCLUDE_SOLICITUD_DETALLE,
     });
 };
-export const guardarDatosSolicitante = crearGuardadorSubrecurso<GuardarDatosSolicitanteDto>(
+export const guardarDatosSolicitante = crearGuardadorSubrecurso<GuardarDatosSolicitanteDto, DatosSolicitanteResp>(
     prisma.datosSolicitante,
     "SOLICITANTE",
     "Este programa no requiere datos del solicitante"
@@ -366,7 +305,7 @@ export const guardarDatosAval = async (
     solicitudId: string,
     dto: GuardarDatosAvalDto,
     usuarioId: string
-) => {
+): Promise<DatosAvalResp> => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
     validarSeccionRequerida(solicitud.programa, "AVAL", "Este programa no requiere aval");
 
@@ -381,7 +320,7 @@ export const guardarDatosCredito = async (
     solicitudId: string,
     dto: GuardarDatosCreditoDto,
     usuarioId: string
-) => {
+): Promise<DatosCreditoResp> => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
     validarSeccionRequerida(solicitud.programa, "CREDITO", "Este programa no requiere datos de crédito");
 
@@ -434,7 +373,8 @@ export const guardarDatosCredito = async (
             })),
         });
 
-        return tx.datosCredito.findUnique({
+        // No puede ser null: se acaba de hacer upsert en la misma transacción.
+        return tx.datosCredito.findUniqueOrThrow({
             where: { id: datosCredito.id },
             include: { conceptos: true },
         });
@@ -445,7 +385,7 @@ export const guardarDatosGarantia = async (
     solicitudId: string,
     dto: GuardarDatosGarantiaDto,
     usuarioId: string
-) => {
+): Promise<DatosGarantiaResp> => {
     const solicitud = await obtenerSolicitudEditableConPrograma(solicitudId, usuarioId);
     validarSeccionRequerida(solicitud.programa, "GARANTIA", "Este programa no requiere garantía");
 
@@ -483,26 +423,27 @@ export const guardarDatosGarantia = async (
             })),
         });
 
-        return tx.datosGarantia.findUnique({
+        // No puede ser null: se acaba de hacer upsert en la misma transacción.
+        return tx.datosGarantia.findUniqueOrThrow({
             where: { id: datosGarantia.id },
             include: { garantias: true },
         });
     });
 };
 
-export const guardarDatosNegocio = crearGuardadorSubrecurso<GuardarDatosNegocioDto>(
+export const guardarDatosNegocio = crearGuardadorSubrecurso<GuardarDatosNegocioDto, DatosNegocioResp>(
     prisma.datosNegocio,
     "NEGOCIO",
     "Este programa no requiere datos del negocio"
 );
 
-export const guardarDatosMercado = crearGuardadorSubrecurso<GuardarDatosMercadoDto>(
+export const guardarDatosMercado = crearGuardadorSubrecurso<GuardarDatosMercadoDto, DatosMercadoResp>(
     prisma.datosMercado,
     "MERCADO",
     "Este programa no requiere datos de mercado"
 );
 
-export const guardarDatosBancarios = crearGuardadorSubrecurso<GuardarDatosBancariosDto>(
+export const guardarDatosBancarios = crearGuardadorSubrecurso<GuardarDatosBancariosDto, DatosBancariosResp>(
     prisma.datosBancarios,
     "BANCARIOS",
     "Este programa no requiere datos bancarios"
@@ -515,7 +456,7 @@ export const guardarDatosBancarios = crearGuardadorSubrecurso<GuardarDatosBancar
 export const enviarSolicitud = async (
     solicitudId: string,
     usuarioId: string
-) => {
+): Promise<SolicitudDetalle> => {
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
         include: {
@@ -542,7 +483,7 @@ export const enviarSolicitud = async (
         const actualizada = await tx.solicitud.update({
             where: { id: solicitudId },
             data: { estatus: "PENDIENTE" },
-            include: incluyeTodo,
+            include: INCLUDE_SOLICITUD_DETALLE,
         });
 
         await tx.historialEstatus.create({
@@ -571,7 +512,7 @@ export const cambiarEstatus = async (
     solicitudId: string,
     dto: CambiarEstatusDto,
     usuarioId: string
-) => {
+): Promise<SolicitudDetalle> => {
     const solicitud = await prisma.solicitud.findUnique({
         where: { id: solicitudId },
     });
@@ -594,7 +535,7 @@ export const cambiarEstatus = async (
         const actualizada = await tx.solicitud.update({
             where: { id: solicitudId },
             data: { estatus: dto.estatus },
-            include: incluyeTodo,
+            include: INCLUDE_SOLICITUD_DETALLE,
         });
 
         await tx.historialEstatus.create({
@@ -678,7 +619,7 @@ const formatearFecha = (fecha: Date | null): string | null =>
     fecha ? fecha.toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" }) : null;
 
 export const mapearSolicitudAPDF = (
-    solicitud: NonNullable<Awaited<ReturnType<typeof obtenerSolicitudPorId>>>
+    solicitud: SolicitudParaPDF
 ): SolicitudPDFData => {
     return {
         folio: solicitud.folio,

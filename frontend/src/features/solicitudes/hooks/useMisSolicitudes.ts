@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import { solicitudesKeys } from '@/features/solicitudes/lib/solicitudes.keys'
 import type {
-  Solicitud,
+  SolicitudListItem,
   PaginacionData,
 } from '@/features/solicitudes/types/solicitud.types'
 
 interface UseMisSolicitudesReturn {
-  solicitudes: Solicitud[]
+  solicitudes: SolicitudListItem[]
   pagination: PaginacionData | null
   isLoading: boolean
   error: string | null

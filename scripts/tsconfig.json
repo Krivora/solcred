@@ -7,8 +7,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "types": [],
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "paths": {
+      "@/*": ["../frontend/src/*"]
+    }
   },
   "include": ["check-contract.ts"]
 }

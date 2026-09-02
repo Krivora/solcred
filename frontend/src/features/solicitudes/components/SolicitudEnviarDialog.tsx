@@ -11,10 +11,10 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog'
 import { Button } from '@/shared/components/ui/button'
-import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
+import type { SolicitudListItem } from '@/features/solicitudes/types/solicitud.types'
 
 interface SolicitudEnviarDialogProps {
-  solicitud: Solicitud | null
+  solicitud: SolicitudListItem | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirmar: (id: string) => Promise<boolean>

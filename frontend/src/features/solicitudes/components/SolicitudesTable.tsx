@@ -16,8 +16,8 @@ import { EstatusBadge } from './EstatusBadge'
 import { SolicitudesEmptyState } from './SolicitudesEmptyState'
 import { SolicitudEnviarDialog } from './SolicitudEnviarDialog'
 import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
-import type { Solicitud } from '@/features/solicitudes/types/solicitud.types'
-import { Pencil, Send, User, FolderOpen, FileText, Loader2, ChevronRight } from 'lucide-react'
+import type { SolicitudListItem } from '@/features/solicitudes/types/solicitud.types'
+import { Pencil, Send, FolderOpen, FileText, Loader2, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
@@ -104,14 +104,14 @@ function SolicitudCard({
   idDescargando,
   router,
 }: {
-  s: Solicitud
-  onEnviarClick: (s: Solicitud) => void
+  s: SolicitudListItem
+  onEnviarClick: (s: SolicitudListItem) => void
   onDescargar: (id: string, folio: string) => void
   idDescargando: string | null
   router: ReturnType<typeof useRouter>
 }) {
   const editable = s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION'
-  const montoTotal = (s: Solicitud) =>
+  const montoTotal = (s: SolicitudListItem) =>
   s.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0) ?? 0
   return (
     <div className="rounded-lg border border-border bg-card p-4 active:bg-muted/30 transition-colors">
@@ -137,7 +137,7 @@ function SolicitudCard({
         ) : null}
       </div>
 
-      {/* Meta grid: sector, fecha, gestor */}
+      {/* Meta grid: sector, fecha */}
       <div className="grid grid-cols-2 gap-y-1.5 gap-x-3 mb-4 text-xs">
         <div>
           <span className="text-muted-foreground/70">Sector</span>
@@ -148,19 +148,6 @@ function SolicitudCard({
           <p className="text-foreground">
             {format(new Date(s.creadoEn), "d MMM, yyyy", { locale: es })}
           </p>
-        </div>
-        <div className="col-span-2">
-          <span className="text-muted-foreground/70">Gestor asignado</span>
-          {s.gestorAsignado ? (
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="h-2.5 w-2.5 text-primary" />
-              </div>
-              <span className="text-foreground truncate">{s.gestorAsignado.nombre}</span>
-            </div>
-          ) : (
-            <p className="text-muted-foreground">Sin asignar</p>
-          )}
         </div>
       </div>
 
@@ -234,7 +221,7 @@ function SolicitudCard({
 ──────────────────────────────────────────────────────────── */
 
 interface SolicitudesTableProps {
-  solicitudes: Solicitud[]
+  solicitudes: SolicitudListItem[]
   isLoading: boolean
   onEnviada: () => void
 }
@@ -242,9 +229,9 @@ interface SolicitudesTableProps {
 export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: SolicitudesTableProps) {
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [selected, setSelected] = useState<Solicitud | null>(null)
+  const [selected, setSelected] = useState<SolicitudListItem | null>(null)
   const { descargar, idDescargando } = useDescargarPDF()
-  function handleEnviarClick(s: Solicitud) {
+  function handleEnviarClick(s: SolicitudListItem) {
     setSelected(s)
     setDialogOpen(true)
   }
@@ -262,7 +249,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
     }
   }
   const isEmpty = !isLoading && solicitudes.length === 0
-  const montoTotal = (s: Solicitud) =>
+  const montoTotal = (s: SolicitudListItem) =>
     s.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0) ?? 0
   return (
     <>
@@ -314,9 +301,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                 <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
                   Fecha
                 </TableHead>
-                <TableHead className="hidden xl:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
-                  Gestor
-                </TableHead>
                 <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
                   Exp.
                 </TableHead>
@@ -334,7 +318,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
 
               {isEmpty && (
                 <TableRow>
-                  <TableCell colSpan={9} className="p-0">
+                  <TableCell colSpan={8} className="p-0">
                     <SolicitudesEmptyState />
                   </TableCell>
                 </TableRow>
@@ -389,19 +373,6 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                       <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                         {format(new Date(s.creadoEn), "d MMM, yyyy", { locale: es })}
                       </span>
-                    </TableCell>
-
-                    {/* Gestor Asignado */}
-                    <TableCell className="hidden xl:table-cell py-3">
-                      {s.gestorAsignado ? (
-                        <span className="text-xs font-medium text-foreground leading-tight">
-                          {s.gestorAsignado.nombre}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
-                          Sin asignar
-                        </span>
-                      )}
                     </TableCell>
 
                     {/* Expediente */}

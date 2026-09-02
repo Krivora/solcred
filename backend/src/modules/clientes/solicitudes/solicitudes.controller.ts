@@ -268,7 +268,7 @@ export const descargarPDF = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const solicitud = await solicitudesService.obtenerSolicitudPorId(
+        const solicitud = await solicitudesService.obtenerSolicitudParaPDF(
             req.params.id as string,
             req.usuario!.id,
             req.usuario!.rol

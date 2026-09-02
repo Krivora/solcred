@@ -1,10 +1,17 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { ValidarDocumentoDto } from "./expediente.schema";
-import { EstatusDocumento, Prisma } from "../../../generated/prisma/client";
+import { EstatusDocumento } from "../../../generated/prisma/client";
 import fs from "fs";
 import path from "path";
 import { UPLOADS_BASE_DIR } from "@config/multer.config";
+import {
+    SELECT_TIPO_DOCUMENTO,
+    SELECT_PERSONAL_BASICO,
+    INCLUDE_DOCUMENTO_CON_VALIDACION,
+    type DocumentoConValidacion,
+    type ExpedienteResponse,
+} from "./expediente.contract";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTES
@@ -29,33 +36,8 @@ const ESTATUS_PERMITIDOS_PARA_SUBIR = [
     "EN_REVISION",
 ] as const;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SELECTS REUTILIZABLES
-// Centralizados para no repetir el shape Personal -> usuario en cada query,
-// y para que un cambio futuro en el schema solo se ajuste en un lugar.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const SELECT_TIPO_DOCUMENTO = {
-    id: true,
-    nombre: true,
-} satisfies Prisma.TipoDocumentoSelect;
-
-const SELECT_PERSONAL_BASICO = {
-    id: true,
-    rol: true,
-    usuario: {
-        select: {
-            nombre: true,
-            apellidoPaterno: true,
-            apellidoMaterno: true,
-        },
-    },
-} satisfies Prisma.PersonalSelect;
-
-const INCLUDE_DOCUMENTO_CON_VALIDACION = {
-    tipoDocumento: { select: SELECT_TIPO_DOCUMENTO },
-    validadoPor: { select: SELECT_PERSONAL_BASICO },
-} satisfies Prisma.DocumentoSolicitudInclude;
+// Los `select`/`include` reutilizables y los tipos de respuesta viven en
+// `./expediente.contract`.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS
@@ -113,7 +95,7 @@ export const obtenerExpediente = async (
     solicitudId: string,
     usuarioId: string,
     rol: string
-) => {
+): Promise<ExpedienteResponse> => {
     await verificarAcceso(solicitudId, usuarioId, rol);
 
     const expediente = await prisma.solicitud.findUnique({
@@ -197,7 +179,7 @@ export const obtenerExpediente = async (
                 esObligatorio: dr.esObligatorio,
                 aplicaA: dr.aplicaA,
                 documentoActivo: docSubido ?? null,
-                estatus: docSubido?.estatus ?? "NO_SUBIDO",
+                estatus: docSubido?.estatus ?? ("NO_SUBIDO" as const),
             };
         });
 
@@ -402,7 +384,7 @@ export const validarDocumento = async (
     documentoId: string,
     gestorId: string,
     dto: ValidarDocumentoDto
-) => {
+): Promise<DocumentoConValidacion> => {
     await verificarGestorAsignado(solicitudId, gestorId);
 
     // Todo dentro de una transacción: sin esto, dos requests casi simultáneos
@@ -450,7 +432,7 @@ export const obtenerHistorialDocumento = async (
     tipoDocumentoId: string,
     usuarioId: string,
     rol: string
-) => {
+): Promise<DocumentoConValidacion[]> => {
     if (!ROLES_CON_ACCESO_HISTORIAL.includes(rol as (typeof ROLES_CON_ACCESO_HISTORIAL)[number])) {
         throw new AppError("No tienes permisos para ver el historial de versiones", 403);
     }
