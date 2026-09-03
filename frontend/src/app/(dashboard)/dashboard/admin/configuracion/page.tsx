@@ -26,7 +26,7 @@ const configItems: ConfigCard[] = [
         description:
             "Crea y administra los programas de financiamiento, sus condiciones, tasas y requisitos.",
         href: "/dashboard/admin/configuracion/programas",
-        accent: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+        accent: "bg-cat-2-surface text-cat-2",
     },
     {
         icon: FileBadge2,
@@ -34,8 +34,7 @@ const configItems: ConfigCard[] = [
         description:
             "Define los tipos de documentos requeridos y su asignación por programa.",
         href: "/dashboard/admin/configuracion/documentos",
-        accent:
-            "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400",
+        accent: "bg-cat-1-surface text-cat-1",
     },
     {
         icon: Users,
@@ -43,8 +42,7 @@ const configItems: ConfigCard[] = [
         description:
             "Consulta, edita y administra los usuarios del sistema y sus roles de acceso.",
         href: "/dashboard/admin/configuracion/usuarios",
-        accent:
-            "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
+        accent: "bg-cat-4-surface text-cat-4",
     },
     {
         icon: Boxes,
@@ -52,8 +50,7 @@ const configItems: ConfigCard[] = [
         description:
             "Define los tipos de documentos requeridos y su asignación por programa.",
         href: "/dashboard/admin/configuracion/grupos",
-        accent:
-            "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400",
+        accent: "bg-cat-3-surface text-cat-3",
     },
     {
         icon: ClipboardList,
@@ -61,8 +58,7 @@ const configItems: ConfigCard[] = [
         description:
             "Revisa el historial de acciones y eventos registrados en la plataforma.",
         href: "/dashboard/admin/configuracion/logs",
-        accent:
-            "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400",
+        accent: "bg-cat-5-surface text-cat-5",
     },
 ];
 

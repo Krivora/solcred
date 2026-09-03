@@ -23,20 +23,18 @@ interface LogsFiltersProps {
   loading?: boolean;
 }
 
+// Punto de color de cada acción, derivado de su `variant` semántico.
 const ACCION_DOT: Record<string, string> = {
-  emerald: 'bg-emerald-500',
-  blue: 'bg-blue-500',
-  red: 'bg-red-500',
-  violet: 'bg-violet-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
+  default: 'bg-brand',
+  success: 'bg-brand',
+  info: 'bg-info',
+  warning: 'bg-warn',
+  destructive: 'bg-danger',
+  secondary: 'bg-ink-subtle',
 };
 
-function getAccionDot(className: string): string {
-  for (const [key, value] of Object.entries(ACCION_DOT)) {
-    if (className.includes(key)) return value;
-  }
-  return 'bg-slate-400';
+function getAccionDot(variant: string): string {
+  return ACCION_DOT[variant] ?? 'bg-ink-subtle';
 }
 
 export function LogsFilters({ filters, onUpdate, onReset, loading }: LogsFiltersProps) {
@@ -130,7 +128,7 @@ export function LogsFilters({ filters, onUpdate, onReset, loading }: LogsFilters
                     return (
                       <SelectItem key={accion} value={accion}>
                         <span className="flex items-center gap-2">
-                          <span className={`h-2 w-2 rounded-full shrink-0 ${getAccionDot(cfg.className)}`} />
+                          <span className={`h-2 w-2 rounded-full shrink-0 ${getAccionDot(cfg.variant)}`} />
                           {cfg.label}
                         </span>
                       </SelectItem>

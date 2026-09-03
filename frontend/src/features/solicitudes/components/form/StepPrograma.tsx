@@ -208,7 +208,7 @@ function ProgramaCard({
       {/* Montos */}
       <div className="space-y-1.5">
         <MontoRow
-          icon={<ArrowDown className="w-3 h-3 text-emerald-500" />}
+          icon={<ArrowDown className="w-3 h-3 text-ok" />}
           label="Monto mín."
           value={`$${(p.montoMinimo ?? 0).toLocaleString('es-MX')}`}
         />

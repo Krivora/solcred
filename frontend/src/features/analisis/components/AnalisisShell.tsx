@@ -35,7 +35,7 @@ function IndicadorGuardado({ estado, editable }: { estado: EstadoGuardado; edita
   const map: Record<EstadoGuardado, { icon: React.ReactNode; text: string; cls: string }> = {
     idle: { icon: <Check className="h-3 w-3" />, text: 'Guardado', cls: 'text-muted-foreground' },
     guardando: { icon: <Loader2 className="h-3 w-3 animate-spin" />, text: 'Guardando…', cls: 'text-primary' },
-    ok: { icon: <Check className="h-3 w-3" />, text: 'Guardado', cls: 'text-emerald-600 dark:text-emerald-400' },
+    ok: { icon: <Check className="h-3 w-3" />, text: 'Guardado', cls: 'text-ok-ink' },
     error: { icon: <CloudOff className="h-3 w-3" />, text: 'Sin guardar', cls: 'text-destructive' },
   }
   const s = map[estado]

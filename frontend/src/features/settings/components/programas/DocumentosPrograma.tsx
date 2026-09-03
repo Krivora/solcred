@@ -258,7 +258,7 @@ export function DocumentosPrograma({ programaId, documentos: documentosProp, onC
                         <div className="flex items-center gap-2 shrink-0">
                             {documentos.length > 0 && (
                                 <div className="hidden sm:flex gap-1.5">
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-warn-surface px-2 py-0.5 text-caption font-medium uppercase tracking-wide text-warn-ink">
                                         <ShieldCheck className="h-2.5 w-2.5" />
                                         {obligatorios} oblig.
                                     </span>

@@ -46,15 +46,15 @@ export function TablaAmortizacion({ filas, fechaDispersion }: Props) {
             <tr
               key={f.numero}
               className={cn(
-                'border-b border-border/40 last:border-0 hover:bg-accent/30',
-                f.enGracia && 'bg-amber-500/5',
+                'border-b border-hairline last:border-0 hover:bg-accent/30',
+                f.enGracia && 'bg-warn-surface/40',
               )}
             >
               <td className="px-2 py-1.5">
                 <div className="flex items-center gap-1">
                   <span className="font-medium text-foreground">{f.numero}</span>
                   {f.enGracia && (
-                    <span className="rounded-md border border-amber-500/25 bg-amber-500/10 px-1 py-0.5 text-[8px] font-medium uppercase leading-none tracking-wide text-amber-700 dark:text-amber-400">
+                    <span className="rounded-md border border-warn/25 bg-warn-surface px-1 py-0.5 text-[8px] font-medium uppercase leading-none tracking-wide text-warn-ink">
                       Gracia
                     </span>
                   )}

@@ -46,7 +46,7 @@ export function ConceptosCreditoSection({
             <span
               className={cn(
                 'rounded-md px-1.5 py-0.5 font-semibold',
-                delta < 0 ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400' : 'bg-primary/10 text-primary',
+                delta < 0 ? 'bg-warn-surface text-warn-ink' : 'bg-brand-surface text-brand-ink',
               )}
             >
               {delta > 0 ? '+' : ''}

@@ -18,53 +18,27 @@ export function UsuariosStats({ usuarios = [], isLoading }: UsuariosStatsProps) 
   };
 
   const items = [
-    {
-      label: "Total Usuarios",
-      value: stats.total,
-      icon: Users,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-    },
-    {
-      label: "Activos",
-      value: stats.activos,
-      icon: BarChart2,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-    },
-    {
-      label: "Administradores",
-      value: stats.admins,
-      icon: ShieldCheck,
-      color: "text-red-600",
-      bg: "bg-red-50",
-    },
-    {
-      label: "Inactivos",
-      value: stats.inactivos,
-      icon: UserX,
-      color: "text-gray-500",
-      bg: "bg-gray-100",
-    },
+    { label: "Total Usuarios", value: stats.total, icon: Users, color: "text-ink-subtle" },
+    { label: "Activos", value: stats.activos, icon: BarChart2, color: "text-ok-ink" },
+    { label: "Administradores", value: stats.admins, icon: ShieldCheck, color: "text-brand-ink" },
+    { label: "Inactivos", value: stats.inactivos, icon: UserX, color: "text-ink-subtle" },
   ];
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {items.map((item) => (
-        <Card key={item.label} className="border shadow-sm">
+        <Card key={item.label}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`rounded-lg p-2 ${item.bg}`}>
-              <item.icon className={`h-4 w-4 ${item.color}`} />
-            </div>
+            <item.icon className={`size-4 shrink-0 ${item.color}`} />
             <div>
               {isLoading ? (
                 <Skeleton className="h-6 w-10 mb-1" />
               ) : (
-                <p className="text-xl font-bold text-foreground leading-none">
+                <p className="text-title tabular-nums text-ink leading-none">
                   {item.value}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground mt-0.5">{item.label}</p>
+              <p className="text-caption text-ink-muted mt-0.5">{item.label}</p>
             </div>
           </CardContent>
         </Card>

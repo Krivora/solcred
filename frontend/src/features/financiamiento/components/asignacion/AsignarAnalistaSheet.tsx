@@ -100,7 +100,7 @@ export function AsignarAnalistaSheet({
 
         <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-5">
           {esLote && yaAsignadas > 0 && (
-            <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+            <div className="flex items-start gap-2 rounded-lg border border-warn/25 bg-warn-surface px-3 py-2 text-xs text-warn-ink">
               <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
               <span>
                 <span className="font-semibold">{yaAsignadas}</span> de{' '}
@@ -153,7 +153,7 @@ export function AsignarAnalistaSheet({
                 rows={3}
               />
               {esReasignacion && !motivo.trim() && (
-                <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                <div className="flex items-center gap-1.5 text-xs text-warn-ink">
                   <AlertCircle className="h-3 w-3 shrink-0" />
                   <span>Se recomienda indicar el motivo de la reasignación</span>
                 </div>

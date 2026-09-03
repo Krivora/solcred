@@ -79,9 +79,7 @@ export default function MisSolicitudesPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-2">
-              <AlertTriangle className="h-5 w-5" />
-            </div>
+            <AlertTriangle className="h-5 w-5 text-warn-ink mb-2" />
             <DialogTitle>Ya tienes una solicitud activa</DialogTitle>
             <DialogDescription className="pt-1.5">
               No puedes crear una nueva solicitud mientras la folio{' '}

@@ -31,7 +31,7 @@ const ASIGNACION_FIELD: FilterFieldConfig = {
   allLabel: 'Todas',
   minWidth: 'min-w-36',
   options: [
-    { value: 'asignados', label: 'Con analista', dotColor: 'bg-emerald-500' },
+    { value: 'asignados', label: 'Con analista', dotColor: 'bg-ok' },
     { value: 'sin_asignar', label: 'Sin asignar', dotColor: 'bg-muted-foreground/40' },
   ],
 }

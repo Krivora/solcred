@@ -32,8 +32,8 @@ function StatusBadge({ activo }: { activo: boolean }) {
         <span className={[
             "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
             activo
-                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                : "bg-muted text-muted-foreground",
+                ? "bg-ok-surface text-ok-ink"
+                : "bg-surface-sunken text-ink-muted",
         ].join(" ")}>
             {activo
                 ? <CheckCircle2 className="h-3 w-3" />
@@ -154,7 +154,7 @@ export function ProgramaCard({ programa, onToggleActivo, isToggling }: ProgramaC
                 {/* Tags */}
                 {avalEsObligatorio(programa) && (
                     <div className="flex items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/8 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-warn/25 bg-warn-surface px-2 py-0.5 text-caption font-medium text-warn-ink">
                             Aval requerido
                         </span>
                     </div>

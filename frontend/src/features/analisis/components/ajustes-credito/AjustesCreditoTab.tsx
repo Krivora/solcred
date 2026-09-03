@@ -58,7 +58,7 @@ export function AjustesCreditoTab({ inicial, origen, editable, onGuardar }: Prop
       )}
 
       {calc.errores.length === 0 && calc.avisos.length > 0 && (
-        <div className="flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/5 px-4 py-2.5 text-xs text-amber-700 dark:text-amber-400">
+        <div className="flex items-start gap-2 rounded-lg border border-warn/25 bg-warn-surface px-4 py-2.5 text-xs text-warn-ink">
           <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           <span>{calc.avisos.join(' · ')}</span>
         </div>

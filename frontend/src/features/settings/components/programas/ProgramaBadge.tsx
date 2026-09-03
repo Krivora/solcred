@@ -14,8 +14,8 @@ export function ProgramaBadge({ activo, className }: ProgramaBadgeProps) {
             className={cn(
                 "text-xs font-medium",
                 activo
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800"
-                    : "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",
+                    ? "bg-ok-surface text-ok-ink border-ok/20"
+                    : "bg-surface-sunken text-ink-muted border-hairline",
                 className
             )}
             variant="outline"
@@ -23,7 +23,7 @@ export function ProgramaBadge({ activo, className }: ProgramaBadgeProps) {
             <span
                 className={cn(
                     "mr-1.5 inline-block h-1.5 w-1.5 rounded-full",
-                    activo ? "bg-emerald-500" : "bg-slate-400"
+                    activo ? "bg-ok" : "bg-ink-subtle"
                 )}
             />
             {activo ? "Activo" : "Inactivo"}
