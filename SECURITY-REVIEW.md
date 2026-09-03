@@ -122,3 +122,19 @@ no ejecuta ninguna acción.
 - [ ] `REFRESH_TTL_DIAS*` — ajustar si la política de la organización difiere.
 - [ ] Revisar que `uploads/` no sea servible directamente por el proxy (las
       descargas pasan por endpoint autenticado con verificación de propiedad).
+
+---
+
+## 7. Trazabilidad de documentos
+
+**Estado: implementado (mejora C.11).**
+
+- Todo PDF servido por la API (documentos del expediente + los 5 generados)
+  lleva **marca de agua** con `folio + nombre y rol de quien consulta + fecha/
+  hora`, estampada en el servidor con `pdf-lib` (`shared/pdf/watermark.ts`).
+  Sobrevive a descargar y reenviar el archivo. Es *best-effort* — ver
+  `KNOWN-ISSUES.md` §3.
+- La consulta de cada documento del expediente ya quedaba en `LogAuditoria`
+  (`CONSULTAR` / `SOLICITUDES`); la marca añade el rastro *dentro* del archivo.
+- Es una medida disuasoria/forense, no un control de acceso: no cifra ni impide
+  la edición del PDF.

@@ -50,3 +50,24 @@ Workaround usado en el módulo `soporte`: validar la query **dentro del service*
 con `schema.parse(rawQuery)` en vez de en el router. Si se quiere arreglar de
 raíz, el middleware debería mutar el objeto en sitio (`Object.assign`) o guardar
 lo parseado en `res.locals` en vez de reasignar `req.query`.
+
+---
+
+## 3. Marca de agua de PDF — *best-effort*
+
+`shared/pdf/watermark.ts` estampa `folio + consultante + fecha` en cada PDF que
+sirve la API (expediente + los 5 generados). Es deliberadamente tolerante a
+fallos: si `pdf-lib` no puede parsear el archivo (PDF cifrado, corrupto o con
+features que no soporta), se **registra en consola y se sirve el original sin
+marca** — ver un documento nunca debe romperse por la marca.
+
+Consecuencias:
+
+- Un PDF subido por el cliente que `pdf-lib` no pueda abrir se entrega limpio.
+  Los PDF generados internamente (Puppeteer) sí se marcan siempre.
+- La marca se re-genera en cada consulta (no se cachea). Los PDF del expediente
+  están topados a 10 MB (`multer.config.ts`), así que el costo es bajo; si más
+  adelante se permiten archivos grandes, considerar un límite de páginas o
+  cachear el resultado marcado por `(documentoId, usuarioId)`.
+- La marca es visual, no criptográfica: no impide editar el PDF para quitarla,
+  solo deja rastro de quién lo tuvo en pantalla.

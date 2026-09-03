@@ -15,6 +15,7 @@ import {
 } from '@/shared/components/ui/table'
 import { EstatusDocumentoBadge } from './EstatusDocumentoBadge'
 import { ValidarDocumentoDialog } from './ValidarDocumentoDialog'
+import { VisorDocumentoDialog } from './VisorDocumentoDialog'
 import {
     XCircle,
     ExternalLink,
@@ -32,8 +33,6 @@ import type {
     ResumenDocumento,
     ValidarDocumentoDto,
 } from '@/features/expediente/types/expediente.types'
-import { uploadsApi } from '@/shared/api/uploads.api'
-import { ApiError } from '@/shared/api/client'
 import { cn } from '@/shared/lib/cn'
 import { estatusDocumento, TONE } from '@/shared/config/estatus.tokens'
 
@@ -142,46 +141,26 @@ function CeldaArchivo({
     documentoId: string
     nombre: string
 }) {
-    const [cargando, setCargando] = useState(false)
-
-    const handleClick = async () => {
-        setCargando(true)
-        try {
-            const blob = await uploadsApi.descargarArchivo(solicitudId, documentoId)
-            const url = URL.createObjectURL(blob)
-            const nuevaVentana = window.open(url, '_blank')
-
-            if (!nuevaVentana) {
-                URL.revokeObjectURL(url)
-                return
-            }
-
-            const intervalo = setInterval(() => {
-                if (nuevaVentana.closed) {
-                    URL.revokeObjectURL(url)
-                    clearInterval(intervalo)
-                }
-            }, 2000)
-        } catch (err) {
-            const msg = err instanceof ApiError ? err.message : 'No se pudo abrir el documento'
-            console.error(msg)
-        } finally {
-            setCargando(false)
-        }
-    }
+    const [visorOpen, setVisorOpen] = useState(false)
 
     return (
-        <button
-            onClick={handleClick}
-            disabled={cargando}
-            className="inline-flex items-center gap-1.5 max-w-full sm:max-w-50 text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80 disabled:opacity-50"
-        >
-            {cargando
-                ? <Loader2 className="h-3 w-3 shrink-0 animate-spin" />
-                : <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
-            }
-            <span className="truncate">{nombre}</span>
-        </button>
+        <>
+            <button
+                onClick={() => setVisorOpen(true)}
+                className="inline-flex items-center gap-1.5 max-w-full sm:max-w-50 text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80"
+            >
+                <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
+                <span className="truncate">{nombre}</span>
+            </button>
+
+            <VisorDocumentoDialog
+                open={visorOpen}
+                onOpenChange={setVisorOpen}
+                solicitudId={solicitudId}
+                documentoId={documentoId}
+                nombre={nombre}
+            />
+        </>
     )
 }
 

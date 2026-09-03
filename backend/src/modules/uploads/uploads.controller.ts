@@ -9,6 +9,7 @@ import { ok } from "@utils/response";
 import prisma from "@config/db";
 import { UPLOADS_BASE_DIR } from "@config/multer.config";
 import { crearVersionDocumento } from "../expediente/expediente.service";
+import { estamparMarcaAguaConsulta } from "@/shared/pdf/watermark";
 import { registrarLog } from "@/utils/audit";
 import { AccionLog, ModuloLog } from "../../../generated/prisma/client";
 
@@ -161,7 +162,11 @@ export const descargarArchivo = async (
 
         const documento = await prisma.documentoSolicitud.findFirst({
             where: { id: documentoId, solicitudId },
-            select: { urlArchivo: true, nombreArchivo: true },
+            select: {
+                urlArchivo: true,
+                nombreArchivo: true,
+                solicitud: { select: { folio: true } },
+            },
         });
 
         if (!documento) {
@@ -184,16 +189,23 @@ export const descargarArchivo = async (
             req,
         });
 
+        // Marca de agua de trazabilidad (folio + quién consulta + fecha).
+        // `estamparMarcaAguaConsulta` devuelve el original si algo falla.
+        const original = await fs.readFile(rutaAbsoluta);
+        const marcado = await estamparMarcaAguaConsulta(original, {
+            folio: documento.solicitud.folio,
+            usuarioId: req.usuario!.id,
+        });
+
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader(
             'Content-Disposition',
             `inline; filename="${encodeURIComponent(documento.nombreArchivo)}"`
         );
         res.setHeader('Cache-Control', 'no-store, must-revalidate');
+        res.setHeader('Content-Length', marcado.length.toString());
 
-        res.sendFile(rutaAbsoluta, (err) => {
-            if (err) next(err);
-        });
+        res.status(200).send(marcado);
     } catch (error) {
         next(error);
     }

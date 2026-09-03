@@ -5,6 +5,7 @@ import { AccionLog, ModuloLog } from "../../../../generated/prisma/client";
 import * as solicitudesService from "./solicitudes.service";
 import { ok } from "@utils/response";
 import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
+import { estamparMarcaAguaConsulta } from '../../../shared/pdf/watermark';
 import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
 import { mapearSolicitudAPDF } from "./solicitudes.service";
 import { AppError } from "@/middlewares/error.middleware";
@@ -279,6 +280,10 @@ export const descargarPDF = async (
         const data = mapearSolicitudAPDF(solicitud);
         const html = solicitudTemplate(data);
         const pdfBuffer = await generarPDFDesdeHTML(html);
+        const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+            folio: data.folio,
+            usuarioId: req.usuario!.id,
+        });
 
         await registrarLog({
             accion: AccionLog.CONSULTAR,
@@ -291,8 +296,8 @@ export const descargarPDF = async (
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
-        res.setHeader('Content-Length', pdfBuffer.length.toString());
-        res.status(200).send(pdfBuffer);
+        res.setHeader('Content-Length', marcado.length.toString());
+        res.status(200).send(marcado);
     } catch (error) {
         next(error);
     }

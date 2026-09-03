@@ -125,7 +125,19 @@ motivo. Si lo rechaza, el cliente puede volver a subir una nueva versión —
 el historial de versiones queda completo (quién subió qué, quién validó,
 cuándo, con qué resultado).
 
+Los documentos se consultan en un **visor embebido** dentro de la app (modal
+con el PDF, más botones de descargar y abrir en pestaña), no en una pestaña
+suelta del navegador. Cada consulta queda en el log de auditoría y el PDF que
+se sirve lleva **marca de agua de trazabilidad** — ver §3.4.
+
 ### 3.4 Generación de documentos (PDF)
+
+> **Marca de agua de trazabilidad.** Todo PDF que sirve la API —los 5 generados
+> de esta sección **y** los documentos del expediente que sube el cliente— pasa
+> por `shared/pdf/watermark.ts` antes de salir: cada página recibe una diagonal
+> tenue y una línea al pie con `folio + nombre y rol de quien consulta + fecha/
+> hora`. Se estampa con `pdf-lib` (JS puro). Es *best-effort*: si `pdf-lib` no
+> puede parsear el archivo se sirve el original sin marca (ver `KNOWN-ISSUES.md`).
 
 El backend genera 5 documentos PDF con Puppeteer a partir de plantillas HTML
 propias:
@@ -155,7 +167,7 @@ propias:
 | Autenticación | JWT propio (`jsonwebtoken`) de vida corta (access token, 15 min) + **refresh token** opaco en cookie `httpOnly` (`sc_refresh`, ámbito `/api/auth`), con rotación en cada uso, detección de reuso por familia y **ventana deslizante configurable por rol** (`config/sesion.config.ts`: 30 d cliente, 7 d staff operativo, 2 d staff sensible —ADMIN/SUPERVISOR/ENCARGADO_*—; overridable por env). Persistido en `SesionRefresh` (solo el hash SHA-256). El front renueva el access token de forma transparente al recibir un 401 `TOKEN_EXPIRADO`. Rate-limit dedicado en `login` (10/15 min, solo fallidos) y `registro` (5/h). |
 | Contraseñas | `bcryptjs` |
 | Subida de archivos | `multer` en memoria + validación de magic bytes antes de escribir a disco (`uploads/expedientes/`, almacenamiento **local**, no en la nube) |
-| Generación de PDF | `puppeteer` sobre plantillas HTML propias |
+| Generación de PDF | `puppeteer` sobre plantillas HTML propias; `pdf-lib` para estampar la marca de agua de trazabilidad al servir |
 | Validación de entrada | `zod` en cada endpoint de escritura |
 | Seguridad de transporte | `helmet`, `cors`, `express-rate-limit` |
 | Logs de auditoría | Módulo propio (`registrarLog`) que persiste cada acción sensible en `LogAuditoria` |
@@ -275,7 +287,7 @@ ver §8.
 |---|---|
 | `auth` | Login, registro, perfil, store de sesión. |
 | `solicitudes` | Todo el flujo del cliente: formulario multi-paso homologado (mismo header ícono+título+contexto en los 10 pasos), edición de borradores, listado con paginación y animaciones de transición entre vistas. |
-| `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación. |
+| `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación y **visor de PDF embebido** (`VisorDocumentoDialog`) con descargar / abrir en pestaña. |
 | `promocion` | Cola de solicitudes, asignación (con paginación y columna de gestores de tamaño fijo), aprobación, mis casos, histórico, detalle de solicitud con timeline. |
 | `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. La Asignación replica la de Promoción (dos columnas, selección múltiple, panel de analistas con carga, sheet de asignación, diálogo de progreso) y permite reasignar en lote. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline`, `AsignacionMasivaDialog` y `useListadoPromocion` de `promocion`. |
 | `analisis` | Herramienta de análisis financiero del analista (desde "Mis Casos" → "Realizar Análisis"). Shell de 5 pestañas, **todas implementadas**: **Situación Financiera** (captura del Balance General y el Estado de Resultados a 4 periodos —Año-2, Año-1, Parcial anualizable, Proyección—, con totales/subtotales automáticos, indicador de cuadre por periodo, autoguardado con debounce y export CSV); **Ajustes del Crédito** (precarga lo que pidió el cliente y deja al analista ajustar condiciones —plazo, gracia, tasa—, conceptos y garantías con CRUD completo; valida contra los límites del programa y muestra cobertura de garantía); **Criterios de Evaluación** (razones financieras —liquidez, endeudamiento, rentabilidad, cobertura de intereses— calculadas en vivo desde Situación Financiera por periodo, con semáforo bien/atención/riesgo; bloqueada con aviso hasta que haya Situación Financiera capturada); **Amortización** (tabla de pagos a sistema francés —pago fijo, con o sin periodo de gracia— calculada en vivo desde Ajustes del Crédito, con resumen, export CSV y su propio aviso/salto si aún no hay ajustes guardados); **Comentario** (5 secciones independientes, cada una autoguardada por separado: Antecedentes, Buró de Crédito, Situación Financiera, Visita y Opinión del Analista — `Analisis.comentario` es `Json`, no texto plano). En Criterios de Evaluación y Amortización solo persiste la observación escrita del analista — las cifras siempre se recalculan desde su fuente, nunca quedan guardadas y desincronizadas. Desde el header (y como acción de fila en Mis Casos / Validación / Comité) se descarga el **Informe Ejecutivo** en PDF: el front arma el payload con los mismos `lib/` y el back lo renderiza. |

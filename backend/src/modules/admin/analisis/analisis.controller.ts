@@ -7,6 +7,7 @@ import * as analisisService from "./analisis.service";
 import { guardarTabSchema, informeEjecutivoSchema } from "./analisis.schema";
 import { informeEjecutivoTemplate } from "@/shared/pdf/templates/informe-ejecutivo.template";
 import { generarPDFDesdeHTML } from "@/shared/pdf/pdf.service";
+import { estamparMarcaAguaConsulta } from "@/shared/pdf/watermark";
 
 export const obtener = async (req: RequestAutenticado, res: Response, next: NextFunction) => {
   try {
@@ -62,6 +63,10 @@ export const generarInformeEjecutivo = async (
     const data = await analisisService.armarInformeEjecutivo(solicitudId, input);
     const html = informeEjecutivoTemplate(data);
     const pdfBuffer = await generarPDFDesdeHTML(html);
+    const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+      folio: data.folio,
+      usuarioId: req.usuario!.id,
+    });
 
     await registrarLog({
       accion: AccionLog.CONSULTAR,
@@ -74,8 +79,8 @@ export const generarInformeEjecutivo = async (
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `inline; filename="informe-ejecutivo-${data.folio}.pdf"`);
-    res.setHeader("Content-Length", pdfBuffer.length.toString());
-    res.status(200).send(pdfBuffer);
+    res.setHeader("Content-Length", marcado.length.toString());
+    res.status(200).send(marcado);
   } catch (error) {
     next(error);
   }
