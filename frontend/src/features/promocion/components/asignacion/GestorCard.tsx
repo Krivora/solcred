@@ -14,9 +14,9 @@ function getNivelCarga(cargaActual: number, maximo = 20): NivelCarga {
 }
 
 const NIVEL_STYLES: Record<NivelCarga, string> = {
-    libre: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
-    ocupado: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',
-    lleno: 'bg-destructive/10 text-destructive',
+    libre: 'bg-ok-surface text-ok-ink',
+    ocupado: 'bg-warn-surface text-warn-ink',
+    lleno: 'bg-danger-surface text-danger-ink',
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────

@@ -30,13 +30,13 @@ function EventoIcon({ tipo }: { tipo: TimelineEvento['tipo'] }) {
 function EventoColor(tipo: TimelineEvento['tipo']) {
     switch (tipo) {
         case 'CAMBIO_ESTATUS':
-            return 'bg-primary/10 text-primary border-primary/20'
+            return 'bg-brand-surface text-brand-ink border-brand/20'
         case 'ASIGNACION':
-            return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+            return 'bg-ok-surface text-ok-ink border-ok/20'
         case 'REASIGNACION':
-            return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+            return 'bg-warn-surface text-warn-ink border-warn/20'
         case 'ASIGNACION_FINANCIAMIENTO':
-            return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+            return 'bg-info-surface text-info-ink border-info/20'
     }
 }
 

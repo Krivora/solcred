@@ -12,15 +12,15 @@ interface Props {
 }
 
 function EstatusIcon({ estatus }: { estatus: DocumentoDetalle['estatus'] }) {
-    if (estatus === 'APROBADO') return <FileCheck className="h-3.5 w-3.5 text-primary" />
-    if (estatus === 'RECHAZADO') return <FileX className="h-3.5 w-3.5 text-destructive" />
-    return <FileClock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+    if (estatus === 'APROBADO') return <FileCheck className="h-3.5 w-3.5 text-ok-ink" />
+    if (estatus === 'RECHAZADO') return <FileX className="h-3.5 w-3.5 text-danger-ink" />
+    return <FileClock className="h-3.5 w-3.5 text-warn-ink" />
 }
 
 function estatusClass(estatus: DocumentoDetalle['estatus']) {
-    if (estatus === 'APROBADO') return 'bg-primary/10 text-primary border-primary/20'
-    if (estatus === 'RECHAZADO') return 'bg-destructive/10 text-destructive border-destructive/20'
-    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+    if (estatus === 'APROBADO') return 'bg-ok-surface text-ok-ink border-ok/20'
+    if (estatus === 'RECHAZADO') return 'bg-danger-surface text-danger-ink border-danger/20'
+    return 'bg-warn-surface text-warn-ink border-warn/20'
 }
 
 export function SolicitudDocumentosResumen({ documentos, documentosRequeridos, tipoPersona }: Props) {
@@ -57,33 +57,33 @@ export function SolicitudDocumentosResumen({ documentos, documentosRequeridos, t
 
             {totalRequeridos > 0 && (
                 <div className="mb-5">
-                    <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden flex gap-[1px]">
+                    <div className="h-1.5 w-full rounded-full bg-surface-sunken overflow-hidden flex gap-px">
                         {aprobados > 0 && (
-                            <div className="h-full bg-primary" style={{ width: `${(aprobados / totalRequeridos) * 100}%` }} />
+                            <div className="h-full bg-ok" style={{ width: `${(aprobados / totalRequeridos) * 100}%` }} />
                         )}
                         {rechazados > 0 && (
-                            <div className="h-full bg-destructive" style={{ width: `${(rechazados / totalRequeridos) * 100}%` }} />
+                            <div className="h-full bg-danger" style={{ width: `${(rechazados / totalRequeridos) * 100}%` }} />
                         )}
                         {pendientes > 0 && (
-                            <div className="h-full bg-amber-500" style={{ width: `${(pendientes / totalRequeridos) * 100}%` }} />
+                            <div className="h-full bg-warn" style={{ width: `${(pendientes / totalRequeridos) * 100}%` }} />
                         )}
                     </div>
                     <div className="flex items-center gap-3 mt-2">
                         {aprobados > 0 && (
-                            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            <span className="flex items-center gap-1 text-caption text-ink-subtle">
+                                <span className="h-1.5 w-1.5 rounded-full bg-ok" />
                                 {aprobados} aprobado{aprobados !== 1 && 's'}
                             </span>
                         )}
                         {pendientes > 0 && (
-                            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                            <span className="flex items-center gap-1 text-caption text-ink-subtle">
+                                <span className="h-1.5 w-1.5 rounded-full bg-warn" />
                                 {pendientes} en revisión
                             </span>
                         )}
                         {rechazados > 0 && (
-                            <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
+                            <span className="flex items-center gap-1 text-caption text-ink-subtle">
+                                <span className="h-1.5 w-1.5 rounded-full bg-danger" />
                                 {rechazados} rechazado{rechazados !== 1 && 's'}
                             </span>
                         )}
