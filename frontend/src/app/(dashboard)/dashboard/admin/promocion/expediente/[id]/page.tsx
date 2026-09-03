@@ -21,10 +21,11 @@ import {
 } from '@/shared/components/ui/tabs'
 
 import { Button } from '@/shared/components/ui/button'
+import { PageHeader } from '@/shared/components/ui/page-header'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
-import { ArrowLeft, FolderOpen, AlertTriangle, FileText } from 'lucide-react'
+import { ArrowLeft, AlertTriangle, FileText } from 'lucide-react'
 import Link from 'next/link'
 
 interface ExpedientePageProps {
@@ -33,10 +34,10 @@ interface ExpedientePageProps {
 
 const ExpedienteSkeleton = () => (
     <div className="flex gap-5 animate-pulse">
-        <Skeleton className="hidden lg:block w-50 shrink-0 h-90 rounded-xl" />
+        <Skeleton className="hidden lg:block w-50 shrink-0 h-90 rounded-lg" />
         <div className="flex-1 space-y-4">
-            <Skeleton className="h-40 w-full rounded-xl" />
-            <Skeleton className="h-105 w-full rounded-xl" />
+            <Skeleton className="h-40 w-full rounded-lg" />
+            <Skeleton className="h-105 w-full rounded-lg" />
         </div>
     </div>
 )
@@ -52,15 +53,13 @@ const ExpedienteError = ({
 }) => (
     <div className="flex flex-col items-center justify-center min-h-90 gap-5">
         <div className="flex flex-col items-center gap-3 text-center max-w-sm">
-            <div className="rounded-2xl bg-destructive/8 p-5 ring-1 ring-destructive/15">
-                <AlertTriangle className="h-7 w-7 text-destructive" />
-            </div>
+            <AlertTriangle className="h-6 w-6 text-danger-ink" />
 
             <div>
-                <p className="font-semibold text-foreground text-base">
+                <p className="text-heading text-ink">
                     No se pudo cargar el expediente
                 </p>
-                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                <p className="text-body-sm text-ink-muted mt-1.5 leading-relaxed">
                     {mensaje}
                 </p>
             </div>
@@ -148,70 +147,58 @@ export default function ExpedientePage({
 
     return (
         <div className={`${claseAnimacion} space-y-5`}>
-            {/* Header */}
-            <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
+            <PageHeader
+                leading={
                     <Button
                         variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 mt-0.5"
+                        size="icon-sm"
+                        className="-ml-1 mt-0.5"
                         onClick={handleRegresar}
+                        aria-label="Regresar"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
-
-                    <div className="rounded-xl bg-primary/10 p-2.5 ring-1 ring-primary/20">
-                        <FolderOpen className="h-5 w-5 text-primary" />
-                    </div>
-
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                            Expediente digital
-                        </h1>
-
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                            {expediente
-                                ? `Folio ${expediente.folio} · ${expediente.programa.nombre}`
-                                : loading
-                                    ? 'Cargando información...'
-                                    : 'Gestión de documentos del crédito'}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2 mt-0.5">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => {
-                            sessionStorage.setItem('nav-direction', 'adelante')
-                            router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)
-                        }}
-                    >
-                        <FileText className="h-3.5 w-3.5" />
-                        Ver solicitud
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => router.push(`/dashboard/admin/solicitudes/${solicitudId}/pdf`)}
-                    >
-                        <FileText className="h-3.5 w-3.5" />
-                        Generar PDF
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitudId}`)}
-                    >
-                        <FileText className="h-3.5 w-3.5" />
-                        Tarjeta Informativa
-                    </Button>
-                </div>
-            </div>
+                }
+                title="Expediente digital"
+                description={
+                    expediente
+                        ? `Folio ${expediente.folio} · ${expediente.programa.nombre}`
+                        : loading
+                            ? 'Cargando información…'
+                            : 'Gestión de documentos del crédito'
+                }
+                actions={
+                    <>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                                sessionStorage.setItem('nav-direction', 'adelante')
+                                router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)
+                            }}
+                        >
+                            <FileText className="h-3.5 w-3.5" />
+                            Ver solicitud
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/dashboard/admin/solicitudes/${solicitudId}/pdf`)}
+                        >
+                            <FileText className="h-3.5 w-3.5" />
+                            Generar PDF
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitudId}`)}
+                        >
+                            <FileText className="h-3.5 w-3.5" />
+                            Tarjeta Informativa
+                        </Button>
+                    </>
+                }
+            />
 
             {/* Loading */}
             {loading && <ExpedienteSkeleton />}

@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from '@/shared/components/ui/card'
-import { Badge } from '@/shared/components/ui/badge'
+import { EstatusBadge } from '@/features/solicitudes/components/EstatusBadge'
 import {
     User,
     FileText,
@@ -11,10 +11,9 @@ import {
     UserCheck,
     DollarSign,
     Calendar,
-    Building2,
-    Hash,
 } from 'lucide-react'
 import type { Expediente } from '@/features/expediente/types/expediente.types'
+import type { EstatusSolicitud } from '@/shared/types/solicitudes.types'
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
 const formatMonto = (monto: number) =>
@@ -26,29 +25,6 @@ const formatFecha = (fecha: string) =>
 const labelTipoPersona: Record<string, string> = {
     FISICA: 'Persona física',
     MORAL: 'Persona moral',
-}
-
-const estatusBg: Record<string, string> = {
-    BORRADOR: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700',
-    PENDIENTE: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900',
-    EN_REVISION: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900',
-    EN_CORRECCION: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-900',
-    EN_FINANCIAMIENTO: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-900',
-    EN_APROBACION: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/40 dark:text-violet-300 dark:border-violet-900',
-    APROBADO: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900',
-    RECHAZADO: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900',
-    CANCELADO: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900',
-}
-const estatusLabel: Record<string, string> = {
-    BORRADOR: 'Borrador',
-    PENDIENTE: 'Pendiente',
-    EN_REVISION: 'En revisión',
-    EN_CORRECCION: 'En corrección',
-    EN_FINANCIAMIENTO: 'En financiamiento',
-    EN_APROBACION: 'En aprobación',
-    APROBADO: 'Aprobado',
-    RECHAZADO: 'Rechazado',
-    CANCELADO: 'Cancelado',
 }
 
 // ─── Campo ────────────────────────────────────────────────────────────────────
@@ -63,15 +39,13 @@ const Campo = ({
 }) => {
     if (!value) return null
     return (
-        <div className="flex items-start gap-3 min-w-0">
-            <div className="mt-0.5 shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-muted ring-1 ring-border">
-                <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-            </div>
+        <div className="flex items-start gap-2.5 min-w-0">
+            <Icon className="mt-0.5 size-4 shrink-0 text-ink-subtle" />
             <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70 leading-none mb-1">
+                <p className="text-label uppercase tracking-wide text-ink-subtle mb-0.5">
                     {label}
                 </p>
-                <p className="text-sm font-medium text-foreground leading-snug truncate">
+                <p className="text-body-sm font-medium text-ink leading-snug truncate">
                     {value}
                 </p>
             </div>
@@ -92,43 +66,27 @@ export const DatosGeneralesCard = ({ expediente }: DatosGeneralesCardProps) => {
 
     const celular = datosSolicitante?.celular ?? null
     const correo = datosSolicitante?.correo ?? solicitante.correo
-    const estatusClass = estatusBg[expediente.estatus] ?? 'bg-muted text-foreground border-border'
 
     return (
-        // DatosGeneralesCard.tsx
         <Card className="w-full overflow-hidden">
             {/* ── Banda: folio + programa + estatus ─────────────────────── */}
-           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-border bg-muted/30">
-                <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex items-center gap-1.5 shrink-0">
-                        <Hash className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                            Folio
-                        </span>
-                    </div>
-                    <span className="font-mono text-base font-bold tracking-widest text-primary shrink-0">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-hairline bg-surface-sunken">
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-label uppercase tracking-wide text-ink-subtle">Folio</span>
+                    <span className="font-mono text-heading font-medium tracking-wide text-brand-ink">
                         {expediente.folio}
                     </span>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap min-w-0">
-                    <Badge
-                        variant="outline"
-                        className="bg-accent/50 text-accent-foreground border-accent text-xs font-medium px-2.5 max-w-[200px] sm:max-w-none"
-                    >
-                        <Building2 className="h-3 w-3 mr-1.5 opacity-70 shrink-0" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-2.5 py-0.5 text-caption font-medium text-ink-muted max-w-55 sm:max-w-none">
                         <span className="truncate">{expediente.programa.nombre}</span>
-                    </Badge>
-                    <Badge
-                        variant="outline"
-                        className={`text-xs font-medium px-2.5 shrink-0 ${estatusClass}`}
-                    >
-                        {estatusLabel[expediente.estatus] ?? expediente.estatus}
-                    </Badge>
+                    </span>
+                    <EstatusBadge estatus={expediente.estatus as EstatusSolicitud} size="sm" />
                 </div>
             </div>
 
-            {/* ── Campos: grid 2 columnas en el espacio disponible ──────── */}
+            {/* ── Campos: grid en el espacio disponible ─────────────────── */}
             <CardContent className="px-4 py-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-4">
                     <Campo icon={User} label="Solicitante" value={nombre} />
