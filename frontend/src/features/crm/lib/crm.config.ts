@@ -1,3 +1,4 @@
+import { Mail, MessageSquare, MoreHorizontal, Phone, Users } from 'lucide-react'
 import type { StatusTone } from '@/shared/components/ui/status-chip'
 import type { TagTone } from '@/shared/components/ui/tag'
 import type {
@@ -35,17 +36,26 @@ export const MOTIVOS_COMUNICACION: Opcion<ComunicacionMotivo>[] = [
 ]
 
 export const RESULTADOS_COMUNICACION: Opcion<ComunicacionResultado>[] = [
-  { value: 'CONTACTADO', label: 'Contactado exitosamente' },
-  { value: 'NO_CONTACTADO', label: 'No se logró contactar' },
-  { value: 'SOLICITA_RECONTACTO', label: 'Cliente solicita volver a ser contactado' },
-  { value: 'CONFIRMA_CONTINUIDAD', label: 'Cliente confirma que continuará' },
-  { value: 'DESISTE', label: 'Cliente ya no desea continuar' },
-  { value: 'DOCUMENTACION_PENDIENTE', label: 'Documentación pendiente' },
-  { value: 'DOCUMENTACION_ENVIADA', label: 'Documentación enviada' },
-  { value: 'INFORMACION_ACLARADA', label: 'Información aclarada' },
-  { value: 'SIN_RESPUESTA', label: 'Sin respuesta' },
-  { value: 'OTRO', label: 'Otro' },
+  { value: 'CONTACTADO', label: 'Contactado exitosamente', short: 'Contactado' },
+  { value: 'NO_CONTACTADO', label: 'No se logró contactar', short: 'No contactado' },
+  { value: 'SOLICITA_RECONTACTO', label: 'Cliente solicita volver a ser contactado', short: 'Pide recontacto' },
+  { value: 'CONFIRMA_CONTINUIDAD', label: 'Cliente confirma que continuará', short: 'Confirma interés' },
+  { value: 'DESISTE', label: 'Cliente ya no desea continuar', short: 'Desiste' },
+  { value: 'DOCUMENTACION_PENDIENTE', label: 'Documentación pendiente', short: 'Doc. pendiente' },
+  { value: 'DOCUMENTACION_ENVIADA', label: 'Documentación enviada', short: 'Doc. enviada' },
+  { value: 'INFORMACION_ACLARADA', label: 'Información aclarada', short: 'Aclarado' },
+  { value: 'SIN_RESPUESTA', label: 'Sin respuesta', short: 'Sin respuesta' },
+  { value: 'OTRO', label: 'Otro', short: 'Otro' },
 ]
+
+/** Icono por tipo de comunicación (dialog + historial). */
+export const ICONO_TIPO: Record<ComunicacionTipo, React.ElementType> = {
+  LLAMADA: Phone,
+  CORREO: Mail,
+  MENSAJE: MessageSquare,
+  PRESENCIAL: Users,
+  OTRO: MoreHorizontal,
+}
 
 const mapa = <T extends string>(
   opts: Opcion<T>[],
@@ -60,6 +70,7 @@ export const LABEL_TIPO = mapa(TIPOS_COMUNICACION, 'short')
 export const LABEL_MOTIVO = mapa(MOTIVOS_COMUNICACION)
 export const LABEL_MOTIVO_CORTO = mapa(MOTIVOS_COMUNICACION, 'short')
 export const LABEL_RESULTADO = mapa(RESULTADOS_COMUNICACION)
+export const LABEL_RESULTADO_CORTO = mapa(RESULTADOS_COMUNICACION, 'short')
 
 /** Estado semántico del resultado → <StatusChip tone>. */
 export const RESULTADO_TONE: Record<ComunicacionResultado, StatusTone> = {
@@ -93,6 +104,19 @@ const FMT_FECHA = new Intl.DateTimeFormat('es-MX', {
 })
 
 export const formatearFechaContacto = (iso: string): string => FMT_FECHA.format(new Date(iso))
+
+const FMT_FECHA_CORTA = new Intl.DateTimeFormat('es-MX', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+})
+
+/** "2 sept 2026, 14:30" — para la línea del historial. */
+export const formatearFechaCorta = (iso: string): string =>
+  FMT_FECHA_CORTA.format(new Date(iso)).replace('.', '')
 
 const RTF = new Intl.RelativeTimeFormat('es-MX', { numeric: 'auto' })
 export function tiempoRelativo(iso: string): string {

@@ -83,12 +83,11 @@ export function ComunicacionesPanel({ solicitudId, puedeRegistrar = true }: Prop
         )}
 
         {comunicaciones.length > 0 && (
-          <div>
-            {comunicaciones.map((c, i) => (
+          <div className="divide-y divide-hairline">
+            {comunicaciones.map((c) => (
               <ComunicacionCard
                 key={c.id}
                 comunicacion={c}
-                ultima={i === comunicaciones.length - 1}
                 canEdit={puedeRegistrar && !!personalId && c.registradoPor.id === personalId}
                 onEditar={abrirEdicion}
               />

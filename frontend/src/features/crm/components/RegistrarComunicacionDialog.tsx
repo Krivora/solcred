@@ -1,8 +1,6 @@
 'use client'
 
-import * as React from 'react'
 import { useState } from 'react'
-import { Mail, MessageSquare, MoreHorizontal, Phone, Users } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +21,7 @@ import {
 } from '@/shared/components/ui/select'
 import { cn } from '@/shared/lib/cn'
 import {
+  ICONO_TIPO,
   MOTIVOS_COMUNICACION,
   RESULTADOS_COMUNICACION,
   TIPOS_COMUNICACION,
@@ -44,14 +43,6 @@ interface Props {
 }
 
 const MAX_OBS = 4000
-
-const ICONO_TIPO: Record<ComunicacionTipo, React.ElementType> = {
-  LLAMADA: Phone,
-  CORREO: Mail,
-  MENSAJE: MessageSquare,
-  PRESENCIAL: Users,
-  OTRO: MoreHorizontal,
-}
 
 /** Convierte un ISO a `yyyy-MM-ddTHH:mm` para `<input type="datetime-local">`. */
 const aLocalInput = (iso: string): string => {
