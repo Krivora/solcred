@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquarePlus, Pencil } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -107,19 +106,10 @@ export function RegistrarComunicacionDialog({
     >
       <DialogContent className="sm:max-w-140">
         <DialogHeader>
-          <div className="mb-1 flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary/10">
-              {editando ? (
-                <Pencil className="size-4 text-primary" />
-              ) : (
-                <MessageSquarePlus className="size-4 text-primary" />
-              )}
-            </div>
-            <DialogTitle className="text-sm font-semibold">
-              {editando ? 'Editar comunicación' : 'Registrar comunicación'}
-            </DialogTitle>
-          </div>
-          <DialogDescription>
+          <DialogTitle className="text-heading">
+            {editando ? 'Editar comunicación' : 'Registrar comunicación'}
+          </DialogTitle>
+          <DialogDescription className="text-body-sm">
             Deja constancia del contacto con el cliente: qué tipo fue, por qué y en qué quedó.
           </DialogDescription>
         </DialogHeader>

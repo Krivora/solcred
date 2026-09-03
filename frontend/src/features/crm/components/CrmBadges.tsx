@@ -1,44 +1,12 @@
-import { Badge } from '@/shared/components/ui/badge'
-import { cn } from '@/shared/lib/cn'
-import {
-  LABEL_MOTIVO,
-  LABEL_RESULTADO,
-  LABEL_TIPO,
-  TONO_CLASS,
-  TONO_RESULTADO,
-} from '@/features/crm/lib/crm.config'
-import type {
-  ComunicacionMotivo,
-  ComunicacionResultado,
-  ComunicacionTipo,
-} from '@/features/crm/types/crm.types'
+import { StatusChip } from '@/shared/components/ui/status-chip'
+import { Tag } from '@/shared/components/ui/tag'
+import { LABEL_RESULTADO, LABEL_TIPO, RESULTADO_TONE, TIPO_TONE } from '@/features/crm/lib/crm.config'
+import type { ComunicacionResultado, ComunicacionTipo } from '@/features/crm/types/crm.types'
 
-export function TipoBadge({ tipo }: { tipo: ComunicacionTipo }) {
-  return (
-    <Badge
-      variant="outline"
-      className="border-transparent bg-accent font-medium text-accent-foreground"
-    >
-      {LABEL_TIPO[tipo]}
-    </Badge>
-  )
+export function TipoTag({ tipo }: { tipo: ComunicacionTipo }) {
+  return <Tag tone={TIPO_TONE[tipo]}>{LABEL_TIPO[tipo]}</Tag>
 }
 
-export function MotivoBadge({ motivo }: { motivo: ComunicacionMotivo }) {
-  return (
-    <Badge variant="outline" className="font-normal text-muted-foreground">
-      {LABEL_MOTIVO[motivo]}
-    </Badge>
-  )
-}
-
-export function ResultadoBadge({ resultado }: { resultado: ComunicacionResultado }) {
-  return (
-    <Badge
-      variant="outline"
-      className={cn('font-medium', TONO_CLASS[TONO_RESULTADO[resultado]])}
-    >
-      {LABEL_RESULTADO[resultado]}
-    </Badge>
-  )
+export function ResultadoChip({ resultado }: { resultado: ComunicacionResultado }) {
+  return <StatusChip tone={RESULTADO_TONE[resultado]}>{LABEL_RESULTADO[resultado]}</StatusChip>
 }

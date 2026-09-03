@@ -7,10 +7,9 @@
  * reemplaza: cada estatus se resuelve a un **tono** semántico y cada tono
  * expone un paquete de clases theme-aware.
  *
- * Los tonos `solid` / `text` se apoyan en los tokens `--success`, `--warning`,
- * `--info`, `--destructive` (que ya se invierten en `.dark`). Los paquetes
- * `badge` / `chip` usan la escala Tailwind afinada por par claro/oscuro para
- * garantizar contraste de texto sobre fondo translúcido.
+ * Desde Fase 1 del rediseño, todos los paquetes se apoyan en el trío de tokens
+ * de cada estado (`--ok` / `--ok-ink` / `--ok-surface`, etc.), que ya se
+ * invierten en `.dark`. Sin colores Tailwind hardcodeados: una sola receta.
  */
 import {
   FileEdit,
@@ -46,44 +45,39 @@ export interface ToneClasses {
 
 export const TONE: Record<Tone, ToneClasses> = {
   neutral: {
-    solid: 'bg-muted-foreground/30',
-    text: 'text-muted-foreground',
-    chip: 'bg-muted text-muted-foreground/70 ring-border',
-    badge:
-      'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-700',
+    solid: 'bg-ink-subtle',
+    text: 'text-ink-muted',
+    chip: 'bg-surface-sunken text-ink-muted ring-hairline',
+    badge: 'bg-surface-sunken text-ink-muted border-hairline',
     rowTint: '',
   },
   warning: {
-    solid: 'bg-warning',
-    text: 'text-warning',
-    chip: 'bg-amber-500/10 text-amber-600 ring-amber-500/25 dark:text-amber-400',
-    badge:
-      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
+    solid: 'bg-warn',
+    text: 'text-warn-ink',
+    chip: 'bg-warn-surface text-warn-ink ring-warn/20',
+    badge: 'bg-warn-surface text-warn-ink border-warn/25',
     rowTint: '',
   },
   info: {
     solid: 'bg-info',
-    text: 'text-info',
-    chip: 'bg-blue-500/10 text-blue-600 ring-blue-500/25 dark:text-blue-400',
-    badge:
-      'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+    text: 'text-info-ink',
+    chip: 'bg-info-surface text-info-ink ring-info/20',
+    badge: 'bg-info-surface text-info-ink border-info/25',
     rowTint: '',
   },
   success: {
-    solid: 'bg-success',
-    text: 'text-success',
-    chip: 'bg-emerald-500/10 text-emerald-600 ring-emerald-500/25 dark:text-emerald-400',
-    badge:
-      'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
+    solid: 'bg-ok',
+    text: 'text-ok-ink',
+    chip: 'bg-ok-surface text-ok-ink ring-ok/20',
+    badge: 'bg-ok-surface text-ok-ink border-ok/25',
     rowTint: '',
   },
   danger: {
-    solid: 'bg-destructive',
-    text: 'text-destructive',
-    chip: 'bg-red-500/10 text-red-600 ring-red-500/25 dark:text-red-400',
-    badge:
-      'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
-    rowTint: 'bg-destructive/[0.035]',
+    solid: 'bg-danger',
+    text: 'text-danger-ink',
+    chip: 'bg-danger-surface text-danger-ink ring-danger/20',
+    badge: 'bg-danger-surface text-danger-ink border-danger/25',
+    rowTint: 'bg-danger/[0.04]',
   },
 }
 

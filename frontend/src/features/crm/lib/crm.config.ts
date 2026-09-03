@@ -1,3 +1,5 @@
+import type { StatusTone } from '@/shared/components/ui/status-chip'
+import type { TagTone } from '@/shared/components/ui/tag'
 import type {
   ComunicacionTipo,
   ComunicacionMotivo,
@@ -7,27 +9,29 @@ import type {
 interface Opcion<T extends string> {
   value: T
   label: string
+  /** Forma breve para mostrar en el historial (el `label` es para el <Select>). */
+  short?: string
 }
 
 export const TIPOS_COMUNICACION: Opcion<ComunicacionTipo>[] = [
-  { value: 'LLAMADA', label: 'Llamada telefónica' },
-  { value: 'CORREO', label: 'Correo electrónico' },
-  { value: 'MENSAJE', label: 'Mensaje' },
-  { value: 'PRESENCIAL', label: 'Comunicación presencial' },
-  { value: 'OTRO', label: 'Otro' },
+  { value: 'LLAMADA', label: 'Llamada telefónica', short: 'Llamada' },
+  { value: 'CORREO', label: 'Correo electrónico', short: 'Correo' },
+  { value: 'MENSAJE', label: 'Mensaje', short: 'Mensaje' },
+  { value: 'PRESENCIAL', label: 'Comunicación presencial', short: 'Presencial' },
+  { value: 'OTRO', label: 'Otro', short: 'Otro' },
 ]
 
 export const MOTIVOS_COMUNICACION: Opcion<ComunicacionMotivo>[] = [
-  { value: 'ACTUALIZACION_DOCUMENTACION', label: 'Solicitud de actualización de documentación' },
-  { value: 'DOCUMENTACION_FALTANTE', label: 'Solicitud de documentación faltante' },
-  { value: 'CONFIRMACION_INFORMACION', label: 'Confirmación de información proporcionada' },
-  { value: 'SEGUIMIENTO_SOLICITUD', label: 'Seguimiento de una solicitud' },
-  { value: 'CONFIRMACION_INTERES', label: 'Confirmación de interés en continuar' },
-  { value: 'NOTIFICACION_AVANCE', label: 'Notificación sobre el avance de la solicitud' },
-  { value: 'ACLARACION_INFORMACION', label: 'Aclaración de información' },
-  { value: 'NOTIFICACION_INCIDENCIA', label: 'Notificación de incidencia o inconsistencia' },
-  { value: 'RECORDATORIO_PENDIENTE', label: 'Recordatorio de documentación o trámite pendiente' },
-  { value: 'OTRO', label: 'Otro motivo' },
+  { value: 'ACTUALIZACION_DOCUMENTACION', label: 'Solicitud de actualización de documentación', short: 'Actualización de documentación' },
+  { value: 'DOCUMENTACION_FALTANTE', label: 'Solicitud de documentación faltante', short: 'Documentación faltante' },
+  { value: 'CONFIRMACION_INFORMACION', label: 'Confirmación de información proporcionada', short: 'Confirmación de información' },
+  { value: 'SEGUIMIENTO_SOLICITUD', label: 'Seguimiento de una solicitud', short: 'Seguimiento de solicitud' },
+  { value: 'CONFIRMACION_INTERES', label: 'Confirmación de interés en continuar', short: 'Confirmación de interés' },
+  { value: 'NOTIFICACION_AVANCE', label: 'Notificación sobre el avance de la solicitud', short: 'Avance de la solicitud' },
+  { value: 'ACLARACION_INFORMACION', label: 'Aclaración de información', short: 'Aclaración de información' },
+  { value: 'NOTIFICACION_INCIDENCIA', label: 'Notificación de incidencia o inconsistencia', short: 'Incidencia o inconsistencia' },
+  { value: 'RECORDATORIO_PENDIENTE', label: 'Recordatorio de documentación o trámite pendiente', short: 'Recordatorio de pendiente' },
+  { value: 'OTRO', label: 'Otro motivo', short: 'Otro motivo' },
 ]
 
 export const RESULTADOS_COMUNICACION: Opcion<ComunicacionResultado>[] = [
@@ -43,15 +47,22 @@ export const RESULTADOS_COMUNICACION: Opcion<ComunicacionResultado>[] = [
   { value: 'OTRO', label: 'Otro' },
 ]
 
-const mapa = <T extends string>(opts: Opcion<T>[]): Record<T, string> =>
-  opts.reduce((acc, o) => ({ ...acc, [o.value]: o.label }), {} as Record<T, string>)
+const mapa = <T extends string>(
+  opts: Opcion<T>[],
+  campo: 'label' | 'short' = 'label',
+): Record<T, string> =>
+  opts.reduce(
+    (acc, o) => ({ ...acc, [o.value]: o[campo] ?? o.label }),
+    {} as Record<T, string>,
+  )
 
-export const LABEL_TIPO = mapa(TIPOS_COMUNICACION)
+export const LABEL_TIPO = mapa(TIPOS_COMUNICACION, 'short')
 export const LABEL_MOTIVO = mapa(MOTIVOS_COMUNICACION)
+export const LABEL_MOTIVO_CORTO = mapa(MOTIVOS_COMUNICACION, 'short')
 export const LABEL_RESULTADO = mapa(RESULTADOS_COMUNICACION)
 
-/** Tono visual del chip de resultado. */
-export const TONO_RESULTADO: Record<ComunicacionResultado, 'ok' | 'warn' | 'crit' | 'muted'> = {
+/** Estado semántico del resultado → <StatusChip tone>. */
+export const RESULTADO_TONE: Record<ComunicacionResultado, StatusTone> = {
   CONTACTADO: 'ok',
   CONFIRMA_CONTINUIDAD: 'ok',
   DOCUMENTACION_ENVIADA: 'ok',
@@ -60,15 +71,17 @@ export const TONO_RESULTADO: Record<ComunicacionResultado, 'ok' | 'warn' | 'crit
   DOCUMENTACION_PENDIENTE: 'warn',
   NO_CONTACTADO: 'warn',
   SIN_RESPUESTA: 'warn',
-  DESISTE: 'crit',
-  OTRO: 'muted',
+  DESISTE: 'danger',
+  OTRO: 'neutral',
 }
 
-export const TONO_CLASS: Record<'ok' | 'warn' | 'crit' | 'muted', string> = {
-  ok: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40',
-  warn: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/45',
-  crit: 'bg-destructive/15 text-destructive border-destructive/45',
-  muted: 'bg-muted text-muted-foreground border-border',
+/** Tipo de comunicación → color categórico del <Tag>. */
+export const TIPO_TONE: Record<ComunicacionTipo, TagTone> = {
+  LLAMADA: 2,
+  CORREO: 1,
+  MENSAJE: 3,
+  PRESENCIAL: 4,
+  OTRO: 'neutral',
 }
 
 const FMT_FECHA = new Intl.DateTimeFormat('es-MX', {
