@@ -40,32 +40,32 @@ function Burbuja({
         className="mt-0.5"
       />
       <div className={cn('flex min-w-0 max-w-[82%] flex-col gap-1', esAgente && 'items-end')}>
-        <div className={cn('flex items-center gap-1.5 text-[11px] text-muted-foreground', esAgente && 'flex-row-reverse')}>
-          <span className="font-semibold text-foreground">{autorNombre}</span>
+        <div className={cn('flex items-center gap-1.5 text-caption text-ink-subtle', esAgente && 'flex-row-reverse')}>
+          <span className="font-medium text-ink">{autorNombre}</span>
           <span aria-hidden>·</span>
           <span title={fmtFechaLarga(fecha)}>{tiempoRelativo(fecha)}</span>
           {editado && <span className="italic">· editado</span>}
         </div>
         <div
           className={cn(
-            'whitespace-pre-wrap break-words rounded-2xl border px-3.5 py-2.5 text-sm leading-relaxed shadow-sm',
+            'whitespace-pre-wrap break-words rounded-2xl border px-3.5 py-2.5 text-sm leading-relaxed',
             esAgente ? 'rounded-tr-sm' : 'rounded-tl-sm',
             esNotaInterna
-              ? 'border-amber-500/45 bg-amber-500/15 text-foreground'
+              ? 'border-warn/25 bg-warn-surface text-ink'
               : destacado
-                ? 'border-primary/30 bg-primary/8 text-foreground'
+                ? 'border-brand/20 bg-brand-surface text-ink'
                 : esAgente
-                  ? 'border-primary/25 bg-primary/12 text-foreground'
-                  : 'border-border bg-muted/60 text-foreground',
+                  ? 'border-brand/20 bg-brand-surface text-ink'
+                  : 'border-hairline bg-surface-sunken text-ink',
           )}
         >
           {esNotaInterna && (
-            <span className="mb-1.5 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+            <span className="mb-1.5 flex items-center gap-1 text-caption font-medium uppercase tracking-wide text-warn-ink">
               <Lock className="size-3" /> Nota interna · solo el equipo
             </span>
           )}
           {destacado && !esNotaInterna && (
-            <span className="mb-1.5 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
+            <span className="mb-1.5 flex items-center gap-1 text-caption font-medium uppercase tracking-wide text-brand-ink">
               <MessageSquareText className="size-3" /> Solicitud original
             </span>
           )}

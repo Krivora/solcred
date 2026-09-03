@@ -30,13 +30,13 @@ interface Props {
 
 /** Franja de color a la izquierda de la fila según prioridad. */
 const BARRA_PRIORIDAD: Record<TicketPrioridad, string> = {
-  BAJA: 'bg-border',
-  MEDIA: 'bg-sky-500/60',
-  ALTA: 'bg-amber-500/70',
-  URGENTE: 'bg-destructive',
+  BAJA: 'bg-hairline',
+  MEDIA: 'bg-info',
+  ALTA: 'bg-warn',
+  URGENTE: 'bg-danger',
 }
 
-const TH = 'text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70'
+const TH = 'text-label uppercase tracking-wide text-ink-subtle'
 
 export function TicketsTable({ tickets, meta, onPaginar, cargando, modo, vacio }: Props) {
   const staff = modo === 'staff'
@@ -101,16 +101,16 @@ export function TicketsTable({ tickets, meta, onPaginar, cargando, modo, vacio }
                       />
                       <Link href={`/dashboard/soporte/tickets/${t.id}`} className="block">
                         <div className="flex items-center gap-2">
-                          <span className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-primary">
+                          <span className="rounded bg-brand-surface px-1.5 py-0.5 font-mono text-caption font-medium text-brand-ink">
                             {t.folio}
                           </span>
                           {t.reabierto && (
-                            <span className="inline-flex items-center gap-0.5 rounded bg-amber-500/10 px-1 py-0.5 text-[9px] font-medium text-amber-600 dark:text-amber-400">
+                            <span className="inline-flex items-center gap-0.5 rounded bg-warn-surface px-1 py-0.5 text-caption font-medium text-warn-ink">
                               <RotateCcw className="size-2.5" /> Reabierto
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 line-clamp-1 max-w-[280px] text-sm font-medium text-foreground group-hover:text-primary">
+                        <p className="mt-1 line-clamp-1 max-w-70 text-sm font-medium text-ink group-hover:text-brand-ink">
                           {t.titulo}
                         </p>
                       </Link>
