@@ -47,6 +47,20 @@ export const listar = async (
 ): Promise<void> => {
   try {
     const data = await crm.listarComunicaciones(actorDe(req), req.query);
+
+    // El historial de comunicaciones trae observaciones y datos de contacto
+    // del cliente — leerlo queda en el log igual que el expediente o el PDF.
+    const { solicitudId, clienteId } = req.query as { solicitudId?: string; clienteId?: string };
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.CRM,
+      descripcion: `Historial de comunicaciones consultado (${data.pagination.total} resultado${data.pagination.total === 1 ? "" : "s"})`,
+      usuarioId: req.usuario!.id,
+      entidadId: solicitudId ?? clienteId,
+      req,
+      metadata: { solicitudId: solicitudId ?? null, clienteId: clienteId ?? null },
+    });
+
     res.status(200).json(ok("Historial de comunicaciones", data));
   } catch (error) {
     next(error);
@@ -59,7 +73,18 @@ export const resumen = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const data = await crm.obtenerResumen(actorDe(req), paramStr(req, "solicitudId"));
+    const solicitudId = paramStr(req, "solicitudId");
+    const data = await crm.obtenerResumen(actorDe(req), solicitudId);
+
+    await registrarLog({
+      accion: AccionLog.CONSULTAR,
+      modulo: ModuloLog.CRM,
+      descripcion: `Resumen de comunicaciones consultado: solicitud ${solicitudId}`,
+      usuarioId: req.usuario!.id,
+      entidadId: solicitudId,
+      req,
+    });
+
     res.status(200).json(ok("Resumen de comunicaciones", data));
   } catch (error) {
     next(error);

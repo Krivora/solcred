@@ -18,6 +18,7 @@ export default function LogsPage() {
     loading,
     loadingResumen,
     loadingDetail,
+    exportando,
     error,
     updateFilter,
     resetFilters,
@@ -25,6 +26,7 @@ export default function LogsPage() {
     refresh,
     fetchLogById,
     setSelectedLog,
+    exportar,
   } = useLogs();
 
   const handleViewDetail = (log: typeof selectedLog) => {
@@ -38,31 +40,6 @@ export default function LogsPage() {
     }
   };
 
-  const handleExportCSV = () => {
-    if (!logs.length) return;
-
-    const headers = ['Fecha', 'Acción', 'Módulo', 'Descripción', 'Usuario', 'IP'];
-    const rows = logs.map((l) => [
-      new Date(l.creadoEn).toLocaleString('es-MX'),
-      l.accion,
-      l.modulo,
-      `"${l.descripcion.replace(/"/g, '""')}"`,
-      l.usuario
-        ? `${l.usuario.nombre} ${l.usuario.apellidoPaterno}`
-        : l.usuarioId ?? '',
-      l.ip ?? '',
-    ]);
-
-    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `logs_auditoria_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-screen-8xl space-y-5 p-4 md:p-6">
@@ -71,9 +48,9 @@ export default function LogsPage() {
           description="Registro completo de acciones y eventos"
           backHref="/dashboard/admin/configuracion"
           action={{
-            label: 'Exportar CSV',
-            onClick: handleExportCSV,
-            loading: loading || !logs.length,
+            label: 'Exportar Excel',
+            onClick: exportar,
+            loading: exportando,
             icon: <Download className="h-4 w-4" />,
             variant: 'outline',
           }}

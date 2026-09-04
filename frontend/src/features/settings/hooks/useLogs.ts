@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { getLogs, getResumenLogs, getLogById } from '@/features/settings/api/logs.api';
+import { getLogs, getResumenLogs, getLogById, exportarLogs } from '@/features/settings/api/logs.api';
 import { logKeys } from '@/features/settings/lib/settings.keys';
 import type {
   LogAuditoria,
@@ -46,6 +46,7 @@ export function useLogs() {
   const [filters, setFilters] = useState<LogFilters>(DEFAULT_FILTERS);
   const [selectedLog, setSelectedLog] = useState<LogAuditoria | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [exportando, setExportando] = useState(false);
 
   const queryParams = useMemo(() => toQueryParams(filters, pagina), [filters, pagina]);
 
@@ -91,6 +92,24 @@ export function useLogs() {
     qc.invalidateQueries({ queryKey: logKeys.all });
   }, [qc]);
 
+  const exportar = useCallback(async () => {
+    // Reusa exactamente los mismos filtros activos, sin paginación: el
+    // backend exporta TODO lo que cumpla el filtro (topado y truncado ahí).
+    const { page: _page, pageSize: _pageSize, ...filtrosExport } = toQueryParams(filters, 1);
+    setExportando(true);
+    try {
+      const blob = await exportarLogs(filtrosExport);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `log-auditoria_${new Date().toISOString().split('T')[0]}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExportando(false);
+    }
+  }, [filters]);
+
   const fetchLogById = useCallback(
     async (id: string) => {
       setLoadingDetail(true);
@@ -116,6 +135,7 @@ export function useLogs() {
     loading: isFetching,
     loadingResumen,
     loadingDetail,
+    exportando,
     error: isError ? ((queryError as Error)?.message ?? 'Error al cargar logs') : null,
     updateFilter,
     resetFilters,
@@ -123,5 +143,6 @@ export function useLogs() {
     refresh,
     fetchLogById,
     setSelectedLog,
+    exportar,
   };
 }

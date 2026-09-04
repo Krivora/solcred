@@ -138,3 +138,25 @@ no ejecuta ninguna acción.
   (`CONSULTAR` / `SOLICITUDES`); la marca añade el rastro *dentro* del archivo.
 - Es una medida disuasoria/forense, no un control de acceso: no cifra ni impide
   la edición del PDF.
+
+---
+
+## 8. Auditoría de accesos de lectura y exportación del log
+
+**Estado: implementado (mejora C.13).**
+
+- `GET /admin/logs/exportar` (`ADMIN`/`SUPERVISOR`, rate-limit propio de 20/15
+  min — mismo criterio que `admin/reportes`) exporta a Excel **todo** lo que
+  cumpla los filtros activos, no solo la página cargada en pantalla como hacía
+  antes el botón del frontend. Tope de `MAX_FILAS_EXPORT_LOGS` (20,000) con
+  aviso de truncado, igual que el reporte de negocio — el log también trae
+  datos personales en bloque (correo, IP).
+- El filtro por `modulo` del endpoint de logs (`filtrosLogSchema`) estaba
+  desactualizado (le faltaban `SOPORTE`/`CRM`, agregados después al enum de
+  Prisma); ahora se deriva con `z.nativeEnum(...)` para que no vuelva a
+  divergir.
+- El historial de comunicaciones del CRM (`GET /crm/comunicaciones`, `GET
+  /crm/comunicaciones/resumen/:solicitudId`) no dejaba ningún rastro de
+  auditoría al leerse — a diferencia del expediente, los documentos y el
+  detalle de solicitud, que ya registraban `CONSULTAR`. Ahora sí, con el
+  mismo patrón (`registrarLog`, módulo `CRM`).
