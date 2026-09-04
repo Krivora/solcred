@@ -61,8 +61,8 @@ export function VisorDocumentoDialog({
     const fase: 'cargando' | 'listo' | 'error' = error
         ? 'error'
         : url
-          ? 'listo'
-          : 'cargando'
+            ? 'listo'
+            : 'cargando'
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
