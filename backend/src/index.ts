@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import { httpLogger } from "./utils/logger";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import authRoutes from "./modules/auth/auth.routes";
+import programasPublicoRoutes from "./modules/public/programas-publico.routes";
 import usuariosRoutes from "./modules/admin/usuarios/usuarios.routes";
 import programasRoutes from "./modules/admin/programas/programas.routes";
 import promocionRoutes from "./modules/admin/promocion/promocion.routes";
@@ -63,6 +64,10 @@ app.use(httpLogger);
 
 // ── Rutas Compartidas ──────────────────────────────────
 app.use("/api/auth", authRoutes);
+
+// ── Rutas públicas (sin sesión) ─────────────────────────
+// Simulador de crédito, corre antes de que la persona tenga cuenta.
+app.use("/api/public/programas", programasPublicoRoutes);
 
 // ── Rutas Adminstracion ──────────────────────────────────
 app.use("/api/admin/analisis", analisisRoutes);

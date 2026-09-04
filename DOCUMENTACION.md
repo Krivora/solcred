@@ -266,6 +266,7 @@ ver §8.
 | Módulo | Qué resuelve |
 |---|---|
 | `auth` | Registro y login de clientes, perfil autenticado, emisión de JWT. Access token corto (15 min) + `POST /auth/refresh` (rota el refresh token de la cookie `httpOnly`, detecta reuso) y `POST /auth/logout` (revoca la familia de sesión). |
+| `public/programas-publico` | Único endpoint sin `autenticar` de toda la API (`GET /api/public/programas`): catálogo mínimo de programas activos (montos, plazos, tasa anual — nada del catálogo administrativo) para el simulador de crédito público. |
 | `clientes/solicitudes` | CRUD de la solicitud desde la óptica del cliente: crear, guardar cada sección del formulario (generales, solicitante, aval, crédito, garantía, negocio, mercado, bancarios), enviar, listar las propias, descargar PDF. También registra el **punto más lejano alcanzado del formulario** (`ultimoPasoVisto` — solo avanza, nunca retrocede) para el embudo de conversión del dashboard. |
 | `expediente` | Expediente digital: consulta de estatus/metricas de documentos, validación (aprobar/rechazar) por parte de gestores/admin. |
 | `uploads` | Subida y descarga de los archivos PDF del expediente, con verificación de propiedad (el cliente solo ve las suyas). |
@@ -286,6 +287,7 @@ ver §8.
 | Feature | Qué cubre |
 |---|---|
 | `auth` | Login, registro, perfil, store de sesión. |
+| `simulador` | Página pública `/simulador` (sin sesión, agregada a `PUBLIC_ROUTES` del middleware): elige un programa activo y estima el pago mensual (sistema francés, sin gracia) contra el catálogo público. Enlazada desde `/login` y `/registro`; termina en un CTA a `/registro`. |
 | `solicitudes` | Todo el flujo del cliente: formulario multi-paso homologado (mismo header ícono+título+contexto en los 10 pasos), edición de borradores, listado con paginación y animaciones de transición entre vistas. |
 | `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación y **visor de PDF embebido** (`VisorDocumentoDialog`) con descargar / abrir en pestaña. |
 | `promocion` | Cola de solicitudes, asignación (con paginación y columna de gestores de tamaño fijo), aprobación, mis casos, histórico, detalle de solicitud con timeline. |

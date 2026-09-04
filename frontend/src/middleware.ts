@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { getRolesForPath } from '@/shared/config/route-permissions.config';
 import type { Rol } from '@/shared/types/auth.types';
 
-const PUBLIC_ROUTES = ['/login', '/registro'];
+const PUBLIC_ROUTES = ['/login', '/registro', '/simulador'];
 const UNAUTHENTICATED_REDIRECT = '/login';
 const UNAUTHORIZED_REDIRECT = '/dashboard/unauthorized';
 
