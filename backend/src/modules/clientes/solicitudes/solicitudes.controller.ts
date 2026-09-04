@@ -9,6 +9,7 @@ import { estamparMarcaAguaConsulta } from '../../../shared/pdf/watermark';
 import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
 import { mapearSolicitudAPDF } from "./solicitudes.service";
 import { AppError } from "@/middlewares/error.middleware";
+import type { RegistrarPasoVistoDto } from "./solicitudes.schema";
 
 // ─────────────────────────────────────────
 // FACTORY: sub-formularios de "guardar datos"
@@ -200,6 +201,31 @@ export const guardarDatosBancarios = crearControladorGuardado(
     "Datos bancarios",
     "Datos bancarios guardados"
 );
+
+// ─────────────────────────────────────────
+// MÉTRICAS DE CONVERSIÓN — PASO VISTO
+//
+// Dispara en cada cambio de paso del formulario (telemetría, no una acción
+// de negocio): sin registrarLog para no inundar el log de auditoría.
+// ─────────────────────────────────────────
+
+export const registrarPasoVisto = async (
+    req: RequestAutenticado,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const { paso } = req.body as RegistrarPasoVistoDto;
+        await solicitudesService.registrarPasoVisto(
+            req.params.id as string,
+            paso,
+            req.usuario!.id
+        );
+        res.status(200).json(ok("Paso registrado", null));
+    } catch (error) {
+        next(error);
+    }
+};
 
 // ─────────────────────────────────────────
 // ENVÍO Y CAMBIO DE ESTATUS

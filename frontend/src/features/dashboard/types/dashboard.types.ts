@@ -36,6 +36,20 @@ export interface PanoramaEmbudo {
   aprobadasPeriodo: number
 }
 
+export interface PasoFormularioEtapa {
+  paso: string
+  label: string
+  valor: number
+}
+
+/** Embudo de conversión del formulario: dónde abandonan los clientes su BORRADOR. */
+export interface PanoramaEmbudoFormulario {
+  totalIniciaron: number
+  totalEnviaron: number
+  tasaConversion: number | null
+  pasos: PasoFormularioEtapa[]
+}
+
 export interface PanoramaResolucion {
   aprobadas: number
   rechazadas: number
@@ -123,6 +137,7 @@ export interface Panorama {
   generadoEn: string
   kpis: PanoramaKpis
   embudo: PanoramaEmbudo
+  embudoFormulario: PanoramaEmbudoFormulario
   resolucion: PanoramaResolucion
   tendencia: PanoramaTendencia
   tiempoPorEtapa: PanoramaTiempoPorEtapa

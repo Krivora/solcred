@@ -295,6 +295,8 @@ export const SolicitudScalarFieldEnum = {
   tipoPersona: 'tipoPersona',
   sector: 'sector',
   tamanoEmpresa: 'tamanoEmpresa',
+  ultimoPasoVisto: 'ultimoPasoVisto',
+  ultimoPasoVistoEn: 'ultimoPasoVistoEn',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const

@@ -376,6 +376,13 @@ export type EnumTamanoEmpresaNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel> | $Enums.TamanoEmpresa | null
 }
 
+export type EnumPasoFormularioNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel> | $Enums.PasoFormulario | null
+}
+
 export type EnumTipoPersonaNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TipoPersona | Prisma.EnumTipoPersonaFieldRefInput<$PrismaModel> | null
   in?: $Enums.TipoPersona[] | Prisma.ListEnumTipoPersonaFieldRefInput<$PrismaModel> | null
@@ -404,6 +411,16 @@ export type EnumTamanoEmpresaNullableWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
+}
+
+export type EnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel> | $Enums.PasoFormulario | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
 }
 
 export type JsonNullableFilter<$PrismaModel = never> =
@@ -1177,6 +1194,13 @@ export type NestedEnumTamanoEmpresaNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel> | $Enums.TamanoEmpresa | null
 }
 
+export type NestedEnumPasoFormularioNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel> | $Enums.PasoFormulario | null
+}
+
 export type NestedEnumTipoPersonaNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TipoPersona | Prisma.EnumTipoPersonaFieldRefInput<$PrismaModel> | null
   in?: $Enums.TipoPersona[] | Prisma.ListEnumTipoPersonaFieldRefInput<$PrismaModel> | null
@@ -1205,6 +1229,16 @@ export type NestedEnumTamanoEmpresaNullableWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel> | $Enums.PasoFormulario | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =

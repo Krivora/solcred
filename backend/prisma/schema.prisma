@@ -151,6 +151,22 @@ enum SeccionSolicitud {
   BANCARIOS
 }
 
+// Pasos del formulario multipaso del cliente. Se usa solo para instrumentar
+// en qué paso se queda un BORRADOR (métricas de conversión) — no es un
+// estatus de la solicitud ni participa en HistorialEstatus.
+enum PasoFormulario {
+  PROGRAMA
+  GENERAL
+  SOLICITANTE
+  AVAL
+  CREDITO
+  GARANTIA
+  NEGOCIO
+  MERCADO
+  BANCARIOS
+  RESUMEN
+}
+
 model HistorialEstatus {
   id          String    @id @default(uuid())
   solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
@@ -440,6 +456,12 @@ model Solicitud {
   tipoPersona   TipoPersona?
   sector        Sector?
   tamanoEmpresa TamanoEmpresa?
+
+  // Métricas de conversión del formulario: punto más lejano alcanzado por el
+  // cliente mientras la solicitud es BORRADOR (nunca retrocede). No es un
+  // estatus — ver enum PasoFormulario.
+  ultimoPasoVisto   PasoFormulario?
+  ultimoPasoVistoEn DateTime?
 
   datosSolicitante           DatosSolicitante?
   datosAval                  DatosAval?

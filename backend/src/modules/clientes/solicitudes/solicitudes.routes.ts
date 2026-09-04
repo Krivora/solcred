@@ -13,6 +13,7 @@ import {
     guardarDatosNegocioSchema,
     guardarDatosMercadoSchema,
     guardarDatosBancariosSchema,
+    registrarPasoVistoSchema,
 } from "./solicitudes.schema";
 import * as solicitudesController from "./solicitudes.controller";
 const router = Router();
@@ -32,5 +33,6 @@ router.put("/:id/negocio",autorizar("CLIENTE"),validate(guardarDatosNegocioSchem
 router.put("/:id/mercado",autorizar("CLIENTE"),validate(guardarDatosMercadoSchema),solicitudesController.guardarDatosMercado);
 router.put("/:id/bancarios",autorizar("CLIENTE"),validate(guardarDatosBancariosSchema),solicitudesController.guardarDatosBancarios);
 router.patch("/:id/enviar", autorizar("CLIENTE"), solicitudesController.enviar);
+router.patch("/:id/paso-visto", autorizar("CLIENTE"), validate(registrarPasoVistoSchema), solicitudesController.registrarPasoVisto);
 
 export default router;

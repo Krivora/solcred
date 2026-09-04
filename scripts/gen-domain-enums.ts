@@ -24,6 +24,7 @@ const WHITELIST = [
     'TicketEstatus', 'TicketPrioridad', 'TicketCategoria', 'TicketTipoEvento',
     'TicketAutorTipo',
     'ComunicacionTipo', 'ComunicacionMotivo', 'ComunicacionResultado',
+    'PasoFormulario',
 ] as const
 
 /** Nombre del array de valores para cada enum (para poblar <Select> etc.). */

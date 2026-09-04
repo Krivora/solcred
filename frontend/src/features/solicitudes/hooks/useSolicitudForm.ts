@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { solicitudesApi } from '@/features/solicitudes/api/solicitudes.api'
 import { solicitudesToast } from '@/shared/lib/toaster'
-import { obtenerPasosActivos, esPasoOmitible } from '@/features/solicitudes/lib/pasos'
+import { obtenerPasosActivos, esPasoOmitible, pasoFormularioDe } from '@/features/solicitudes/lib/pasos'
 import { useMemo } from 'react'
 import type {
   CrearSolicitudDto,
@@ -58,6 +58,15 @@ export function useSolicitudForm(options?: UseSolicitudFormOptions) {
 
   const stepIndex = pasosActivos.indexOf(currentStep)
   const totalSteps = pasosActivos.length
+
+  // Métricas de conversión del formulario: avisa al backend en cada cambio de
+  // paso (fire-and-forget — nunca debe afectar la navegación del cliente).
+  // El backend solo avanza el marcador, así que retroceder a corregir algo no
+  // "resetea" el punto más lejano ya alcanzado.
+  useEffect(() => {
+    if (!solicitud?.id) return
+    solicitudesApi.registrarPasoVisto(solicitud.id, pasoFormularioDe(currentStep)).catch(() => {})
+  }, [solicitud?.id, currentStep])
 
   const goNext = () => {
     if (stepIndex >= 0 && stepIndex < pasosActivos.length - 1) {

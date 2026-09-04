@@ -3036,6 +3036,8 @@ export const SolicitudScalarFieldEnum = {
   tipoPersona: 'tipoPersona',
   sector: 'sector',
   tamanoEmpresa: 'tamanoEmpresa',
+  ultimoPasoVisto: 'ultimoPasoVisto',
+  ultimoPasoVistoEn: 'ultimoPasoVistoEn',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -3653,6 +3655,20 @@ export type EnumTamanoEmpresaFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'TamanoEmpresa[]'
  */
 export type ListEnumTamanoEmpresaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TamanoEmpresa[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PasoFormulario'
+ */
+export type EnumPasoFormularioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasoFormulario'>
+    
+
+
+/**
+ * Reference to a field of type 'PasoFormulario[]'
+ */
+export type ListEnumPasoFormularioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasoFormulario[]'>
     
 
 

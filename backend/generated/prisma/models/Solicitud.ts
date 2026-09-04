@@ -33,6 +33,8 @@ export type SolicitudMinAggregateOutputType = {
   tipoPersona: $Enums.TipoPersona | null
   sector: $Enums.Sector | null
   tamanoEmpresa: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn: Date | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -46,6 +48,8 @@ export type SolicitudMaxAggregateOutputType = {
   tipoPersona: $Enums.TipoPersona | null
   sector: $Enums.Sector | null
   tamanoEmpresa: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn: Date | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -59,6 +63,8 @@ export type SolicitudCountAggregateOutputType = {
   tipoPersona: number
   sector: number
   tamanoEmpresa: number
+  ultimoPasoVisto: number
+  ultimoPasoVistoEn: number
   creadoEn: number
   actualizadoEn: number
   _all: number
@@ -74,6 +80,8 @@ export type SolicitudMinAggregateInputType = {
   tipoPersona?: true
   sector?: true
   tamanoEmpresa?: true
+  ultimoPasoVisto?: true
+  ultimoPasoVistoEn?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -87,6 +95,8 @@ export type SolicitudMaxAggregateInputType = {
   tipoPersona?: true
   sector?: true
   tamanoEmpresa?: true
+  ultimoPasoVisto?: true
+  ultimoPasoVistoEn?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -100,6 +110,8 @@ export type SolicitudCountAggregateInputType = {
   tipoPersona?: true
   sector?: true
   tamanoEmpresa?: true
+  ultimoPasoVisto?: true
+  ultimoPasoVistoEn?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -186,6 +198,8 @@ export type SolicitudGroupByOutputType = {
   tipoPersona: $Enums.TipoPersona | null
   sector: $Enums.Sector | null
   tamanoEmpresa: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn: Date | null
   creadoEn: Date
   actualizadoEn: Date
   _count: SolicitudCountAggregateOutputType | null
@@ -220,6 +234,8 @@ export type SolicitudWhereInput = {
   tipoPersona?: Prisma.EnumTipoPersonaNullableFilter<"Solicitud"> | $Enums.TipoPersona | null
   sector?: Prisma.EnumSectorNullableFilter<"Solicitud"> | $Enums.Sector | null
   tamanoEmpresa?: Prisma.EnumTamanoEmpresaNullableFilter<"Solicitud"> | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.EnumPasoFormularioNullableFilter<"Solicitud"> | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.DateTimeNullableFilter<"Solicitud"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
   programa?: Prisma.XOR<Prisma.ProgramaScalarRelationFilter, Prisma.ProgramaWhereInput>
@@ -248,6 +264,8 @@ export type SolicitudOrderByWithRelationInput = {
   tipoPersona?: Prisma.SortOrderInput | Prisma.SortOrder
   sector?: Prisma.SortOrderInput | Prisma.SortOrder
   tamanoEmpresa?: Prisma.SortOrderInput | Prisma.SortOrder
+  ultimoPasoVisto?: Prisma.SortOrderInput | Prisma.SortOrder
+  ultimoPasoVistoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   programa?: Prisma.ProgramaOrderByWithRelationInput
@@ -279,6 +297,8 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   tipoPersona?: Prisma.EnumTipoPersonaNullableFilter<"Solicitud"> | $Enums.TipoPersona | null
   sector?: Prisma.EnumSectorNullableFilter<"Solicitud"> | $Enums.Sector | null
   tamanoEmpresa?: Prisma.EnumTamanoEmpresaNullableFilter<"Solicitud"> | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.EnumPasoFormularioNullableFilter<"Solicitud"> | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.DateTimeNullableFilter<"Solicitud"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
   programa?: Prisma.XOR<Prisma.ProgramaScalarRelationFilter, Prisma.ProgramaWhereInput>
@@ -307,6 +327,8 @@ export type SolicitudOrderByWithAggregationInput = {
   tipoPersona?: Prisma.SortOrderInput | Prisma.SortOrder
   sector?: Prisma.SortOrderInput | Prisma.SortOrder
   tamanoEmpresa?: Prisma.SortOrderInput | Prisma.SortOrder
+  ultimoPasoVisto?: Prisma.SortOrderInput | Prisma.SortOrder
+  ultimoPasoVistoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.SolicitudCountOrderByAggregateInput
@@ -326,6 +348,8 @@ export type SolicitudScalarWhereWithAggregatesInput = {
   tipoPersona?: Prisma.EnumTipoPersonaNullableWithAggregatesFilter<"Solicitud"> | $Enums.TipoPersona | null
   sector?: Prisma.EnumSectorNullableWithAggregatesFilter<"Solicitud"> | $Enums.Sector | null
   tamanoEmpresa?: Prisma.EnumTamanoEmpresaNullableWithAggregatesFilter<"Solicitud"> | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.EnumPasoFormularioNullableWithAggregatesFilter<"Solicitud"> | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.DateTimeNullableWithAggregatesFilter<"Solicitud"> | Date | string | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Solicitud"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"Solicitud"> | Date | string
 }
@@ -337,6 +361,8 @@ export type SolicitudCreateInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -365,6 +391,8 @@ export type SolicitudUncheckedCreateInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -389,6 +417,8 @@ export type SolicitudUpdateInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -417,6 +447,8 @@ export type SolicitudUncheckedUpdateInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -443,6 +475,8 @@ export type SolicitudCreateManyInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -454,6 +488,8 @@ export type SolicitudUpdateManyMutationInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -467,6 +503,8 @@ export type SolicitudUncheckedUpdateManyInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -495,6 +533,8 @@ export type SolicitudCountOrderByAggregateInput = {
   tipoPersona?: Prisma.SortOrder
   sector?: Prisma.SortOrder
   tamanoEmpresa?: Prisma.SortOrder
+  ultimoPasoVisto?: Prisma.SortOrder
+  ultimoPasoVistoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -508,6 +548,8 @@ export type SolicitudMaxOrderByAggregateInput = {
   tipoPersona?: Prisma.SortOrder
   sector?: Prisma.SortOrder
   tamanoEmpresa?: Prisma.SortOrder
+  ultimoPasoVisto?: Prisma.SortOrder
+  ultimoPasoVistoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -521,6 +563,8 @@ export type SolicitudMinOrderByAggregateInput = {
   tipoPersona?: Prisma.SortOrder
   sector?: Prisma.SortOrder
   tamanoEmpresa?: Prisma.SortOrder
+  ultimoPasoVisto?: Prisma.SortOrder
+  ultimoPasoVistoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -661,6 +705,10 @@ export type NullableEnumSectorFieldUpdateOperationsInput = {
 
 export type NullableEnumTamanoEmpresaFieldUpdateOperationsInput = {
   set?: $Enums.TamanoEmpresa | null
+}
+
+export type NullableEnumPasoFormularioFieldUpdateOperationsInput = {
+  set?: $Enums.PasoFormulario | null
 }
 
 export type SolicitudCreateNestedOneWithoutAnalisisInput = {
@@ -810,6 +858,8 @@ export type SolicitudCreateWithoutHistorialEstatusInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -837,6 +887,8 @@ export type SolicitudUncheckedCreateWithoutHistorialEstatusInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -876,6 +928,8 @@ export type SolicitudUpdateWithoutHistorialEstatusInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -903,6 +957,8 @@ export type SolicitudUncheckedUpdateWithoutHistorialEstatusInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -926,6 +982,8 @@ export type SolicitudCreateWithoutAsignacionesInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -953,6 +1011,8 @@ export type SolicitudUncheckedCreateWithoutAsignacionesInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -992,6 +1052,8 @@ export type SolicitudUpdateWithoutAsignacionesInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1019,6 +1081,8 @@ export type SolicitudUncheckedUpdateWithoutAsignacionesInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1042,6 +1106,8 @@ export type SolicitudCreateWithoutAsignacionesFinanciamientoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1069,6 +1135,8 @@ export type SolicitudUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1108,6 +1176,8 @@ export type SolicitudUpdateWithoutAsignacionesFinanciamientoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1135,6 +1205,8 @@ export type SolicitudUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1158,6 +1230,8 @@ export type SolicitudCreateWithoutSolicitanteInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1184,6 +1258,8 @@ export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1239,6 +1315,8 @@ export type SolicitudScalarWhereInput = {
   tipoPersona?: Prisma.EnumTipoPersonaNullableFilter<"Solicitud"> | $Enums.TipoPersona | null
   sector?: Prisma.EnumSectorNullableFilter<"Solicitud"> | $Enums.Sector | null
   tamanoEmpresa?: Prisma.EnumTamanoEmpresaNullableFilter<"Solicitud"> | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.EnumPasoFormularioNullableFilter<"Solicitud"> | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.DateTimeNullableFilter<"Solicitud"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Solicitud"> | Date | string
 }
@@ -1250,6 +1328,8 @@ export type SolicitudCreateWithoutProgramaInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
@@ -1276,6 +1356,8 @@ export type SolicitudUncheckedCreateWithoutProgramaInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1326,6 +1408,8 @@ export type SolicitudCreateWithoutAnalisisInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1353,6 +1437,8 @@ export type SolicitudUncheckedCreateWithoutAnalisisInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1392,6 +1478,8 @@ export type SolicitudUpdateWithoutAnalisisInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1419,6 +1507,8 @@ export type SolicitudUncheckedUpdateWithoutAnalisisInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1442,6 +1532,8 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1469,6 +1561,8 @@ export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1508,6 +1602,8 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1535,6 +1631,8 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1558,6 +1656,8 @@ export type SolicitudCreateWithoutDatosAvalInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1585,6 +1685,8 @@ export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1624,6 +1726,8 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1651,6 +1755,8 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1674,6 +1780,8 @@ export type SolicitudCreateWithoutDatosCreditoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1701,6 +1809,8 @@ export type SolicitudUncheckedCreateWithoutDatosCreditoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1740,6 +1850,8 @@ export type SolicitudUpdateWithoutDatosCreditoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1767,6 +1879,8 @@ export type SolicitudUncheckedUpdateWithoutDatosCreditoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1790,6 +1904,8 @@ export type SolicitudCreateWithoutDatosGarantiaInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1817,6 +1933,8 @@ export type SolicitudUncheckedCreateWithoutDatosGarantiaInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1856,6 +1974,8 @@ export type SolicitudUpdateWithoutDatosGarantiaInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1883,6 +2003,8 @@ export type SolicitudUncheckedUpdateWithoutDatosGarantiaInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -1906,6 +2028,8 @@ export type SolicitudCreateWithoutDatosNegocioInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -1933,6 +2057,8 @@ export type SolicitudUncheckedCreateWithoutDatosNegocioInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -1972,6 +2098,8 @@ export type SolicitudUpdateWithoutDatosNegocioInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -1999,6 +2127,8 @@ export type SolicitudUncheckedUpdateWithoutDatosNegocioInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2022,6 +2152,8 @@ export type SolicitudCreateWithoutDatosMercadoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -2049,6 +2181,8 @@ export type SolicitudUncheckedCreateWithoutDatosMercadoInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -2088,6 +2222,8 @@ export type SolicitudUpdateWithoutDatosMercadoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2115,6 +2251,8 @@ export type SolicitudUncheckedUpdateWithoutDatosMercadoInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2138,6 +2276,8 @@ export type SolicitudCreateWithoutDatosBancariosInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -2165,6 +2305,8 @@ export type SolicitudUncheckedCreateWithoutDatosBancariosInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -2204,6 +2346,8 @@ export type SolicitudUpdateWithoutDatosBancariosInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2231,6 +2375,8 @@ export type SolicitudUncheckedUpdateWithoutDatosBancariosInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2254,6 +2400,8 @@ export type SolicitudCreateWithoutDocumentosInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -2281,6 +2429,8 @@ export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -2320,6 +2470,8 @@ export type SolicitudUpdateWithoutDocumentosInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2347,6 +2499,8 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2370,6 +2524,8 @@ export type SolicitudCreateWithoutComunicacionesInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
@@ -2397,6 +2553,8 @@ export type SolicitudUncheckedCreateWithoutComunicacionesInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
@@ -2436,6 +2594,8 @@ export type SolicitudUpdateWithoutComunicacionesInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2463,6 +2623,8 @@ export type SolicitudUncheckedUpdateWithoutComunicacionesInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2487,6 +2649,8 @@ export type SolicitudCreateManySolicitanteInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -2498,6 +2662,8 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2524,6 +2690,8 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2549,6 +2717,8 @@ export type SolicitudUncheckedUpdateManyWithoutSolicitanteInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2561,6 +2731,8 @@ export type SolicitudCreateManyProgramaInput = {
   tipoPersona?: $Enums.TipoPersona | null
   sector?: $Enums.Sector | null
   tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -2572,6 +2744,8 @@ export type SolicitudUpdateWithoutProgramaInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
@@ -2598,6 +2772,8 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
@@ -2623,6 +2799,8 @@ export type SolicitudUncheckedUpdateManyWithoutProgramaInput = {
   tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
   sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
   tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2703,6 +2881,8 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   tipoPersona?: boolean
   sector?: boolean
   tamanoEmpresa?: boolean
+  ultimoPasoVisto?: boolean
+  ultimoPasoVistoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   programa?: boolean | Prisma.ProgramaDefaultArgs<ExtArgs>
@@ -2732,6 +2912,8 @@ export type SolicitudSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   tipoPersona?: boolean
   sector?: boolean
   tamanoEmpresa?: boolean
+  ultimoPasoVisto?: boolean
+  ultimoPasoVistoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   programa?: boolean | Prisma.ProgramaDefaultArgs<ExtArgs>
@@ -2747,6 +2929,8 @@ export type SolicitudSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   tipoPersona?: boolean
   sector?: boolean
   tamanoEmpresa?: boolean
+  ultimoPasoVisto?: boolean
+  ultimoPasoVistoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   programa?: boolean | Prisma.ProgramaDefaultArgs<ExtArgs>
@@ -2762,11 +2946,13 @@ export type SolicitudSelectScalar = {
   tipoPersona?: boolean
   sector?: boolean
   tamanoEmpresa?: boolean
+  ultimoPasoVisto?: boolean
+  ultimoPasoVistoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type SolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folio" | "programaId" | "solicitanteId" | "estatus" | "tipoPersona" | "sector" | "tamanoEmpresa" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["solicitud"]>
+export type SolicitudOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folio" | "programaId" | "solicitanteId" | "estatus" | "tipoPersona" | "sector" | "tamanoEmpresa" | "ultimoPasoVisto" | "ultimoPasoVistoEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["solicitud"]>
 export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   programa?: boolean | Prisma.ProgramaDefaultArgs<ExtArgs>
   solicitante?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
@@ -2822,6 +3008,8 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     tipoPersona: $Enums.TipoPersona | null
     sector: $Enums.Sector | null
     tamanoEmpresa: $Enums.TamanoEmpresa | null
+    ultimoPasoVisto: $Enums.PasoFormulario | null
+    ultimoPasoVistoEn: Date | null
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["solicitud"]>
@@ -3270,6 +3458,8 @@ export interface SolicitudFieldRefs {
   readonly tipoPersona: Prisma.FieldRef<"Solicitud", 'TipoPersona'>
   readonly sector: Prisma.FieldRef<"Solicitud", 'Sector'>
   readonly tamanoEmpresa: Prisma.FieldRef<"Solicitud", 'TamanoEmpresa'>
+  readonly ultimoPasoVisto: Prisma.FieldRef<"Solicitud", 'PasoFormulario'>
+  readonly ultimoPasoVistoEn: Prisma.FieldRef<"Solicitud", 'DateTime'>
   readonly creadoEn: Prisma.FieldRef<"Solicitud", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"Solicitud", 'DateTime'>
 }

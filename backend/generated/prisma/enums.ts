@@ -204,6 +204,22 @@ export const SeccionSolicitud = {
 export type SeccionSolicitud = (typeof SeccionSolicitud)[keyof typeof SeccionSolicitud]
 
 
+export const PasoFormulario = {
+  PROGRAMA: 'PROGRAMA',
+  GENERAL: 'GENERAL',
+  SOLICITANTE: 'SOLICITANTE',
+  AVAL: 'AVAL',
+  CREDITO: 'CREDITO',
+  GARANTIA: 'GARANTIA',
+  NEGOCIO: 'NEGOCIO',
+  MERCADO: 'MERCADO',
+  BANCARIOS: 'BANCARIOS',
+  RESUMEN: 'RESUMEN'
+} as const
+
+export type PasoFormulario = (typeof PasoFormulario)[keyof typeof PasoFormulario]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',

@@ -30,8 +30,9 @@ import {
     GuardarDatosMercadoDto,
     GuardarDatosBancariosDto,
 } from "./solicitudes.schema";
-import { EstatusSolicitud, Prisma, Requerimiento, SeccionSolicitud } from "../../../../generated/prisma/client";
+import { EstatusSolicitud, PasoFormulario, Prisma, Requerimiento, SeccionSolicitud } from "../../../../generated/prisma/client";
 import { SolicitudPDFData, DatosPersonaPDF } from "../../../shared/pdf/pdf.types";
+import { ORDEN_PASOS_FORMULARIO } from "../../../shared/paso-formulario";
 
 // El shape de respuesta (`INCLUDE_SOLICITUD_DETALLE` / `_LISTA`) y sus tipos
 // derivados de Prisma viven en `./solicitudes.contract`.
@@ -448,6 +449,34 @@ export const guardarDatosBancarios = crearGuardadorSubrecurso<GuardarDatosBancar
     "BANCARIOS",
     "Este programa no requiere datos bancarios"
 );
+
+// ─────────────────────────────────────────
+// MÉTRICAS DE CONVERSIÓN — PASO VISTO
+//
+// Telemetría de UI, no una transición de estatus: no toca HistorialEstatus.
+// Guarda el punto MÁS LEJANO alcanzado — si el cliente retrocede a un paso
+// anterior (p. ej. a corregir algo), no se sobrescribe el avance ya logrado.
+// ─────────────────────────────────────────
+
+export const registrarPasoVisto = async (
+    solicitudId: string,
+    paso: PasoFormulario,
+    usuarioId: string
+): Promise<void> => {
+    const solicitud = await obtenerSolicitudEditable(solicitudId, usuarioId);
+
+    const indiceActual = solicitud.ultimoPasoVisto
+        ? ORDEN_PASOS_FORMULARIO.indexOf(solicitud.ultimoPasoVisto)
+        : -1;
+    const indiceNuevo = ORDEN_PASOS_FORMULARIO.indexOf(paso);
+
+    if (indiceNuevo <= indiceActual) return;
+
+    await prisma.solicitud.update({
+        where: { id: solicitudId },
+        data: { ultimoPasoVisto: paso, ultimoPasoVistoEn: new Date() },
+    });
+};
 
 // ─────────────────────────────────────────
 // ENVÍO Y CAMBIO DE ESTATUS
