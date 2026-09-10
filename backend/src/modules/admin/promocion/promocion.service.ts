@@ -1,13 +1,6 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
-import {
-  DevolverAlSolicitanteDto,
-  EnviarAFinanciamientoDto,
-  EnviarAAprobacionDto,
-  CancelarDto,
-  RechazarDto,
-} from "./promocion.schema";
-import { EstatusSolicitud } from "../../../../generated/prisma/client";
+import { EstatusSolicitud, Prisma } from "../../../../generated/prisma/client";
 import { paginado } from "@utils/pagination";
 import { CartaRechazoPDFData, SolicitudPDFData, DatosPersonaPDF, TarjetaInformativaPDFData, AcuseEntregaExpedientePDFData } from "../../../shared/pdf/pdf.types";
 import {
@@ -21,8 +14,82 @@ import {
 export { obtenerSolicitudPorId } from "@modules/admin/_shared/solicitud-estado";
 
 const ESTATUS_RECHAZO: EstatusSolicitud[] = ["RECHAZADO", "CANCELADO"];
-
 const ESTATUS_HISTORICO_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "PENDIENTE", "BORRADOR"];
+/** Estatus que "viven" en la cola de Promoción (primer filtro). */
+const ESTATUS_PRINCIPAL_PROMOCION: EstatusSolicitud[] = ["EN_REVISION", "EN_CORRECCION", "PENDIENTE", "BORRADOR"];
+/** Estatus que un gestor ve en su cola de "Mis casos". */
+const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ["EN_REVISION", "EN_CORRECCION"];
+
+/**
+ * Traduce el query param `estatus` (CSV) a un filtro Prisma, acotado siempre a
+ * `permitidos`. Sin filtro, o con valores fuera de rango, cae a todos los permitidos.
+ */
+const resolverEstatusFiltro = (
+  estatus: string | undefined,
+  permitidos: EstatusSolicitud[],
+): Prisma.SolicitudWhereInput["estatus"] => {
+  const pedidos = (estatus?.split(",").map((s) => s.trim()) ?? []).filter(
+    (e): e is EstatusSolicitud => permitidos.includes(e as EstatusSolicitud),
+  );
+  const aplicar = pedidos.length > 0 ? pedidos : permitidos;
+  return aplicar.length === 1 ? aplicar[0] : { in: aplicar };
+};
+
+/**
+ * Filtros comunes a todos los listados de solicitud de Promoción (tipo de
+ * persona, sector, tamaño, programa, rango de fechas, búsqueda por nombre/RFC y
+ * gestor asignado). El `estatus` lo pone cada listado según su vista.
+ *
+ * Se arma como `Record` y se castea al salir: los valores llegan como string de
+ * la query y Prisma valida el shape al ejecutar — mismo criterio que
+ * `financiamiento.construirWhere`.
+ */
+const construirWhereFiltros = (filtros: {
+  tipoPersona?: string;
+  sector?: string;
+  tamanoEmpresa?: string;
+  programaId?: string;
+  fechaDesde?: string;
+  fechaHasta?: string;
+  busqueda?: string;
+  gestorId?: string;
+}): Prisma.SolicitudWhereInput => {
+  const { tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda, gestorId } = filtros;
+  const where: Record<string, unknown> = {};
+
+  if (tipoPersona) where.tipoPersona = tipoPersona;
+  if (sector) where.sector = sector;
+  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
+  if (programaId) where.programaId = programaId;
+
+  if (fechaDesde || fechaHasta) {
+    where.creadoEn = {
+      ...(fechaDesde && { gte: new Date(fechaDesde) }),
+      ...(fechaHasta && { lte: new Date(fechaHasta + "T23:59:59") }),
+    };
+  }
+
+  if (busqueda) {
+    where.OR = [
+      {
+        datosSolicitante: {
+          OR: [
+            { nombre: { contains: busqueda, mode: "insensitive" } },
+            { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
+            { rfc: { contains: busqueda, mode: "insensitive" } },
+          ],
+        },
+      },
+    ];
+  }
+
+  if (gestorId) {
+    where.asignaciones = { some: { gestorId, activa: true } };
+  }
+
+  return where as Prisma.SolicitudWhereInput;
+};
+
 interface FiltrosPromocion {
   page: number
   pageSize: number
@@ -51,12 +118,10 @@ interface FiltrosMisCasos {
 }
 
 export const gestoresPromocion = async () => {
-  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
-
   const asignaciones = await prisma.asignacionSolicitud.findMany({
     where: {
       activa: true,
-      solicitud: { estatus: { in: ESTATUS_PRICIPAL_PROMOCION } },
+      solicitud: { estatus: { in: ESTATUS_PRINCIPAL_PROMOCION } },
     },
     distinct: ['gestorId'],
     select: {
@@ -81,64 +146,14 @@ export const gestoresPromocion = async () => {
 };
 
 export const listarPromocion = async (filtros: FiltrosPromocion) => {
-  const {
-    page,
-    pageSize,
-    estatus,
-    tipoPersona,
-    sector,
-    tamanoEmpresa,
-    programaId,
-    fechaDesde,
-    fechaHasta,
-    busqueda,
-    gestorId, // ← reemplaza a `asignacion`
-  } = filtros;
-
+  const { page, pageSize } = filtros;
   const skip = (page - 1) * pageSize;
-  const where: any = {};
-  const ESTATUS_PRICIPAL_PROMOCION: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION', 'PENDIENTE', 'BORRADOR'];
-  if (estatus) {
-    const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
-    const estatusFiltrados = estatusArray.filter(e => ESTATUS_PRICIPAL_PROMOCION.includes(e));
-    const estatusAplicar = estatusFiltrados.length > 0 ? estatusFiltrados : ESTATUS_PRICIPAL_PROMOCION;
-    where.estatus = estatusAplicar.length === 1
-      ? estatusAplicar[0]
-      : { in: estatusAplicar };
-  } else {
-    where.estatus = { in: ESTATUS_PRICIPAL_PROMOCION };
-  }
-  if (tipoPersona) where.tipoPersona = tipoPersona;
-  if (sector) where.sector = sector;
-  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
-  if (programaId) where.programaId = programaId;
 
-  if (fechaDesde || fechaHasta) {
-    where.creadoEn = {};
-    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
-    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
-  }
-
-  if (busqueda) {
-    where.OR = [
-      {
-        datosSolicitante: {
-          OR: [
-            { nombre: { contains: busqueda, mode: "insensitive" } },
-            { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
-            { rfc: { contains: busqueda, mode: "insensitive" } },
-          ],
-        },
-      },
-    ];
-  }
-
-  if (gestorId) {
-    where.asignaciones = { some: { gestorId, activa: true } };
-  }
+  const where = construirWhereFiltros(filtros);
+  where.estatus = resolverEstatusFiltro(filtros.estatus, ESTATUS_PRINCIPAL_PROMOCION);
 
   const [solicitudes, total] = await Promise.all([
-  prisma.solicitud.findMany({
+    prisma.solicitud.findMany({
       where,
       skip,
       take: pageSize,
@@ -174,69 +189,14 @@ export const statsPromocion = async () => {
 };
 
 export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
-  const {
-    gestorId,
-    page,
-    pageSize,
-    estatus,
-    tipoPersona,
-    sector,
-    tamanoEmpresa,
-    programaId,
-    fechaDesde,
-    fechaHasta,
-    busqueda,
-  } = filtros;
-
+  const { page, pageSize } = filtros;
   const skip = (page - 1) * pageSize;
-  const ESTATUS_MIS_CASOS: EstatusSolicitud[] = ['EN_REVISION', 'EN_CORRECCION'];
-  const where: any = {
-    asignaciones: {
-      some: {
-        gestorId,
-        activa: true,
-      },
-    },
-  };
 
-  if (estatus) {
-    const estatusArray = estatus.split(',').map(s => s.trim()) as EstatusSolicitud[];
-    const estatusFiltrados = estatusArray.filter(e => ESTATUS_MIS_CASOS.includes(e));
-    const estatusAplicar = estatusFiltrados.length > 0 ? estatusFiltrados : ESTATUS_MIS_CASOS;
-    where.estatus = estatusAplicar.length === 1
-      ? estatusAplicar[0]
-      : { in: estatusAplicar };
-  } else {
-    where.estatus = { in: ESTATUS_MIS_CASOS };
-  }
-
-  if (tipoPersona) where.tipoPersona = tipoPersona;
-  if (sector) where.sector = sector;
-  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
-  if (programaId) where.programaId = programaId;
-
-  if (fechaDesde || fechaHasta) {
-    where.creadoEn = {};
-    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
-    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
-  }
-
-  if (busqueda) {
-    where.OR = [
-      {
-        datosSolicitante: {
-          OR: [
-            { nombre: { contains: busqueda, mode: "insensitive" } },
-            { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
-            { rfc: { contains: busqueda, mode: "insensitive" } },
-          ],
-        },
-      },
-    ];
-  }
+  const where = construirWhereFiltros(filtros);
+  where.estatus = resolverEstatusFiltro(filtros.estatus, ESTATUS_MIS_CASOS);
 
   const [solicitudes, total] = await Promise.all([
-  prisma.solicitud.findMany({
+    prisma.solicitud.findMany({
       where,
       skip,
       take: pageSize,
@@ -259,47 +219,23 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
-export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus' | 'asignacion'>) => {
-  const { page, pageSize, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
+export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'>) => {
+  const { page, pageSize } = filtros;
   const skip = (page - 1) * pageSize;
 
-  const where: any = {
-    estatus: { in: ["EN_APROBACION"] },
-  };
-
-  if (tipoPersona) where.tipoPersona = tipoPersona;
-  if (sector) where.sector = sector;
-  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
-  if (programaId) where.programaId = programaId;
-
-  if (fechaDesde || fechaHasta) {
-    where.creadoEn = {};
-    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
-    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
-  }
-
-  if (busqueda) {
-    where.OR = [{
-      datosSolicitante: {
-        OR: [
-          { nombre: { contains: busqueda, mode: "insensitive" } },
-          { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
-          { rfc: { contains: busqueda, mode: "insensitive" } },
-        ],
-      },
-    }];
-  }
+  const where = construirWhereFiltros(filtros);
+  where.estatus = "EN_APROBACION";
 
   const [solicitudes, total] = await Promise.all([
-  prisma.solicitud.findMany({
-    where,
-    skip,
-    take: pageSize,
-    orderBy: { creadoEn: "desc" },
-    include: buildIncludeSolicitud("EN_APROBACION"),
-  }),
-  prisma.solicitud.count({ where }),
-]);
+    prisma.solicitud.findMany({
+      where,
+      skip,
+      take: pageSize,
+      orderBy: { creadoEn: "desc" },
+      include: buildIncludeSolicitud("EN_APROBACION"),
+    }),
+    prisma.solicitud.count({ where }),
+  ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
     const { asignaciones, historialEstatus, ...resto } = s;
@@ -314,47 +250,23 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
   return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
-export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' | 'asignacion'>) => {
-  const { page, pageSize, tipoPersona, sector, tamanoEmpresa, programaId, fechaDesde, fechaHasta, busqueda } = filtros;
+export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus'>) => {
+  const { page, pageSize } = filtros;
   const skip = (page - 1) * pageSize;
 
-  const where: any = {
-    estatus: { notIn: ESTATUS_HISTORICO_PROMOCION },
-  };
-
-  if (tipoPersona) where.tipoPersona = tipoPersona;
-  if (sector) where.sector = sector;
-  if (tamanoEmpresa) where.tamanoEmpresa = tamanoEmpresa;
-  if (programaId) where.programaId = programaId;
-
-  if (fechaDesde || fechaHasta) {
-    where.creadoEn = {};
-    if (fechaDesde) where.creadoEn.gte = new Date(fechaDesde);
-    if (fechaHasta) where.creadoEn.lte = new Date(fechaHasta + "T23:59:59");
-  }
-
-  if (busqueda) {
-    where.OR = [{
-      datosSolicitante: {
-        OR: [
-          { nombre: { contains: busqueda, mode: "insensitive" } },
-          { apellidoPaterno: { contains: busqueda, mode: "insensitive" } },
-          { rfc: { contains: busqueda, mode: "insensitive" } },
-        ],
-      },
-    }];
-  }
+  const where = construirWhereFiltros(filtros);
+  where.estatus = { notIn: ESTATUS_HISTORICO_PROMOCION };
 
   const [solicitudes, total] = await Promise.all([
-  prisma.solicitud.findMany({
-    where,
-    skip,
-    take: pageSize,
-    orderBy: { creadoEn: "desc" },
-    include: buildIncludeSolicitud(),
-  }),
-  prisma.solicitud.count({ where }),
-]);
+    prisma.solicitud.findMany({
+      where,
+      skip,
+      take: pageSize,
+      orderBy: { creadoEn: "desc" },
+      include: buildIncludeSolicitud(),
+    }),
+    prisma.solicitud.count({ where }),
+  ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
     const { asignaciones, ...resto } = s;
@@ -368,132 +280,49 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus' 
   return paginado(solicitudesConMetricas, page, pageSize, total);
 };
 
-export const devolverAlSolicitante = async (
-  solicitudId: string,
-  dto: DevolverAlSolicitanteDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, ['PENDIENTE', 'EN_REVISION', 'EN_APROBACION'])
+/**
+ * Fábrica de transición de estatus de Promoción: valida el salto contra los
+ * estatus de origen `permitidos`, lo aplica y lo registra en `HistorialEstatus`
+ * dentro de una sola transacción. Espejo de `financiamiento.transicion`.
+ */
+const transicionPromocion =
+  (permitidos: EstatusSolicitud[], destino: EstatusSolicitud) =>
+  async (solicitudId: string, dto: { motivo?: string }, usuarioId: string) => {
+    const solicitud = await validarTransicion(solicitudId, permitidos);
 
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'EN_CORRECCION' },
-      include: incluyeTodo,
-    })
+    return prisma.$transaction(async (tx) => {
+      const actualizada = await tx.solicitud.update({
+        where: { id: solicitudId },
+        data: { estatus: destino },
+        include: incluyeTodo,
+      });
 
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_CORRECCION', usuarioId, dto.motivo)
+      await registrarHistorial(tx, solicitudId, solicitud.estatus, destino, usuarioId, dto.motivo);
 
-    return actualizada
-  })
-}
+      return actualizada;
+    });
+  };
 
-export const regresarAlPromotor = async (
-  solicitudId: string,
-  dto: DevolverAlSolicitanteDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, ['EN_APROBACION'])
+export const devolverAlSolicitante = transicionPromocion(
+  ["PENDIENTE", "EN_REVISION", "EN_APROBACION"],
+  "EN_CORRECCION",
+);
+export const regresarAlPromotor = transicionPromocion(["EN_APROBACION"], "EN_REVISION");
+export const enviarAAprobacion = transicionPromocion(["EN_REVISION"], "EN_APROBACION");
+export const enviarAFinanciamiento = transicionPromocion(["EN_APROBACION"], "EN_FINANCIAMIENTO");
+export const cancelar = transicionPromocion(
+  [
+    "PENDIENTE", "EN_REVISION", "EN_APROBACION",
+    "EN_FINANCIAMIENTO", "EN_ASIGNACION", "EN_ANALISIS", "EN_VALIDACION", "EN_COMITE",
+  ],
+  "CANCELADO",
+);
+export const rechazar = transicionPromocion(
+  ["EN_REVISION", "EN_APROBACION", "EN_FINANCIAMIENTO", "EN_VALIDACION", "EN_COMITE"],
+  "RECHAZADO",
+);
 
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'EN_REVISION' },
-      include: incluyeTodo,
-    })
-
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_REVISION', usuarioId, dto.motivo)
-
-    return actualizada
-  })
-}
-
-export const enviarAAprobacion = async (
-  solicitudId: string,
-  dto: EnviarAAprobacionDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, ['EN_REVISION'])
-
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'EN_APROBACION' },
-      include: incluyeTodo,
-    })
-
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_APROBACION', usuarioId, dto.motivo)
-
-    return actualizada
-  })
-}
-
-export const enviarAFinanciamiento = async (
-  solicitudId: string,
-  dto: EnviarAFinanciamientoDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, ['EN_APROBACION'])
-
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'EN_FINANCIAMIENTO' },
-      include: incluyeTodo,
-    })
-
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'EN_FINANCIAMIENTO', usuarioId, dto.motivo)
-
-    return actualizada
-  })
-}
-
-export const cancelar = async (
-  solicitudId: string,
-  dto: CancelarDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, [
-    'PENDIENTE', 'EN_REVISION', 'EN_APROBACION',
-    'EN_FINANCIAMIENTO', 'EN_ASIGNACION', 'EN_ANALISIS', 'EN_VALIDACION', 'EN_COMITE',
-  ])
-
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'CANCELADO' },
-      include: incluyeTodo,
-    })
-
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'CANCELADO', usuarioId, dto.motivo)
-
-    return actualizada
-  })
-}
-
-export const rechazar = async (
-  solicitudId: string,
-  dto: RechazarDto,
-  usuarioId: string
-) => {
-  const solicitud = await validarTransicion(solicitudId, [
-    'EN_REVISION', 'EN_APROBACION', 'EN_FINANCIAMIENTO', 'EN_VALIDACION', 'EN_COMITE',
-  ])
-
-  return prisma.$transaction(async (tx) => {
-    const actualizada = await tx.solicitud.update({
-      where: { id: solicitudId },
-      data: { estatus: 'RECHAZADO' },
-      include: incluyeTodo,
-    })
-
-    await registrarHistorial(tx, solicitudId, solicitud.estatus, 'RECHAZADO', usuarioId, dto.motivo)
-
-    return actualizada
-  })
-}
-
-export const SolicitudId = async (
+export const obtenerSolicitudParaPDF = async (
   id: string,
   usuarioId: string,
   rol: string
@@ -611,7 +440,7 @@ const cargoPorRol = (rol: string): string => {
   return cargos[rol] ?? rol;
 };
 export const mapearSolicitudAPDF = (
-  solicitud: Awaited<ReturnType<typeof SolicitudId>>
+  solicitud: Awaited<ReturnType<typeof obtenerSolicitudParaPDF>>
 ): SolicitudPDFData => {
   return {
     folio: solicitud.folio,
@@ -731,7 +560,7 @@ export const mapearSolicitudAPDF = (
 };
 
 export const mapearAcuseEntregaAPDF = (
-  solicitud: Awaited<ReturnType<typeof SolicitudId>>,
+  solicitud: Awaited<ReturnType<typeof obtenerSolicitudParaPDF>>,
   usuarioActual: {
     nombre: string;
     apellidoPaterno: string;
@@ -784,7 +613,7 @@ export const obtenerAcuseEntregaExpediente = async (
   rol: string,
   comentarios?: string | null
 ): Promise<AcuseEntregaExpedientePDFData> => {
-  const solicitud = await SolicitudId(solicitudId, usuarioId, rol);
+  const solicitud = await obtenerSolicitudParaPDF(solicitudId, usuarioId, rol);
 
   const usuarioActual = await prisma.usuario.findUnique({
     where: { id: usuarioId },
@@ -978,7 +807,7 @@ export const obtenerTarjetaInformativa = async (
     eventosTimeline.push({
       fechaRaw: a.fechaAsignacion,
       fecha: formatearFechaHora(a.fechaAsignacion),
-      titulo: `Asignado a ${nombreUsuario(a.gestor.usuario)}`, // ── FIX ──
+      titulo: `Asignado a ${nombreUsuario(a.gestor.usuario)}`,
       detalle: `Grupo: ${a.grupo.nombre}`,
       tipo: "asignacion",
     });
@@ -986,7 +815,7 @@ export const obtenerTarjetaInformativa = async (
       eventosTimeline.push({
         fechaRaw: a.fechaReasignacion,
         fecha: formatearFechaHora(a.fechaReasignacion),
-        titulo: `Reasignado — dejó de ser ${nombreUsuario(a.gestor.usuario)}`, // ── FIX ──
+        titulo: `Reasignado — dejó de ser ${nombreUsuario(a.gestor.usuario)}`,
         detalle: a.motivoReasignacion,
         tipo: "asignacion",
       });

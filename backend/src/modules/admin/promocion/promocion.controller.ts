@@ -99,7 +99,8 @@ export const listarMisCasos = async (
     } = req.query;
 
     const filtros = {
-      gestorId: personalId, // ── FIX ──
+      // "Mis casos" siempre se acota al gestor autenticado (Personal.id).
+      gestorId: personalId,
       ...parsearPaginacionQuery(req.query),
       estatus: estatus as string | undefined,
       tipoPersona: tipoPersona as string | undefined,
@@ -435,7 +436,7 @@ export const descargarPDF = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const solicitud = await solicitudesService.SolicitudId(
+    const solicitud = await solicitudesService.obtenerSolicitudParaPDF(
       req.params.id as string,
       req.usuario!.id,
       req.usuario!.rol
