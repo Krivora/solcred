@@ -136,7 +136,7 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
                         fechaAsignacion: true,
                         grupoId: true,
                         grupo: { select: { id: true, nombre: true } },
-                        // ── FIX: Personal -> usuario anidado ──────────────
+                        // El nombre del gestor vive en Personal.usuario.
                         gestor: {
                             select: {
                                 id: true,
@@ -470,7 +470,7 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
                 select: {
                     id: true,
                     activo: true,
-                    // ── FIX: nombre/apellidos/correo viven en usuario ──────
+                    // nombre/apellidos/correo viven en Personal.usuario.
                     usuario: {
                         select: {
                             nombre: true,

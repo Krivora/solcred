@@ -13,14 +13,18 @@ export const validate =
             return;
         }
 
-        // Reemplazamos la fuente con el dato parseado y limpio por Zod
-        // Para params y query usamos cast porque Express los tipifica como read-only
+        // Se reemplaza la fuente con el dato ya parseado y saneado por Zod.
         if (source === "body") {
             req.body = result.data;
         } else if (source === "params") {
             req.params = result.data as Record<string, string>;
-        } else if (source === "query") {
-            req.query = result.data as Record<string, string>;
+        } else {
+            // Express 5: `req.query` es un getter de solo lectura — reasignarlo
+            // lanza `TypeError`. Se muta el objeto en sitio: se vacía y se
+            // rellena con lo parseado.
+            const q = req.query as Record<string, unknown>;
+            for (const clave of Object.keys(q)) delete q[clave];
+            Object.assign(q, result.data);
         }
 
         next();

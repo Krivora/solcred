@@ -37,7 +37,7 @@ const INCLUDE_USUARIO_LOG = {
       correo: true,
       nombre: true,
       apellidoPaterno: true,
-      // ── FIX: rol ya no vive en Usuario, se anida vía Personal ──────
+      // El rol se anida vía Personal (no vive en Usuario).
       personal: { select: { rol: true } },
     },
   },
@@ -66,7 +66,7 @@ export const obtenerLogPorId = async (id: string) => {
     include: INCLUDE_USUARIO_LOG,
   });
 
-  if (!log) throw new AppError("Log no encontrado", 404); // ── FIX ──
+  if (!log) throw new AppError("Log no encontrado", 404);
 
   return log;
 };

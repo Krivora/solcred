@@ -40,16 +40,16 @@ financiamiento, análisis, soporte, dashboard, reportes).
 
 ---
 
-## 2. `validate(schema, "query")` no funciona en Express 5
+## 2. `validate(schema, "query")` en Express 5 — resuelto
 
-`src/middlewares/validate.middleware.ts` reasigna `req[source]`. En Express 5
-`req.query` es un *getter* de solo lectura, así que `validate(schema, "query")`
-lanza `TypeError: Cannot set property query`. `"body"` y `"params"` sí funcionan.
+En Express 5 `req.query` es un *getter* de solo lectura: reasignarlo lanza
+`TypeError: Cannot set property query`. `validate.middleware.ts` ahora **muta el
+objeto en sitio** para la fuente `query` (lo vacía y lo rellena con lo parseado
+por Zod) en vez de reasignarlo; `"body"` y `"params"` se siguen reasignando.
 
-Workaround usado en el módulo `soporte`: validar la query **dentro del service**
-con `schema.parse(rawQuery)` en vez de en el router. Si se quiere arreglar de
-raíz, el middleware debería mutar el objeto en sitio (`Object.assign`) o guardar
-lo parseado en `res.locals` en vez de reasignar `req.query`.
+Nota histórica: el módulo `soporte` valida su query **dentro del service** con
+`schema.parse(rawQuery)`. Funciona y se deja como está; los módulos nuevos
+pueden usar `validate(schema, "query")` en el router.
 
 ---
 
