@@ -10,6 +10,7 @@ import {
   CategoriaCredito,
   TipoGarantia,
   TipoLocal,
+  PasoFormulario,
 } from "../../../../generated/prisma/client";
 
 // ─────────────────────────────────────────
@@ -411,6 +412,14 @@ export const guardarDatosBancariosSchema = z.object({
 });
 
 // ─────────────────────────────────────────
+// PASO VISTO (métricas de conversión del formulario)
+// ─────────────────────────────────────────
+
+export const registrarPasoVistoSchema = z.object({
+  paso: z.nativeEnum(PasoFormulario, { message: "Paso inválido" }),
+});
+
+// ─────────────────────────────────────────
 // TIPOS INFERIDOS
 // ─────────────────────────────────────────
 
@@ -424,3 +433,4 @@ export type GuardarDatosGarantiaDto = z.infer<typeof guardarDatosGarantiaSchema>
 export type GuardarDatosNegocioDto = z.infer<typeof guardarDatosNegocioSchema>;
 export type GuardarDatosMercadoDto = z.infer<typeof guardarDatosMercadoSchema>;
 export type GuardarDatosBancariosDto = z.infer<typeof guardarDatosBancariosSchema>;
+export type RegistrarPasoVistoDto = z.infer<typeof registrarPasoVistoSchema>;

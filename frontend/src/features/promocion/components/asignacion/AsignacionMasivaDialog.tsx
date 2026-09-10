@@ -97,19 +97,19 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
                             <div
                                 className={cn(
                                     'flex h-8 w-8 items-center justify-center rounded-full shrink-0 transition-colors duration-300',
-                                    estado.enProceso && 'bg-primary/10',
-                                    sinErrores && 'bg-emerald-500/10',
-                                    conErrores && 'bg-amber-500/10'
+                                    estado.enProceso && 'bg-brand-surface',
+                                    sinErrores && 'bg-ok-surface',
+                                    conErrores && 'bg-warn-surface'
                                 )}
                             >
                                 {estado.enProceso && (
-                                    <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                                    <Loader2 className="h-4 w-4 text-brand-ink animate-spin" />
                                 )}
                                 {sinErrores && (
-                                    <PartyPopper className="h-4 w-4 text-emerald-600" />
+                                    <PartyPopper className="h-4 w-4 text-ok-ink" />
                                 )}
                                 {conErrores && (
-                                    <AlertCircle className="h-4 w-4 text-amber-600" />
+                                    <AlertCircle className="h-4 w-4 text-warn-ink" />
                                 )}
                             </div>
                             <DialogTitle className="text-base font-semibold">
@@ -131,14 +131,14 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
 
                 {/* ── Barra de progreso ──────────────────────────────────── */}
                 <div className="px-6">
-                    <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-surface-sunken overflow-hidden">
                         <div
                             className={cn(
                                 'h-full rounded-full',
-                                estado.enProceso && 'bg-primary transition-[width] duration-150 ease-linear',
+                                estado.enProceso && 'bg-brand transition-[width] duration-150 ease-linear',
                                 (sinErrores || conErrores) && 'transition-[width] duration-500 ease-out',
-                                sinErrores && 'bg-emerald-500',
-                                conErrores && 'bg-amber-500'
+                                sinErrores && 'bg-ok',
+                                conErrores && 'bg-warn'
                             )}
                             style={{ width: `${porcentajeMostrado}%` }}
                         />
@@ -148,14 +148,14 @@ export function AsignacionMasivaDialog({ open, onOpenChange, estado, folioPorId 
                 {/* ── Contadores ─────────────────────────────────────────── */}
                 <div className="px-6 pt-4 pb-1">
                     <div className="grid grid-cols-2 gap-2">
-                        <div className="rounded-lg border border-border/60 bg-muted/30 px-3 py-2.5">
-                            <div className="flex items-center gap-1.5 text-emerald-600">
+                        <div className="rounded-lg border border-hairline bg-surface-sunken px-3 py-2.5">
+                            <div className="flex items-center gap-1.5 text-ok-ink">
                                 <CheckCircle2 className="h-3.5 w-3.5" />
-                                <span className="text-[11px] font-medium uppercase tracking-wide">
+                                <span className="text-label uppercase tracking-wide">
                                     Asignadas
                                 </span>
                             </div>
-                            <p className="mt-1 text-xl font-semibold tabular-nums">
+                            <p className="mt-1 text-title tabular-nums text-ink">
                                 {estado.exitosas}
                             </p>
                         </div>

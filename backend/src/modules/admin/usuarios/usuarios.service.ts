@@ -16,7 +16,7 @@ const seleccionSegura = {
   activo: true,
   creadoEn: true,
   actualizadoEn: true,
-  // ── FIX: rol ya no vive en Usuario, se anida vía Personal ──────────────
+  // El rol y el resto del perfil de staff se anidan vía Personal.
   personal: {
     select: {
       id: true,

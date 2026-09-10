@@ -15,10 +15,10 @@ export function CoberturaBanner({ cobertura, valorGarantias, montoAjustado }: Pr
   const nivel = cobertura === null ? 'sin' : cobertura >= 1 ? 'ok' : cobertura >= 0.7 ? 'baja' : 'critica'
 
   const estilo = {
-    sin: 'border-border/60 bg-muted/40 text-muted-foreground',
-    ok: 'border-emerald-500/25 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400',
-    baja: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400',
-    critica: 'border-destructive/25 bg-destructive/5 text-destructive',
+    sin: 'border-hairline bg-surface-sunken text-ink-muted',
+    ok: 'border-ok/25 bg-ok-surface text-ok-ink',
+    baja: 'border-warn/25 bg-warn-surface text-warn-ink',
+    critica: 'border-danger/25 bg-danger-surface text-danger-ink',
   }[nivel]
 
   const Icono = nivel === 'ok' ? ShieldCheck : nivel === 'critica' ? ShieldX : ShieldAlert

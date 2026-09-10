@@ -12,37 +12,31 @@ export type AccionConfig = {
 };
 
 /*
-  Paleta disponible (globals.css):
-  primary / primary-foreground
-  secondary / secondary-foreground
-  muted / muted-foreground
-  accent / accent-foreground
-  destructive / destructive-foreground
-  border · foreground
-  chart-1 (azul principal) · chart-2 (azul claro) · chart-3 (azul medio)
-  chart-4 (azul grisáceo) · chart-5 (azul muy claro)
+  Desde Fase 3 del rediseño, acción y módulo usan los tokens categóricos
+  (`--cat-1..6`), no `--chart-*` (que eran el mismo tono y hacían los badges
+  indistinguibles). Los 6 categóricos tienen L/C emparejados: se leen como
+  familia y se distinguen al escanear.
 
-  Estrategia de diferenciación semántica:
-  CREAR     → primary   (acción constructiva principal)
-  ACTUALIZAR→ chart-2   (variante informativa de la paleta)
+  CREAR     → primary        (acción constructiva principal)
+  ACTUALIZAR→ info           (cambio, informativo)
   ELIMINAR  → destructive
-  CONSULTAR → muted     (acción neutra, sin énfasis)
-  LOGIN     → chart-3   (acceso — positivo pero distinto a crear)
-  LOGOUT    → chart-4   (salida — neutro-oscuro)
-  ERROR     → destructive con mayor peso visual que ELIMINAR
+  CONSULTAR → muted          (acción neutra)
+  LOGIN     → cat-4 (verde)  (acceso)
+  LOGOUT    → cat-3 (cian)   (salida)
+  ERROR     → destructive con mayor peso que ELIMINAR
 */
 
 export const ACCION_CONFIG: Record<AccionLog, AccionConfig> = {
   CREAR: {
     label: 'Crear',
     variant: 'success',
-    className: 'bg-primary/10 text-primary border-primary/30',
+    className: 'bg-brand-surface text-brand-ink border-brand/25',
     icon: 'Plus',
   },
   ACTUALIZAR: {
     label: 'Actualizar',
     variant: 'info',
-    className: 'bg-[color:var(--chart-2)]/10 text-[color:var(--chart-2)] border-[color:var(--chart-2)]/30',
+    className: 'bg-info-surface text-info-ink border-info/25',
     icon: 'Pencil',
   },
   ELIMINAR: {
@@ -54,25 +48,25 @@ export const ACCION_CONFIG: Record<AccionLog, AccionConfig> = {
   CONSULTAR: {
     label: 'Consultar',
     variant: 'secondary',
-    className: 'bg-muted text-muted-foreground border-border',
+    className: 'bg-surface-sunken text-ink-muted border-hairline',
     icon: 'Eye',
   },
   LOGIN: {
     label: 'Login',
     variant: 'default',
-    className: 'bg-[color:var(--chart-3)]/10 text-[color:var(--chart-3)] border-[color:var(--chart-3)]/30',
+    className: 'bg-cat-4-surface text-cat-4 border-cat-4/25',
     icon: 'LogIn',
   },
   LOGOUT: {
     label: 'Logout',
     variant: 'warning',
-    className: 'bg-[color:var(--chart-4)]/15 text-foreground border-[color:var(--chart-4)]/30',
+    className: 'bg-cat-3-surface text-cat-3 border-cat-3/25',
     icon: 'LogOut',
   },
   ERROR: {
     label: 'Error',
     variant: 'destructive',
-    className: 'bg-destructive/20 text-destructive border-destructive/50',
+    className: 'bg-danger-surface text-danger-ink border-danger/40',
     icon: 'AlertTriangle',
   },
 };
@@ -88,44 +82,19 @@ export type ModuloConfig = {
 };
 
 /*
-  Los 5 módulos se diferencian usando los 5 chart tokens de la paleta.
-  chart-1 (azul principal) · chart-2 · chart-3 · chart-4 · chart-5
-  Todos usan el mismo patrón: fondo /10, texto directo, borde /30.
-  Funciona en light y dark sin variantes adicionales porque los tokens
-  ya cambian con el tema en globals.css.
+  Cada módulo → un categórico distinto (`--cat-N-surface` de fondo, `--cat-N`
+  de texto). L/C emparejados: se distinguen sin gritar. Mismo patrón en claro
+  y oscuro porque los tokens ya se invierten en `.dark`.
 */
 
 export const MODULO_CONFIG: Record<ModuloLog, ModuloConfig> = {
-  AUTH: {
-    label: 'Auth',
-    className: 'bg-[color:var(--chart-1)]/10 text-[color:var(--chart-1)] border-[color:var(--chart-1)]/30',
-    icon: 'Shield',
-  },
-  USUARIOS: {
-    label: 'Usuarios',
-    className: 'bg-[color:var(--chart-2)]/10 text-[color:var(--chart-2)] border-[color:var(--chart-2)]/30',
-    icon: 'Users',
-  },
-  PROGRAMAS: {
-    label: 'Programas',
-    className: 'bg-[color:var(--chart-3)]/10 text-[color:var(--chart-3)] border-[color:var(--chart-3)]/30',
-    icon: 'BookOpen',
-  },
-  SOLICITUDES: {
-    label: 'Solicitudes',
-    className: 'bg-[color:var(--chart-4)]/10 text-[color:var(--chart-4)] border-[color:var(--chart-4)]/30',
-    icon: 'FileText',
-  },
-  DOCUMENTOS: {
-    label: 'Documentos',
-    className: 'bg-[color:var(--chart-5)]/10 text-[color:var(--chart-5)] border-[color:var(--chart-5)]/30',
-    icon: 'Paperclip',
-  },
-  SOPORTE: {
-    label: 'Soporte',
-    className: 'bg-[color:var(--chart-1)]/10 text-[color:var(--chart-1)] border-[color:var(--chart-1)]/30',
-    icon: 'LifeBuoy',
-  },
+  AUTH: { label: 'Auth', className: 'bg-cat-2-surface text-cat-2 border-cat-2/25', icon: 'Shield' },
+  USUARIOS: { label: 'Usuarios', className: 'bg-cat-1-surface text-cat-1 border-cat-1/25', icon: 'Users' },
+  PROGRAMAS: { label: 'Programas', className: 'bg-cat-3-surface text-cat-3 border-cat-3/25', icon: 'BookOpen' },
+  SOLICITUDES: { label: 'Solicitudes', className: 'bg-cat-5-surface text-cat-5 border-cat-5/25', icon: 'FileText' },
+  DOCUMENTOS: { label: 'Documentos', className: 'bg-cat-4-surface text-cat-4 border-cat-4/25', icon: 'Paperclip' },
+  SOPORTE: { label: 'Soporte', className: 'bg-cat-6-surface text-cat-6 border-cat-6/25', icon: 'LifeBuoy' },
+  CRM: { label: 'CRM', className: 'bg-brand-surface text-brand-ink border-brand/25', icon: 'MessagesSquare' },
 };
 
 // ─────────────────────────────────────────

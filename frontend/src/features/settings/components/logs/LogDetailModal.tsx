@@ -324,7 +324,7 @@ function DetailRow({
               aria-label={copied ? 'Copiado' : 'Copiar valor'}
             >
               {copied ? (
-                <Check className="h-3 w-3 text-emerald-500" />
+                <Check className="h-3 w-3 text-ok-ink" />
               ) : (
                 <Copy className="h-3 w-3" />
               )}
@@ -364,7 +364,7 @@ function MetadataViewer({ data }: { data: Record<string, unknown> }) {
         className="absolute right-2 top-2 flex items-center gap-1 rounded border bg-background px-2 py-1 text-xs text-muted-foreground shadow-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         aria-label="Copiar JSON"
       >
-        {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+        {copied ? <Check className="h-3 w-3 text-ok-ink" /> : <Copy className="h-3 w-3" />}
         {copied ? 'Copiado' : 'Copiar'}
       </button>
     </div>

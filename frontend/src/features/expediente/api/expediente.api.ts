@@ -1,7 +1,6 @@
 import { apiAuth } from '@/shared/api/client'
 import type {
     Expediente,
-    DocumentoActivo,
     ValidarDocumentoDto,
     DocumentoConValidacionRaw,
 } from '@/features/expediente/types/expediente.types'
@@ -21,7 +20,7 @@ export const expedienteApi = {
         documentoId: string,
         dto: ValidarDocumentoDto
     ) =>
-        apiAuth<DocumentoActivo>(
+        apiAuth<DocumentoConValidacionRaw>(
             `/expediente/${solicitudId}/documentos/${documentoId}/validar`,
             { method: 'PATCH', body: dto }
         ),

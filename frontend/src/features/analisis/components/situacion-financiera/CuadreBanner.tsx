@@ -28,8 +28,8 @@ export function CuadreBanner({
             className={cn(
               'flex items-center gap-2 rounded-lg border px-3 py-2 text-xs',
               cuadrado
-                ? 'border-emerald-500/25 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400'
-                : 'border-destructive/25 bg-destructive/5 text-destructive',
+                ? 'border-ok/25 bg-ok-surface text-ok-ink'
+                : 'border-danger/25 bg-danger-surface text-danger-ink',
             )}
           >
             {cuadrado ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0" /> : <AlertTriangle className="h-3.5 w-3.5 shrink-0" />}

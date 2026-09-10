@@ -2,144 +2,187 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   SISTEMA VISUAL — SolCred
+   Fase 0: fundaciones. Primitivos con propósito + alias de los nombres previos
+   para que ningún componente existente se rompa. Ver propuesta:
+   claude.ai/code/artifact/e0bb8fce-40d4-439b-a345-969973f149ee
+
+   Reglas:
+   · Neutros con una pizca del tono de marca (~274°, croma ≤ 0.02).
+   · Tinta suave, nunca negro/blanco puro.
+   · La marca solo para acción, navegación activa, foco y enlaces.
+   · Cada estado = trío  --x / --x-ink / --x-surface  (misma receta).
+   · El modo oscuro NO se invierte: se define aparte en `.dark`.
+   ───────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --background: oklch(0.9851 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 267.51);
-  --card-foreground: oklch(0.2103 0 267.51);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.5144 0.1605 267.44);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.94 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.44 0 0);
-  --accent: oklch(0.9214 0.0248 257.65);
-  --accent-foreground: oklch(0.2571 0.1161 272.24);
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.97 0.014 254.604);
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.94 0 0);
-  --ring: oklch(0.5144 0.1605 267.44);
-  --chart-1: oklch(0.9214 0.0248 257.65);
-  --chart-2: oklch(0.7597 0.0804 267.01);
-  --chart-3: oklch(0.6083 0.1247 272.72);
-  --chart-4: oklch(0.5144 0.1605 267.44);
-  --chart-5: oklch(0.2571 0.1161 272.24);
-  --sidebar: oklch(1 0 267.51);
-  --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0.5144 0.1605 267.44);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.9214 0.0248 257.65);
-  --sidebar-accent-foreground: oklch(0.2571 0.1161 272.24);
-  --sidebar-border: oklch(0.92 0 0);
-  --sidebar-ring: oklch(0.5144 0.1605 267.44);
-  --font-sans: Geist, sans-serif;
-  --font-serif: Source Serif 4, ui-serif, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0.5rem;
-  --shadow-x: 0.25px;
-  --shadow-y: 1px;
-  --shadow-blur: 3px;
-  --shadow-spread: 0px;
-  --shadow-opacity: 0.15;
-  --shadow-color: oklch(0.2571 0.1161 272.24);
-  --shadow-2xs: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.07);
-  --shadow-xs: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.07);
-  --shadow-sm:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 1px 2px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 1px 2px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-md:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 2px 4px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-lg:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 4px 6px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-xl:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 8px 10px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-2xl: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.38);
-  --tracking-normal: 0em;
+  /* ── Superficies (escalera de elevación) ─────────────────────────────── */
+  --surface-sunken: oklch(0.966 0.004 265); /* pozos, cabecera de tabla, code */
+  --surface: oklch(0.994 0.002 265);        /* tarjetas y paneles en reposo   */
+  --surface-raised: oklch(1 0 0);           /* popover, dropdown, diálogo     */
+
+  /* ── Tinta ───────────────────────────────────────────────────────────── */
+  --ink: oklch(0.263 0.019 275);            /* texto principal y títulos      */
+  --ink-muted: oklch(0.505 0.017 273);      /* texto secundario (AA)          */
+  --ink-subtle: oklch(0.612 0.014 273);     /* meta, timestamps, placeholder  */
+
+  /* ── Líneas ──────────────────────────────────────────────────────────── */
+  --hairline: oklch(0.918 0.005 265);       /* único grosor de borde (1px)    */
+  --line-strong: oklch(0.864 0.008 265);    /* input, divisor primario        */
+  --hover: oklch(0.958 0.006 264);          /* fondo de fila/ítem interactivo */
+
+  /* ── Marca ───────────────────────────────────────────────────────────── */
+  --brand: oklch(0.549 0.155 274);          /* relleno de botón primario, nav */
+  --brand-ink: oklch(0.497 0.160 274);      /* enlaces, íconos sobre surface  */
+  --brand-surface: oklch(0.955 0.028 274);  /* nav seleccionada, hover fantasma */
+  --brand-contrast: oklch(0.985 0.006 274); /* texto sobre el relleno de marca */
+
+  /* ── Estados (trío: solid / ink / surface) ───────────────────────────── */
+  --ok: oklch(0.567 0.110 152);
+  --ok-ink: oklch(0.432 0.093 152);
+  --ok-surface: oklch(0.955 0.035 152);
+
+  --warn: oklch(0.706 0.120 75);
+  --warn-ink: oklch(0.470 0.083 66);
+  --warn-surface: oklch(0.958 0.049 82);
+
+  --danger: oklch(0.579 0.163 25);
+  --danger-ink: oklch(0.505 0.153 25);
+  --danger-surface: oklch(0.953 0.028 25);
+
+  --info: oklch(0.585 0.115 245);
+  --info-ink: oklch(0.474 0.108 250);
+  --info-surface: oklch(0.953 0.030 250);
+
+  /* ── Categóricos (tipo de comunicación, módulo de log) — L/C emparejados ─ */
+  --cat-1: oklch(0.550 0.100 292);  --cat-1-surface: oklch(0.955 0.032 292);
+  --cat-2: oklch(0.550 0.100 248);  --cat-2-surface: oklch(0.955 0.032 248);
+  --cat-3: oklch(0.550 0.100 205);  --cat-3-surface: oklch(0.955 0.032 205);
+  --cat-4: oklch(0.550 0.100 150);  --cat-4-surface: oklch(0.955 0.032 150);
+  --cat-5: oklch(0.620 0.110 75);   --cat-5-surface: oklch(0.958 0.045 82);
+  --cat-6: oklch(0.560 0.120 15);   --cat-6-surface: oklch(0.955 0.030 15);
+
+  /* ── Alias de compatibilidad (nombres previos → primitivos nuevos) ────── */
+  --background: oklch(0.979 0.003 265);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-contrast);
+  --secondary: var(--surface-sunken);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-sunken);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--hover);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger-ink);
+  --destructive-foreground: var(--brand-contrast);
+  --border: var(--hairline);
+  --input: var(--line-strong);
+  --ring: var(--brand);
+  --success: var(--ok-ink);
+  --success-foreground: var(--brand-contrast);
+  --warning: var(--warn-ink);
+  --warning-foreground: var(--brand-contrast);
+  --info-foreground: var(--brand-contrast);
+
+  --chart-1: var(--cat-2);
+  --chart-2: var(--cat-1);
+  --chart-3: var(--cat-4);
+  --chart-4: var(--cat-5);
+  --chart-5: var(--cat-3);
+
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--brand-contrast);
+  --sidebar-accent: var(--brand-surface);
+  --sidebar-accent-foreground: var(--brand-ink);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--brand);
+
+  /* ── Tipografía ──────────────────────────────────────────────────────── */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ── Forma y ritmo ───────────────────────────────────────────────────── */
+  --radius: 0.625rem;   /* 10px — tarjetas; sm=6, md=8, lg=10, xl=14 vía @theme */
   --spacing: 0.25rem;
-  --success: oklch(0.62 0.16 145);
-  --success-foreground: oklch(0.98 0.02 145);
-  --warning: oklch(0.78 0.16 85);
-  --warning-foreground: oklch(0.25 0.05 85);
-  --info: oklch(0.55 0.18 255);
-  --info-foreground: oklch(0.98 0.02 255);
+  --tracking-normal: 0em;
+
+  /* ── Elevación (sombra casi neutra, no violeta) ──────────────────────── */
+  --shadow-color: oklch(0.22 0.02 274);
+  --shadow-2xs: 0 1px 2px oklch(0.22 0.02 274 / 0.04);
+  --shadow-xs: 0 1px 2px oklch(0.22 0.02 274 / 0.05);
+  --shadow-sm: 0 1px 2px oklch(0.22 0.02 274 / 0.05), 0 1px 3px oklch(0.22 0.02 274 / 0.05);
+  --shadow: 0 1px 2px oklch(0.22 0.02 274 / 0.05), 0 2px 6px oklch(0.22 0.02 274 / 0.06);
+  --shadow-md: 0 2px 6px oklch(0.22 0.02 274 / 0.07), 0 8px 20px oklch(0.22 0.02 274 / 0.08);
+  --shadow-lg: 0 4px 12px oklch(0.22 0.02 274 / 0.09), 0 12px 32px oklch(0.22 0.02 274 / 0.10);
+  --shadow-xl: 0 8px 24px oklch(0.22 0.02 274 / 0.12), 0 20px 48px oklch(0.22 0.02 274 / 0.12);
+  --shadow-2xl: 0 24px 64px oklch(0.22 0.02 274 / 0.20);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODO OSCURO — clase `.dark` (ThemeProvider con attribute="class").
+   Solo se redefinen los primitivos; los alias con var() los siguen solos.
+   Carbón ~L 0.17 (no negro), tinta ~L 0.93 (no blanco).
+   ───────────────────────────────────────────────────────────────────────────── */
 .dark {
-  --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0.2103 0 267.51);
-  --card-foreground: oklch(0.9461 0 0);
-  --popover: oklch(0.2103 0 267.51);
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.5144 0.1605 267.44);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.25 0 0);
-  --secondary-foreground: oklch(0.94 0 0);
-  --muted: oklch(0.23 0 0);
-  --muted-foreground: oklch(0.72 0 0);
-  --accent: oklch(0.32 0 0);
-  --accent-foreground: oklch(0.9214 0.0248 257.65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.97 0.014 254.604);
-  --border: oklch(0.26 0 0);
-  --input: oklch(0.32 0 0);
-  --ring: oklch(0.5144 0.1605 267.44);
-  --chart-1: oklch(0.9214 0.0248 257.65);
-  --chart-2: oklch(0.7597 0.0804 267.01);
-  --chart-3: oklch(0.6083 0.1247 272.72);
-  --chart-4: oklch(0.5144 0.1605 267.44);
-  --chart-5: oklch(0.2571 0.1161 272.24);
-  --sidebar: oklch(0.2103 0 267.51);
-  --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(0.5144 0.1605 267.44);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.32 0 0);
-  --sidebar-accent-foreground: oklch(0.9214 0.0248 257.65);
-  --sidebar-border: oklch(0.26 0 0);
-  --sidebar-ring: oklch(0.5144 0.1605 267.44);
-  --font-sans: Geist, sans-serif;
-  --font-serif: Source Serif 4, ui-serif, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0.5rem;
-  --shadow-x: 0.25px;
-  --shadow-y: 1px;
-  --shadow-blur: 3px;
-  --shadow-spread: 0px;
-  --shadow-opacity: 0.15;
-  --shadow-color: oklch(0.2571 0.1161 272.24);
-  --shadow-2xs: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.07);
-  --shadow-xs: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.07);
-  --shadow-sm:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 1px 2px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 1px 2px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-md:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 2px 4px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-lg:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 4px 6px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-xl:
-    0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.15),
-    0.25px 8px 10px -1px hsl(236.5829 64.225% 21.4383% / 0.15);
-  --shadow-2xl: 0.25px 1px 3px 0px hsl(236.5829 64.225% 21.4383% / 0.38);
-  --success: oklch(0.68 0.17 145);
-  --success-foreground: oklch(0.15 0.03 145);
-  --warning: oklch(0.82 0.17 85);
-  --warning-foreground: oklch(0.2 0.04 85);
-  --info: oklch(0.65 0.19 255);
-  --info-foreground: oklch(0.15 0.03 255);
+  --surface-sunken: oklch(0.150 0.008 274);
+  --surface: oklch(0.208 0.009 274);
+  --surface-raised: oklch(0.246 0.010 274);
+
+  --ink: oklch(0.928 0.006 274);
+  --ink-muted: oklch(0.688 0.010 274);
+  --ink-subtle: oklch(0.556 0.010 274);
+
+  --hairline: oklch(0.278 0.008 274);
+  --line-strong: oklch(0.352 0.010 274);
+  --hover: oklch(0.262 0.008 274);
+
+  --brand: oklch(0.631 0.152 274);
+  --brand-ink: oklch(0.740 0.130 274);
+  --brand-surface: oklch(0.297 0.055 274);
+  --brand-contrast: oklch(0.160 0.020 274);
+
+  --ok: oklch(0.640 0.110 152);
+  --ok-ink: oklch(0.775 0.100 152);
+  --ok-surface: oklch(0.270 0.045 152);
+
+  --warn: oklch(0.760 0.115 78);
+  --warn-ink: oklch(0.830 0.100 82);
+  --warn-surface: oklch(0.285 0.045 70);
+
+  --danger: oklch(0.640 0.165 25);
+  --danger-ink: oklch(0.775 0.120 25);
+  --danger-surface: oklch(0.285 0.055 25);
+
+  --info: oklch(0.660 0.120 245);
+  --info-ink: oklch(0.790 0.095 245);
+  --info-surface: oklch(0.280 0.050 245);
+
+  --cat-1: oklch(0.680 0.120 292);  --cat-1-surface: oklch(0.300 0.050 292);
+  --cat-2: oklch(0.680 0.120 248);  --cat-2-surface: oklch(0.300 0.050 248);
+  --cat-3: oklch(0.680 0.110 205);  --cat-3-surface: oklch(0.300 0.045 205);
+  --cat-4: oklch(0.680 0.110 150);  --cat-4-surface: oklch(0.295 0.045 150);
+  --cat-5: oklch(0.770 0.120 82);   --cat-5-surface: oklch(0.300 0.045 75);
+  --cat-6: oklch(0.700 0.140 15);   --cat-6-surface: oklch(0.300 0.055 15);
+
+  --background: oklch(0.171 0.008 274);
+
+  --shadow-color: oklch(0 0 0);
+  --shadow-2xs: 0 1px 2px oklch(0 0 0 / 0.22);
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.26);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.28), 0 1px 3px oklch(0 0 0 / 0.24);
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.30), 0 2px 6px oklch(0 0 0 / 0.30);
+  --shadow-md: 0 2px 6px oklch(0 0 0 / 0.34), 0 8px 20px oklch(0 0 0 / 0.36);
+  --shadow-lg: 0 4px 12px oklch(0 0 0 / 0.40), 0 12px 32px oklch(0 0 0 / 0.42);
+  --shadow-xl: 0 8px 24px oklch(0 0 0 / 0.46), 0 20px 48px oklch(0 0 0 / 0.48);
+  --shadow-2xl: 0 24px 64px oklch(0 0 0 / 0.60);
 }
 
 @theme inline {
@@ -176,6 +219,46 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Primitivos nuevos expuestos como utilidades Tailwind */
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-hairline: var(--hairline);
+  --color-line-strong: var(--line-strong);
+  --color-hover: var(--hover);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-contrast: var(--brand-contrast);
+
+  --color-ok: var(--ok);
+  --color-ok-ink: var(--ok-ink);
+  --color-ok-surface: var(--ok-surface);
+  --color-warn: var(--warn);
+  --color-warn-ink: var(--warn-ink);
+  --color-warn-surface: var(--warn-surface);
+  --color-danger: var(--danger);
+  --color-danger-ink: var(--danger-ink);
+  --color-danger-surface: var(--danger-surface);
+  --color-info: var(--info);
+  --color-info-ink: var(--info-ink);
+  --color-info-surface: var(--info-surface);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-cat-1: var(--cat-1);  --color-cat-1-surface: var(--cat-1-surface);
+  --color-cat-2: var(--cat-2);  --color-cat-2-surface: var(--cat-2-surface);
+  --color-cat-3: var(--cat-3);  --color-cat-3-surface: var(--cat-3-surface);
+  --color-cat-4: var(--cat-4);  --color-cat-4-surface: var(--cat-4-surface);
+  --color-cat-5: var(--cat-5);  --color-cat-5-surface: var(--cat-5-surface);
+  --color-cat-6: var(--cat-6);  --color-cat-6-surface: var(--cat-6-surface);
+
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
@@ -193,12 +276,28 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
+
+  /* Escala tipográfica con roles fijos (pesos 400 / 500 / 600) */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--letter-spacing: 0.01em;
+  --text-label--font-weight: 500;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.1875rem;
+  --text-heading: 0.9375rem;
+  --text-heading--line-height: 1.375rem;
+  --text-heading--letter-spacing: -0.01em;
+  --text-heading--font-weight: 600;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.625rem;
+  --text-title--letter-spacing: -0.015em;
+  --text-title--font-weight: 600;
+  --text-display: 1.5rem;
+  --text-display--line-height: 2rem;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 600;
 }
 
 @layer base {
@@ -207,6 +306,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
   }
 }
 

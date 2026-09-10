@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { Rol } from "../../generated/prisma/client";
 import { ttlSesion } from "../config/sesion.config";
+import { env } from "../config/env";
 
-const SECRET = process.env.JWT_SECRET as string;
+const SECRET = env.JWT_SECRET;
 
 /** Roles que puede traer un token válido: los de staff (Prisma) + CLIENTE. */
 export type RolAplicacion = Rol | "CLIENTE";

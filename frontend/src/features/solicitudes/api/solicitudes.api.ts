@@ -1,4 +1,5 @@
 import { apiAuth } from '@/shared/api/client'
+import type { PasoFormulario } from '@/shared/types/domain.enums'
 import type {
   CrearSolicitudDto,
   DatosBancarios,
@@ -92,4 +93,9 @@ export const solicitudesApi = {
       }
     ),
     descargarPDF: (id: string) => apiAuth<Blob>(`/clientes/solicitudes/${id}/pdf`),
+    registrarPasoVisto: (id: string, paso: PasoFormulario) =>
+        apiAuth<null>(`/clientes/solicitudes/${id}/paso-visto`, {
+            method: 'PATCH',
+            body: { paso },
+        }),
 }

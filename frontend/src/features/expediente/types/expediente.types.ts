@@ -40,6 +40,7 @@ export interface DocumentoActivo {
     activo: boolean
     estatus: EstatusDocumento
     validadoPor: ValidadoPor | null
+    validadoPorId: string | null
     fechaValidacion: string | null
     motivoRechazo: string | null
     subidoEn: string

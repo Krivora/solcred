@@ -70,9 +70,9 @@ export const ValidarDocumentoDialog = ({
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         {esRechazo ? (
-                            <XCircle className="h-5 w-5 text-red-500" />
+                            <XCircle className="h-5 w-5 text-danger-ink" />
                         ) : (
-                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                            <CheckCircle2 className="h-5 w-5 text-ok-ink" />
                         )}
                         {esRechazo ? 'Rechazar documento' : 'Aprobar documento'}
                     </DialogTitle>
@@ -86,7 +86,7 @@ export const ValidarDocumentoDialog = ({
                 {esRechazo && (
                     <div className="space-y-2 py-2">
                         <Label htmlFor="motivo">
-                            Motivo del rechazo <span className="text-red-500">*</span>
+                            Motivo del rechazo <span className="text-danger-ink">*</span>
                         </Label>
                         <Textarea
                             id="motivo"
@@ -97,10 +97,10 @@ export const ValidarDocumentoDialog = ({
                                 if (motivoError) setMotivoError('')
                             }}
                             rows={3}
-                            className={motivoError ? 'border-red-400 focus-visible:ring-red-400' : ''}
+                            className={motivoError ? 'border-danger focus-visible:ring-danger/25' : ''}
                         />
                         {motivoError && (
-                            <p className="text-xs text-red-500">{motivoError}</p>
+                            <p className="text-xs text-danger-ink">{motivoError}</p>
                         )}
                         <p className="text-xs text-muted-foreground">
                             {motivo.length} caracteres (mínimo 10)
@@ -116,7 +116,7 @@ export const ValidarDocumentoDialog = ({
                         onClick={handleConfirm}
                         disabled={loading}
                         variant={esRechazo ? 'destructive' : 'default'}
-                        className={!esRechazo ? 'bg-emerald-600 hover:bg-emerald-700' : ''}
+                        className={!esRechazo ? 'bg-ok text-brand-contrast hover:bg-ok/90' : ''}
                     >
                         {loading ? (
                             <Loader2 className="h-4 w-4 animate-spin mr-2" />

@@ -112,9 +112,9 @@ export const HistorialDocumentoSheet = ({
 
                                 {/* Motivo de rechazo */}
                                 {doc.estatus === 'RECHAZADO' && doc.motivoRechazo && (
-                                    <div className="mt-3 p-2.5 rounded-md bg-red-50 border border-red-100 dark:bg-red-950/40 dark:border-red-900">
-                                        <p className="text-xs font-medium text-red-700 dark:text-red-300 mb-0.5">Motivo de rechazo</p>
-                                        <p className="text-xs text-red-600 dark:text-red-400">{doc.motivoRechazo}</p>
+                                    <div className="mt-3 p-2.5 rounded-md bg-danger-surface border border-danger/20">
+                                        <p className="text-xs font-medium text-danger-ink mb-0.5">Motivo de rechazo</p>
+                                        <p className="text-xs text-danger-ink/90">{doc.motivoRechazo}</p>
                                     </div>
                                 )}
 

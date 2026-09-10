@@ -178,7 +178,7 @@ export function CuentaGridTabla({
                       <td
                         key={c}
                         colSpan={mostrarDivisor ? 2 : 1}
-                        className={cn('border-l border-border/40 bg-amber-500/5 px-2 py-1 text-right font-mono tabular-nums', v < 0 && 'text-destructive')}
+                        className={cn('border-l border-hairline bg-warn-surface/40 px-2 py-1 text-right font-mono tabular-nums', v < 0 && 'text-danger-ink')}
                       >
                         {money(v)}
                       </td>

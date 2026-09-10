@@ -136,7 +136,7 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
                         fechaAsignacion: true,
                         grupoId: true,
                         grupo: { select: { id: true, nombre: true } },
-                        // ── FIX: Personal -> usuario anidado ──────────────
+                        // El nombre del gestor vive en Personal.usuario.
                         gestor: {
                             select: {
                                 id: true,
@@ -180,6 +180,39 @@ export const listarAsignacion = async (filtros: FiltrosAsignacion) => {
 
     return paginado(data, page, pageSize, total);
 };
+/**
+ * Comparación PURA de una regla contra el valor de la solicitud. Separada de
+ * `evaluarRegla` (que resuelve el valor, a veces con BD) para poder probarla.
+ * `valorSolicitud` null/undefined nunca matchea.
+ */
+export const compararValor = (
+    operador: OperadorRegla,
+    valorSolicitud: string | number | null | undefined,
+    valorRegla: string
+): boolean => {
+    if (valorSolicitud === null || valorSolicitud === undefined) return false;
+
+    switch (operador) {
+        case OperadorRegla.IGUAL:
+            return String(valorSolicitud) === valorRegla;
+        case OperadorRegla.DIFERENTE:
+            return String(valorSolicitud) !== valorRegla;
+        case OperadorRegla.EN_LISTA: {
+            try {
+                const lista: unknown = JSON.parse(valorRegla);
+                return Array.isArray(lista) && lista.map(String).includes(String(valorSolicitud));
+            } catch {
+                return false;
+            }
+        }
+        case OperadorRegla.MAYOR_QUE: return Number(valorSolicitud) > Number(valorRegla);
+        case OperadorRegla.MENOR_QUE: return Number(valorSolicitud) < Number(valorRegla);
+        case OperadorRegla.MAYOR_IGUAL: return Number(valorSolicitud) >= Number(valorRegla);
+        case OperadorRegla.MENOR_IGUAL: return Number(valorSolicitud) <= Number(valorRegla);
+        default: return false;
+    }
+};
+
 const evaluarRegla = async (
     regla: { campo: CampoRegla; operador: OperadorRegla; valor: string },
     solicitud: SolicitudParaEvaluar
@@ -201,23 +234,7 @@ const evaluarRegla = async (
         }
     })();
 
-    if (valorSolicitud === null || valorSolicitud === undefined) return false;
-
-    switch (regla.operador) {
-        case OperadorRegla.IGUAL:
-            return String(valorSolicitud) === regla.valor;
-        case OperadorRegla.DIFERENTE:
-            return String(valorSolicitud) !== regla.valor;
-        case OperadorRegla.EN_LISTA: {
-            const lista: string[] = JSON.parse(regla.valor);
-            return lista.includes(String(valorSolicitud));
-        }
-        case OperadorRegla.MAYOR_QUE: return Number(valorSolicitud) > Number(regla.valor);
-        case OperadorRegla.MENOR_QUE: return Number(valorSolicitud) < Number(regla.valor);
-        case OperadorRegla.MAYOR_IGUAL: return Number(valorSolicitud) >= Number(regla.valor);
-        case OperadorRegla.MENOR_IGUAL: return Number(valorSolicitud) <= Number(regla.valor);
-        default: return false;
-    }
+    return compararValor(regla.operador, valorSolicitud, regla.valor);
 };
 
 const encontrarGrupo = async (
@@ -453,7 +470,7 @@ export const obtenerCargaGestores = async (grupoId?: string) => {
                 select: {
                     id: true,
                     activo: true,
-                    // ── FIX: nombre/apellidos/correo viven en usuario ──────
+                    // nombre/apellidos/correo viven en Personal.usuario.
                     usuario: {
                         select: {
                             nombre: true,

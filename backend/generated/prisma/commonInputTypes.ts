@@ -376,6 +376,13 @@ export type EnumTamanoEmpresaNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel> | $Enums.TamanoEmpresa | null
 }
 
+export type EnumPasoFormularioNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel> | $Enums.PasoFormulario | null
+}
+
 export type EnumTipoPersonaNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TipoPersona | Prisma.EnumTipoPersonaFieldRefInput<$PrismaModel> | null
   in?: $Enums.TipoPersona[] | Prisma.ListEnumTipoPersonaFieldRefInput<$PrismaModel> | null
@@ -404,6 +411,16 @@ export type EnumTamanoEmpresaNullableWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
+}
+
+export type EnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel> | $Enums.PasoFormulario | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
 }
 
 export type JsonNullableFilter<$PrismaModel = never> =
@@ -760,6 +777,57 @@ export type EnumTicketTipoEventoWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
+}
+
+export type EnumComunicacionTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel> | $Enums.ComunicacionTipo
+}
+
+export type EnumComunicacionMotivoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+}
+
+export type EnumComunicacionResultadoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel> | $Enums.ComunicacionResultado
+}
+
+export type EnumComunicacionTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+}
+
+export type EnumComunicacionMotivoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+}
+
+export type EnumComunicacionResultadoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionResultado
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -1126,6 +1194,13 @@ export type NestedEnumTamanoEmpresaNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel> | $Enums.TamanoEmpresa | null
 }
 
+export type NestedEnumPasoFormularioNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel> | $Enums.PasoFormulario | null
+}
+
 export type NestedEnumTipoPersonaNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TipoPersona | Prisma.EnumTipoPersonaFieldRefInput<$PrismaModel> | null
   in?: $Enums.TipoPersona[] | Prisma.ListEnumTipoPersonaFieldRefInput<$PrismaModel> | null
@@ -1154,6 +1229,16 @@ export type NestedEnumTamanoEmpresaNullableWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTamanoEmpresaNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PasoFormulario | Prisma.EnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PasoFormulario[] | Prisma.ListEnumPasoFormularioFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPasoFormularioNullableWithAggregatesFilter<$PrismaModel> | $Enums.PasoFormulario | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPasoFormularioNullableFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =
@@ -1472,6 +1557,57 @@ export type NestedEnumTicketTipoEventoWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTicketTipoEventoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionTipoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel> | $Enums.ComunicacionTipo
+}
+
+export type NestedEnumComunicacionMotivoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+}
+
+export type NestedEnumComunicacionResultadoFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel> | $Enums.ComunicacionResultado
+}
+
+export type NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionTipo | Prisma.EnumComunicacionTipoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionTipo[] | Prisma.ListEnumComunicacionTipoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionTipoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionTipo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionTipoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionMotivo | Prisma.EnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionMotivo[] | Prisma.ListEnumComunicacionMotivoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionMotivoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionMotivo
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionMotivoFilter<$PrismaModel>
+}
+
+export type NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ComunicacionResultado | Prisma.EnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  in?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ComunicacionResultado[] | Prisma.ListEnumComunicacionResultadoFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumComunicacionResultadoWithAggregatesFilter<$PrismaModel> | $Enums.ComunicacionResultado
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumComunicacionResultadoFilter<$PrismaModel>
 }
 
 

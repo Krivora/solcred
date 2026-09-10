@@ -43,8 +43,8 @@ export function ComposerMensaje({ puedeNotaInterna, enviando, onEnviar }: Props)
   return (
     <div
       className={cn(
-        'rounded-xl border bg-card p-3 shadow-sm',
-        notaInterna ? 'border-amber-500/40 bg-amber-500/[0.03]' : 'border-border/60',
+        'rounded-lg border bg-card p-3',
+        notaInterna ? 'border-warn/30 bg-warn-surface/40' : 'border-hairline',
       )}
     >
       <Textarea

@@ -16,6 +16,7 @@ export function PanoramaSkeleton() {
         <Skeleton className="h-72 rounded-xl lg:col-span-7" />
         <Skeleton className="h-72 rounded-xl lg:col-span-5" />
         <Skeleton className="h-64 rounded-xl lg:col-span-12" />
+        <Skeleton className="h-64 rounded-xl lg:col-span-12" />
         <Skeleton className="h-64 rounded-xl lg:col-span-6" />
         <Skeleton className="h-64 rounded-xl lg:col-span-6" />
       </div>

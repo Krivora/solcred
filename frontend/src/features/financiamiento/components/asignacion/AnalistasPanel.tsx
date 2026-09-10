@@ -71,8 +71,8 @@ export function AnalistasPanel({ analistas, cargando, onRecargar }: Props) {
 
       <div className="px-4 py-2 border-b border-border/40 flex items-center gap-3">
         {[
-          { label: 'Libre', color: 'bg-emerald-500' },
-          { label: 'Ocupado', color: 'bg-amber-500' },
+          { label: 'Libre', color: 'bg-ok' },
+          { label: 'Ocupado', color: 'bg-warn' },
           { label: 'Lleno', color: 'bg-destructive' },
         ].map((l) => (
           <div key={l.label} className="flex items-center gap-1.5">

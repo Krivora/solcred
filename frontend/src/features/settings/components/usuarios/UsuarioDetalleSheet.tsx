@@ -225,7 +225,7 @@ export function UsuarioDetalleSheet({
               <span
                 className={cn(
                   "absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-background",
-                  usuario.activo ? "bg-green-500" : "bg-muted-foreground"
+                  usuario.activo ? "bg-ok" : "bg-ink-subtle"
                 )}
               />
             </div>

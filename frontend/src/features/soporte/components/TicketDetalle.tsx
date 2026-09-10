@@ -114,35 +114,35 @@ export function TicketDetalle({ id }: { id: string }) {
       </Button>
 
       {/* Cabecera — tarjeta */}
-      <div className="overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-hairline bg-card">
         <div
           className={cn(
             'h-1 w-full',
             ticket.prioridad === 'URGENTE'
-              ? 'bg-destructive'
+              ? 'bg-danger'
               : ticket.prioridad === 'ALTA'
-                ? 'bg-amber-500/80'
+                ? 'bg-warn'
                 : ticket.prioridad === 'MEDIA'
-                  ? 'bg-sky-500/70'
-                  : 'bg-border',
+                  ? 'bg-info'
+                  : 'bg-hairline',
           )}
         />
         <div className="space-y-4 p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded bg-primary/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-primary">
+            <span className="rounded bg-brand-surface px-2 py-0.5 font-mono text-caption font-medium text-brand-ink">
               {ticket.folio}
             </span>
             <EstatusBadge estatus={ticket.estatus} />
             <PrioridadBadge prioridad={ticket.prioridad} />
             <CategoriaBadge categoria={ticket.categoria} />
             {ticket.reabierto && (
-              <span className="inline-flex items-center gap-1 rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600 dark:text-amber-400">
+              <span className="inline-flex items-center gap-1 rounded bg-warn-surface px-1.5 py-0.5 text-caption font-medium text-warn-ink">
                 <RotateCcw className="size-3" /> Reabierto
               </span>
             )}
           </div>
 
-          <h1 className="text-lg font-semibold leading-tight tracking-tight text-foreground sm:text-xl">
+          <h1 className="text-title text-ink sm:text-xl">
             {ticket.titulo}
           </h1>
 
@@ -171,7 +171,7 @@ export function TicketDetalle({ id }: { id: string }) {
               <span className="text-muted-foreground/70">Abierto</span> {tiempoRelativo(ticket.creadoEn)}
             </span>
             {typeof ticket.calificacion === 'number' && (
-              <span className="flex items-center gap-1 text-amber-500">
+              <span className="flex items-center gap-1 text-warn-ink">
                 <Star className="size-3.5 fill-current" />
                 <span className="font-medium">{ticket.calificacion}/5</span>
               </span>
@@ -237,7 +237,7 @@ export function TicketDetalle({ id }: { id: string }) {
           )}
 
           {soloLectura && !ticket.esSolicitante && (
-            <p className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-700 dark:text-amber-300">
+            <p className="inline-flex items-center gap-1.5 rounded-md border border-warn/25 bg-warn-surface px-2.5 py-1.5 text-caption text-warn-ink">
               <Lock className="size-3" /> Modo solo lectura — no puedes actuar sobre este ticket.
             </p>
           )}

@@ -1,5 +1,6 @@
 import prisma from "@config/db";
 import { EstatusSolicitud } from "../../../../generated/prisma/client";
+import { ORDEN_PASOS_FORMULARIO, LABEL_PASO_FORMULARIO } from "../../../shared/paso-formulario";
 
 /**
  * Panorama ejecutivo (dashboard de Inicio, solo ADMIN).
@@ -215,6 +216,58 @@ async function calcularEmbudo(desde: Date) {
   ];
 
   return { promocion, financiamiento, aprobadasPeriodo };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Embudo de conversión del formulario (dónde abandonan el llenado)
+//
+// `ultimoPasoVisto` guarda el punto más lejano alcanzado por cada BORRADOR
+// (nunca retrocede — ver `clientes/solicitudes.service.ts`). El embudo es
+// acumulativo: "llegaron al menos a este paso" = enviadas del periodo + la
+// suma de los borradores cuyo último paso visto es este o uno posterior.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function calcularEmbudoFormulario(desde: Date) {
+  const [porPaso, totalEnviaron] = await Promise.all([
+    prisma.solicitud.groupBy({
+      by: ["ultimoPasoVisto"],
+      where: { estatus: "BORRADOR", creadoEn: { gte: desde } },
+      _count: { _all: true },
+    }),
+    prisma.solicitud.count({
+      where: { estatus: { not: "BORRADOR" }, creadoEn: { gte: desde } },
+    }),
+  ]);
+
+  const conteoPorPaso = new Map(
+    porPaso.map((r) => [r.ultimoPasoVisto, r._count._all])
+  );
+  // Borradores creados pero aún sin el primer PATCH de paso-visto (carrera
+  // entre crear la solicitud y que el front dispare el primer paso) — la fila
+  // existe, así que como mínimo llegaron al primer paso.
+  const sinInstrumentar = conteoPorPaso.get(null) ?? 0;
+
+  const pasos = ORDEN_PASOS_FORMULARIO.map((paso) => ({
+    paso,
+    label: LABEL_PASO_FORMULARIO[paso],
+    valor: 0,
+  }));
+
+  let acumulado = totalEnviaron;
+  for (let i = pasos.length - 1; i >= 0; i--) {
+    acumulado += conteoPorPaso.get(pasos[i].paso) ?? 0;
+    pasos[i].valor = acumulado;
+  }
+  pasos[0].valor += sinInstrumentar;
+
+  const totalIniciaron = pasos[0].valor;
+
+  return {
+    totalIniciaron,
+    totalEnviaron,
+    tasaConversion: totalIniciaron > 0 ? Math.round((totalEnviaron / totalIniciaron) * 100) : null,
+    pasos,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -548,10 +601,11 @@ export async function obtenerPanorama(rango: RangoDashboard) {
   const prevDesde = new Date(ms(desde) - dias * MS_DIA);
 
   const [
-    kpis, embudo, resolucion, tendencia, tiempoPorEtapa, cartera, composicion, equipo, alertas, actividad,
+    kpis, embudo, embudoFormulario, resolucion, tendencia, tiempoPorEtapa, cartera, composicion, equipo, alertas, actividad,
   ] = await Promise.all([
     calcularKpis(desde, prevDesde, ahora),
     calcularEmbudo(desde),
+    calcularEmbudoFormulario(desde),
     calcularResolucion(desde),
     calcularTendencia(rango),
     calcularTiempoPorEtapa(),
@@ -567,6 +621,7 @@ export async function obtenerPanorama(rango: RangoDashboard) {
     generadoEn: ahora.toISOString(),
     kpis,
     embudo,
+    embudoFormulario,
     resolucion,
     tendencia,
     tiempoPorEtapa,

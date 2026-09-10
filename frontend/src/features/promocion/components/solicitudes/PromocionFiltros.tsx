@@ -35,9 +35,9 @@ export function PromocionFiltros({ filtros, gestores, onFiltrar, onLimpiar, hayF
       placeholder: 'Estatus',
       allLabel: 'Todos los estatus',
       options: [
-        { value: 'BORRADOR',    label: 'Borrador',    dotColor: 'bg-muted-foreground/60' },
-        { value: 'PENDIENTE',   label: 'Pendiente',   dotColor: 'bg-amber-500'           },
-        { value: 'EN_REVISION', label: 'En revisión', dotColor: 'bg-primary'             },
+        { value: 'BORRADOR',    label: 'Borrador',    dotColor: 'bg-ink-subtle'  },
+        { value: 'PENDIENTE',   label: 'Pendiente',   dotColor: 'bg-warn'        },
+        { value: 'EN_REVISION', label: 'En revisión', dotColor: 'bg-brand'       },
       ],
     },
     TIPO_PERSONA_FIELD,

@@ -39,25 +39,25 @@ function TileMetrica({
   return (
     <div
       className={cn(
-        'flex items-center gap-3.5 rounded-xl border px-4 py-3.5 shadow-sm transition-colors',
-        tono === 'crit' && 'border-destructive/30 bg-destructive/5',
-        tono === 'warn' && 'border-amber-500/30 bg-amber-500/5',
-        tono === 'muted' && 'border-border/60 bg-card',
+        'flex items-center gap-3.5 rounded-lg border px-4 py-3.5 transition-colors',
+        tono === 'crit' && 'border-danger/20 bg-danger-surface',
+        tono === 'warn' && 'border-warn/20 bg-warn-surface',
+        tono === 'muted' && 'border-hairline bg-card',
       )}
     >
       <div
         className={cn(
-          'flex size-10 shrink-0 items-center justify-center rounded-xl',
-          tono === 'crit' && 'bg-destructive/10 text-destructive',
-          tono === 'warn' && 'bg-amber-500/10 text-amber-600',
-          tono === 'muted' && 'bg-muted text-muted-foreground',
+          'flex size-10 shrink-0 items-center justify-center rounded-lg',
+          tono === 'crit' && 'bg-danger/10 text-danger-ink',
+          tono === 'warn' && 'bg-warn/10 text-warn-ink',
+          tono === 'muted' && 'bg-surface-sunken text-ink-muted',
         )}
       >
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="text-2xl font-semibold leading-none tabular-nums">{valor}</p>
-        <p className="mt-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="text-title leading-none tabular-nums text-ink">{valor}</p>
+        <p className="mt-1.5 text-label uppercase tracking-wide text-ink-subtle">{label}</p>
       </div>
     </div>
   )

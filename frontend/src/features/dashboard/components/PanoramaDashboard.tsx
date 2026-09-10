@@ -9,6 +9,7 @@ import { tiempoRelativo } from '@/features/dashboard/lib/dashboard.format'
 import { PeriodoSelector } from './PeriodoSelector'
 import { KpiBand } from './KpiBand'
 import { EmbudoProceso } from './EmbudoProceso'
+import { EmbudoFormulario } from './EmbudoFormulario'
 import { ResolucionDonut } from './ResolucionDonut'
 import { TendenciaFlujo } from './TendenciaFlujo'
 import { TiempoEtapas } from './TiempoEtapas'
@@ -69,6 +70,12 @@ export function PanoramaDashboard() {
             <div className="lg:col-span-5">
               <ResolucionDonut resolucion={panorama.resolucion} rango={panorama.rango} />
             </div>
+
+            {panorama.embudoFormulario && (
+              <div className="lg:col-span-12">
+                <EmbudoFormulario embudo={panorama.embudoFormulario} />
+              </div>
+            )}
 
             <div className="lg:col-span-12">
               <TendenciaFlujo tendencia={panorama.tendencia} />

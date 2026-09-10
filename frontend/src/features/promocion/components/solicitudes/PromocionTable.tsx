@@ -90,7 +90,7 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
                 className="gap-3 cursor-pointer rounded-md px-2.5 py-2 focus:bg-accent group/item"
                 onClick={() => abrirAccion('devolver', solicitudId)}
               >
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover/item:bg-amber-500/15">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-warn-surface text-warn-ink group-hover/item:bg-warn/15">
                   <RotateCcw className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col gap-0">

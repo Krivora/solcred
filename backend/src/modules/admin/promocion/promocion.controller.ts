@@ -6,6 +6,7 @@ import * as solicitudesService from "./promocion.service";
 import { ok } from "@utils/response";
 import { cartaRechazoTemplate } from '../../../shared/pdf/templates/carta-rechazo.template';
 import { generarPDFDesdeHTML } from '../../../shared/pdf/pdf.service';
+import { estamparMarcaAguaConsulta } from '../../../shared/pdf/watermark';
 import { solicitudTemplate } from '../../../shared/pdf/templates/solicitud.template';
 import { tarjetaInformativaTemplate } from '../../../shared/pdf/templates/tarjeta-informativa.template';
 import { mapearSolicitudAPDF } from "./promocion.service";
@@ -98,7 +99,8 @@ export const listarMisCasos = async (
     } = req.query;
 
     const filtros = {
-      gestorId: personalId, // ── FIX ──
+      // "Mis casos" siempre se acota al gestor autenticado (Personal.id).
+      gestorId: personalId,
       ...parsearPaginacionQuery(req.query),
       estatus: estatus as string | undefined,
       tipoPersona: tipoPersona as string | undefined,
@@ -405,6 +407,10 @@ export const descargarCartaRechazo = async (
 
     const html = cartaRechazoTemplate(data);
     const pdfBuffer = await generarPDFDesdeHTML(html);
+    const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+      folio: data.folio,
+      usuarioId: req.usuario!.id,
+    });
 
     await registrarLog({
       accion: AccionLog.CONSULTAR,
@@ -417,8 +423,8 @@ export const descargarCartaRechazo = async (
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="rechazo-${data.folio}.pdf"`);
-    res.setHeader('Content-Length', pdfBuffer.length.toString());
-    res.status(200).send(pdfBuffer);
+    res.setHeader('Content-Length', marcado.length.toString());
+    res.status(200).send(marcado);
   } catch (error) {
     next(error);
   }
@@ -430,7 +436,7 @@ export const descargarPDF = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const solicitud = await solicitudesService.SolicitudId(
+    const solicitud = await solicitudesService.obtenerSolicitudParaPDF(
       req.params.id as string,
       req.usuario!.id,
       req.usuario!.rol
@@ -439,6 +445,10 @@ export const descargarPDF = async (
     const data = mapearSolicitudAPDF(solicitud);
     const html = solicitudTemplate(data);
     const pdfBuffer = await generarPDFDesdeHTML(html);
+    const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+      folio: data.folio,
+      usuarioId: req.usuario!.id,
+    });
 
     await registrarLog({
       accion: AccionLog.CONSULTAR,
@@ -451,8 +461,8 @@ export const descargarPDF = async (
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="solicitud-${data.folio}.pdf"`);
-    res.setHeader('Content-Length', pdfBuffer.length.toString());
-    res.status(200).send(pdfBuffer);
+    res.setHeader('Content-Length', marcado.length.toString());
+    res.status(200).send(marcado);
   } catch (error) {
     next(error);
   }
@@ -471,6 +481,10 @@ export const descargarTarjetaInformativa = async (
 
     const html = tarjetaInformativaTemplate(data);
     const pdfBuffer = await generarPDFDesdeHTML(html);
+    const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+      folio: data.folio,
+      usuarioId: req.usuario!.id,
+    });
 
     await registrarLog({
       accion: AccionLog.CONSULTAR,
@@ -483,8 +497,8 @@ export const descargarTarjetaInformativa = async (
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="tarjeta-informativa-${data.folio}.pdf"`);
-    res.setHeader('Content-Length', pdfBuffer.length.toString());
-    res.status(200).send(pdfBuffer);
+    res.setHeader('Content-Length', marcado.length.toString());
+    res.status(200).send(marcado);
   } catch (error) {
     next(error);
   }
@@ -507,6 +521,10 @@ export const descargarAcuseEntregaExpediente = async (
 
     const html = acuseEntregaExpedienteTemplate(data);
     const pdfBuffer = await generarPDFDesdeHTML(html);
+    const marcado = await estamparMarcaAguaConsulta(pdfBuffer, {
+      folio: data.folio,
+      usuarioId: req.usuario!.id,
+    });
 
     await registrarLog({
       accion: AccionLog.CONSULTAR,
@@ -519,8 +537,8 @@ export const descargarAcuseEntregaExpediente = async (
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="acuse-${data.folio}.pdf"`);
-    res.setHeader('Content-Length', pdfBuffer.length.toString());
-    res.status(200).send(pdfBuffer);
+    res.setHeader('Content-Length', marcado.length.toString());
+    res.status(200).send(marcado);
   } catch (error) {
     next(error);
   }

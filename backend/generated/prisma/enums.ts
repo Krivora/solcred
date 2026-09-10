@@ -204,6 +204,22 @@ export const SeccionSolicitud = {
 export type SeccionSolicitud = (typeof SeccionSolicitud)[keyof typeof SeccionSolicitud]
 
 
+export const PasoFormulario = {
+  PROGRAMA: 'PROGRAMA',
+  GENERAL: 'GENERAL',
+  SOLICITANTE: 'SOLICITANTE',
+  AVAL: 'AVAL',
+  CREDITO: 'CREDITO',
+  GARANTIA: 'GARANTIA',
+  NEGOCIO: 'NEGOCIO',
+  MERCADO: 'MERCADO',
+  BANCARIOS: 'BANCARIOS',
+  RESUMEN: 'RESUMEN'
+} as const
+
+export type PasoFormulario = (typeof PasoFormulario)[keyof typeof PasoFormulario]
+
+
 export const AccionLog = {
   CREAR: 'CREAR',
   ACTUALIZAR: 'ACTUALIZAR',
@@ -223,7 +239,8 @@ export const ModuloLog = {
   PROGRAMAS: 'PROGRAMAS',
   SOLICITUDES: 'SOLICITUDES',
   DOCUMENTOS: 'DOCUMENTOS',
-  SOPORTE: 'SOPORTE'
+  SOPORTE: 'SOPORTE',
+  CRM: 'CRM'
 } as const
 
 export type ModuloLog = (typeof ModuloLog)[keyof typeof ModuloLog]
@@ -291,3 +308,46 @@ export const TicketAutorTipo = {
 } as const
 
 export type TicketAutorTipo = (typeof TicketAutorTipo)[keyof typeof TicketAutorTipo]
+
+
+export const ComunicacionTipo = {
+  LLAMADA: 'LLAMADA',
+  CORREO: 'CORREO',
+  MENSAJE: 'MENSAJE',
+  PRESENCIAL: 'PRESENCIAL',
+  OTRO: 'OTRO'
+} as const
+
+export type ComunicacionTipo = (typeof ComunicacionTipo)[keyof typeof ComunicacionTipo]
+
+
+export const ComunicacionMotivo = {
+  ACTUALIZACION_DOCUMENTACION: 'ACTUALIZACION_DOCUMENTACION',
+  DOCUMENTACION_FALTANTE: 'DOCUMENTACION_FALTANTE',
+  CONFIRMACION_INFORMACION: 'CONFIRMACION_INFORMACION',
+  SEGUIMIENTO_SOLICITUD: 'SEGUIMIENTO_SOLICITUD',
+  CONFIRMACION_INTERES: 'CONFIRMACION_INTERES',
+  NOTIFICACION_AVANCE: 'NOTIFICACION_AVANCE',
+  ACLARACION_INFORMACION: 'ACLARACION_INFORMACION',
+  NOTIFICACION_INCIDENCIA: 'NOTIFICACION_INCIDENCIA',
+  RECORDATORIO_PENDIENTE: 'RECORDATORIO_PENDIENTE',
+  OTRO: 'OTRO'
+} as const
+
+export type ComunicacionMotivo = (typeof ComunicacionMotivo)[keyof typeof ComunicacionMotivo]
+
+
+export const ComunicacionResultado = {
+  CONTACTADO: 'CONTACTADO',
+  NO_CONTACTADO: 'NO_CONTACTADO',
+  SOLICITA_RECONTACTO: 'SOLICITA_RECONTACTO',
+  CONFIRMA_CONTINUIDAD: 'CONFIRMA_CONTINUIDAD',
+  DESISTE: 'DESISTE',
+  DOCUMENTACION_PENDIENTE: 'DOCUMENTACION_PENDIENTE',
+  DOCUMENTACION_ENVIADA: 'DOCUMENTACION_ENVIADA',
+  INFORMACION_ACLARADA: 'INFORMACION_ACLARADA',
+  SIN_RESPUESTA: 'SIN_RESPUESTA',
+  OTRO: 'OTRO'
+} as const
+
+export type ComunicacionResultado = (typeof ComunicacionResultado)[keyof typeof ComunicacionResultado]

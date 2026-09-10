@@ -91,7 +91,7 @@ EN_APROBACION                EN_CORRECCION  → el cliente corrige y reenvía
    │  (comité envía a financiamiento)
    ▼
 ─── FINANCIAMIENTO ─────────────────────────────────────────────────────
-EN_FINANCIAMIENTO         Mesa de Control (SUPERVISOR): revisión adicional de info/docs
+EN_FINANCIAMIENTO         Mesa de Control (MESA_CONTROL): revisión adicional de info/docs
    │  (mesa pasa a asignación)         └──(regresa a aprobación)──► EN_APROBACION
    ▼
 EN_ASIGNACION             cola de asignación de analista
@@ -125,7 +125,19 @@ motivo. Si lo rechaza, el cliente puede volver a subir una nueva versión —
 el historial de versiones queda completo (quién subió qué, quién validó,
 cuándo, con qué resultado).
 
+Los documentos se consultan en un **visor embebido** dentro de la app (modal
+con el PDF, más botones de descargar y abrir en pestaña), no en una pestaña
+suelta del navegador. Cada consulta queda en el log de auditoría y el PDF que
+se sirve lleva **marca de agua de trazabilidad** — ver §3.4.
+
 ### 3.4 Generación de documentos (PDF)
+
+> **Marca de agua de trazabilidad.** Todo PDF que sirve la API —los 5 generados
+> de esta sección **y** los documentos del expediente que sube el cliente— pasa
+> por `shared/pdf/watermark.ts` antes de salir: cada página recibe una diagonal
+> tenue y una línea al pie con `folio + nombre y rol de quien consulta + fecha/
+> hora`. Se estampa con `pdf-lib` (JS puro). Es *best-effort*: si `pdf-lib` no
+> puede parsear el archivo se sirve el original sin marca (ver `KNOWN-ISSUES.md`).
 
 El backend genera 5 documentos PDF con Puppeteer a partir de plantillas HTML
 propias:
@@ -155,7 +167,7 @@ propias:
 | Autenticación | JWT propio (`jsonwebtoken`) de vida corta (access token, 15 min) + **refresh token** opaco en cookie `httpOnly` (`sc_refresh`, ámbito `/api/auth`), con rotación en cada uso, detección de reuso por familia y **ventana deslizante configurable por rol** (`config/sesion.config.ts`: 30 d cliente, 7 d staff operativo, 2 d staff sensible —ADMIN/SUPERVISOR/ENCARGADO_*—; overridable por env). Persistido en `SesionRefresh` (solo el hash SHA-256). El front renueva el access token de forma transparente al recibir un 401 `TOKEN_EXPIRADO`. Rate-limit dedicado en `login` (10/15 min, solo fallidos) y `registro` (5/h). |
 | Contraseñas | `bcryptjs` |
 | Subida de archivos | `multer` en memoria + validación de magic bytes antes de escribir a disco (`uploads/expedientes/`, almacenamiento **local**, no en la nube) |
-| Generación de PDF | `puppeteer` sobre plantillas HTML propias |
+| Generación de PDF | `puppeteer` sobre plantillas HTML propias; `pdf-lib` para estampar la marca de agua de trazabilidad al servir |
 | Validación de entrada | `zod` en cada endpoint de escritura |
 | Seguridad de transporte | `helmet`, `cors`, `express-rate-limit` |
 | Logs de auditoría | Módulo propio (`registrarLog`) que persiste cada acción sensible en `LogAuditoria` |
@@ -187,20 +199,65 @@ Los 25 enums de dominio (estatus, roles, catálogos, tickets, etc.) **no se
 escriben a mano en el frontend**: se generan desde `backend/generated/prisma/enums.ts`
 (que a su vez viene de `schema.prisma`) con
 `scripts/gen-domain-enums.ts` → `frontend/src/shared/types/domain.enums.ts`.
-Un script de chequeo (`npm run check:contract` desde la raíz) falla si
-divergen, y corre automáticamente en un hook de `pre-push`
-(`git config core.hooksPath githooks`). El detalle de esto está en
-`KNOWN-ISSUES.md`.
+
+El chequeo de contrato (`npm run check:contract` desde la raíz — corre en
+`tsc` sin emitir, y en el hook de `pre-push`,
+`git config core.hooksPath githooks`) cubre además los **shapes de respuesta**
+de los endpoints de **solicitud** y **expediente**: el backend deriva sus tipos
+de respuesta de `Prisma.*GetPayload<…>` en archivos `*.contract.ts` (fuente
+única de los `include`/`select`), y `scripts/check-contract.ts` verifica —de
+forma direccional, normalizando `Date → string`— que la respuesta del backend
+satisface lo que el frontend espera. Un cambio en un `include`/`select` rompe
+`tsc` en ambos lados. El detalle está en `KNOWN-ISSUES.md`.
 
 Todos los listados paginados del API responden con el mismo envoltorio
 (`{ data, pagination: { page, pageSize, total, totalPages } }`) y aceptan los
 query params `page` + `pageSize` — ver `backend/src/utils/pagination.ts` y su
 espejo `frontend/src/shared/types/api.ts`.
 
-### 4.4 Lo que falta en la infraestructura
+### 4.4 Pruebas automatizadas
 
-No hay contenedores (Docker), pipeline de CI/CD, ni suite de pruebas
-automatizadas — ver §8.
+**Vitest** en ambos proyectos (`npm test` en cada uno):
+
+- **Frontend** — lógica pura: cálculo financiero de Análisis (amortización a
+  sistema francés, razones financieras / semáforos, validación de rango de los
+  ajustes) y el flujo de pasos del formulario.
+- **Backend `unit`** — sin BD: máquinas de estado (solicitud y ticket), cálculo
+  de SLA de soporte, métricas de expediente, comparadores de reglas de
+  asignación.
+- **Backend `integration`** (`npm run test:int`) — contra **PGlite** (Postgres
+  real en WASM, en memoria; sin Docker ni servidor), con el esquema aplicado
+  desde los `prisma/migrations/*` reales: transiciones de estatus de Promoción
+  (+ escritura en `HistorialEstatus`), asignación automática (match de reglas,
+  grupo general de respaldo, balanceo por carga, omisión de ya-asignadas),
+  validación de documentos (autorización + estado + motivo) y creación de
+  solicitud (una activa por cliente, folio). En CI correrá contra un Postgres
+  de verdad.
+
+Detalle en [`README.md`](./README.md) y `backend/test/`.
+
+### 4.5 CI/CD
+
+**CI** — `.github/workflows/ci.yml` (GitHub Actions). En cada `pull_request` y
+en `push` a `main` / `desarrollo`, dos jobs en paralelo:
+
+- `backend`: `npm ci`, `prisma generate` + chequeo de sync de
+  `generated/prisma`, `tsc`, `test:types`, `npm run test:all` (unit +
+  integración con PGlite), `check:contract`.
+- `frontend`: `npm ci`, `gen:enums` + chequeo de sync de `domain.enums.ts`,
+  `lint`, `npm test`, `next build`.
+
+Falta activarlos como *required status checks* en la protección de rama de
+`main` (setting de GitHub, no del repo). Ver [`README.md`](./README.md).
+
+**CD** — pendiente. Bloqueado por el storage en disco local del backend
+(actividad 3) y por que Puppeteer necesita Chromium en runtime; se define el
+`deploy.yml` cuando se resuelva y se elija proveedor.
+
+### 4.6 Lo que falta en la infraestructura
+
+No hay contenedores para producción (Docker) ni despliegue automatizado (CD) —
+ver §8.
 
 ## 5. Módulos y funcionalidades actuales
 
@@ -209,7 +266,8 @@ automatizadas — ver §8.
 | Módulo | Qué resuelve |
 |---|---|
 | `auth` | Registro y login de clientes, perfil autenticado, emisión de JWT. Access token corto (15 min) + `POST /auth/refresh` (rota el refresh token de la cookie `httpOnly`, detecta reuso) y `POST /auth/logout` (revoca la familia de sesión). |
-| `clientes/solicitudes` | CRUD de la solicitud desde la óptica del cliente: crear, guardar cada sección del formulario (generales, solicitante, aval, crédito, garantía, negocio, mercado, bancarios), enviar, listar las propias, descargar PDF. |
+| `public/programas-publico` | Único endpoint sin `autenticar` de toda la API (`GET /api/public/programas`): catálogo mínimo de programas activos (montos, plazos, tasa anual — nada del catálogo administrativo) para el simulador de crédito público. |
+| `clientes/solicitudes` | CRUD de la solicitud desde la óptica del cliente: crear, guardar cada sección del formulario (generales, solicitante, aval, crédito, garantía, negocio, mercado, bancarios), enviar, listar las propias, descargar PDF. También registra el **punto más lejano alcanzado del formulario** (`ultimoPasoVisto` — solo avanza, nunca retrocede) para el embudo de conversión del dashboard. |
 | `expediente` | Expediente digital: consulta de estatus/metricas de documentos, validación (aprobar/rechazar) por parte de gestores/admin. |
 | `uploads` | Subida y descarga de los archivos PDF del expediente, con verificación de propiedad (el cliente solo ve las suyas). |
 | `admin/promocion` | La cola de trabajo del primer filtro: listar, stats, detalle, y las transiciones de estatus (devolver, enviar a aprobación, regresar al promotor, enviar a financiamiento, cancelar, rechazar). Genera también los PDF de tarjeta informativa, carta de rechazo y acuse de entrega. |
@@ -219,8 +277,8 @@ automatizadas — ver §8.
 | `admin/grupos` | CRUD de grupos de gestión y sus reglas de asignación automática (por sector, tamaño de empresa, tipo de persona, monto, programa). |
 | `admin/programas` | CRUD de programas de crédito (montos, tasas, plazos, qué secciones del formulario aplican y con qué obligatoriedad) y del catálogo de tipos de documento (crear/editar/eliminar — el borrado se bloquea si el tipo está en uso). |
 | `admin/usuarios` | Listado y administración de usuarios del staff: cambiar rol, revocar acceso, desactivar. |
-| `admin/logs` | Consulta del log de auditoría (quién hizo qué, cuándo, desde dónde). |
-| `admin/dashboard` | Panorama ejecutivo (solo `ADMIN`): una sola llamada arma KPIs con variación contra el periodo anterior, embudo por etapa, resolución, tendencia, tiempo por etapa (cuellos de botella), cartera por programa, composición de la demanda, carga del equipo, alertas y actividad reciente. Montos desde `ConceptoCredito`, tiempos desde `HistorialEstatus`. |
+| `admin/logs` | Consulta del log de auditoría (quién hizo qué, cuándo, desde dónde) y **exportación a Excel** de todo lo que cumpla los filtros activos (no solo la página en pantalla), con el mismo criterio de tope/truncado que `admin/reportes`. |
+| `admin/dashboard` | Panorama ejecutivo (solo `ADMIN`): una sola llamada arma KPIs con variación contra el periodo anterior, embudo por etapa, **embudo de conversión del formulario** (en qué paso abandonan los clientes su `BORRADOR`, acumulativo hasta "Enviada"), resolución, tendencia, tiempo por etapa (cuellos de botella), cartera por programa, composición de la demanda, carga del equipo, alertas y actividad reciente. Montos desde `ConceptoCredito`, tiempos desde `HistorialEstatus`. |
 | `admin/reportes` | Reportes de negocio (solo `ADMIN`): catálogos de filtro, previsualización paginada y exportación a Excel (`.xlsx`, con `exceljs`) del listado de solicitudes filtrado por estatus, sector, tamaño, tipo de persona, programa, gestor, analista, grupo, rangos de fecha/monto y búsqueda. La exportación tiene un límite de tasa propio por llevar datos personales en bloque. |
 | `soporte` | Módulo de tickets — montado en `/api/soporte` (no bajo `/api/admin`, lo consumen también clientes). Solicitante (cualquier `Usuario`): crear ticket con adjuntos (imagen/PDF, mismo pipeline de *magic bytes* que `uploads`, en `uploads/soporte/`), listar los propios, detalle, comentar, cerrar/reabrir (ventana 7 días), calificar (CSAT). Agente (= `ADMIN`): listar todos + `stats` + `agentes`, asignar/reasignar, cambiar prioridad/categoría/estatus, cancelar, editar políticas de SLA. Máquina de estados en `soporte.estado.ts`; cálculo de SLA (arranque al asignar, pausa en `ESPERANDO_CLIENTE`, incumplimiento perezoso, recálculo por prioridad) en `soporte.sla.ts`. `SUPERVISOR` ve todo pero solo actúa sobre sus propios tickets (allowlist en `soloLecturaSupervisor`). Folio `TKT-2026-0007` (secuencia PG). |
 
@@ -229,13 +287,14 @@ automatizadas — ver §8.
 | Feature | Qué cubre |
 |---|---|
 | `auth` | Login, registro, perfil, store de sesión. |
+| `simulador` | Página pública `/simulador` (sin sesión, agregada a `PUBLIC_ROUTES` del middleware): elige un programa activo y estima el pago mensual (sistema francés, sin gracia) contra el catálogo público. Enlazada desde `/login` y `/registro`; termina en un CTA a `/registro`. |
 | `solicitudes` | Todo el flujo del cliente: formulario multi-paso homologado (mismo header ícono+título+contexto en los 10 pasos), edición de borradores, listado con paginación y animaciones de transición entre vistas. |
-| `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación. |
+| `expediente` | Vista de expediente digital (cliente y personal comparten el mismo componente de tabla de documentos, con permisos distintos), historial de versiones, validación y **visor de PDF embebido** (`VisorDocumentoDialog`) con descargar / abrir en pestaña. |
 | `promocion` | Cola de solicitudes, asignación (con paginación y columna de gestores de tamaño fijo), aprobación, mis casos, histórico, detalle de solicitud con timeline. |
 | `financiamiento` | Segundo filtro: las 5 pantallas (Mesa de Control, Asignación de analistas, Mis Casos, Validación, Comité) + detalle. La Asignación replica la de Promoción (dos columnas, selección múltiple, panel de analistas con carga, sheet de asignación, diálogo de progreso) y permite reasignar en lote. Reusa `SolicitudesTable`, `FilterBar`, `SolicitudTimeline`, `AsignacionMasivaDialog` y `useListadoPromocion` de `promocion`. |
 | `analisis` | Herramienta de análisis financiero del analista (desde "Mis Casos" → "Realizar Análisis"). Shell de 5 pestañas, **todas implementadas**: **Situación Financiera** (captura del Balance General y el Estado de Resultados a 4 periodos —Año-2, Año-1, Parcial anualizable, Proyección—, con totales/subtotales automáticos, indicador de cuadre por periodo, autoguardado con debounce y export CSV); **Ajustes del Crédito** (precarga lo que pidió el cliente y deja al analista ajustar condiciones —plazo, gracia, tasa—, conceptos y garantías con CRUD completo; valida contra los límites del programa y muestra cobertura de garantía); **Criterios de Evaluación** (razones financieras —liquidez, endeudamiento, rentabilidad, cobertura de intereses— calculadas en vivo desde Situación Financiera por periodo, con semáforo bien/atención/riesgo; bloqueada con aviso hasta que haya Situación Financiera capturada); **Amortización** (tabla de pagos a sistema francés —pago fijo, con o sin periodo de gracia— calculada en vivo desde Ajustes del Crédito, con resumen, export CSV y su propio aviso/salto si aún no hay ajustes guardados); **Comentario** (5 secciones independientes, cada una autoguardada por separado: Antecedentes, Buró de Crédito, Situación Financiera, Visita y Opinión del Analista — `Analisis.comentario` es `Json`, no texto plano). En Criterios de Evaluación y Amortización solo persiste la observación escrita del analista — las cifras siempre se recalculan desde su fuente, nunca quedan guardadas y desincronizadas. Desde el header (y como acción de fila en Mis Casos / Validación / Comité) se descarga el **Informe Ejecutivo** en PDF: el front arma el payload con los mismos `lib/` y el back lo renderiza. |
-| `settings` | Programas de crédito (alta/edición con documentos requeridos y secciones), catálogo de tipos de documento (grid de tarjetas, editar/eliminar), usuarios, grupos de gestión, logs. |
-| `dashboard` | Panorama ejecutivo de Inicio (solo `ADMIN`): banda de KPIs con sparkline, embudo del proceso, donut de resolución, tendencia de flujo, tiempo por etapa, cartera por programa, composición de la demanda, carga del equipo, panel de alertas y actividad reciente, con selector de periodo (7d/30d/90d/12m). |
+| `settings` | Programas de crédito (alta/edición con documentos requeridos y secciones), catálogo de tipos de documento (grid de tarjetas, editar/eliminar), usuarios, grupos de gestión, logs (con exportación a Excel del log filtrado completo). |
+| `dashboard` | Panorama ejecutivo de Inicio (solo `ADMIN`): banda de KPIs con sparkline, embudo del proceso, **embudo de conversión del formulario**, donut de resolución, tendencia de flujo, tiempo por etapa, cartera por programa, composición de la demanda, carga del equipo, panel de alertas y actividad reciente, con selector de periodo (7d/30d/90d/12m). |
 | `reportes` | Módulo de Reportes (solo `ADMIN`, `/dashboard/admin/reportes`): panel de filtros con multi-selección, resumen y tabla de previsualización, y botón de exportación a Excel. |
 | `soporte` | Módulo de tickets. Dos vistas: **Mis Tickets** (todos los roles — sus propios tickets + alta de nuevos con título, categoría, prioridad sugerida y adjuntos PNG/JPEG/PDF) y **Tickets** (`ADMIN`/`SUPERVISOR` — cola completa con filtros y tiles de SLA en riesgo/vencido). Detalle con hilo de conversación (respuestas públicas + notas internas, miniaturas de imagen inline), panel lateral (solicitante, agente, prioridad/categoría editables, chips de SLA con cuenta regresiva, timeline de eventos) y barra de acciones según rol y estatus. `SUPERVISOR` solo ve; sobre sus propios tickets actúa como cualquier solicitante. |
 
@@ -244,10 +303,20 @@ automatizadas — ver §8.
 ### 6.1 Terminado y funcional
 
 - Autenticación y control de acceso por rol (rutas protegidas cliente ↔
-  staff, permisos por sección). Modelo de 8 roles con navegación, ruta por
+  staff, permisos por sección). Modelo de 9 roles con navegación, ruta por
   defecto, badge y `autorizar` en cada endpoint: `ADMIN`, `GESTOR`,
   `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
-  `MESA_CONTROL`, `SOPORTE`, `CLIENTE` (+ `SUPERVISOR` histórico) — ver §3.1.
+  `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y
+  `CLIENTE` — ver §3.1.
+- **Solo lectura de `SUPERVISOR` + revisión de seguridad** (ver
+  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)): `SUPERVISOR` ve lo mismo que
+  un `ADMIN` pero no ejecuta ninguna acción — bloqueo de raíz en el backend
+  (middleware `soloLecturaSupervisor`) y ocultación completa de controles en
+  el frontend (incluye detalle/formulario de programa, `DocumentosPrograma` y
+  bloqueo de las rutas de alta/edición). Además: rate-limit dedicado en
+  `POST /auth/login` y `/auth/registro`, `app.set("trust proxy")`, política de
+  contraseñas centralizada (`auth.schema.ts` → `contrasenaSchema`) y
+  expiración de sesión configurable por rol (`config/sesion.config.ts`).
 - Flujo completo del cliente: crear solicitud → llenar los 8 pasos → enviar →
   subir documentos → ver estatus.
 - Flujo de Promoción (primer filtro) completo: cola, asignación (automática y
@@ -256,8 +325,9 @@ automatizadas — ver §8.
 - **Flujo de Financiamiento (segundo filtro) completo**: backend
   (`admin/financiamiento`) + las 5 pantallas (Mesa de Control, Asignación de
   analistas, Mis Casos, Validación, Comité). Una solicitud recorre todo el ciclo
-  hasta `APROBADO` / `RECHAZADO` desde la UI. El rol `SUPERVISOR` opera la etapa
-  de Validación.
+  hasta `APROBADO` / `RECHAZADO` desde la UI. Cada etapa la operan los roles de
+  área (`MESA_CONTROL`, `ENCARGADO_FINANCIAMIENTO`, `ANALISTA`) o `ADMIN` — ver
+  §3.1.
 - Catálogo de configuración: programas de crédito (con documentos y
   secciones requeridas configurables), tipos de documento (con
   edición/borrado protegido), usuarios, grupos de gestión, logs de
@@ -295,20 +365,11 @@ automatizadas — ver §8.
 - **Financiamiento — Fase 3 pendiente:** no se captura un dictamen financiero
   estructurado (monto/plazo/tasa aprobados, capacidad de pago, observaciones);
   hoy cada transición solo lleva un motivo de texto libre.
-- El modelo de roles se amplió con cuatro roles de área
-  (`ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`, `MESA_CONTROL`,
-  `SOPORTE`) más `SUPERVISOR` redefinido como **ADMIN de solo lectura** — ver
-  §3.1. El backend lo bloquea de raíz y el frontend ya oculta/deshabilita los
-  controles de acción en toda la UI (listas de Promoción/Financiamiento,
-  asignación, configuración, detalle y formulario de programa,
-  `DocumentosPrograma`). Las rutas de alta/edición de programa
-  (`/programas/nuevo`, `/programas/:id/editar`) redirigen a `SUPERVISOR` a
-  `/unauthorized`; el formulario, además, queda inerte por defensa en
-  profundidad. La herramienta de análisis ya era de solo lectura para
-  `SUPERVISOR` (el backend devuelve `editable: false` y todos los controles
-  penden de esa bandera; solo quedan visibles el Informe Ejecutivo y los
-  export CSV, que no mutan). La revisión de seguridad general está en
-  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md).
+- Seguridad — pendientes evaluados y **no** implementados (ver
+  [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md) §5): lockout por cuenta tras N
+  intentos fallidos, respuesta genérica en `POST /registro` (hoy `409` revela
+  si el correo existe), CSP explícita de la API, y verificación de
+  `COOKIE_SECURE=true` en el despliegue de producción.
 - Soporte — pendientes menores (fase de pulido): auto-cierre de tickets
   `RESUELTO` sin respuesta (necesita un cron externo o evaluación perezosa),
   CSAT en la UI al cerrar, contador de "no leídos" en el nav, y el enganche de
@@ -323,7 +384,9 @@ automatizadas — ver §8.
 - Notificaciones al cliente (correo o push) cuando cambia el estatus de su
   solicitud o le rechazan un documento — hoy solo se entera si entra a
   revisar.
-- Pruebas automatizadas (no hay ni una) y pipeline de CI/CD.
+- Pipeline de CI/CD (las pruebas ya existen — ver §4.4 — pero corren en local,
+  no en cada PR).
+- Pruebas de componente / e2e del frontend (hoy solo se prueba lógica pura).
 - Almacenamiento de archivos en la nube (hoy es disco local del servidor).
 
 ## 7. Flujo general de operación
@@ -350,7 +413,7 @@ De punta a punta, una solicitud atraviesa el sistema así:
    **rechazarla** (`RECHAZADO`, se genera carta de rechazo) o **cancelarla**
    (`CANCELADO`).
 6. En **Financiamiento** (segundo filtro, ver §3.2) la solicitud pasa por
-   Mesa de Control (`SUPERVISOR`), asignación de analista, análisis financiero
+   Mesa de Control (`MESA_CONTROL`), asignación de analista, análisis financiero
    (`EN_ANALISIS`), validación (`EN_VALIDACION`) y comité (`EN_COMITE`) hasta
    quedar `APROBADO` o `RECHAZADO`.
 7. En cada paso queda un registro en el **historial de estatus** (quién,
@@ -370,30 +433,26 @@ las reglas con las que corre todo lo anterior.
 2. **El cliente no se entera de nada si no entra a revisar.** No hay
    notificaciones — un rechazo de documento o una devolución para corrección
    puede pasar inadvertido días.
-3. **Cero pruebas automatizadas.** Cualquier cambio en las transiciones de
-   estatus, la asignación automática o la validación de documentos se
-   verifica solo a mano.
-4. **Sin CI/CD.** `tsc`, `eslint`, `check:contract` y el build corren en la
-   máquina de quien programa, no en cada Pull Request.
+3. **Pruebas automatizadas — base cubierta, falta ampliar.** Ya hay suite de
+   Vitest (unit + integración con BD) sobre transiciones de estatus, asignación
+   automática, validación de documentos, SLA y cálculo financiero de Análisis
+   (ver §4.4). Pendiente: componente / e2e del frontend y sumar módulos.
+4. **CI listo, CD pendiente.** El CI (`.github/workflows/ci.yml`) corre `tsc`,
+   `lint`, `check:contract`, `npm test` y los builds en cada PR y push a
+   `main`/`desarrollo`. Falta marcarlos como *required checks* en la protección
+   de rama y definir el despliegue automatizado (ver §4.5).
 5. **Almacenamiento de archivos en disco local.** No escala a múltiples
    instancias del backend, no tiene backup ni CDN, y complica un despliegue
    en contenedores.
-6. **Cobertura de solo lectura en el frontend.** *(Cerrado.)* `SUPERVISOR` es
-   "ADMIN de solo lectura" con enforcement total en el backend y ocultación de
-   controles completa en el frontend (ver §6.2). La revisión de seguridad
-   general quedó documentada en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md):
-   se implementó rate-limit dedicado en `login`/`registro`, `trust proxy`,
-   política de contraseñas centralizada y expiración de sesión por rol; el
-   resto (lockout por cuenta, CSP de API, enumeración en registro) queda
-   listado ahí como pendiente evaluado.
-7. **Deuda de tipos ya documentada pero no resuelta** (Fase 4 declarada
-   pendiente en su momento): los DTOs de respuesta del backend no están
-   verificados contra los tipos `Prisma.XGetPayload<...>` reales, solo los
-   enums lo están.
+6. **Deuda de tipos — parcialmente resuelta.** Los DTOs de respuesta de
+   **solicitud** y **expediente** ya están derivados de `Prisma.*GetPayload<…>`
+   y verificados contra el frontend en `check:contract` (ver §4.3). Falta
+   extender el mismo patrón al resto de módulos (promoción, financiamiento,
+   análisis, soporte, dashboard, reportes).
 
 ## 9. Plan de trabajo
 
-Seis actividades concretas, en el orden en que aportan más valor si se
+Tres actividades concretas, en el orden en que aportan más valor si se
 ejecutan en secuencia (aunque varias pueden correr en paralelo por equipos
 distintos: negocio/back vs. calidad/infra).
 
@@ -404,10 +463,21 @@ distintos: negocio/back vs. calidad/infra).
 > módulo de Reportes con filtros multi-selección y exportación a Excel); la
 > **sesión con refresh token** (access token de 15 min + refresh token opaco
 > en cookie `httpOnly` con rotación, detección de reuso y ventana deslizante
-> de 7 días; renovación transparente en el front, ver §4.1); y el **módulo de
-> Soporte / tickets** (modelo + SLA + adjuntos + conversación + dos vistas de
-> frontend, ver §5.1/§5.2 — solo quedan pendientes de pulido: correo,
-> auto-cierre y CSAT en la UI).
+> configurable por rol; renovación transparente en el front, ver §4.1); el
+> **módulo de Soporte / tickets** (modelo + SLA + adjuntos + conversación +
+> dos vistas de frontend, ver §5.1/§5.2 — solo quedan pendientes de pulido:
+> correo, auto-cierre y CSAT en la UI); y el **cierre de solo lectura de
+> `SUPERVISOR` + revisión de seguridad** (ocultación de controles completa en
+> el frontend, rate-limit en `login`/`registro`, `trust proxy`, política de
+> contraseñas centralizada y expiración de sesión por rol; hallazgos no
+> implementados listados en [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md)); y la
+> **reconciliación de los DTOs de respuesta** de solicitud y expediente
+> (derivados de `Prisma.*GetPayload` en `*.contract.ts` y verificados
+> front↔back en `check:contract`, ver §4.3 — falta extenderlo al resto de
+> módulos, ver §8); y la **suite de pruebas automatizadas** (Vitest: unit sin
+> BD + integración contra PGlite sobre transiciones de estatus, asignación
+> automática, validación de documentos, SLA y cálculo financiero de Análisis,
+> ver §4.4 — pendiente componente/e2e del frontend).
 
 ### 1. Notificaciones al solicitante
 
@@ -424,38 +494,23 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Correo automático en cada evento relevante, con
   copia de los eventos disparados quedando en el log de auditoría.
 
-### 2. Suite de pruebas automatizadas
+### 2. Pipeline de CI/CD — *CI hecho, CD pendiente*
 
-- **Descripción:** Pruebas unitarias/de integración en el backend para los
-  servicios críticos (transiciones de estatus, asignación automática,
-  validación de documentos, cálculo de métricas) y pruebas de componente/e2e
-  en el frontend para los flujos de cliente y de Promoción.
-- **Objetivo:** Poder cambiar código sin depender solo de verificación
-  manual.
-- **Beneficio/impacto:** Menos regresiones silenciosas, más confianza para
-  refactorizar (por ejemplo, al construir Financiamiento sobre las mismas
-  bases que Promoción).
+- **CI (hecho):** `.github/workflows/ci.yml` corre en cada `pull_request` y en
+  `push` a `main`/`desarrollo`: job `backend` (`tsc`, `test:types`,
+  `test:all` con PGlite, `check:contract`, sync de `generated/prisma`) y job
+  `frontend` (`gen:enums` + sync de `domain.enums.ts`, `lint`, `test`,
+  `next build`). Falta un paso manual una sola vez: marcarlos como *required
+  status checks* en la protección de rama de `main` (setting de GitHub).
+- **CD (pendiente):** bloqueado por el storage en disco local del backend
+  (actividad 3) y por Puppeteer/Chromium en runtime. Se define `deploy.yml`
+  (`on: push: [main]` → `prisma migrate deploy` + deploy de front y back) al
+  resolver eso y elegir proveedor. Ver §4.5.
 - **Prioridad:** Alta.
-- **Resultado esperado:** Cobertura de pruebas sobre las transiciones de
-  estatus y el flujo de creación/envío de solicitud, corriendo en local con
-  un solo comando.
+- **Resultado esperado:** Checks obligatorios en cada PR (falta el toggle de
+  GitHub) y despliegue automatizado sin pasos manuales (CD pendiente).
 
-### 3. Pipeline de CI/CD
-
-- **Descripción:** GitHub Actions (u equivalente) que en cada Pull Request
-  corra `tsc`, `eslint`, `npm run check:contract` y el build de ambos
-  proyectos; y que despliegue automáticamente a un ambiente al hacer merge a
-  `main`.
-- **Objetivo:** Que ningún cambio roto llegue a `main` sin que alguien lo
-  note antes de revisar el PR a mano.
-- **Beneficio/impacto:** Reduce el tiempo de revisión y evita que la
-  responsabilidad de "correr todo antes de pushear" recaiga solo en la
-  disciplina de cada quien.
-- **Prioridad:** Alta.
-- **Resultado esperado:** Checks obligatorios en cada PR y despliegue
-  automatizado sin pasos manuales.
-
-### 4. Migrar el almacenamiento de documentos a un proveedor cloud
+### 3. Migrar el almacenamiento de documentos a un proveedor cloud
 
 - **Descripción:** Reemplazar `uploads/expedientes/` (disco local) por un
   bucket (S3, Cloud Storage o similar), manteniendo la validación de magic
@@ -468,48 +523,6 @@ distintos: negocio/back vs. calidad/infra).
 - **Resultado esperado:** Los documentos del expediente se suben y descargan
   desde el proveedor cloud sin cambios visibles para el usuario, con los
   archivos ya existentes migrados.
-
-### 5. Reconciliar los DTOs de respuesta del backend
-
-- **Descripción:** Continuar el trabajo de contrato de tipos (que hoy cubre
-  los 25 enums) a los shapes de respuesta completos, tipándolos contra
-  `Prisma.XGetPayload<...>`. (La paginación ya quedó unificada en
-  `{ data, pagination }` — ver §4.3.)
-- **Objetivo:** Que un cambio en el `include`/`select` de una consulta de
-  Prisma se note en `tsc` del frontend en vez de romperse en producción en
-  silencio.
-- **Beneficio/impacto:** Menos bugs de "el campo que esperaba el frontend ya
-  no viene del backend", que es justo el tipo de error que ya se corrigió
-  una vez en el timeline de la solicitud (§6.1 de la bitácora del
-  proyecto).
-- **Prioridad:** Media.
-- **Resultado esperado:** Los tipos de respuesta de, al menos, los endpoints
-  de solicitud y expediente, están verificados contra el modelo real de
-  Prisma.
-
-### 6. Cerrar solo lectura de `SUPERVISOR` y revisión de seguridad — *hecho*
-
-- **Descripción:** El modelo de roles ya quedó definido y completo: `ADMIN`,
-  `GESTOR`, `ANALISTA`, `ENCARGADO_PROMOCION`, `ENCARGADO_FINANCIAMIENTO`,
-  `MESA_CONTROL`, `SOPORTE`, `SUPERVISOR` (ADMIN de solo lectura) y `CLIENTE`,
-  todos con navegación, permisos de ruta (front + `autorizar` en back), ruta
-  por defecto y badge (ver §3.1).
-- **Entregado:**
-  - Residual de ocultación de controles para `SUPERVISOR` cerrado: detalle y
-    formulario de programa, `DocumentosPrograma`, y bloqueo de ruta en
-    `/programas/nuevo` y `/programas/:id/editar` (ver §6.2). La herramienta de
-    análisis ya era de solo lectura vía la bandera `editable` del backend.
-  - Revisión de seguridad general en
-    [`SECURITY-REVIEW.md`](./SECURITY-REVIEW.md): rate-limit dedicado en
-    `login`/`registro`, `app.set("trust proxy")`, política de contraseñas
-    centralizada (`auth.schema.ts` → `contrasenaSchema`, en paridad con el
-    front) y expiración de sesión configurable por rol
-    (`config/sesion.config.ts`). Hallazgos no implementados (lockout por
-    cuenta, CSP de API, fuga menor de enumeración en `registro`, verificación
-    de `COOKIE_SECURE` en prod) quedan listados y justificados ahí.
-- **Prioridad:** Baja.
-- **Resultado esperado:** Ningún control de acción visible para `SUPERVISOR` y
-  los puntos de la revisión de seguridad atendidos o documentados. ✅
 
 ---
 

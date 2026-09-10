@@ -29,7 +29,7 @@ const ASIGNACION_FIELD: FilterFieldConfig = {
     allLabel: 'Todas las solicitudes',
     minWidth: 'min-w-36',
     options: [
-        { value: 'asignados', label: 'Con gestor asignado', dotColor: 'bg-emerald-500' },
+        { value: 'asignados', label: 'Con gestor asignado', dotColor: 'bg-ok' },
         { value: 'sin_asignar', label: 'Sin asignar', dotColor: 'bg-muted-foreground/40' },
     ],
 }

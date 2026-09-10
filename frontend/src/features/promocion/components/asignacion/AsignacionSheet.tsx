@@ -229,7 +229,7 @@ export function AsignacionSheet({
                                 rows={3}
                             />
                             {esReasignacion && !motivo.trim() && (
-                                <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+                                <div className="flex items-center gap-1.5 text-xs text-warn-ink">
                                     <AlertCircle className="h-3 w-3 shrink-0" />
                                     <span>Se recomienda indicar el motivo de la reasignación</span>
                                 </div>

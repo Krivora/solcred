@@ -117,4 +117,6 @@ export const MODULOS_LOG: ModuloLog[] = [
   'PROGRAMAS',
   'SOLICITUDES',
   'DOCUMENTOS',
+  'SOPORTE',
+  'CRM',
 ];

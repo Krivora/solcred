@@ -21,10 +21,10 @@ export const NIVEL_LABEL: Record<NivelCriterio, string> = {
 }
 
 export const NIVEL_ESTILO: Record<NivelCriterio, string> = {
-  bien: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
-  atencion: 'border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400',
-  riesgo: 'border-destructive/25 bg-destructive/10 text-destructive',
-  na: 'border-border/50 bg-muted/40 text-muted-foreground',
+  bien: 'border-ok/25 bg-ok-surface text-ok-ink',
+  atencion: 'border-warn/25 bg-warn-surface text-warn-ink',
+  riesgo: 'border-danger/25 bg-danger-surface text-danger-ink',
+  na: 'border-hairline bg-surface-sunken text-ink-muted',
 }
 
 /** true si sube/es bueno tener un valor alto; false si baja/es bueno tenerlo bajo. */

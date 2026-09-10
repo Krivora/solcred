@@ -1,5 +1,6 @@
 import type { Step } from '@/features/solicitudes/hooks/useSolicitudForm'
 import type { ProgramaSeccion, SeccionSolicitud } from '@/features/solicitudes/types/solicitud.types'
+import type { PasoFormulario } from '@/shared/types/domain.enums'
 
 // Pasos que no dependen de una sección del programa (siempre presentes).
 const PASOS_FIJOS_INICIO: Step[] = ['programa', 'general']
@@ -45,4 +46,23 @@ export function obtenerPasosActivos(secciones: ProgramaSeccion[] | undefined): S
 export function esPasoOmitible(secciones: ProgramaSeccion[] | undefined, step: Step): boolean {
     if (!secciones) return false
     return obtenerRequerimiento(secciones, step) === 'OPCIONAL'
+}
+
+// Mapa Step (front) ↔ PasoFormulario (enum de BD) — única fuente de verdad,
+// usado al instrumentar el paso alcanzado para el embudo de conversión.
+const STEP_A_PASO_FORMULARIO: Record<Step, PasoFormulario> = {
+    programa: 'PROGRAMA',
+    general: 'GENERAL',
+    solicitante: 'SOLICITANTE',
+    aval: 'AVAL',
+    credito: 'CREDITO',
+    garantia: 'GARANTIA',
+    negocio: 'NEGOCIO',
+    mercado: 'MERCADO',
+    bancarios: 'BANCARIOS',
+    resumen: 'RESUMEN',
+}
+
+export function pasoFormularioDe(step: Step): PasoFormulario {
+    return STEP_A_PASO_FORMULARIO[step]
 }

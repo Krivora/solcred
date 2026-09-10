@@ -53,3 +53,14 @@ export async function getResumenLogs(): Promise<ResumenLogs> {
 export async function getLogById(id: string): Promise<LogAuditoria> {
   return apiAuth<LogAuditoria>(`/admin/logs/${id}`);
 }
+
+/**
+ * Exporta a Excel TODOS los logs que cumplen los filtros activos (no solo la
+ * página cargada en pantalla). Acceso: ADMIN y SUPERVISOR.
+ */
+export async function exportarLogs(
+  params: Omit<LogsQueryParams, 'page' | 'pageSize'> = {},
+): Promise<Blob> {
+  const qs = buildQueryString(params);
+  return apiAuth<Blob>(`/admin/logs/exportar${qs}`);
+}

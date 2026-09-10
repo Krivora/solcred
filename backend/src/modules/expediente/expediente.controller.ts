@@ -72,7 +72,7 @@ export const validarDocumento = async (
 ): Promise<void> => {
     try {
         const { solicitudId, documentoId } = req.params;
-        // ── FIX: separar usuarioId (para el log) de personalId (para el gestor) ──
+        // usuarioId → log de auditoría; personalId → quién valida el documento.
         const { id: usuarioId, personalId } = req.usuario!;
 
         if (!personalId) {

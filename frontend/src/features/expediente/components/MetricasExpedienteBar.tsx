@@ -29,12 +29,12 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
         porcentajeCompletado === 100 ? 'success' : porcentajeCompletado >= 60 ? 'info' : 'warning'
 
     return (
-        <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+        <div className="rounded-lg border border-hairline bg-card overflow-hidden">
             {/* ── Encabezado ─────────────────────────────────────────── */}
-            <div className="px-4 pt-4 pb-3 border-b border-border bg-muted/30">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="px-4 pt-4 pb-3 border-b border-hairline bg-surface-sunken">
+                <div className="flex items-center gap-1.5">
+                    <TrendingUp className="size-3.5 text-ink-subtle" />
+                    <p className="text-label uppercase tracking-wide text-ink-subtle">
                         Progreso
                     </p>
                 </div>
@@ -58,7 +58,7 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                             fill="none"
                             stroke="currentColor"
                             strokeWidth={stroke}
-                            className="text-muted/40"
+                            className="text-hairline"
                         />
                         {/* Fill */}
                         <circle
@@ -74,9 +74,9 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                             className={cn('transition-[stroke-dashoffset,color] duration-700 ease-out', TONE[progresoTone].text)}
                         />
                     </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span
-                            className={cn('text-xl font-bold leading-none tabular-nums', TONE[progresoTone].text)}
+                            className={cn('text-title leading-none tabular-nums', TONE[progresoTone].text)}
                             role="progressbar"
                             aria-valuenow={porcentajeCompletado}
                             aria-valuemin={0}
@@ -87,13 +87,13 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                     </div>
                 </div>
 
-                <p className="text-sm font-semibold text-foreground leading-none mt-1">
+                <p className="text-body-sm font-medium text-ink leading-none mt-1 tabular-nums">
                     {totalAprobados}
-                    <span className="text-muted-foreground font-normal text-sm">
+                    <span className="text-ink-subtle font-normal">
                         /{totalRequeridos}
                     </span>
                 </p>
-                <p className="text-[11px] text-muted-foreground">documentos aprobados</p>
+                <p className="text-caption text-ink-subtle">documentos aprobados</p>
             </div>
 
             {/* ── Stats individuales ─────────────────────────────────── */}
@@ -107,25 +107,25 @@ export const MetricasExpedientePanel = ({ metricas }: MetricasExpedientePanelPro
                         <div
                             key={key}
                             className={cn(
-                                'rounded-lg px-3 py-2.5 ring-1 transition-opacity duration-200',
+                                'rounded-md px-3 py-2.5 ring-1 transition-opacity duration-200',
                                 TONE[tone].chip,
-                                value === 0 ? 'opacity-35' : 'opacity-100',
+                                value === 0 ? 'opacity-40' : 'opacity-100',
                             )}
                         >
                             {/* Fila superior: ícono + label + valor */}
                             <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <div className="flex items-center gap-1.5 min-w-0">
-                                    <Icon className="h-3 w-3 shrink-0" />
-                                    <span className="text-[11px] text-muted-foreground truncate">
+                                    <Icon className="size-3 shrink-0" />
+                                    <span className="text-caption truncate">
                                         {label}
                                     </span>
                                 </div>
-                                <span className="text-sm font-bold tabular-nums shrink-0">
+                                <span className="text-body-sm font-semibold tabular-nums shrink-0">
                                     {value}
                                 </span>
                             </div>
                             {/* Barra de proporción */}
-                            <div className="h-1 w-full rounded-full bg-foreground/10 overflow-hidden">
+                            <div className="h-1 w-full rounded-full bg-hairline overflow-hidden">
                                 <div
                                     className={cn('h-full rounded-full transition-all duration-700', TONE[tone].solid)}
                                     style={{ width: `${pct}%` }}

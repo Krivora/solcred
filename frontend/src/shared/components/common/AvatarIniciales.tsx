@@ -1,16 +1,13 @@
 import { cn } from '@/shared/lib/cn'
 
-/** Paleta determinista — el mismo nombre siempre cae en el mismo color. */
+/** Paleta determinista (tokens categóricos) — el mismo nombre → el mismo color. */
 const PALETA = [
-  'bg-sky-500/15 text-sky-700 ring-sky-500/25 dark:text-sky-300',
-  'bg-violet-500/15 text-violet-700 ring-violet-500/25 dark:text-violet-300',
-  'bg-emerald-500/15 text-emerald-700 ring-emerald-500/25 dark:text-emerald-300',
-  'bg-amber-500/15 text-amber-700 ring-amber-500/25 dark:text-amber-300',
-  'bg-rose-500/15 text-rose-700 ring-rose-500/25 dark:text-rose-300',
-  'bg-cyan-500/15 text-cyan-700 ring-cyan-500/25 dark:text-cyan-300',
-  'bg-fuchsia-500/15 text-fuchsia-700 ring-fuchsia-500/25 dark:text-fuchsia-300',
-  'bg-indigo-500/15 text-indigo-700 ring-indigo-500/25 dark:text-indigo-300',
-  'bg-teal-500/15 text-teal-700 ring-teal-500/25 dark:text-teal-300',
+  'bg-cat-1-surface text-cat-1 ring-cat-1/20',
+  'bg-cat-2-surface text-cat-2 ring-cat-2/20',
+  'bg-cat-3-surface text-cat-3 ring-cat-3/20',
+  'bg-cat-4-surface text-cat-4 ring-cat-4/20',
+  'bg-cat-5-surface text-cat-5 ring-cat-5/20',
+  'bg-cat-6-surface text-cat-6 ring-cat-6/20',
 ]
 
 const TAMANOS = {

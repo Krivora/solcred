@@ -61,9 +61,9 @@ const SECCION_ICONS: Record<SeccionSolicitud, ElementType> = {
 };
 
 const REQUERIMIENTO_COLOR: Record<Requerimiento, string> = {
-    OBLIGATORIO: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    OPCIONAL: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    NO_REQUIERE: "bg-muted text-muted-foreground",
+    OBLIGATORIO: "bg-warn-surface text-warn-ink",
+    OPCIONAL: "bg-info-surface text-info-ink",
+    NO_REQUIERE: "bg-surface-sunken text-ink-muted",
 };
 
 export default function DetalleProgramaPage() {

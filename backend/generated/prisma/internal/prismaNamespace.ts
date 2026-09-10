@@ -414,7 +414,8 @@ export const ModelName = {
   TicketComentario: 'TicketComentario',
   TicketAdjunto: 'TicketAdjunto',
   TicketEvento: 'TicketEvento',
-  TicketSlaPolitica: 'TicketSlaPolitica'
+  TicketSlaPolitica: 'TicketSlaPolitica',
+  Comunicacion: 'Comunicacion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "sesionRefresh" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "analisis" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria" | "ticket" | "ticketComentario" | "ticketAdjunto" | "ticketEvento" | "ticketSlaPolitica"
+    modelProps: "historialEstatus" | "grupoGestion" | "reglaGrupo" | "grupoGestor" | "asignacionSolicitud" | "asignacionFinanciamiento" | "usuario" | "sesionRefresh" | "personal" | "programa" | "programaSeccion" | "tipoDocumento" | "programaDocumento" | "solicitud" | "analisis" | "datosSolicitante" | "datosAval" | "datosCredito" | "conceptoCredito" | "datosGarantia" | "garantia" | "datosNegocio" | "datosMercado" | "datosBancarios" | "documentoSolicitud" | "logAuditoria" | "ticket" | "ticketComentario" | "ticketAdjunto" | "ticketEvento" | "ticketSlaPolitica" | "comunicacion"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2728,6 +2729,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Comunicacion: {
+      payload: Prisma.$ComunicacionPayload<ExtArgs>
+      fields: Prisma.ComunicacionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ComunicacionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ComunicacionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        findFirst: {
+          args: Prisma.ComunicacionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ComunicacionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        findMany: {
+          args: Prisma.ComunicacionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>[]
+        }
+        create: {
+          args: Prisma.ComunicacionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        createMany: {
+          args: Prisma.ComunicacionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ComunicacionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>[]
+        }
+        delete: {
+          args: Prisma.ComunicacionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        update: {
+          args: Prisma.ComunicacionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ComunicacionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ComunicacionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ComunicacionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ComunicacionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComunicacionPayload>
+        }
+        aggregate: {
+          args: Prisma.ComunicacionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComunicacion>
+        }
+        groupBy: {
+          args: Prisma.ComunicacionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComunicacionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ComunicacionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComunicacionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2961,6 +3036,8 @@ export const SolicitudScalarFieldEnum = {
   tipoPersona: 'tipoPersona',
   sector: 'sector',
   tamanoEmpresa: 'tamanoEmpresa',
+  ultimoPasoVisto: 'ultimoPasoVisto',
+  ultimoPasoVistoEn: 'ultimoPasoVistoEn',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -3299,6 +3376,24 @@ export const TicketSlaPoliticaScalarFieldEnum = {
 export type TicketSlaPoliticaScalarFieldEnum = (typeof TicketSlaPoliticaScalarFieldEnum)[keyof typeof TicketSlaPoliticaScalarFieldEnum]
 
 
+export const ComunicacionScalarFieldEnum = {
+  id: 'id',
+  solicitudId: 'solicitudId',
+  clienteId: 'clienteId',
+  registradoPorId: 'registradoPorId',
+  fechaContacto: 'fechaContacto',
+  tipo: 'tipo',
+  motivo: 'motivo',
+  resultado: 'resultado',
+  observaciones: 'observaciones',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn',
+  editadoEn: 'editadoEn'
+} as const
+
+export type ComunicacionScalarFieldEnum = (typeof ComunicacionScalarFieldEnum)[keyof typeof ComunicacionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3564,6 +3659,20 @@ export type ListEnumTamanoEmpresaFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'PasoFormulario'
+ */
+export type EnumPasoFormularioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasoFormulario'>
+    
+
+
+/**
+ * Reference to a field of type 'PasoFormulario[]'
+ */
+export type ListEnumPasoFormularioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PasoFormulario[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -3772,6 +3881,48 @@ export type EnumTicketTipoEventoFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumTicketTipoEventoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketTipoEvento[]'>
     
 
+
+/**
+ * Reference to a field of type 'ComunicacionTipo'
+ */
+export type EnumComunicacionTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionTipo'>
+    
+
+
+/**
+ * Reference to a field of type 'ComunicacionTipo[]'
+ */
+export type ListEnumComunicacionTipoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionTipo[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ComunicacionMotivo'
+ */
+export type EnumComunicacionMotivoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionMotivo'>
+    
+
+
+/**
+ * Reference to a field of type 'ComunicacionMotivo[]'
+ */
+export type ListEnumComunicacionMotivoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionMotivo[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ComunicacionResultado'
+ */
+export type EnumComunicacionResultadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionResultado'>
+    
+
+
+/**
+ * Reference to a field of type 'ComunicacionResultado[]'
+ */
+export type ListEnumComunicacionResultadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComunicacionResultado[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3913,6 +4064,7 @@ export type GlobalOmitConfig = {
   ticketAdjunto?: Prisma.TicketAdjuntoOmit
   ticketEvento?: Prisma.TicketEventoOmit
   ticketSlaPolitica?: Prisma.TicketSlaPoliticaOmit
+  comunicacion?: Prisma.ComunicacionOmit
 }
 
 /* Types for Logging */

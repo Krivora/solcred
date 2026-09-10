@@ -47,7 +47,7 @@ export function CalificarDialog({ open, onOpenChange, cargando, onConfirmar }: P
               <Star
                 className={cn(
                   'size-7 transition-colors',
-                  (hover || valor) >= n ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/40',
+                  (hover || valor) >= n ? 'fill-warn text-warn' : 'text-ink-subtle/50',
                 )}
               />
             </button>

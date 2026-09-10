@@ -10,21 +10,22 @@ interface Estilo {
   className: string
 }
 
+// Tokens del sistema (globals.css): trío por estado + categóricos + marca.
 export const ESTATUS_TICKET: Record<TicketEstatus, Estilo> = {
-  NUEVO: { label: 'Nuevo', className: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/40' },
-  ASIGNADO: { label: 'Asignado', className: 'bg-violet-500/15 text-violet-700 dark:text-violet-300 border-violet-500/40' },
-  EN_PROGRESO: { label: 'En progreso', className: 'bg-primary/15 text-primary border-primary/40' },
-  ESPERANDO_CLIENTE: { label: 'Esperando tu respuesta', className: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/45' },
-  RESUELTO: { label: 'Resuelto', className: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40' },
-  CERRADO: { label: 'Cerrado', className: 'bg-muted text-muted-foreground border-border' },
-  CANCELADO: { label: 'Cancelado', className: 'bg-muted text-muted-foreground border-border line-through' },
+  NUEVO: { label: 'Nuevo', className: 'bg-info-surface text-info-ink border-info/25' },
+  ASIGNADO: { label: 'Asignado', className: 'bg-cat-1-surface text-cat-1 border-cat-1/25' },
+  EN_PROGRESO: { label: 'En progreso', className: 'bg-brand-surface text-brand-ink border-brand/25' },
+  ESPERANDO_CLIENTE: { label: 'Esperando tu respuesta', className: 'bg-warn-surface text-warn-ink border-warn/25' },
+  RESUELTO: { label: 'Resuelto', className: 'bg-ok-surface text-ok-ink border-ok/25' },
+  CERRADO: { label: 'Cerrado', className: 'bg-surface-sunken text-ink-muted border-hairline' },
+  CANCELADO: { label: 'Cancelado', className: 'bg-surface-sunken text-ink-subtle border-hairline line-through' },
 }
 
 export const PRIORIDAD_TICKET: Record<TicketPrioridad, Estilo> = {
-  BAJA: { label: 'Baja', className: 'bg-muted text-muted-foreground border-border' },
-  MEDIA: { label: 'Media', className: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/40' },
-  ALTA: { label: 'Alta', className: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/45' },
-  URGENTE: { label: 'Urgente', className: 'bg-destructive/15 text-destructive border-destructive/45' },
+  BAJA: { label: 'Baja', className: 'bg-surface-sunken text-ink-muted border-hairline' },
+  MEDIA: { label: 'Media', className: 'bg-info-surface text-info-ink border-info/25' },
+  ALTA: { label: 'Alta', className: 'bg-warn-surface text-warn-ink border-warn/25' },
+  URGENTE: { label: 'Urgente', className: 'bg-danger-surface text-danger-ink border-danger/30' },
 }
 
 export const CATEGORIA_TICKET: Record<TicketCategoria, string> = {
@@ -63,10 +64,10 @@ export const ESTADO_SLA: Record<EstadoSla, { label: string; tono: 'ok' | 'warn' 
 }
 
 export const TONO_CLASS: Record<'ok' | 'warn' | 'crit' | 'muted', string> = {
-  ok: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40',
-  warn: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/45',
-  crit: 'bg-destructive/15 text-destructive border-destructive/45',
-  muted: 'bg-muted text-muted-foreground border-border',
+  ok: 'bg-ok-surface text-ok-ink border-ok/25',
+  warn: 'bg-warn-surface text-warn-ink border-warn/25',
+  crit: 'bg-danger-surface text-danger-ink border-danger/30',
+  muted: 'bg-surface-sunken text-ink-muted border-hairline',
 }
 
 /** "en 3 h 12 m" / "vencido hace 20 m" a partir de una fecha límite ISO. */

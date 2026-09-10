@@ -72,10 +72,10 @@ export function EditarSolicitudSidebar({ currentStep, pasosActivos, onSelect, so
                             )}
                         >
                             {completa === true && (
-                                <Check className="size-3.5 shrink-0 text-emerald-600" />
+                                <Check className="size-3.5 shrink-0 text-ok-ink" />
                             )}
                             {completa === false && (
-                                <Circle className="size-3.5 shrink-0 text-amber-500 fill-amber-500/20" />
+                                <Circle className="size-3.5 shrink-0 text-warn-ink fill-warn/20" />
                             )}
                             {completa === null && (
                                 <span className="size-3.5 shrink-0" />

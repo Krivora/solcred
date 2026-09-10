@@ -15,6 +15,7 @@ import {
 } from '@/shared/components/ui/table'
 import { EstatusDocumentoBadge } from './EstatusDocumentoBadge'
 import { ValidarDocumentoDialog } from './ValidarDocumentoDialog'
+import { VisorDocumentoDialog } from './VisorDocumentoDialog'
 import {
     XCircle,
     ExternalLink,
@@ -32,8 +33,6 @@ import type {
     ResumenDocumento,
     ValidarDocumentoDto,
 } from '@/features/expediente/types/expediente.types'
-import { uploadsApi } from '@/shared/api/uploads.api'
-import { ApiError } from '@/shared/api/client'
 import { cn } from '@/shared/lib/cn'
 import { estatusDocumento, TONE } from '@/shared/config/estatus.tokens'
 
@@ -120,8 +119,8 @@ function MotivoRechazo({ motivo }: { motivo: string }) {
         <Tooltip>
             <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 max-w-full sm:max-w-45 cursor-help group">
-                    <XCircle className="h-3 w-3 shrink-0 text-red-400" />
-                    <p className="text-xs text-red-600 dark:text-red-400 truncate group-hover:underline decoration-dashed underline-offset-2">
+                    <XCircle className="h-3 w-3 shrink-0 text-danger-ink" />
+                    <p className="text-xs text-danger-ink truncate group-hover:underline decoration-dashed underline-offset-2">
                         {motivo}
                     </p>
                 </div>
@@ -142,46 +141,26 @@ function CeldaArchivo({
     documentoId: string
     nombre: string
 }) {
-    const [cargando, setCargando] = useState(false)
-
-    const handleClick = async () => {
-        setCargando(true)
-        try {
-            const blob = await uploadsApi.descargarArchivo(solicitudId, documentoId)
-            const url = URL.createObjectURL(blob)
-            const nuevaVentana = window.open(url, '_blank')
-
-            if (!nuevaVentana) {
-                URL.revokeObjectURL(url)
-                return
-            }
-
-            const intervalo = setInterval(() => {
-                if (nuevaVentana.closed) {
-                    URL.revokeObjectURL(url)
-                    clearInterval(intervalo)
-                }
-            }, 2000)
-        } catch (err) {
-            const msg = err instanceof ApiError ? err.message : 'No se pudo abrir el documento'
-            console.error(msg)
-        } finally {
-            setCargando(false)
-        }
-    }
+    const [visorOpen, setVisorOpen] = useState(false)
 
     return (
-        <button
-            onClick={handleClick}
-            disabled={cargando}
-            className="inline-flex items-center gap-1.5 max-w-full sm:max-w-50 text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80 disabled:opacity-50"
-        >
-            {cargando
-                ? <Loader2 className="h-3 w-3 shrink-0 animate-spin" />
-                : <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
-            }
-            <span className="truncate">{nombre}</span>
-        </button>
+        <>
+            <button
+                onClick={() => setVisorOpen(true)}
+                className="inline-flex items-center gap-1.5 max-w-full sm:max-w-50 text-xs text-primary font-medium hover:underline underline-offset-2 transition-opacity hover:opacity-80"
+            >
+                <ExternalLink className="h-3 w-3 shrink-0 opacity-70" />
+                <span className="truncate">{nombre}</span>
+            </button>
+
+            <VisorDocumentoDialog
+                open={visorOpen}
+                onOpenChange={setVisorOpen}
+                solicitudId={solicitudId}
+                documentoId={documentoId}
+                nombre={nombre}
+            />
+        </>
     )
 }
 
@@ -208,7 +187,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 dark:border-emerald-900 dark:text-emerald-400 dark:hover:bg-emerald-950/40 dark:hover:border-emerald-800 dark:hover:text-emerald-300 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-ok/30 text-ok-ink hover:bg-ok-surface hover:border-ok/40 transition-colors`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'APROBADO')}
                         aria-label={`Aprobar ${nombreDocumento}`}
@@ -223,7 +202,7 @@ function BotonesValidacion({
                     <Button
                         size="sm"
                         variant="outline"
-                        className={`${dim} p-0 rounded-lg border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 hover:text-red-600 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:border-red-800 dark:hover:text-red-300 transition-all`}
+                        className={`${dim} p-0 rounded-lg border-danger/30 text-danger-ink hover:bg-danger-surface hover:border-danger/40 transition-colors`}
                         disabled={cargando}
                         onClick={() => onAbrir(documentoId, nombreDocumento, 'RECHAZADO')}
                         aria-label={`Rechazar ${nombreDocumento}`}
@@ -294,14 +273,14 @@ function TipoBadge({ esObligatorio }: { esObligatorio: boolean }) {
     return esObligatorio ? (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-red-600 border-red-200 bg-red-50 dark:text-red-300 dark:border-red-900 dark:bg-red-950/40 shrink-0"
+            className="text-caption px-1.5 py-0 h-4 text-warn-ink border-warn/25 bg-warn-surface shrink-0"
         >
             Requerido
         </Badge>
     ) : (
         <Badge
             variant="outline"
-            className="text-[10px] px-1.5 py-0 h-4 text-slate-400 border-slate-200 bg-slate-50 dark:text-slate-400 dark:border-slate-700 dark:bg-slate-800/50 shrink-0"
+            className="text-caption px-1.5 py-0 h-4 text-ink-subtle border-hairline bg-surface-sunken shrink-0"
         >
             Opcional
         </Badge>
@@ -727,8 +706,8 @@ export function TablaDocumentos({
                                 className={cn(
                                     'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold',
                                     pendientesAccion > 0
-                                        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                        : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                                        ? 'bg-warn-surface text-warn-ink'
+                                        : 'bg-ok-surface text-ok-ink',
                                 )}
                             >
                                 {pendientesAccion > 0 ? (
