@@ -88,6 +88,7 @@ export const soporteApi = {
     apiAuth<ListadoTickets>(
       `${BASE}/tickets${qs({
         page: f.page,
+        pageSize: f.pageSize,
         estatus: f.estatus,
         prioridad: f.prioridad,
         categoria: f.categoria,

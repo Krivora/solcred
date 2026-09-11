@@ -90,6 +90,42 @@ export async function crearSolicitud(
   });
 }
 
+/** Un ticket de soporte para un solicitante (cliente o personal). */
+export async function crearTicket(solicitanteId: string, over: Record<string, unknown> = {}) {
+  return prisma.ticket.create({
+    data: {
+      folio: `TKT-TEST-${randomUUID().slice(0, 8)}`,
+      titulo: "Ticket de prueba",
+      descripcion: "Descripción de prueba con al menos diez caracteres",
+      categoria: "SOPORTE_TECNICO",
+      prioridad: "MEDIA",
+      estatus: "NUEVO",
+      solicitanteId,
+      ...over,
+    },
+  });
+}
+
+/** Un evento de un ticket, con fecha controlable (para probar series por día). */
+export async function crearEventoTicket(args: {
+  ticketId: string;
+  tipo: string;
+  actorId?: string | null;
+  valorNuevo?: string | null;
+  creadoEn?: Date;
+}) {
+  return prisma.ticketEvento.create({
+    data: {
+      ticketId: args.ticketId,
+      tipo: args.tipo as never,
+      actorId: args.actorId ?? null,
+      descripcion: "Evento de prueba",
+      valorNuevo: args.valorNuevo ?? null,
+      creadoEn: args.creadoEn ?? new Date(),
+    },
+  });
+}
+
 /** Una comunicación del CRM ligada a una solicitud + cliente + personal. */
 export async function crearComunicacion(args: {
   solicitudId: string;

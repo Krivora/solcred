@@ -29,6 +29,7 @@ import {
   CrearTicketDto,
   listarMisTicketsQuerySchema,
   listarTicketsQuerySchema,
+  metricasQuerySchema,
 } from "./soporte.schema";
 import { paginado } from "@utils/pagination";
 
@@ -42,21 +43,21 @@ export interface Actor {
   personalId?: string; // Personal.id — presente para staff
 }
 
-const esStaff = (rol: RolAplicacion): boolean => rol === "ADMIN" || rol === "SUPERVISOR";
-/** Agente = quien puede resolver. Por decisión de negocio, son los ADMIN. */
-const esAgente = (rol: RolAplicacion): boolean => rol === "ADMIN";
+/** Agente = quien puede resolver tickets. ADMIN y SOPORTE. */
+const esAgente = (rol: RolAplicacion): boolean => rol === "ADMIN" || rol === "SOPORTE";
+const esStaff = (rol: RolAplicacion): boolean => esAgente(rol) || rol === "SUPERVISOR";
 
-/** ¿Puede ver el ticket? Dueño o staff (ADMIN/SUPERVISOR). */
+/** ¿Puede ver el ticket? Dueño o staff (agentes/SUPERVISOR). */
 const puedeVer = (solicitanteId: string, actor: Actor): boolean =>
   solicitanteId === actor.id || esStaff(actor.rol);
 
 /**
  * ¿Puede ejecutar una acción de "solicitante" (comentar, cerrar, reabrir)?
- * El dueño siempre; el ADMIN también (actúa como agente). SUPERVISOR NO, salvo
- * que sea su propio ticket — es solo lectura sobre tickets de terceros.
+ * El dueño siempre; un agente también (actúa en nombre del ticket). SUPERVISOR
+ * NO, salvo que sea su propio ticket — es solo lectura sobre tickets de terceros.
  */
 const puedeActuar = (solicitanteId: string, actor: Actor): boolean =>
-  solicitanteId === actor.id || actor.rol === "ADMIN";
+  solicitanteId === actor.id || esAgente(actor.rol);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SELECTS
@@ -595,8 +596,8 @@ export const reabrirTicket = async (
   if (ticket.estatus !== "RESUELTO") {
     throw new AppError("Solo puedes reabrir un ticket que está resuelto", 409);
   }
-  // El ADMIN puede reabrir un RESUELTO en cualquier momento; el solicitante solo dentro de la ventana.
-  if (actor.rol !== "ADMIN" && !dentroVentanaReapertura(ticket.resueltoEn)) {
+  // Un agente puede reabrir un RESUELTO en cualquier momento; el solicitante solo dentro de la ventana.
+  if (!esAgente(actor.rol) && !dentroVentanaReapertura(ticket.resueltoEn)) {
     throw new AppError(
       "La ventana para reabrir (7 días) ya pasó. Crea un ticket nuevo.",
       409
@@ -823,13 +824,64 @@ export const obtenerStats = async (actor: Actor) => {
   };
 };
 
-// ── Agentes disponibles (ADMIN) + su carga ─────────────────────────────────
+// ── Métricas históricas (tendencia de la cola) ─────────────────────────────
+
+const MS_DIA = 24 * 60 * 60 * 1000;
+const RANGO_DIAS: Record<"7d" | "30d" | "90d", number> = { "7d": 7, "30d": 30, "90d": 90 };
+const claveDia = (d: Date): string => d.toISOString().slice(0, 10);
+
+/**
+ * Serie diaria de creados/resueltos/SLA incumplidos, a partir de `TicketEvento`
+ * (misma idea que el panorama ejecutivo: trae las filas del rango y las agrupa
+ * en memoria por día — aprovecha el índice `[tipo, creadoEn]`).
+ */
+export const obtenerMetricas = async (actor: Actor, rawQuery: unknown) => {
+  exigirStaff(actor);
+  const { rango } = metricasQuerySchema.parse(rawQuery ?? {});
+  const dias = RANGO_DIAS[rango ?? "30d"];
+
+  const hasta = new Date();
+  const desde = new Date(hasta.getTime() - (dias - 1) * MS_DIA);
+  desde.setHours(0, 0, 0, 0);
+
+  const eventos = await prisma.ticketEvento.findMany({
+    where: {
+      creadoEn: { gte: desde, lte: hasta },
+      tipo: { in: ["CREADO", "CAMBIO_ESTATUS", "SLA_INCUMPLIDO"] },
+    },
+    select: { tipo: true, valorNuevo: true, creadoEn: true },
+  });
+
+  const serie = new Map<string, { fecha: string; creados: number; resueltos: number; slaIncumplidos: number }>();
+  for (let i = 0; i < dias; i++) {
+    const fecha = claveDia(new Date(desde.getTime() + i * MS_DIA));
+    serie.set(fecha, { fecha, creados: 0, resueltos: 0, slaIncumplidos: 0 });
+  }
+
+  for (const e of eventos) {
+    const fila = serie.get(claveDia(e.creadoEn));
+    if (!fila) continue;
+    if (e.tipo === "CREADO") fila.creados++;
+    else if (e.tipo === "CAMBIO_ESTATUS" && e.valorNuevo === "RESUELTO") fila.resueltos++;
+    else if (e.tipo === "SLA_INCUMPLIDO") fila.slaIncumplidos++;
+  }
+
+  return {
+    rango: rango ?? "30d",
+    desde,
+    hasta,
+    serie: Array.from(serie.values()),
+    cargaPorAgente: await listarAgentes(actor),
+  };
+};
+
+// ── Agentes disponibles (ADMIN/SOPORTE) + su carga ─────────────────────────
 
 export const listarAgentes = async (actor: Actor) => {
   exigirStaff(actor);
 
   const agentes = await prisma.personal.findMany({
-    where: { rol: "ADMIN", activo: true },
+    where: { rol: { in: ["ADMIN", "SOPORTE"] }, activo: true },
     select: {
       id: true,
       usuario: { select: { nombre: true, apellidoPaterno: true, correo: true } },
@@ -864,11 +916,11 @@ export const asignarTicket = async (
   }
 
   const agente = await prisma.personal.findFirst({
-    where: { id: dto.agenteId, rol: "ADMIN", activo: true },
+    where: { id: dto.agenteId, rol: { in: ["ADMIN", "SOPORTE"] }, activo: true },
     select: { id: true, usuario: { select: { nombre: true, apellidoPaterno: true } } },
   });
   if (!agente) {
-    throw new AppError("El agente debe ser un administrador activo", 400);
+    throw new AppError("El agente debe ser un administrador o miembro de soporte activo", 400);
   }
 
   const nombreAgente = `${agente.usuario.nombre} ${agente.usuario.apellidoPaterno}`;
@@ -1001,8 +1053,8 @@ export const cambiarEstatus = async (
   ticketId: string,
   dto: CambiarEstatusDto
 ) => {
-  if (actor.rol !== "ADMIN") {
-    throw new AppError("Solo un administrador puede mover el estatus del ticket", 403);
+  if (!esAgente(actor.rol)) {
+    throw new AppError("Solo un agente puede mover el estatus del ticket", 403);
   }
   const ticket = await cargarTicketStaff(ticketId);
 
@@ -1067,8 +1119,8 @@ export const cancelarTicket = async (
   ticketId: string,
   motivo: string
 ) => {
-  if (actor.rol !== "ADMIN") {
-    throw new AppError("Solo un administrador puede cancelar un ticket", 403);
+  if (!esAgente(actor.rol)) {
+    throw new AppError("Solo un agente puede cancelar un ticket", 403);
   }
   const ticket = await cargarTicketStaff(ticketId);
   if (esFinal(ticket.estatus)) {

@@ -7,6 +7,7 @@ import { soporteKeys } from '@/features/soporte/lib/soporte.keys'
 import { ApiError } from '@/shared/api/client'
 import type {
   TicketCategoria,
+  TicketEstatus,
   TicketPrioridad,
 } from '@/features/soporte/types/soporte.types'
 
@@ -98,4 +99,33 @@ export function useAccionesTicket(ticketId: string) {
   })
 
   return { comentar, cerrar, reabrir, calificar, asignar, prioridad, categoria, estatus, cancelar }
+}
+
+/** Mueve un ticket a otro estatus sin conocer su id de antemano (tablero kanban). */
+export function useMoverTicketEstatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { id: string; estatus: TicketEstatus }) =>
+      soporteApi.cambiarEstatus(v.id, v.estatus),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: soporteKeys.all })
+    },
+    onError: (e) =>
+      toast.error('No se pudo mover el ticket', { description: msgError(e, 'Intenta de nuevo') }),
+  })
+}
+
+/** Asigna/reasigna un ticket sin conocer su id de antemano (tablero kanban). */
+export function useAsignarTicketKanban() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { id: string; agenteId: string; prioridad?: TicketPrioridad }) =>
+      soporteApi.asignar(v.id, v.agenteId, v.prioridad),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: soporteKeys.all })
+      toast.success('Ticket asignado')
+    },
+    onError: (e) =>
+      toast.error('No se pudo asignar', { description: msgError(e, 'Intenta de nuevo') }),
+  })
 }

@@ -264,6 +264,19 @@ export const agentes = async (
   }
 };
 
+export const metricas = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const data = await soporte.obtenerMetricas(actorDe(req), req.query);
+    res.status(200).json(ok("Métricas históricas de soporte", data));
+  } catch (error) {
+    next(error);
+  }
+};
+
 const accionStaff = (
   servicio: (actor: Actor, ticketId: string, body: unknown) => Promise<{ folio: string; id: string }>,
   descripcion: (folio: string) => string

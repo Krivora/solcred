@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, AlertTriangle, Inbox, Layers } from 'lucide-react'
+import { Search, AlertTriangle, Inbox, Layers, List, LayoutGrid } from 'lucide-react'
 import { PageHeader } from '@/shared/components/common/PageHeader'
 import { Input } from '@/shared/components/ui/input'
 import {
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/shared/components/ui/select'
 import { cn } from '@/shared/lib/cn'
+import { useEsSoloLectura } from '@/shared/lib/permisos'
 import {
   TICKET_ESTATUS_VALUES,
   TICKET_PRIORIDAD_VALUES,
@@ -24,6 +25,9 @@ import type {
   TicketPrioridad,
 } from '@/features/soporte/types/soporte.types'
 import { TicketsTable } from './TicketsTable'
+import { TicketKanban } from './TicketKanban'
+
+const KANBAN_PAGE_SIZE = 100
 
 function TileMetrica({
   label,
@@ -66,8 +70,14 @@ function TileMetrica({
 export function TicketsListPage() {
   const [filtros, setFiltros] = useState<FiltrosTickets>({ page: 1 })
   const [busqueda, setBusqueda] = useState('')
+  const [vista, setVista] = useState<'tabla' | 'kanban'>('tabla')
+  const soloLectura = useEsSoloLectura()
 
-  const { data, isLoading, isFetching } = useTicketsListado(filtros)
+  const { data, isLoading, isFetching } = useTicketsListado(filtros, vista === 'tabla')
+  const { data: dataKanban, isLoading: cargandoKanban } = useTicketsListado(
+    { ...filtros, estatus: undefined, page: 1, pageSize: KANBAN_PAGE_SIZE },
+    vista === 'kanban',
+  )
   const { data: stats } = useSoporteStats()
   const { data: agentes } = useAgentesSoporte()
 
@@ -103,8 +113,12 @@ export function TicketsListPage() {
           />
         </form>
 
-        <Select value={filtros.estatus ?? 'TODOS'} onValueChange={(v) => set({ estatus: v === 'TODOS' ? undefined : (v as TicketEstatus) })}>
-          <SelectTrigger className="w-40"><SelectValue placeholder="Estatus" /></SelectTrigger>
+        <Select
+          value={filtros.estatus ?? 'TODOS'}
+          onValueChange={(v) => set({ estatus: v === 'TODOS' ? undefined : (v as TicketEstatus) })}
+          disabled={vista === 'kanban'}
+        >
+          <SelectTrigger className="w-40"><SelectValue placeholder={vista === 'kanban' ? 'Por columna' : 'Estatus'} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="TODOS">Todo estatus</SelectItem>
             {TICKET_ESTATUS_VALUES.map((e) => (
@@ -158,16 +172,47 @@ export function TicketsListPage() {
             <Layers className="size-3" /> Limpiar
           </button>
         )}
+
+        <div className="ml-auto flex items-center gap-0.5 rounded-lg border border-hairline bg-card p-0.5">
+          <button
+            type="button"
+            onClick={() => setVista('tabla')}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-caption font-medium transition-colors',
+              vista === 'tabla' ? 'bg-surface-sunken text-ink' : 'text-ink-subtle hover:text-ink',
+            )}
+          >
+            <List className="size-3.5" /> Tabla
+          </button>
+          <button
+            type="button"
+            onClick={() => setVista('kanban')}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-caption font-medium transition-colors',
+              vista === 'kanban' ? 'bg-surface-sunken text-ink' : 'text-ink-subtle hover:text-ink',
+            )}
+          >
+            <LayoutGrid className="size-3.5" /> Kanban
+          </button>
+        </div>
       </div>
 
-      <TicketsTable
-        tickets={data?.data ?? []}
-        meta={data?.pagination}
-        onPaginar={(page) => setFiltros((f) => ({ ...f, page }))}
-        cargando={isLoading || (isFetching && !data)}
-        modo="staff"
-        vacio={{ titulo: 'Sin tickets', descripcion: 'Ningún ticket coincide con estos filtros.' }}
-      />
+      {vista === 'tabla' ? (
+        <TicketsTable
+          tickets={data?.data ?? []}
+          meta={data?.pagination}
+          onPaginar={(page) => setFiltros((f) => ({ ...f, page }))}
+          cargando={isLoading || (isFetching && !data)}
+          modo="staff"
+          vacio={{ titulo: 'Sin tickets', descripcion: 'Ningún ticket coincide con estos filtros.' }}
+        />
+      ) : (
+        <TicketKanban
+          tickets={dataKanban?.data ?? []}
+          cargando={cargandoKanban}
+          soloLectura={soloLectura}
+        />
+      )}
     </div>
   )
 }

@@ -146,6 +146,7 @@ export interface FiltrosTickets extends FiltrosMisTickets {
   agenteId?: string
   sinAsignar?: boolean
   sla?: 'ok' | 'en_riesgo' | 'vencido'
+  pageSize?: number
 }
 
 export type ListadoTickets = RespuestaPaginada<TicketFila>

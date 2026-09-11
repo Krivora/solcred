@@ -865,7 +865,7 @@ model Ticket {
   solicitante   Usuario   @relation("TicketsSolicitados", fields: [solicitanteId], references: [id])
   solicitanteId String
   agente        Personal? @relation("TicketsAsignados", fields: [agenteId], references: [id])
-  agenteId      String? // siempre un Personal con rol ADMIN
+  agenteId      String? // siempre un Personal con rol ADMIN o SOPORTE
   asignadoPor   Personal? @relation("TicketsAsignadosPor", fields: [asignadoPorId], references: [id])
   asignadoPorId String?
 
@@ -953,6 +953,12 @@ model TicketEvento {
   creadoEn      DateTime @default(now())
 
   @@index([ticketId])
+  // Series de tiempo para el futuro dashboard de métricas de soporte (mismo
+  // patrón que HistorialEstatus para el panorama ejecutivo): filtra por tipo
+  // de evento (CAMBIO_ESTATUS, SLA_INCUMPLIDO...) + rango de fecha.
+  @@index([tipo, creadoEn])
+  // Rango de fecha sin filtrar por tipo (ej. feed de actividad reciente).
+  @@index([creadoEn])
 }
 
 model TicketSlaPolitica {

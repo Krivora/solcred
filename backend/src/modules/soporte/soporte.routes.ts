@@ -34,9 +34,11 @@ const limitadorDescarga = rateLimit({
 });
 
 // ─── Staff — rutas literales primero, antes de /tickets/:id ─────────────────
-router.get("/tickets/stats", autorizar("ADMIN", "SUPERVISOR"), ctrl.stats);
-router.get("/agentes", autorizar("ADMIN", "SUPERVISOR"), ctrl.agentes);
-router.get("/sla-politicas", autorizar("ADMIN", "SUPERVISOR"), ctrl.listarSlaPoliticas);
+router.get("/tickets/stats", autorizar("ADMIN", "SOPORTE", "SUPERVISOR"), ctrl.stats);
+// La query (rango) se valida dentro del service, igual que /tickets/mios.
+router.get("/tickets/metricas", autorizar("ADMIN", "SOPORTE", "SUPERVISOR"), ctrl.metricas);
+router.get("/agentes", autorizar("ADMIN", "SOPORTE", "SUPERVISOR"), ctrl.agentes);
+router.get("/sla-politicas", autorizar("ADMIN", "SOPORTE", "SUPERVISOR"), ctrl.listarSlaPoliticas);
 router.put(
   "/sla-politicas/:prioridad",
   autorizar("ADMIN"),
@@ -53,7 +55,7 @@ router.post(
 );
 // La query se valida dentro del service (Express 5 no deja reasignar req.query).
 router.get("/tickets/mios", ctrl.listarMios);
-router.get("/tickets", autorizar("ADMIN", "SUPERVISOR"), ctrl.listarTodos);
+router.get("/tickets", autorizar("ADMIN", "SOPORTE", "SUPERVISOR"), ctrl.listarTodos);
 router.get("/tickets/:id", ctrl.detalle);
 router.post(
   "/tickets/:id/comentarios",
@@ -68,11 +70,11 @@ router.patch("/tickets/:id/cerrar", ctrl.cerrar);
 router.patch("/tickets/:id/reabrir", validate(reabrirTicketSchema), ctrl.reabrir);
 router.post("/tickets/:id/calificar", validate(calificarTicketSchema), ctrl.calificar);
 
-// ─── Acciones de staff (ADMIN) ─────────────────────────────────────────────
-router.patch("/tickets/:id/asignar", autorizar("ADMIN"), validate(asignarTicketSchema), ctrl.asignar);
-router.patch("/tickets/:id/prioridad", autorizar("ADMIN"), validate(cambiarPrioridadSchema), ctrl.prioridad);
-router.patch("/tickets/:id/categoria", autorizar("ADMIN"), validate(cambiarCategoriaSchema), ctrl.categoria);
-router.patch("/tickets/:id/estatus", autorizar("ADMIN"), validate(cambiarEstatusSchema), ctrl.estatus);
-router.patch("/tickets/:id/cancelar", autorizar("ADMIN"), validate(cancelarTicketSchema), ctrl.cancelar);
+// ─── Acciones de agente (ADMIN/SOPORTE) ─────────────────────────────────────
+router.patch("/tickets/:id/asignar", autorizar("ADMIN", "SOPORTE"), validate(asignarTicketSchema), ctrl.asignar);
+router.patch("/tickets/:id/prioridad", autorizar("ADMIN", "SOPORTE"), validate(cambiarPrioridadSchema), ctrl.prioridad);
+router.patch("/tickets/:id/categoria", autorizar("ADMIN", "SOPORTE"), validate(cambiarCategoriaSchema), ctrl.categoria);
+router.patch("/tickets/:id/estatus", autorizar("ADMIN", "SOPORTE"), validate(cambiarEstatusSchema), ctrl.estatus);
+router.patch("/tickets/:id/cancelar", autorizar("ADMIN", "SOPORTE"), validate(cancelarTicketSchema), ctrl.cancelar);
 
 export default router;

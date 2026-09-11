@@ -103,6 +103,10 @@ export const listarTicketsQuerySchema = z.object({
   q: z.string().trim().max(120).optional(),
 });
 
+export const metricasQuerySchema = z.object({
+  rango: z.enum(["7d", "30d", "90d"]).optional(),
+});
+
 export const actualizarSlaPoliticaSchema = z.object({
   respuestaMinutos: z.coerce.number().int().positive().max(100000),
   resolucionMinutos: z.coerce.number().int().positive().max(500000),
@@ -120,3 +124,4 @@ export type CambiarCategoriaDto = z.infer<typeof cambiarCategoriaSchema>;
 export type CambiarEstatusDto = z.infer<typeof cambiarEstatusSchema>;
 export type CancelarTicketDto = z.infer<typeof cancelarTicketSchema>;
 export type ActualizarSlaPoliticaDto = z.infer<typeof actualizarSlaPoliticaSchema>;
+export type MetricasQuery = z.infer<typeof metricasQuerySchema>;

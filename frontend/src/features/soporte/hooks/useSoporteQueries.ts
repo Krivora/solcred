@@ -16,11 +16,12 @@ export function useMisTickets(filtros: FiltrosMisTickets) {
   })
 }
 
-export function useTicketsListado(filtros: FiltrosTickets) {
+export function useTicketsListado(filtros: FiltrosTickets, enabled = true) {
   return useQuery({
     queryKey: soporteKeys.tickets(filtros),
     queryFn: () => soporteApi.todos(filtros),
     placeholderData: (prev) => prev,
+    enabled,
   })
 }
 
