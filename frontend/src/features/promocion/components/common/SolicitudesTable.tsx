@@ -13,12 +13,13 @@ import { FolderOpen, FileText, MoreHorizontal, Loader2 } from 'lucide-react'
 import { useEsSoloLectura } from '@/shared/lib/permisos'
 import { Paginacion } from '@/shared/components/common/Paginacion'
 import {
-  ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha, formatMonto,
+  ESTATUS_STYLES, SECTOR_LABELS, TAMANO_LABELS, formatFecha,
 } from '@/shared/config/solicitudes.config'
 import type { SolicitudPromocion, PaginacionData } from '@/features/promocion/types/solicitud.types'
 import { SolicitanteCell } from '@/shared/components/common/SolicitanteCell'
 import type { ReactNode } from 'react'
 import { useDescargarPDF } from '@/features/promocion/hooks/useDescargarPDF'
+import { EstadoEstancamientoChip } from '@/features/promocion/components/common/EstadoEstancamientoChip'
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -29,6 +30,7 @@ export interface SolicitudesTableConfig {
   mostrarColumnaAnalista?: boolean
   mostrarColumnaEstatus?: boolean
   mostrarColumnaComentario?: boolean
+  mostrarColumnaComunicacion?: boolean
   mostrarColumnaPdf?: boolean
 
   labelFecha?: string
@@ -71,7 +73,7 @@ function TableSkeleton({ cols }: { cols: number }) {
           {Array.from({ length: 8 }).map((_, i) => (
             <TableRow key={i} className="border-b border-border/40">
               {Array.from({ length: cols }).map((_, j) => (
-                <TableCell key={j} className="py-3">
+                <TableCell key={j} className="py-1">
                   <Skeleton className="h-4 w-full rounded-md" />
                 </TableCell>
               ))}
@@ -112,6 +114,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     mostrarColumnaAnalista = false,
     mostrarColumnaEstatus = true,
     mostrarColumnaComentario = false,
+    mostrarColumnaComunicacion = false,
     mostrarColumnaPdf = true,
     labelFecha = 'Recibida',
     vacioCopy,
@@ -128,6 +131,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
     + (mostrarColumnaGestor ? 1 : 0)
     + (mostrarColumnaAnalista ? 1 : 0)
     + (mostrarColumnaEstatus ? 1 : 0)
+    + (mostrarColumnaComunicacion ? 1 : 0)
     + (mostrarColumnaPdf ? 1 : 0)
     + (renderInforme ? 1 : 0)
     + (renderDocumentos ? 1 : 0)
@@ -151,59 +155,64 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-28">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-28">
                 Folio
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-100">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-100">
                 Solicitante
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                 Programa
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                 Tamaño / Sector
               </TableHead>
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                 {labelFecha}
               </TableHead>
               {mostrarColumnaEstatus && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                   Estatus
                 </TableHead>
               )}
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                 Documentos
               </TableHead>
               {mostrarColumnaGestor && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-40">
                   Gestor
                 </TableHead>
               )}
               {mostrarColumnaAnalista && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-40">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-40">
                   Analista
                 </TableHead>
               )}
               {mostrarColumnaComentario && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-56">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-56">
                   Comentario
                 </TableHead>
               )}
-              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+              {mostrarColumnaComunicacion && (
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-36">
+                  Último contacto
+                </TableHead>
+              )}
+              <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-10">
                 Exp.
               </TableHead>
               {mostrarColumnaPdf && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-10">
                   PDF
                 </TableHead>
               )}
               {renderInforme && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-16">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-16">
                   Informe
                 </TableHead>
               )}
               {renderDocumentos && (
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-10">
                   Docs
                 </TableHead>
               )}
@@ -216,7 +225,6 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
           <TableBody>
             {solicitudes.map((sol) => {
               const estatus = ESTATUS_STYLES[sol.estatus] ?? ESTATUS_STYLES.BORRADOR
-              const monto = formatMonto(sol.montoSolicitado ?? null)
 
               return (
                 <TableRow
@@ -229,32 +237,28 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                 >
 
                   {/* Folio */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     <span className="text-xs font-mono font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
                       {sol.folio}
                     </span>
                   </TableCell>
 
                   {/* Solicitante */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     <SolicitanteCell datos={sol.datosSolicitante} tipoPersona={sol.tipoPersona} />
                   </TableCell>
 
                   {/* Programa + Monto */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     <div className="flex flex-col gap-0.5">
                       <span className="text-sm text-foreground font-medium leading-tight">
                         {sol.programa.nombre}
                       </span>
-                      {monto
-                        ? <span className="text-xs text-muted-foreground tabular-nums">{monto}</span>
-                        : <span className="text-xs text-muted-foreground/40">Sin monto</span>
-                      }
                     </div>
                   </TableCell>
 
                   {/* Tamaño / Sector */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     <div className="flex flex-col gap-0.5">
                       {sol.sector
                         ? <span className="text-xs font-medium text-foreground">{SECTOR_LABELS[sol.sector] ?? sol.sector}</span>
@@ -268,7 +272,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                   </TableCell>
 
                   {/* Fecha */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                       {formatFecha(sol.creadoEn)}
                     </span>
@@ -276,15 +280,18 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
 
                   {/* Estatus (opcional) */}
                   {mostrarColumnaEstatus && (
-                    <TableCell className="py-3">
-                      <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${estatus.className}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${estatus.dotClass}`} />
-                        {estatus.label}
-                      </span>
+                    <TableCell className="py-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${estatus.className}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${estatus.dotClass}`} />
+                          {estatus.label}
+                        </span>
+                        <EstadoEstancamientoChip estado={sol.estadoEstancamiento} dias={sol.diasSinAvance} />
+                      </div>
                     </TableCell>
                   )}
                   {/* Documentos */}
-                  <TableCell className="py-3">
+                  <TableCell className="py-1">
                     {sol.metricas ? (
                       <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                         {sol.metricas.totalSubidos}/{sol.metricas.totalRequeridos}
@@ -295,7 +302,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                   </TableCell>
                   {/* Gestor (opcional) */}
                   {mostrarColumnaGestor && (
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       {sol.gestorAsignado ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-medium text-foreground leading-tight">
@@ -313,7 +320,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                     </TableCell>
                   )}
                   {mostrarColumnaAnalista && (
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       {sol.analistaAsignado ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="text-xs font-medium text-foreground leading-tight">
@@ -331,7 +338,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                     </TableCell>
                   )}
                   {mostrarColumnaComentario && (
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       {sol.comentarioPromotor ? (
                         <span className="text-xs text-muted-foreground line-clamp-2" title={sol.comentarioPromotor}>
                           {sol.comentarioPromotor}
@@ -341,9 +348,22 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                       )}
                     </TableCell>
                   )}
+                  {mostrarColumnaComunicacion && (
+                    <TableCell className="py-1">
+                      {sol.ultimaComunicacion ? (
+                        <span className="text-xs text-muted-foreground">
+                          {formatFecha(sol.ultimaComunicacion.fechaContacto)}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">
+                          Sin contacto
+                        </span>
+                      )}
+                    </TableCell>
+                  )}
 
                   {/* Expediente */}
-                  <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                  <TableCell className="py-1 text-center" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost" size="icon"
                       className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -359,7 +379,7 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
 
                   {/* PDF */}
                   {mostrarColumnaPdf && (
-                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <TableCell className="py-1 text-center" onClick={e => e.stopPropagation()}>
                       <Button
                         variant="ghost" size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -380,18 +400,18 @@ export function SolicitudesTable({ solicitudes, meta, cargando, onPaginar, confi
                     </TableCell>
                   )}
                   {renderInforme && (
-                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <TableCell className="py-1 text-center" onClick={e => e.stopPropagation()}>
                       {renderInforme(sol.id)}
                     </TableCell>
                   )}
                   {renderDocumentos && (
-                    <TableCell className="py-3 text-center" onClick={e => e.stopPropagation()}>
+                    <TableCell className="py-1 text-center" onClick={e => e.stopPropagation()}>
                       {renderDocumentos(sol.id, sol.estatus)}
                     </TableCell>
                   )}
                   {/* Acciones dropdown */}
                   {renderAcciones && (
-                    <TableCell className="py-3" onClick={e => e.stopPropagation()}>
+                    <TableCell className="py-1" onClick={e => e.stopPropagation()}>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button

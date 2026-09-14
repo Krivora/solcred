@@ -1,53 +1,38 @@
 'use client'
 
 import { Bar, BarChart, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { DashboardCard, CardLegend } from './DashboardCard'
+import { DashboardCard } from './DashboardCard'
 import { makeChartTooltip } from './ChartTooltip'
-import { formatMontoCompacto, formatPct } from '@/features/dashboard/lib/dashboard.format'
+import { formatEntero, formatPct } from '@/features/dashboard/lib/dashboard.format'
 import type { CarteraPrograma } from '@/features/dashboard/types/dashboard.types'
 
-const COLOR_SOL = 'var(--color-primary)'
-const COLOR_APR = 'color-mix(in oklab, var(--color-primary) 38%, var(--color-card))'
+const COLOR_SOLICITUDES = 'var(--color-brand)'
 
-const CarteraTooltip = makeChartTooltip((p) => {
-  const sol = p.solicitado as number
-  const apr = p.aprobado as number
-  return {
-    title: p.programa as string,
-    rows: [
-      { label: 'Solicitado', value: formatMontoCompacto(sol), color: COLOR_SOL },
-      { label: 'Aprobado', value: formatMontoCompacto(apr), color: COLOR_APR },
-      { label: 'Tasa de fondeo', value: formatPct(sol > 0 ? (apr / sol) * 100 : 0) },
-    ],
-  }
-})
+const CarteraTooltip = makeChartTooltip((p) => ({
+  title: p.programa as string,
+  rows: [
+    { label: 'Solicitudes', value: formatEntero(p.solicitudes as number), color: COLOR_SOLICITUDES },
+    { label: 'Tasa de aprobación', value: formatPct(p.tasaAprobacion as number | null) },
+  ],
+}))
 
 export function CarteraProgramas({ cartera }: { cartera: CarteraPrograma[] }) {
   return (
     <DashboardCard
-      title="Cartera por programa"
-      description="Monto solicitado y aprobado de lo recibido en el periodo"
-      aside={
-        <CardLegend
-          items={[
-            { label: 'Solicitado', color: COLOR_SOL },
-            { label: 'Aprobado', color: COLOR_APR },
-          ]}
-        />
-      }
+      title="Solicitudes por programa"
+      description="Volumen y tasa de aprobación de lo recibido en el periodo"
     >
       {cartera.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">
           Sin solicitudes en el periodo.
         </p>
       ) : (
-        <div className="h-[220px] w-full">
+        <div className="h-55 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               layout="vertical"
               data={cartera}
-              margin={{ top: 2, right: 48, bottom: 2, left: 6 }}
-              barGap={2}
+              margin={{ top: 2, right: 56, bottom: 2, left: 6 }}
               barCategoryGap={10}
             >
               <XAxis type="number" hide />
@@ -60,15 +45,21 @@ export function CarteraProgramas({ cartera }: { cartera: CarteraPrograma[] }) {
                 tick={{ fontSize: 11, fill: 'var(--color-muted-foreground)' }}
               />
               <Tooltip content={<CarteraTooltip />} cursor={{ fill: 'var(--color-muted)', opacity: 0.4 }} />
-              <Bar dataKey="solicitado" fill={COLOR_SOL} radius={[0, 3, 3, 0]} isAnimationActive={false}>
+              <Bar dataKey="solicitudes" fill={COLOR_SOLICITUDES} radius={[0, 3, 3, 0]} isAnimationActive={false}>
                 <LabelList
-                  dataKey="solicitado"
+                  dataKey="solicitudes"
                   position="right"
-                  formatter={(v: number) => formatMontoCompacto(v)}
+                  formatter={(v: number) => formatEntero(v)}
                   style={{ fontSize: 10.5, fill: 'var(--color-foreground)', fontWeight: 600 }}
                 />
+                <LabelList
+                  dataKey="tasaAprobacion"
+                  position="right"
+                  offset={34}
+                  formatter={(v: number | null) => (v == null ? '' : formatPct(v))}
+                  style={{ fontSize: 10, fill: 'var(--color-muted-foreground)' }}
+                />
               </Bar>
-              <Bar dataKey="aprobado" fill={COLOR_APR} radius={[0, 3, 3, 0]} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
         </div>

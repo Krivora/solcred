@@ -85,7 +85,7 @@ export function PageHeader({
 
         {/* Ícono decorativo */}
         {icon && (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 mt-0.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-surface text-brand-ink mt-0.5">
             {icon}
           </div>
         )}
@@ -105,9 +105,9 @@ export function PageHeader({
                     {isLast ? (
                       <span className="font-medium text-foreground truncate">{crumb.label}</span>
                     ) : crumb.href ? (
-                      <a href={crumb.href} className="hover:text-foreground transition-colors truncate">
+                      <Link href={crumb.href} className="hover:text-foreground transition-colors truncate">
                         {crumb.label}
-                      </a>
+                      </Link>
                     ) : (
                       <span className="truncate">{crumb.label}</span>
                     )}
@@ -117,12 +117,12 @@ export function PageHeader({
             </nav>
           )}
 
-          <h1 className="text-xl font-semibold tracking-tight text-foreground leading-tight truncate">
+          <h1 className="text-title text-foreground leading-tight truncate">
             {title}
           </h1>
 
           {description && (
-            <p className="text-sm text-muted-foreground mt-0.5 leading-snug">{description}</p>
+            <p className="text-body-sm text-muted-foreground mt-0.5 leading-snug">{description}</p>
           )}
 
           {children && <div className="mt-2">{children}</div>}
@@ -158,7 +158,7 @@ export function PageHeader({
                   // Los overrides de borde/hover solo aplican a botones "planos";
                   // un CTA con variante explícita (default/destructive) conserva su estilo.
                   (!act.variant || act.variant === 'outline' || act.variant === 'ghost') &&
-                    'border-border/60 hover:bg-accent hover:text-accent-foreground hover:border-primary/20',
+                    'border-border hover:bg-accent hover:text-accent-foreground',
                 )}
               >
                 {act.icon && (

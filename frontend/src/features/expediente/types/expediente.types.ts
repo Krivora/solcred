@@ -98,6 +98,13 @@ export interface GestorAsignado {
     apellidoMaterno: string
 }
 
+/** Un peldaño del historial: a qué estatus llegó y cuándo. Espejo de
+ *  `backend/src/modules/expediente/expediente.contract.ts` (`HistorialEstatusItem`). */
+export interface HistorialEstatusItem {
+    estatusNuevo: EstatusSolicitud
+    creadoEn: string
+}
+
 export interface MetricasExpediente {
     totalRequeridos: number
     totalAprobados: number
@@ -125,6 +132,7 @@ export interface Expediente {
     fechaAsignacion: string | null
     documentos: ResumenDocumento[]
     metricas: MetricasExpediente
+    historialEstatus: HistorialEstatusItem[]
 }
 
 // ─── DTOs ─────────────────────────────────────────────────────────────────────

@@ -47,35 +47,36 @@ export default function DashboardLayout({
 
   return (
     // h-screen + overflow-hidden en el root: nada se desborda del viewport
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed((v) => !v)}
-        mobileOpen={mobileOpen}
-        onMobileOpenChange={setMobileOpen}
-      />
+    // QueryProvider envuelve TODO (Header incluido): el Header usa react-query
+    // (campana de notificaciones), no solo el contenido de `main`.
+    <QueryProvider>
+      <div className="flex h-screen overflow-hidden bg-background">
+        <Sidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed((v) => !v)}
+          mobileOpen={mobileOpen}
+          onMobileOpenChange={setMobileOpen}
+        />
 
-      {/* Columna derecha: header fijo + contenido con scroll propio */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        {/* Header no se mueve */}
-        <Header onOpenMobileMenu={() => setMobileOpen(true)} />
+        {/* Columna derecha: header fijo + contenido con scroll propio */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          {/* Header no se mueve */}
+          <Header onOpenMobileMenu={() => setMobileOpen(true)} />
 
-        {/* Solo este elemento scrollea */}
-        <main className="flex-1 overflow-y-auto">
-          {/*
-            - No hay max-w fijo; el form usa todo el ancho disponible menos la sidebar
-            - Padding responsivo: menos aire en mobile, más en desktop
-            - En pantallas grandes podés agregar max-w-screen-xl si querés limitar
-          */}
-          <QueryProvider>
+          {/* Solo este elemento scrollea */}
+          <main className="flex-1 overflow-y-auto">
+            {/*
+              - No hay max-w fijo; el form usa todo el ancho disponible menos la sidebar
+              - Padding responsivo: menos aire en mobile, más en desktop
+              - En pantallas grandes podés agregar max-w-screen-xl si querés limitar
+            */}
             <div className="px-3 py-4 sm:px-6 sm:py-6">
               <ModoSoloLecturaBanner />
               {children}
             </div>
-          </QueryProvider>
-
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </QueryProvider>
   );
 }

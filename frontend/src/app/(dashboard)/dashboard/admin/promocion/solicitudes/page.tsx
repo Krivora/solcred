@@ -1,16 +1,38 @@
 // app/(dashboard)/dashboard/admin/solicitudes/page.tsx
 'use client'
 
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { PromocionStats } from '@/features/promocion/components/solicitudes/PromocionStats'
 import { PromocionFiltros } from '@/features/promocion/components/solicitudes/PromocionFiltros'
 import { PromocionTable } from '@/features/promocion/components/solicitudes/PromocionTable'
 import { useSolicitudesPromocion } from '@/features/promocion/hooks/useSolicitudesPromocion'
+import type { FiltrosPromocion } from '@/features/promocion/types/solicitud.types'
+import { ESTATUS_SOLICITUD_VALUES } from '@/shared/types/domain.enums'
 import { PageHeader, RefreshAction } from '@/shared/components/common/PageHeader'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
 export default function SolicitudesPromocionPage() {
+  return (
+    <Suspense fallback={null}>
+      <SolicitudesPromocionContent />
+    </Suspense>
+  )
+}
+
+function SolicitudesPromocionContent() {
+  // Drill-down desde el panorama ejecutivo: `?estatus=EN_REVISION` preselecciona
+  // el filtro. Se valida contra el enum real — un valor fuera de catálogo en la
+  // URL no debe llegar como filtro al backend (Prisma rechazaría el enum).
+  const searchParams = useSearchParams()
+  const estatusParam = searchParams.get('estatus')
+  const estatusValido = (ESTATUS_SOLICITUD_VALUES as readonly string[]).includes(estatusParam ?? '')
+  const filtrosIniciales: Partial<FiltrosPromocion> | undefined = estatusValido
+    ? { estatus: estatusParam as FiltrosPromocion['estatus'] }
+    : undefined
+
   const {
     solicitudes,
     meta,
@@ -25,7 +47,7 @@ export default function SolicitudesPromocionPage() {
     cambiarPagina,
     limpiarFiltros,
     recargar,
-  } = useSolicitudesPromocion()
+  } = useSolicitudesPromocion(filtrosIniciales)
 
   const claseAnimacion = useNavAnimation('') // '' = sin animación salvo que vengas del detalle
 

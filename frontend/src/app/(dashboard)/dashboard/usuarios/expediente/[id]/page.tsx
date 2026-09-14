@@ -8,6 +8,7 @@ import { useSubirDocumento } from '@/features/expediente/hooks/useSubirDocumento
 import { useAuthStore } from '@/shared/stores/auth.store'
 
 import { DatosGeneralesCard } from '@/features/expediente/components/DatosGeneralesCard'
+import { SolicitudProgreso } from '@/features/expediente/components/SolicitudProgreso'
 import { MetricasExpedientePanel } from '@/features/expediente/components/MetricasExpedienteBar'
 import { TablaDocumentos } from '@/features/expediente/components/TablaDocumentos'
 import { HistorialDocumentoSheet } from '@/features/expediente/components/HistorialDocumentoSheet'
@@ -167,6 +168,11 @@ export default function ExpedientePage({
 
                     {/* Main */}
                     <div className="flex-1 min-w-0 space-y-5">
+                        <SolicitudProgreso
+                            estatus={expediente.estatus}
+                            historialEstatus={expediente.historialEstatus}
+                        />
+
                         <DatosGeneralesCard
                             expediente={expediente}
                         />

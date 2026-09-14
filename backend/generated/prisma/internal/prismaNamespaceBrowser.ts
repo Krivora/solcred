@@ -82,7 +82,8 @@ export const ModelName = {
   TicketAdjunto: 'TicketAdjunto',
   TicketEvento: 'TicketEvento',
   TicketSlaPolitica: 'TicketSlaPolitica',
-  Comunicacion: 'Comunicacion'
+  Comunicacion: 'Comunicacion',
+  Notificacion: 'Notificacion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -191,7 +192,9 @@ export const UsuarioScalarFieldEnum = {
   rfc: 'rfc',
   activo: 'activo',
   creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
+  actualizadoEn: 'actualizadoEn',
+  intentosFallidos: 'intentosFallidos',
+  bloqueadoHasta: 'bloqueadoHasta'
 } as const
 
 export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
@@ -651,6 +654,24 @@ export const ComunicacionScalarFieldEnum = {
 } as const
 
 export type ComunicacionScalarFieldEnum = (typeof ComunicacionScalarFieldEnum)[keyof typeof ComunicacionScalarFieldEnum]
+
+
+export const NotificacionScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  tipo: 'tipo',
+  titulo: 'titulo',
+  cuerpo: 'cuerpo',
+  solicitudId: 'solicitudId',
+  documentoId: 'documentoId',
+  agrupadoCount: 'agrupadoCount',
+  metadata: 'metadata',
+  canal: 'canal',
+  leidaEn: 'leidaEn',
+  creadoEn: 'creadoEn'
+} as const
+
+export type NotificacionScalarFieldEnum = (typeof NotificacionScalarFieldEnum)[keyof typeof NotificacionScalarFieldEnum]
 
 
 export const SortOrder = {

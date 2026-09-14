@@ -96,6 +96,7 @@ export function FinanciamientoTabla({
           mostrarColumnaAnalista,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: true,
+          mostrarColumnaComunicacion: true,
           mostrarColumnaPdf: true,
           labelFecha: 'Recibida',
           vacioCopy: vacio,

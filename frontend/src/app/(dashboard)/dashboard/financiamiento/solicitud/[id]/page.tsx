@@ -11,8 +11,10 @@ import { useFinanciamientoDetalle } from '@/features/financiamiento/hooks/useFin
 import { SolicitudTimeline } from '@/features/promocion/components/detalle/SolicitudTimeline'
 import { SolicitudInfoGeneral } from '@/features/promocion/components/detalle/SolicitudInfoGeneral'
 import { SolicitudDocumentosResumen } from '@/features/promocion/components/detalle/SolicitudDocumentosResumen'
+import { ComunicacionesPanel } from '@/features/crm/components/ComunicacionesPanel'
 import { ESTATUS_STYLES } from '@/shared/config/solicitudes.config'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
+import { useAuthStore } from '@/shared/stores/auth.store'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -23,6 +25,7 @@ export default function SolicitudFinanciamientoDetallePage({ params }: Props) {
   const router = useRouter()
   const { solicitud, cargando, error } = useFinanciamientoDetalle(id)
   const claseAnimacion = useNavAnimation('animate-slide-entrada')
+  const { usuario } = useAuthStore()
 
   const handleRegresar = () => {
     sessionStorage.setItem('nav-direction', 'atras')
@@ -68,6 +71,17 @@ export default function SolicitudFinanciamientoDetallePage({ params }: Props) {
   const estatus = ESTATUS_STYLES[solicitud.estatus] ?? ESTATUS_STYLES.BORRADOR
   const analista = solicitud.analistaAsignado?.analista.usuario ?? null
 
+  // Quién puede REGISTRAR comunicaciones (el backend lo valida igual por
+  // solicitud): staff general de financiamiento, o el analista asignado.
+  const rolActual = usuario?.personal?.rol
+  const puedeRegistrarComunicaciones =
+    rolActual === 'ADMIN' ||
+    rolActual === 'ENCARGADO_FINANCIAMIENTO' ||
+    rolActual === 'MESA_CONTROL' ||
+    (rolActual === 'ANALISTA' &&
+      !!solicitud.analistaAsignado?.analista.id &&
+      solicitud.analistaAsignado.analista.id === usuario?.personal?.id)
+
   return (
     <div className={`${claseAnimacion} p-6`}>
       <div className="space-y-5">
@@ -106,6 +120,10 @@ export default function SolicitudFinanciamientoDetallePage({ params }: Props) {
               documentos={solicitud.documentos}
               documentosRequeridos={solicitud.programa.documentosRequeridos}
               tipoPersona={solicitud.tipoPersona}
+            />
+            <ComunicacionesPanel
+              solicitudId={id}
+              puedeRegistrar={puedeRegistrarComunicaciones}
             />
           </div>
 

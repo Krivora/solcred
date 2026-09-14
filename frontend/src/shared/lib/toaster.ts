@@ -283,6 +283,11 @@ export const usuarioToast = {
         toast.success('Usuario desactivado'),
     desactivarError: () =>
         toast.error('Error al desactivar el usuario'),
+
+    desbloqueado: () =>
+        toast.success('Usuario desbloqueado correctamente'),
+    desbloquearError: () =>
+        toast.error('Error al desbloquear el usuario'),
 }
 const POSICION_FORM = 'top-center' as const
 

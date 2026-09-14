@@ -9,6 +9,13 @@ import {
   registrarHistorial,
   validarTransicion,
 } from "@modules/admin/_shared/solicitud-estado";
+import {
+  notificarAsignacionAnalista,
+  notificarCambioEstatus,
+  notificarResponsableAsignado,
+  notificarSolicitudRegresada,
+} from "@modules/notificaciones/notificaciones.service";
+import { diasSinAvance, estadoEstancamiento } from "../../../shared/sla-solicitudes";
 
 export { obtenerSolicitudPorId } from "@modules/admin/_shared/solicitud-estado";
 
@@ -144,7 +151,7 @@ export const listarPorEtapa = async (
   ]);
 
   const data = solicitudes.map((s) => {
-    const { asignaciones, asignacionesFinanciamiento, historialEstatus, datosCredito, ...resto } = s;
+    const { asignaciones, asignacionesFinanciamiento, historialEstatus, datosCredito, comunicaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
@@ -155,6 +162,9 @@ export const listarPorEtapa = async (
       comentarioPromotor: historialEstatus[0]?.motivo ?? null,
       gestorAsignado: asignaciones[0] ?? null,
       analistaAsignado: asignacionesFinanciamiento[0] ?? null,
+      ultimaComunicacion: comunicaciones[0] ?? null,
+      estadoEstancamiento: estadoEstancamiento(s.estatus, s.actualizadoEn),
+      diasSinAvance: diasSinAvance(s.actualizadoEn),
     };
   });
 
@@ -226,7 +236,11 @@ export const analistasDisponibles = async () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const transicion =
-  (permitidos: EstatusSolicitud[], destino: EstatusSolicitud) =>
+  (
+    permitidos: EstatusSolicitud[],
+    destino: EstatusSolicitud,
+    opciones?: { notificarRegresoAnalista?: boolean }
+  ) =>
   async (solicitudId: string, motivo: string | undefined, usuarioId: string) => {
     const solicitud = await validarTransicion(solicitudId, permitidos);
 
@@ -238,6 +252,30 @@ const transicion =
       });
 
       await registrarHistorial(tx, solicitudId, solicitud.estatus, destino, usuarioId, motivo);
+
+      await notificarCambioEstatus(
+        tx,
+        actualizada.solicitanteId,
+        { id: solicitudId, folio: actualizada.folio },
+        solicitud.estatus,
+        destino,
+        motivo
+      );
+
+      if (opciones?.notificarRegresoAnalista) {
+        const asignacion = await tx.asignacionFinanciamiento.findFirst({
+          where: { solicitudId, activa: true },
+          select: { analista: { select: { userId: true } } },
+        });
+        if (asignacion) {
+          await notificarSolicitudRegresada(
+            tx,
+            asignacion.analista.userId,
+            { id: solicitudId, folio: actualizada.folio },
+            motivo
+          );
+        }
+      }
 
       return actualizada;
     });
@@ -251,7 +289,9 @@ export const pasarAAsignacion = transicion(["EN_FINANCIAMIENTO"], "EN_ASIGNACION
 export const enviarAValidacion = transicion(["EN_ANALISIS"], "EN_VALIDACION");
 
 // Validación
-export const regresarAAnalista = transicion(["EN_VALIDACION"], "EN_ANALISIS");
+export const regresarAAnalista = transicion(["EN_VALIDACION"], "EN_ANALISIS", {
+  notificarRegresoAnalista: true,
+});
 export const enviarAComite = transicion(["EN_VALIDACION"], "EN_COMITE");
 
 // Comité
@@ -286,6 +326,9 @@ export const asignarAnalistas = async (
   if (!analista) throw new AppError("El analista indicado no existe o no está activo", 422);
 
   const resultados: ResultadoAsignacion[] = [];
+  // Solicitudes efectivamente asignadas en este lote (excluye "ya estaba
+  // asignada a ese analista"), para la notificación agrupada al final.
+  const asignadasNuevas: { id: string; folio: string }[] = [];
 
   for (const solicitudId of solicitudIds) {
     try {
@@ -300,6 +343,8 @@ export const asignarAnalistas = async (
             where: { id: solicitudId },
             select: {
               estatus: true,
+              folio: true,
+              solicitanteId: true,
               asignacionesFinanciamiento: {
                 where: { activa: true },
                 select: { analistaId: true },
@@ -332,14 +377,30 @@ export const asignarAnalistas = async (
             data: { solicitudId, analistaId, asignadoPorId: asignadoPorPersonalId },
           });
 
+          await notificarResponsableAsignado(
+            tx,
+            solicitud.solicitanteId,
+            { id: solicitudId, folio: solicitud.folio },
+            "ANALISTA"
+          );
+
           if (esAlta) {
             await tx.solicitud.update({
               where: { id: solicitudId },
               data: { estatus: "EN_ANALISIS" },
             });
             await registrarHistorial(tx, solicitudId, "EN_ASIGNACION", "EN_ANALISIS", usuarioId, motivo);
+            await notificarCambioEstatus(
+              tx,
+              solicitud.solicitanteId,
+              { id: solicitudId, folio: solicitud.folio },
+              "EN_ASIGNACION",
+              "EN_ANALISIS",
+              motivo
+            );
           }
 
+          asignadasNuevas.push({ id: solicitudId, folio: solicitud.folio });
           return { solicitudId, exito: true };
         })
       );
@@ -349,6 +410,17 @@ export const asignarAnalistas = async (
         exito: false,
         mensaje: error instanceof AppError ? error.message : "Error desconocido al asignar",
       });
+    }
+  }
+
+  if (asignadasNuevas.length > 0) {
+    try {
+      await prisma.$transaction((tx) =>
+        notificarAsignacionAnalista(tx, analista.userId, asignadasNuevas)
+      );
+    } catch {
+      // Best-effort: un fallo notificando el lote no debe invalidar
+      // asignaciones ya aplicadas exitosamente.
     }
   }
 

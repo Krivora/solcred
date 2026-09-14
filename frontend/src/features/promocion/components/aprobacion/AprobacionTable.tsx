@@ -56,6 +56,7 @@ export function AprobacionTable({ solicitudes, meta, cargando, onPaginar, onRefr
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: false,
           mostrarColumnaComentario: true,
+          mostrarColumnaComunicacion: true,
           labelFecha: 'Recibida',
           vacioCopy: {
             icon: <CheckSquare className="h-7 w-7" />,

@@ -253,6 +253,7 @@ export type SolicitudWhereInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoListRelationFilter
   analisis?: Prisma.XOR<Prisma.AnalisisNullableScalarRelationFilter, Prisma.AnalisisWhereInput> | null
   comunicaciones?: Prisma.ComunicacionListRelationFilter
+  notificaciones?: Prisma.NotificacionListRelationFilter
 }
 
 export type SolicitudOrderByWithRelationInput = {
@@ -283,6 +284,7 @@ export type SolicitudOrderByWithRelationInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoOrderByRelationAggregateInput
   analisis?: Prisma.AnalisisOrderByWithRelationInput
   comunicaciones?: Prisma.ComunicacionOrderByRelationAggregateInput
+  notificaciones?: Prisma.NotificacionOrderByRelationAggregateInput
 }
 
 export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
@@ -316,6 +318,7 @@ export type SolicitudWhereUniqueInput = Prisma.AtLeast<{
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoListRelationFilter
   analisis?: Prisma.XOR<Prisma.AnalisisNullableScalarRelationFilter, Prisma.AnalisisWhereInput> | null
   comunicaciones?: Prisma.ComunicacionListRelationFilter
+  notificaciones?: Prisma.NotificacionListRelationFilter
 }, "id" | "folio">
 
 export type SolicitudOrderByWithAggregationInput = {
@@ -380,6 +383,7 @@ export type SolicitudCreateInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateInput = {
@@ -408,6 +412,7 @@ export type SolicitudUncheckedCreateInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUpdateInput = {
@@ -436,6 +441,7 @@ export type SolicitudUpdateInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateInput = {
@@ -464,6 +470,7 @@ export type SolicitudUncheckedUpdateInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateManyInput = {
@@ -567,6 +574,11 @@ export type SolicitudMinOrderByAggregateInput = {
   ultimoPasoVistoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+}
+
+export type SolicitudNullableScalarRelationFilter = {
+  is?: Prisma.SolicitudWhereInput | null
+  isNot?: Prisma.SolicitudWhereInput | null
 }
 
 export type SolicitudCreateNestedOneWithoutHistorialEstatusInput = {
@@ -851,6 +863,22 @@ export type SolicitudUpdateOneRequiredWithoutComunicacionesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutComunicacionesInput, Prisma.SolicitudUpdateWithoutComunicacionesInput>, Prisma.SolicitudUncheckedUpdateWithoutComunicacionesInput>
 }
 
+export type SolicitudCreateNestedOneWithoutNotificacionesInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutNotificacionesInput, Prisma.SolicitudUncheckedCreateWithoutNotificacionesInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutNotificacionesInput
+  connect?: Prisma.SolicitudWhereUniqueInput
+}
+
+export type SolicitudUpdateOneWithoutNotificacionesNestedInput = {
+  create?: Prisma.XOR<Prisma.SolicitudCreateWithoutNotificacionesInput, Prisma.SolicitudUncheckedCreateWithoutNotificacionesInput>
+  connectOrCreate?: Prisma.SolicitudCreateOrConnectWithoutNotificacionesInput
+  upsert?: Prisma.SolicitudUpsertWithoutNotificacionesInput
+  disconnect?: Prisma.SolicitudWhereInput | boolean
+  delete?: Prisma.SolicitudWhereInput | boolean
+  connect?: Prisma.SolicitudWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SolicitudUpdateToOneWithWhereWithoutNotificacionesInput, Prisma.SolicitudUpdateWithoutNotificacionesInput>, Prisma.SolicitudUncheckedUpdateWithoutNotificacionesInput>
+}
+
 export type SolicitudCreateWithoutHistorialEstatusInput = {
   id?: string
   folio: string
@@ -876,6 +904,7 @@ export type SolicitudCreateWithoutHistorialEstatusInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutHistorialEstatusInput = {
@@ -903,6 +932,7 @@ export type SolicitudUncheckedCreateWithoutHistorialEstatusInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutHistorialEstatusInput = {
@@ -946,6 +976,7 @@ export type SolicitudUpdateWithoutHistorialEstatusInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutHistorialEstatusInput = {
@@ -973,6 +1004,7 @@ export type SolicitudUncheckedUpdateWithoutHistorialEstatusInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutAsignacionesInput = {
@@ -1000,6 +1032,7 @@ export type SolicitudCreateWithoutAsignacionesInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutAsignacionesInput = {
@@ -1027,6 +1060,7 @@ export type SolicitudUncheckedCreateWithoutAsignacionesInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutAsignacionesInput = {
@@ -1070,6 +1104,7 @@ export type SolicitudUpdateWithoutAsignacionesInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutAsignacionesInput = {
@@ -1097,6 +1132,7 @@ export type SolicitudUncheckedUpdateWithoutAsignacionesInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutAsignacionesFinanciamientoInput = {
@@ -1124,6 +1160,7 @@ export type SolicitudCreateWithoutAsignacionesFinanciamientoInput = {
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
@@ -1151,6 +1188,7 @@ export type SolicitudUncheckedCreateWithoutAsignacionesFinanciamientoInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutAsignacionesFinanciamientoInput = {
@@ -1194,6 +1232,7 @@ export type SolicitudUpdateWithoutAsignacionesFinanciamientoInput = {
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
@@ -1221,6 +1260,7 @@ export type SolicitudUncheckedUpdateWithoutAsignacionesFinanciamientoInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutSolicitanteInput = {
@@ -1248,6 +1288,7 @@ export type SolicitudCreateWithoutSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
@@ -1275,6 +1316,7 @@ export type SolicitudUncheckedCreateWithoutSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutSolicitanteInput = {
@@ -1346,6 +1388,7 @@ export type SolicitudCreateWithoutProgramaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutProgramaInput = {
@@ -1373,6 +1416,7 @@ export type SolicitudUncheckedCreateWithoutProgramaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutProgramaInput = {
@@ -1426,6 +1470,7 @@ export type SolicitudCreateWithoutAnalisisInput = {
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutAnalisisInput = {
@@ -1453,6 +1498,7 @@ export type SolicitudUncheckedCreateWithoutAnalisisInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutAnalisisInput = {
@@ -1496,6 +1542,7 @@ export type SolicitudUpdateWithoutAnalisisInput = {
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutAnalisisInput = {
@@ -1523,6 +1570,7 @@ export type SolicitudUncheckedUpdateWithoutAnalisisInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosSolicitanteInput = {
@@ -1550,6 +1598,7 @@ export type SolicitudCreateWithoutDatosSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
@@ -1577,6 +1626,7 @@ export type SolicitudUncheckedCreateWithoutDatosSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosSolicitanteInput = {
@@ -1620,6 +1670,7 @@ export type SolicitudUpdateWithoutDatosSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
@@ -1647,6 +1698,7 @@ export type SolicitudUncheckedUpdateWithoutDatosSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosAvalInput = {
@@ -1674,6 +1726,7 @@ export type SolicitudCreateWithoutDatosAvalInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
@@ -1701,6 +1754,7 @@ export type SolicitudUncheckedCreateWithoutDatosAvalInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosAvalInput = {
@@ -1744,6 +1798,7 @@ export type SolicitudUpdateWithoutDatosAvalInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
@@ -1771,6 +1826,7 @@ export type SolicitudUncheckedUpdateWithoutDatosAvalInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosCreditoInput = {
@@ -1798,6 +1854,7 @@ export type SolicitudCreateWithoutDatosCreditoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosCreditoInput = {
@@ -1825,6 +1882,7 @@ export type SolicitudUncheckedCreateWithoutDatosCreditoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosCreditoInput = {
@@ -1868,6 +1926,7 @@ export type SolicitudUpdateWithoutDatosCreditoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosCreditoInput = {
@@ -1895,6 +1954,7 @@ export type SolicitudUncheckedUpdateWithoutDatosCreditoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosGarantiaInput = {
@@ -1922,6 +1982,7 @@ export type SolicitudCreateWithoutDatosGarantiaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosGarantiaInput = {
@@ -1949,6 +2010,7 @@ export type SolicitudUncheckedCreateWithoutDatosGarantiaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosGarantiaInput = {
@@ -1992,6 +2054,7 @@ export type SolicitudUpdateWithoutDatosGarantiaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosGarantiaInput = {
@@ -2019,6 +2082,7 @@ export type SolicitudUncheckedUpdateWithoutDatosGarantiaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosNegocioInput = {
@@ -2046,6 +2110,7 @@ export type SolicitudCreateWithoutDatosNegocioInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosNegocioInput = {
@@ -2073,6 +2138,7 @@ export type SolicitudUncheckedCreateWithoutDatosNegocioInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosNegocioInput = {
@@ -2116,6 +2182,7 @@ export type SolicitudUpdateWithoutDatosNegocioInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosNegocioInput = {
@@ -2143,6 +2210,7 @@ export type SolicitudUncheckedUpdateWithoutDatosNegocioInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosMercadoInput = {
@@ -2170,6 +2238,7 @@ export type SolicitudCreateWithoutDatosMercadoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosMercadoInput = {
@@ -2197,6 +2266,7 @@ export type SolicitudUncheckedCreateWithoutDatosMercadoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosMercadoInput = {
@@ -2240,6 +2310,7 @@ export type SolicitudUpdateWithoutDatosMercadoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosMercadoInput = {
@@ -2267,6 +2338,7 @@ export type SolicitudUncheckedUpdateWithoutDatosMercadoInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDatosBancariosInput = {
@@ -2294,6 +2366,7 @@ export type SolicitudCreateWithoutDatosBancariosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDatosBancariosInput = {
@@ -2321,6 +2394,7 @@ export type SolicitudUncheckedCreateWithoutDatosBancariosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDatosBancariosInput = {
@@ -2364,6 +2438,7 @@ export type SolicitudUpdateWithoutDatosBancariosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDatosBancariosInput = {
@@ -2391,6 +2466,7 @@ export type SolicitudUncheckedUpdateWithoutDatosBancariosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutDocumentosInput = {
@@ -2418,6 +2494,7 @@ export type SolicitudCreateWithoutDocumentosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutDocumentosInput = {
@@ -2445,6 +2522,7 @@ export type SolicitudUncheckedCreateWithoutDocumentosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutDocumentosInput = {
@@ -2488,6 +2566,7 @@ export type SolicitudUpdateWithoutDocumentosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
@@ -2515,6 +2594,7 @@ export type SolicitudUncheckedUpdateWithoutDocumentosInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateWithoutComunicacionesInput = {
@@ -2542,6 +2622,7 @@ export type SolicitudCreateWithoutComunicacionesInput = {
   asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudUncheckedCreateWithoutComunicacionesInput = {
@@ -2569,6 +2650,7 @@ export type SolicitudUncheckedCreateWithoutComunicacionesInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
   analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutSolicitudInput
 }
 
 export type SolicitudCreateOrConnectWithoutComunicacionesInput = {
@@ -2612,6 +2694,7 @@ export type SolicitudUpdateWithoutComunicacionesInput = {
   asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutComunicacionesInput = {
@@ -2639,6 +2722,135 @@ export type SolicitudUncheckedUpdateWithoutComunicacionesInput = {
   asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudCreateWithoutNotificacionesInput = {
+  id?: string
+  folio: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  programa: Prisma.ProgramaCreateNestedOneWithoutSolicitudesInput
+  solicitante: Prisma.UsuarioCreateNestedOneWithoutSolicitudesInput
+  datosSolicitante?: Prisma.DatosSolicitanteCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudCreateNestedManyWithoutSolicitudInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoCreateNestedManyWithoutSolicitudInput
+  analisis?: Prisma.AnalisisCreateNestedOneWithoutSolicitudInput
+  comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudUncheckedCreateWithoutNotificacionesInput = {
+  id?: string
+  folio: string
+  programaId: string
+  solicitanteId: string
+  estatus?: $Enums.EstatusSolicitud
+  tipoPersona?: $Enums.TipoPersona | null
+  sector?: $Enums.Sector | null
+  tamanoEmpresa?: $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedCreateNestedOneWithoutSolicitudInput
+  datosAval?: Prisma.DatosAvalUncheckedCreateNestedOneWithoutSolicitudInput
+  datosCredito?: Prisma.DatosCreditoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedCreateNestedOneWithoutSolicitudInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedCreateNestedOneWithoutSolicitudInput
+  datosMercado?: Prisma.DatosMercadoUncheckedCreateNestedOneWithoutSolicitudInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedCreateNestedOneWithoutSolicitudInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutSolicitudInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedCreateNestedManyWithoutSolicitudInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedCreateNestedManyWithoutSolicitudInput
+  analisis?: Prisma.AnalisisUncheckedCreateNestedOneWithoutSolicitudInput
+  comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutSolicitudInput
+}
+
+export type SolicitudCreateOrConnectWithoutNotificacionesInput = {
+  where: Prisma.SolicitudWhereUniqueInput
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutNotificacionesInput, Prisma.SolicitudUncheckedCreateWithoutNotificacionesInput>
+}
+
+export type SolicitudUpsertWithoutNotificacionesInput = {
+  update: Prisma.XOR<Prisma.SolicitudUpdateWithoutNotificacionesInput, Prisma.SolicitudUncheckedUpdateWithoutNotificacionesInput>
+  create: Prisma.XOR<Prisma.SolicitudCreateWithoutNotificacionesInput, Prisma.SolicitudUncheckedCreateWithoutNotificacionesInput>
+  where?: Prisma.SolicitudWhereInput
+}
+
+export type SolicitudUpdateToOneWithWhereWithoutNotificacionesInput = {
+  where?: Prisma.SolicitudWhereInput
+  data: Prisma.XOR<Prisma.SolicitudUpdateWithoutNotificacionesInput, Prisma.SolicitudUncheckedUpdateWithoutNotificacionesInput>
+}
+
+export type SolicitudUpdateWithoutNotificacionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programa?: Prisma.ProgramaUpdateOneRequiredWithoutSolicitudesNestedInput
+  solicitante?: Prisma.UsuarioUpdateOneRequiredWithoutSolicitudesNestedInput
+  datosSolicitante?: Prisma.DatosSolicitanteUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUpdateManyWithoutSolicitudNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
+  analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
+  comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+}
+
+export type SolicitudUncheckedUpdateWithoutNotificacionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folio?: Prisma.StringFieldUpdateOperationsInput | string
+  programaId?: Prisma.StringFieldUpdateOperationsInput | string
+  solicitanteId?: Prisma.StringFieldUpdateOperationsInput | string
+  estatus?: Prisma.EnumEstatusSolicitudFieldUpdateOperationsInput | $Enums.EstatusSolicitud
+  tipoPersona?: Prisma.NullableEnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona | null
+  sector?: Prisma.NullableEnumSectorFieldUpdateOperationsInput | $Enums.Sector | null
+  tamanoEmpresa?: Prisma.NullableEnumTamanoEmpresaFieldUpdateOperationsInput | $Enums.TamanoEmpresa | null
+  ultimoPasoVisto?: Prisma.NullableEnumPasoFormularioFieldUpdateOperationsInput | $Enums.PasoFormulario | null
+  ultimoPasoVistoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  datosSolicitante?: Prisma.DatosSolicitanteUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosAval?: Prisma.DatosAvalUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosCredito?: Prisma.DatosCreditoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosGarantia?: Prisma.DatosGarantiaUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosNegocio?: Prisma.DatosNegocioUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosMercado?: Prisma.DatosMercadoUncheckedUpdateOneWithoutSolicitudNestedInput
+  datosBancarios?: Prisma.DatosBancariosUncheckedUpdateOneWithoutSolicitudNestedInput
+  documentos?: Prisma.DocumentoSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignaciones?: Prisma.AsignacionSolicitudUncheckedUpdateManyWithoutSolicitudNestedInput
+  asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
+  analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
+  comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudCreateManySolicitanteInput = {
@@ -2680,6 +2892,7 @@ export type SolicitudUpdateWithoutSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
@@ -2707,6 +2920,7 @@ export type SolicitudUncheckedUpdateWithoutSolicitanteInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateManyWithoutSolicitanteInput = {
@@ -2762,6 +2976,7 @@ export type SolicitudUpdateWithoutProgramaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateWithoutProgramaInput = {
@@ -2789,6 +3004,7 @@ export type SolicitudUncheckedUpdateWithoutProgramaInput = {
   asignacionesFinanciamiento?: Prisma.AsignacionFinanciamientoUncheckedUpdateManyWithoutSolicitudNestedInput
   analisis?: Prisma.AnalisisUncheckedUpdateOneWithoutSolicitudNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutSolicitudNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutSolicitudNestedInput
 }
 
 export type SolicitudUncheckedUpdateManyWithoutProgramaInput = {
@@ -2816,6 +3032,7 @@ export type SolicitudCountOutputType = {
   asignaciones: number
   asignacionesFinanciamiento: number
   comunicaciones: number
+  notificaciones: number
 }
 
 export type SolicitudCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2824,6 +3041,7 @@ export type SolicitudCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   asignaciones?: boolean | SolicitudCountOutputTypeCountAsignacionesArgs
   asignacionesFinanciamiento?: boolean | SolicitudCountOutputTypeCountAsignacionesFinanciamientoArgs
   comunicaciones?: boolean | SolicitudCountOutputTypeCountComunicacionesArgs
+  notificaciones?: boolean | SolicitudCountOutputTypeCountNotificacionesArgs
 }
 
 /**
@@ -2871,6 +3089,13 @@ export type SolicitudCountOutputTypeCountComunicacionesArgs<ExtArgs extends runt
   where?: Prisma.ComunicacionWhereInput
 }
 
+/**
+ * SolicitudCountOutputType without action
+ */
+export type SolicitudCountOutputTypeCountNotificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificacionWhereInput
+}
+
 
 export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2900,6 +3125,7 @@ export type SolicitudSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   asignacionesFinanciamiento?: boolean | Prisma.Solicitud$asignacionesFinanciamientoArgs<ExtArgs>
   analisis?: boolean | Prisma.Solicitud$analisisArgs<ExtArgs>
   comunicaciones?: boolean | Prisma.Solicitud$comunicacionesArgs<ExtArgs>
+  notificaciones?: boolean | Prisma.Solicitud$notificacionesArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["solicitud"]>
 
@@ -2969,6 +3195,7 @@ export type SolicitudInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   asignacionesFinanciamiento?: boolean | Prisma.Solicitud$asignacionesFinanciamientoArgs<ExtArgs>
   analisis?: boolean | Prisma.Solicitud$analisisArgs<ExtArgs>
   comunicaciones?: boolean | Prisma.Solicitud$comunicacionesArgs<ExtArgs>
+  notificaciones?: boolean | Prisma.Solicitud$notificacionesArgs<ExtArgs>
   _count?: boolean | Prisma.SolicitudCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SolicitudIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2998,6 +3225,7 @@ export type $SolicitudPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     asignacionesFinanciamiento: Prisma.$AsignacionFinanciamientoPayload<ExtArgs>[]
     analisis: Prisma.$AnalisisPayload<ExtArgs> | null
     comunicaciones: Prisma.$ComunicacionPayload<ExtArgs>[]
+    notificaciones: Prisma.$NotificacionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3421,6 +3649,7 @@ export interface Prisma__SolicitudClient<T, Null = never, ExtArgs extends runtim
   asignacionesFinanciamiento<T extends Prisma.Solicitud$asignacionesFinanciamientoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$asignacionesFinanciamientoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionFinanciamientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analisis<T extends Prisma.Solicitud$analisisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$analisisArgs<ExtArgs>>): Prisma.Prisma__AnalisisClient<runtime.Types.Result.GetResult<Prisma.$AnalisisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comunicaciones<T extends Prisma.Solicitud$comunicacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$comunicacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComunicacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificaciones<T extends Prisma.Solicitud$notificacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Solicitud$notificacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4132,6 +4361,30 @@ export type Solicitud$comunicacionesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ComunicacionScalarFieldEnum | Prisma.ComunicacionScalarFieldEnum[]
+}
+
+/**
+ * Solicitud.notificaciones
+ */
+export type Solicitud$notificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notificacion
+   */
+  select?: Prisma.NotificacionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notificacion
+   */
+  omit?: Prisma.NotificacionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificacionInclude<ExtArgs> | null
+  where?: Prisma.NotificacionWhereInput
+  orderBy?: Prisma.NotificacionOrderByWithRelationInput | Prisma.NotificacionOrderByWithRelationInput[]
+  cursor?: Prisma.NotificacionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificacionScalarFieldEnum | Prisma.NotificacionScalarFieldEnum[]
 }
 
 /**

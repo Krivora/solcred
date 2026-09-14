@@ -2,6 +2,7 @@ import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { ValidarDocumentoDto } from "./expediente.schema";
 import { EstatusDocumento } from "../../../generated/prisma/client";
+import { notificarDocumentoRechazado } from "../notificaciones/notificaciones.service";
 import fs from "fs";
 import path from "path";
 import { UPLOADS_BASE_DIR } from "@config/multer.config";
@@ -156,6 +157,10 @@ export const obtenerExpediente = async (
                     fechaAsignacion: true,
                 },
             },
+            historialEstatus: {
+                select: { estatusNuevo: true, creadoEn: true },
+                orderBy: { creadoEn: "asc" },
+            },
         },
     });
 
@@ -224,6 +229,7 @@ export const obtenerExpediente = async (
         datosSolicitante: expediente.datosSolicitante,
         gestor: aplanarPersonal(asignacionActiva?.gestor ?? null),
         fechaAsignacion: asignacionActiva?.fechaAsignacion ?? null,
+        historialEstatus: expediente.historialEstatus,
 
         documentos: resumenDocumentos.map((d) => ({
             ...d,
@@ -394,7 +400,12 @@ export const validarDocumento = async (
     const documentoActualizado = await prisma.$transaction(async (tx) => {
         const documento = await tx.documentoSolicitud.findFirst({
             where: { id: documentoId, solicitudId, activo: true },
-            select: { id: true, estatus: true },
+            select: {
+                id: true,
+                estatus: true,
+                tipoDocumento: { select: { nombre: true } },
+                solicitud: { select: { solicitanteId: true, folio: true } },
+            },
         });
 
         if (!documento) {
@@ -408,7 +419,7 @@ export const validarDocumento = async (
             );
         }
 
-        return tx.documentoSolicitud.update({
+        const actualizado = await tx.documentoSolicitud.update({
             where: { id: documentoId },
             data: {
                 estatus: dto.estatus as EstatusDocumento,
@@ -418,6 +429,18 @@ export const validarDocumento = async (
             },
             include: INCLUDE_DOCUMENTO_CON_VALIDACION,
         });
+
+        if (dto.estatus === "RECHAZADO") {
+            await notificarDocumentoRechazado(
+                tx,
+                documento.solicitud.solicitanteId,
+                { id: solicitudId, folio: documento.solicitud.folio },
+                { id: documentoId, nombreDocumento: documento.tipoDocumento.nombre },
+                dto.motivoRechazo
+            );
+        }
+
+        return actualizado;
     });
 
     return documentoActualizado;

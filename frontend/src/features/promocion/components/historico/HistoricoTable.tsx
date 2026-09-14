@@ -29,6 +29,7 @@ export function HistoricoTable({ solicitudes, meta, cargando, onPaginar }: Props
           mostrarColumnaGestor: true,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: false,
+          mostrarColumnaComunicacion: true,
           mostrarColumnaPdf: false,
           labelFecha: 'Recibida',
           vacioCopy: {

@@ -20,8 +20,18 @@ export type UsuarioModel = runtime.Types.Result.DefaultSelection<Prisma.$Usuario
 
 export type AggregateUsuario = {
   _count: UsuarioCountAggregateOutputType | null
+  _avg: UsuarioAvgAggregateOutputType | null
+  _sum: UsuarioSumAggregateOutputType | null
   _min: UsuarioMinAggregateOutputType | null
   _max: UsuarioMaxAggregateOutputType | null
+}
+
+export type UsuarioAvgAggregateOutputType = {
+  intentosFallidos: number | null
+}
+
+export type UsuarioSumAggregateOutputType = {
+  intentosFallidos: number | null
 }
 
 export type UsuarioMinAggregateOutputType = {
@@ -38,6 +48,8 @@ export type UsuarioMinAggregateOutputType = {
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
+  intentosFallidos: number | null
+  bloqueadoHasta: Date | null
 }
 
 export type UsuarioMaxAggregateOutputType = {
@@ -54,6 +66,8 @@ export type UsuarioMaxAggregateOutputType = {
   activo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
+  intentosFallidos: number | null
+  bloqueadoHasta: Date | null
 }
 
 export type UsuarioCountAggregateOutputType = {
@@ -70,9 +84,19 @@ export type UsuarioCountAggregateOutputType = {
   activo: number
   creadoEn: number
   actualizadoEn: number
+  intentosFallidos: number
+  bloqueadoHasta: number
   _all: number
 }
 
+
+export type UsuarioAvgAggregateInputType = {
+  intentosFallidos?: true
+}
+
+export type UsuarioSumAggregateInputType = {
+  intentosFallidos?: true
+}
 
 export type UsuarioMinAggregateInputType = {
   id?: true
@@ -88,6 +112,8 @@ export type UsuarioMinAggregateInputType = {
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
+  intentosFallidos?: true
+  bloqueadoHasta?: true
 }
 
 export type UsuarioMaxAggregateInputType = {
@@ -104,6 +130,8 @@ export type UsuarioMaxAggregateInputType = {
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
+  intentosFallidos?: true
+  bloqueadoHasta?: true
 }
 
 export type UsuarioCountAggregateInputType = {
@@ -120,6 +148,8 @@ export type UsuarioCountAggregateInputType = {
   activo?: true
   creadoEn?: true
   actualizadoEn?: true
+  intentosFallidos?: true
+  bloqueadoHasta?: true
   _all?: true
 }
 
@@ -161,6 +191,18 @@ export type UsuarioAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UsuarioAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UsuarioSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UsuarioMinAggregateInputType
@@ -191,6 +233,8 @@ export type UsuarioGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: UsuarioCountAggregateInputType | true
+  _avg?: UsuarioAvgAggregateInputType
+  _sum?: UsuarioSumAggregateInputType
   _min?: UsuarioMinAggregateInputType
   _max?: UsuarioMaxAggregateInputType
 }
@@ -209,7 +253,11 @@ export type UsuarioGroupByOutputType = {
   activo: boolean
   creadoEn: Date
   actualizadoEn: Date
+  intentosFallidos: number
+  bloqueadoHasta: Date | null
   _count: UsuarioCountAggregateOutputType | null
+  _avg: UsuarioAvgAggregateOutputType | null
+  _sum: UsuarioSumAggregateOutputType | null
   _min: UsuarioMinAggregateOutputType | null
   _max: UsuarioMaxAggregateOutputType | null
 }
@@ -246,6 +294,8 @@ export type UsuarioWhereInput = {
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
+  intentosFallidos?: Prisma.IntFilter<"Usuario"> | number
+  bloqueadoHasta?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
@@ -255,6 +305,7 @@ export type UsuarioWhereInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoListRelationFilter
   ticketsEventos?: Prisma.TicketEventoListRelationFilter
   comunicaciones?: Prisma.ComunicacionListRelationFilter
+  notificaciones?: Prisma.NotificacionListRelationFilter
   personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }
 
@@ -272,6 +323,8 @@ export type UsuarioOrderByWithRelationInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  intentosFallidos?: Prisma.SortOrder
+  bloqueadoHasta?: Prisma.SortOrderInput | Prisma.SortOrder
   solicitudes?: Prisma.SolicitudOrderByRelationAggregateInput
   logs?: Prisma.LogAuditoriaOrderByRelationAggregateInput
   historialEstatus?: Prisma.HistorialEstatusOrderByRelationAggregateInput
@@ -281,6 +334,7 @@ export type UsuarioOrderByWithRelationInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoOrderByRelationAggregateInput
   ticketsEventos?: Prisma.TicketEventoOrderByRelationAggregateInput
   comunicaciones?: Prisma.ComunicacionOrderByRelationAggregateInput
+  notificaciones?: Prisma.NotificacionOrderByRelationAggregateInput
   personal?: Prisma.PersonalOrderByWithRelationInput
 }
 
@@ -301,6 +355,8 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
+  intentosFallidos?: Prisma.IntFilter<"Usuario"> | number
+  bloqueadoHasta?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   solicitudes?: Prisma.SolicitudListRelationFilter
   logs?: Prisma.LogAuditoriaListRelationFilter
   historialEstatus?: Prisma.HistorialEstatusListRelationFilter
@@ -310,6 +366,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   ticketsAdjuntos?: Prisma.TicketAdjuntoListRelationFilter
   ticketsEventos?: Prisma.TicketEventoListRelationFilter
   comunicaciones?: Prisma.ComunicacionListRelationFilter
+  notificaciones?: Prisma.NotificacionListRelationFilter
   personal?: Prisma.XOR<Prisma.PersonalNullableScalarRelationFilter, Prisma.PersonalWhereInput> | null
 }, "id" | "correo" | "curp" | "rfc">
 
@@ -327,9 +384,13 @@ export type UsuarioOrderByWithAggregationInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  intentosFallidos?: Prisma.SortOrder
+  bloqueadoHasta?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UsuarioCountOrderByAggregateInput
+  _avg?: Prisma.UsuarioAvgOrderByAggregateInput
   _max?: Prisma.UsuarioMaxOrderByAggregateInput
   _min?: Prisma.UsuarioMinOrderByAggregateInput
+  _sum?: Prisma.UsuarioSumOrderByAggregateInput
 }
 
 export type UsuarioScalarWhereWithAggregatesInput = {
@@ -349,6 +410,8 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   activo?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
+  intentosFallidos?: Prisma.IntWithAggregatesFilter<"Usuario"> | number
+  bloqueadoHasta?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
 }
 
 export type UsuarioCreateInput = {
@@ -365,6 +428,8 @@ export type UsuarioCreateInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -374,6 +439,7 @@ export type UsuarioCreateInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -391,6 +457,8 @@ export type UsuarioUncheckedCreateInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -400,6 +468,7 @@ export type UsuarioUncheckedCreateInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -417,6 +486,8 @@ export type UsuarioUpdateInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -426,6 +497,7 @@ export type UsuarioUpdateInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -443,6 +515,8 @@ export type UsuarioUncheckedUpdateInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -452,6 +526,7 @@ export type UsuarioUncheckedUpdateInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -469,6 +544,8 @@ export type UsuarioCreateManyInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
 }
 
 export type UsuarioUpdateManyMutationInput = {
@@ -485,6 +562,8 @@ export type UsuarioUpdateManyMutationInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UsuarioUncheckedUpdateManyInput = {
@@ -501,6 +580,8 @@ export type UsuarioUncheckedUpdateManyInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UsuarioScalarRelationFilter = {
@@ -522,6 +603,12 @@ export type UsuarioCountOrderByAggregateInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  intentosFallidos?: Prisma.SortOrder
+  bloqueadoHasta?: Prisma.SortOrder
+}
+
+export type UsuarioAvgOrderByAggregateInput = {
+  intentosFallidos?: Prisma.SortOrder
 }
 
 export type UsuarioMaxOrderByAggregateInput = {
@@ -538,6 +625,8 @@ export type UsuarioMaxOrderByAggregateInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  intentosFallidos?: Prisma.SortOrder
+  bloqueadoHasta?: Prisma.SortOrder
 }
 
 export type UsuarioMinOrderByAggregateInput = {
@@ -554,6 +643,12 @@ export type UsuarioMinOrderByAggregateInput = {
   activo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  intentosFallidos?: Prisma.SortOrder
+  bloqueadoHasta?: Prisma.SortOrder
+}
+
+export type UsuarioSumOrderByAggregateInput = {
+  intentosFallidos?: Prisma.SortOrder
 }
 
 export type UsuarioNullableScalarRelationFilter = {
@@ -713,6 +808,20 @@ export type UsuarioUpdateOneRequiredWithoutComunicacionesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutComunicacionesInput, Prisma.UsuarioUpdateWithoutComunicacionesInput>, Prisma.UsuarioUncheckedUpdateWithoutComunicacionesInput>
 }
 
+export type UsuarioCreateNestedOneWithoutNotificacionesInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutNotificacionesInput, Prisma.UsuarioUncheckedCreateWithoutNotificacionesInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutNotificacionesInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutNotificacionesNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutNotificacionesInput, Prisma.UsuarioUncheckedCreateWithoutNotificacionesInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutNotificacionesInput
+  upsert?: Prisma.UsuarioUpsertWithoutNotificacionesInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutNotificacionesInput, Prisma.UsuarioUpdateWithoutNotificacionesInput>, Prisma.UsuarioUncheckedUpdateWithoutNotificacionesInput>
+}
+
 export type UsuarioCreateWithoutHistorialEstatusInput = {
   id?: string
   correo: string
@@ -727,6 +836,8 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
@@ -735,6 +846,7 @@ export type UsuarioCreateWithoutHistorialEstatusInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -752,6 +864,8 @@ export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
@@ -760,6 +874,7 @@ export type UsuarioUncheckedCreateWithoutHistorialEstatusInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -793,6 +908,8 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
@@ -801,6 +918,7 @@ export type UsuarioUpdateWithoutHistorialEstatusInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -818,6 +936,8 @@ export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -826,6 +946,7 @@ export type UsuarioUncheckedUpdateWithoutHistorialEstatusInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -843,6 +964,8 @@ export type UsuarioCreateWithoutSesionesRefreshInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -851,6 +974,7 @@ export type UsuarioCreateWithoutSesionesRefreshInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -868,6 +992,8 @@ export type UsuarioUncheckedCreateWithoutSesionesRefreshInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -876,6 +1002,7 @@ export type UsuarioUncheckedCreateWithoutSesionesRefreshInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -909,6 +1036,8 @@ export type UsuarioUpdateWithoutSesionesRefreshInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -917,6 +1046,7 @@ export type UsuarioUpdateWithoutSesionesRefreshInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -934,6 +1064,8 @@ export type UsuarioUncheckedUpdateWithoutSesionesRefreshInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -942,6 +1074,7 @@ export type UsuarioUncheckedUpdateWithoutSesionesRefreshInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -959,6 +1092,8 @@ export type UsuarioCreateWithoutPersonalInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -968,6 +1103,7 @@ export type UsuarioCreateWithoutPersonalInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutPersonalInput = {
@@ -984,6 +1120,8 @@ export type UsuarioUncheckedCreateWithoutPersonalInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -993,6 +1131,7 @@ export type UsuarioUncheckedCreateWithoutPersonalInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutPersonalInput = {
@@ -1025,6 +1164,8 @@ export type UsuarioUpdateWithoutPersonalInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1034,6 +1175,7 @@ export type UsuarioUpdateWithoutPersonalInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutPersonalInput = {
@@ -1050,6 +1192,8 @@ export type UsuarioUncheckedUpdateWithoutPersonalInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1059,6 +1203,7 @@ export type UsuarioUncheckedUpdateWithoutPersonalInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutSolicitudesInput = {
@@ -1075,6 +1220,8 @@ export type UsuarioCreateWithoutSolicitudesInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
@@ -1083,6 +1230,7 @@ export type UsuarioCreateWithoutSolicitudesInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1100,6 +1248,8 @@ export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1108,6 +1258,7 @@ export type UsuarioUncheckedCreateWithoutSolicitudesInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1141,6 +1292,8 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
@@ -1149,6 +1302,7 @@ export type UsuarioUpdateWithoutSolicitudesInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1166,6 +1320,8 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1174,6 +1330,7 @@ export type UsuarioUncheckedUpdateWithoutSolicitudesInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1191,6 +1348,8 @@ export type UsuarioCreateWithoutLogsInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
@@ -1199,6 +1358,7 @@ export type UsuarioCreateWithoutLogsInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1216,6 +1376,8 @@ export type UsuarioUncheckedCreateWithoutLogsInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1224,6 +1386,7 @@ export type UsuarioUncheckedCreateWithoutLogsInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1257,6 +1420,8 @@ export type UsuarioUpdateWithoutLogsInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
@@ -1265,6 +1430,7 @@ export type UsuarioUpdateWithoutLogsInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1282,6 +1448,8 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
   sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1290,6 +1458,7 @@ export type UsuarioUncheckedUpdateWithoutLogsInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1307,6 +1476,8 @@ export type UsuarioCreateWithoutTicketsSolicitadosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -1315,6 +1486,7 @@ export type UsuarioCreateWithoutTicketsSolicitadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1332,6 +1504,8 @@ export type UsuarioUncheckedCreateWithoutTicketsSolicitadosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1340,6 +1514,7 @@ export type UsuarioUncheckedCreateWithoutTicketsSolicitadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1373,6 +1548,8 @@ export type UsuarioUpdateWithoutTicketsSolicitadosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1381,6 +1558,7 @@ export type UsuarioUpdateWithoutTicketsSolicitadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1398,6 +1576,8 @@ export type UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1406,6 +1586,7 @@ export type UsuarioUncheckedUpdateWithoutTicketsSolicitadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1423,6 +1604,8 @@ export type UsuarioCreateWithoutTicketsComentadosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -1431,6 +1614,7 @@ export type UsuarioCreateWithoutTicketsComentadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1448,6 +1632,8 @@ export type UsuarioUncheckedCreateWithoutTicketsComentadosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1456,6 +1642,7 @@ export type UsuarioUncheckedCreateWithoutTicketsComentadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1489,6 +1676,8 @@ export type UsuarioUpdateWithoutTicketsComentadosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1497,6 +1686,7 @@ export type UsuarioUpdateWithoutTicketsComentadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1514,6 +1704,8 @@ export type UsuarioUncheckedUpdateWithoutTicketsComentadosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1522,6 +1714,7 @@ export type UsuarioUncheckedUpdateWithoutTicketsComentadosInput = {
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1539,6 +1732,8 @@ export type UsuarioCreateWithoutTicketsAdjuntosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -1547,6 +1742,7 @@ export type UsuarioCreateWithoutTicketsAdjuntosInput = {
   ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1564,6 +1760,8 @@ export type UsuarioUncheckedCreateWithoutTicketsAdjuntosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1572,6 +1770,7 @@ export type UsuarioUncheckedCreateWithoutTicketsAdjuntosInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1605,6 +1804,8 @@ export type UsuarioUpdateWithoutTicketsAdjuntosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1613,6 +1814,7 @@ export type UsuarioUpdateWithoutTicketsAdjuntosInput = {
   ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1630,6 +1832,8 @@ export type UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1638,6 +1842,7 @@ export type UsuarioUncheckedUpdateWithoutTicketsAdjuntosInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1655,6 +1860,8 @@ export type UsuarioCreateWithoutTicketsEventosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -1663,6 +1870,7 @@ export type UsuarioCreateWithoutTicketsEventosInput = {
   ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1680,6 +1888,8 @@ export type UsuarioUncheckedCreateWithoutTicketsEventosInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1688,6 +1898,7 @@ export type UsuarioUncheckedCreateWithoutTicketsEventosInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1721,6 +1932,8 @@ export type UsuarioUpdateWithoutTicketsEventosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1729,6 +1942,7 @@ export type UsuarioUpdateWithoutTicketsEventosInput = {
   ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1746,6 +1960,8 @@ export type UsuarioUncheckedUpdateWithoutTicketsEventosInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1754,6 +1970,7 @@ export type UsuarioUncheckedUpdateWithoutTicketsEventosInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1771,6 +1988,8 @@ export type UsuarioCreateWithoutComunicacionesInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
@@ -1779,6 +1998,7 @@ export type UsuarioCreateWithoutComunicacionesInput = {
   ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1796,6 +2016,8 @@ export type UsuarioUncheckedCreateWithoutComunicacionesInput = {
   activo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
   logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
@@ -1804,6 +2026,7 @@ export type UsuarioUncheckedCreateWithoutComunicacionesInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
   ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
@@ -1837,6 +2060,8 @@ export type UsuarioUpdateWithoutComunicacionesInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
@@ -1845,6 +2070,7 @@ export type UsuarioUpdateWithoutComunicacionesInput = {
   ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1862,6 +2088,8 @@ export type UsuarioUncheckedUpdateWithoutComunicacionesInput = {
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
   logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -1870,6 +2098,135 @@ export type UsuarioUncheckedUpdateWithoutComunicacionesInput = {
   ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
   ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
   ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutNotificacionesInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
+  solicitudes?: Prisma.SolicitudCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoCreateNestedManyWithoutActorInput
+  comunicaciones?: Prisma.ComunicacionCreateNestedManyWithoutClienteInput
+  personal?: Prisma.PersonalCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
+  id?: string
+  correo: string
+  contrasena: string
+  tipoUsuario?: $Enums.TipoUsuario
+  tipoPersona: $Enums.TipoPersona
+  nombre: string
+  apellidoPaterno: string
+  apellidoMaterno: string
+  curp?: string | null
+  rfc?: string | null
+  activo?: boolean
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  intentosFallidos?: number
+  bloqueadoHasta?: Date | string | null
+  solicitudes?: Prisma.SolicitudUncheckedCreateNestedManyWithoutSolicitanteInput
+  logs?: Prisma.LogAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedCreateNestedManyWithoutUsuarioInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedCreateNestedManyWithoutUsuarioInput
+  ticketsSolicitados?: Prisma.TicketUncheckedCreateNestedManyWithoutSolicitanteInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedCreateNestedManyWithoutAutorInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedCreateNestedManyWithoutSubidoPorInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedCreateNestedManyWithoutActorInput
+  comunicaciones?: Prisma.ComunicacionUncheckedCreateNestedManyWithoutClienteInput
+  personal?: Prisma.PersonalUncheckedCreateNestedOneWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutNotificacionesInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutNotificacionesInput, Prisma.UsuarioUncheckedCreateWithoutNotificacionesInput>
+}
+
+export type UsuarioUpsertWithoutNotificacionesInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutNotificacionesInput, Prisma.UsuarioUncheckedUpdateWithoutNotificacionesInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutNotificacionesInput, Prisma.UsuarioUncheckedCreateWithoutNotificacionesInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutNotificacionesInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutNotificacionesInput, Prisma.UsuarioUncheckedUpdateWithoutNotificacionesInput>
+}
+
+export type UsuarioUpdateWithoutNotificacionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  solicitudes?: Prisma.SolicitudUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUpdateManyWithoutActorNestedInput
+  comunicaciones?: Prisma.ComunicacionUpdateManyWithoutClienteNestedInput
+  personal?: Prisma.PersonalUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.StringFieldUpdateOperationsInput | string
+  contrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  tipoUsuario?: Prisma.EnumTipoUsuarioFieldUpdateOperationsInput | $Enums.TipoUsuario
+  tipoPersona?: Prisma.EnumTipoPersonaFieldUpdateOperationsInput | $Enums.TipoPersona
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoPaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  apellidoMaterno?: Prisma.StringFieldUpdateOperationsInput | string
+  curp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rfc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  intentosFallidos?: Prisma.IntFieldUpdateOperationsInput | number
+  bloqueadoHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  solicitudes?: Prisma.SolicitudUncheckedUpdateManyWithoutSolicitanteNestedInput
+  logs?: Prisma.LogAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  historialEstatus?: Prisma.HistorialEstatusUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesionesRefresh?: Prisma.SesionRefreshUncheckedUpdateManyWithoutUsuarioNestedInput
+  ticketsSolicitados?: Prisma.TicketUncheckedUpdateManyWithoutSolicitanteNestedInput
+  ticketsComentados?: Prisma.TicketComentarioUncheckedUpdateManyWithoutAutorNestedInput
+  ticketsAdjuntos?: Prisma.TicketAdjuntoUncheckedUpdateManyWithoutSubidoPorNestedInput
+  ticketsEventos?: Prisma.TicketEventoUncheckedUpdateManyWithoutActorNestedInput
+  comunicaciones?: Prisma.ComunicacionUncheckedUpdateManyWithoutClienteNestedInput
   personal?: Prisma.PersonalUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
@@ -1888,6 +2245,7 @@ export type UsuarioCountOutputType = {
   ticketsAdjuntos: number
   ticketsEventos: number
   comunicaciones: number
+  notificaciones: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1900,6 +2258,7 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   ticketsAdjuntos?: boolean | UsuarioCountOutputTypeCountTicketsAdjuntosArgs
   ticketsEventos?: boolean | UsuarioCountOutputTypeCountTicketsEventosArgs
   comunicaciones?: boolean | UsuarioCountOutputTypeCountComunicacionesArgs
+  notificaciones?: boolean | UsuarioCountOutputTypeCountNotificacionesArgs
 }
 
 /**
@@ -1975,6 +2334,13 @@ export type UsuarioCountOutputTypeCountComunicacionesArgs<ExtArgs extends runtim
   where?: Prisma.ComunicacionWhereInput
 }
 
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountNotificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificacionWhereInput
+}
+
 
 export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1990,6 +2356,8 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
+  intentosFallidos?: boolean
+  bloqueadoHasta?: boolean
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
   historialEstatus?: boolean | Prisma.Usuario$historialEstatusArgs<ExtArgs>
@@ -1999,6 +2367,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   ticketsAdjuntos?: boolean | Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>
   ticketsEventos?: boolean | Prisma.Usuario$ticketsEventosArgs<ExtArgs>
   comunicaciones?: boolean | Prisma.Usuario$comunicacionesArgs<ExtArgs>
+  notificaciones?: boolean | Prisma.Usuario$notificacionesArgs<ExtArgs>
   personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
@@ -2017,6 +2386,8 @@ export type UsuarioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
+  intentosFallidos?: boolean
+  bloqueadoHasta?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2033,6 +2404,8 @@ export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
+  intentosFallidos?: boolean
+  bloqueadoHasta?: boolean
 }, ExtArgs["result"]["usuario"]>
 
 export type UsuarioSelectScalar = {
@@ -2049,9 +2422,11 @@ export type UsuarioSelectScalar = {
   activo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
+  intentosFallidos?: boolean
+  bloqueadoHasta?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "correo" | "contrasena" | "tipoUsuario" | "tipoPersona" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "activo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "correo" | "contrasena" | "tipoUsuario" | "tipoPersona" | "nombre" | "apellidoPaterno" | "apellidoMaterno" | "curp" | "rfc" | "activo" | "creadoEn" | "actualizadoEn" | "intentosFallidos" | "bloqueadoHasta", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   solicitudes?: boolean | Prisma.Usuario$solicitudesArgs<ExtArgs>
   logs?: boolean | Prisma.Usuario$logsArgs<ExtArgs>
@@ -2062,6 +2437,7 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   ticketsAdjuntos?: boolean | Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>
   ticketsEventos?: boolean | Prisma.Usuario$ticketsEventosArgs<ExtArgs>
   comunicaciones?: boolean | Prisma.Usuario$comunicacionesArgs<ExtArgs>
+  notificaciones?: boolean | Prisma.Usuario$notificacionesArgs<ExtArgs>
   personal?: boolean | Prisma.Usuario$personalArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -2080,6 +2456,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     ticketsAdjuntos: Prisma.$TicketAdjuntoPayload<ExtArgs>[]
     ticketsEventos: Prisma.$TicketEventoPayload<ExtArgs>[]
     comunicaciones: Prisma.$ComunicacionPayload<ExtArgs>[]
+    notificaciones: Prisma.$NotificacionPayload<ExtArgs>[]
     personal: Prisma.$PersonalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2096,6 +2473,8 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     activo: boolean
     creadoEn: Date
     actualizadoEn: Date
+    intentosFallidos: number
+    bloqueadoHasta: Date | null
   }, ExtArgs["result"]["usuario"]>
   composites: {}
 }
@@ -2499,6 +2878,7 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   ticketsAdjuntos<T extends Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsAdjuntosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketAdjuntoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ticketsEventos<T extends Prisma.Usuario$ticketsEventosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$ticketsEventosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketEventoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comunicaciones<T extends Prisma.Usuario$comunicacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$comunicacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComunicacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificaciones<T extends Prisma.Usuario$notificacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$notificacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   personal<T extends Prisma.Usuario$personalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$personalArgs<ExtArgs>>): Prisma.Prisma__PersonalClient<runtime.Types.Result.GetResult<Prisma.$PersonalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2542,6 +2922,8 @@ export interface UsuarioFieldRefs {
   readonly activo: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"Usuario", 'DateTime'>
+  readonly intentosFallidos: Prisma.FieldRef<"Usuario", 'Int'>
+  readonly bloqueadoHasta: Prisma.FieldRef<"Usuario", 'DateTime'>
 }
     
 
@@ -3148,6 +3530,30 @@ export type Usuario$comunicacionesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ComunicacionScalarFieldEnum | Prisma.ComunicacionScalarFieldEnum[]
+}
+
+/**
+ * Usuario.notificaciones
+ */
+export type Usuario$notificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notificacion
+   */
+  select?: Prisma.NotificacionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notificacion
+   */
+  omit?: Prisma.NotificacionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificacionInclude<ExtArgs> | null
+  where?: Prisma.NotificacionWhereInput
+  orderBy?: Prisma.NotificacionOrderByWithRelationInput | Prisma.NotificacionOrderByWithRelationInput[]
+  cursor?: Prisma.NotificacionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificacionScalarFieldEnum | Prisma.NotificacionScalarFieldEnum[]
 }
 
 /**

@@ -182,6 +182,10 @@ model HistorialEstatus {
   creadoEn DateTime @default(now())
 
   @@index([solicitudId])
+  // Casi toda métrica del panorama (KPIs, tendencia, desempeño) filtra un
+  // dictamen/transición por estatusNuevo + rango de fecha.
+  @@index([estatusNuevo, creadoEn])
+  @@index([creadoEn])
 }
 
 model GrupoGestion {
@@ -292,6 +296,12 @@ model Usuario {
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
+  // Bloqueo por intentos fallidos de login (fuerza bruta / credential
+  // stuffing). `intentosFallidos` se resetea a 0 en cada login exitoso o al
+  // activar el bloqueo; `bloqueadoHasta` nulo = no bloqueada.
+  intentosFallidos Int       @default(0)
+  bloqueadoHasta   DateTime?
+
   solicitudes      Solicitud[]
   logs             LogAuditoria[]
   historialEstatus HistorialEstatus[]
@@ -303,6 +313,8 @@ model Usuario {
   ticketsEventos     TicketEvento[]     @relation("TicketsEventos")
 
   comunicaciones Comunicacion[] @relation("ComunicacionesCliente")
+
+  notificaciones Notificacion[]
 
   personal Personal?
 }
@@ -476,9 +488,17 @@ model Solicitud {
   asignacionesFinanciamiento AsignacionFinanciamiento[]
   analisis                   Analisis?
   comunicaciones             Comunicacion[]
+  notificaciones             Notificacion[]
 
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
+
+  // El panorama ejecutivo (dashboard.service.ts) filtra casi siempre por
+  // estatus + rango de fecha — sin estos índices cada consulta hace un scan
+  // completo de la tabla.
+  @@index([estatus, creadoEn])
+  @@index([estatus, actualizadoEn])
+  @@index([creadoEn])
 }
 
 // Análisis financiero del analista (segundo filtro). Un análisis por solicitud.
@@ -761,8 +781,12 @@ model DocumentoSolicitud {
   motivoRechazo   String?
   subidoEn        DateTime         @default(now())
 
+  notificaciones Notificacion[]
+
   @@unique([solicitudId, tipoDocumentoId, version])
   @@index([solicitudId, tipoDocumentoId])
+  // Alertas del panorama: documentos rechazados/pendientes por validar.
+  @@index([estatus, activo])
 }
 
 enum AccionLog {
@@ -1035,4 +1059,60 @@ model Comunicacion {
   @@index([solicitudId, fechaContacto])
   @@index([clienteId, fechaContacto])
   @@index([registradoPorId])
+}
+
+// ─────────────────────────────────────────
+// NOTIFICACIONES
+// ─────────────────────────────────────────
+
+enum NotificacionTipo {
+  ASIGNACION_GESTOR // personal (GESTOR): 1+ solicitudes nuevas asignadas
+  ASIGNACION_ANALISTA // personal (ANALISTA): 1+ solicitudes nuevas asignadas
+  SOLICITUD_REGRESADA // personal: se le regresó una solicitud que ya tenía
+  CAMBIO_ESTATUS // cliente: cambio de estatus de su solicitud
+  RESPONSABLE_ASIGNADO // cliente: se asignó gestor o analista (cuál va en metadata.rol)
+  DOCUMENTO_RECHAZADO // cliente: se rechazó un documento de su expediente
+  REASIGNACION_REQUERIDA // supervisor/encargado: se dio de baja un gestor/analista con solicitudes activas
+  SOLICITUD_ESTANCADA // personal (GESTOR/ANALISTA): una solicitud propia lleva demasiado tiempo sin avanzar
+}
+
+enum NotificacionCanal {
+  APP
+  CORREO // sin uso todavía: deja el enum listo para cuando se implemente envío por correo
+}
+
+/// Bandeja de notificaciones internas por usuario (cliente o personal).
+/// `solicitudId`/`documentoId` quedan nulos en notificaciones agrupadas de
+/// personal (ej. "se te asignaron 5 solicitudes"): no hay una sola entidad a
+/// la que navegar, el clic debe ir a la lista filtrada, no a un detalle.
+model Notificacion {
+  id        String  @id @default(uuid())
+  usuario   Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  usuarioId String
+
+  tipo   NotificacionTipo
+  titulo String // texto ya formateado, ej. "Se te asignaron 5 solicitudes nuevas"
+  cuerpo String? // detalle opcional: motivo de regreso, motivo de rechazo, etc.
+
+  solicitud   Solicitud? @relation(fields: [solicitudId], references: [id])
+  solicitudId String?
+  documento   DocumentoSolicitud? @relation(fields: [documentoId], references: [id])
+  documentoId String?
+
+  // Agrupación: "se te asignaron 5 solicitudes" = una sola fila con
+  // agrupadoCount=5. metadata guarda ids/folios (truncados a 50) para el
+  // detalle opcional en el frontend.
+  agrupadoCount Int   @default(1)
+  metadata      Json?
+
+  canal   NotificacionCanal @default(APP)
+  leidaEn DateTime?
+
+  creadoEn DateTime @default(now())
+
+  // Bandeja paginada de un usuario, más reciente primero.
+  @@index([usuarioId, creadoEn])
+  // Contador de no-leídas para el badge de la campana: se llama en cada carga.
+  @@index([usuarioId, leidaEn])
+  @@index([solicitudId])
 }

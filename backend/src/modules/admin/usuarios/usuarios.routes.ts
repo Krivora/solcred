@@ -16,6 +16,7 @@ router.get("/", autorizar("ADMIN", "SUPERVISOR"), usuariosController.listar);
 router.patch("/:id/rol", autorizar("ADMIN"), validate(cambiarRolSchema), usuariosController.cambiarRol);
 router.patch("/:id/revocar-acceso", autorizar("ADMIN"), usuariosController.revocarAcceso); // ── NUEVO ──
 router.patch("/:id/desactivar", autorizar("ADMIN"), usuariosController.desactivar);
+router.patch("/:id/desbloquear", autorizar("ADMIN"), usuariosController.desbloquear);
 
 // ADMIN, SUPERVISOR o el mismo usuario
 router.get("/:id", autorizar("ADMIN", "ANALISTA", "CLIENTE", "SUPERVISOR"), usuariosController.obtenerPorId);

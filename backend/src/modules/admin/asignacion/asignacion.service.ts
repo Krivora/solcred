@@ -3,6 +3,10 @@ import { AppError } from "@middlewares/error.middleware";
 import { CampoRegla, EstatusSolicitud, OperadorRegla } from "../../../../generated/prisma/client";
 import { AsignarManualDto } from "./asignacion.schema";
 import { paginado } from "@utils/pagination";
+import {
+    notificarAsignacionGestor,
+    notificarResponsableAsignado,
+} from "@modules/notificaciones/notificaciones.service";
 const ESTATUS_REVISION: EstatusSolicitud[] = ["EN_REVISION"];
 
 // ─── Tipos internos ──────────────────────────────────────────────────────────
@@ -309,6 +313,9 @@ export const asignarAutomaticamente = async (
     solicitudIds: string[]
 ): Promise<ResultadoAsignacion[]> => {
     const resultados: ResultadoAsignacion[] = [];
+    // Solicitudes asignadas con éxito en este lote, agrupadas por gestor, para
+    // la notificación "se te asignaron N solicitudes nuevas" al final.
+    const asignadasPorGestor = new Map<string, { id: string; folio: string }[]>();
 
     for (const solicitudId of solicitudIds) {
         try {
@@ -316,6 +323,8 @@ export const asignarAutomaticamente = async (
                 where: { id: solicitudId },
                 select: {
                     id: true,
+                    folio: true,
+                    solicitanteId: true,
                     tipoPersona: true,
                     sector: true,
                     tamanoEmpresa: true,
@@ -343,15 +352,25 @@ export const asignarAutomaticamente = async (
                 throw new AppError("No hay gestores disponibles en el grupo", 422);
             }
 
-            await prisma.$transaction([
-                prisma.asignacionSolicitud.create({
+            await prisma.$transaction(async (tx) => {
+                await tx.asignacionSolicitud.create({
                     data: { solicitudId, gestorId, grupoId, asignadoPorId: null },
-                }),
-                prisma.solicitud.update({
+                });
+                await tx.solicitud.update({
                     where: { id: solicitudId },
                     data: { estatus: "EN_REVISION" },
-                }),
-            ]);
+                });
+                await notificarResponsableAsignado(
+                    tx,
+                    solicitud.solicitanteId,
+                    { id: solicitudId, folio: solicitud.folio },
+                    "GESTOR"
+                );
+            });
+
+            const lista = asignadasPorGestor.get(gestorId) ?? [];
+            lista.push({ id: solicitudId, folio: solicitud.folio });
+            asignadasPorGestor.set(gestorId, lista);
 
             resultados.push({ solicitudId, exito: true });
         } catch (error) {
@@ -367,7 +386,38 @@ export const asignarAutomaticamente = async (
         }
     }
 
+    await notificarAsignacionesPorGestor(asignadasPorGestor);
+
     return resultados;
+};
+
+/**
+ * Notifica a cada gestor las solicitudes que se le asignaron en este lote
+ * (una notificación por gestor, agrupada). Best-effort: un fallo aquí no debe
+ * invalidar asignaciones que ya se aplicaron con éxito.
+ */
+const notificarAsignacionesPorGestor = async (
+    asignadasPorGestor: Map<string, { id: string; folio: string }[]>
+): Promise<void> => {
+    if (asignadasPorGestor.size === 0) return;
+
+    try {
+        const gestores = await prisma.personal.findMany({
+            where: { id: { in: [...asignadasPorGestor.keys()] } },
+            select: { id: true, userId: true },
+        });
+        const userIdPorGestor = new Map(gestores.map((g) => [g.id, g.userId]));
+
+        for (const [gestorId, solicitudes] of asignadasPorGestor) {
+            const userId = userIdPorGestor.get(gestorId);
+            if (!userId) continue;
+            await prisma.$transaction((tx) =>
+                notificarAsignacionGestor(tx, userId, solicitudes)
+            );
+        }
+    } catch {
+        // no-op: ver comentario de la función
+    }
 };
 export const asignarManualmente = async (
     solicitudIds: string[],
@@ -399,6 +449,7 @@ export const asignarManualmente = async (
     const grupoId = gestor.gruposGestion[0].grupoId;
 
     const resultados: ResultadoAsignacion[] = [];
+    const asignadasNuevas: { id: string; folio: string }[] = [];
 
     for (const solicitudId of solicitudIds) {
         try {
@@ -440,8 +491,16 @@ export const asignarManualmente = async (
                     where: { id: solicitudId },
                     data: { estatus: "EN_REVISION" },
                 });
+
+                await notificarResponsableAsignado(
+                    tx,
+                    solicitud.solicitanteId,
+                    { id: solicitudId, folio: solicitud.folio },
+                    "GESTOR"
+                );
             });
 
+            asignadasNuevas.push({ id: solicitudId, folio: solicitud.folio });
             resultados.push({ solicitudId, exito: true });
         } catch (error) {
             resultados.push({
@@ -452,6 +511,16 @@ export const asignarManualmente = async (
                         ? error.message
                         : "Error desconocido al asignar",
             });
+        }
+    }
+
+    if (asignadasNuevas.length > 0) {
+        try {
+            await prisma.$transaction((tx) =>
+                notificarAsignacionGestor(tx, gestor.userId, asignadasNuevas)
+            );
+        } catch {
+            // Best-effort: ver comentario en asignarAutomaticamente.
         }
     }
 

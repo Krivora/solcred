@@ -1,4 +1,5 @@
 import { Badge } from "@/shared/components/ui/badge";
+import { TONE } from "@/shared/config/estatus.tokens";
 import type { TipoPersona } from "@/features/settings/types/usuario.types";
 import type { RolAplicacion } from "@/shared/types/auth.types";
 
@@ -74,6 +75,15 @@ export function EstadoBadge({ activo }: { activo: boolean }) {
   ) : (
     <Badge variant="outline" className="bg-surface-sunken text-ink-muted border-hairline">
       Inactivo
+    </Badge>
+  );
+}
+
+// ── NUEVO: bloqueo automático por intentos fallidos de login ──
+export function BloqueadaBadge() {
+  return (
+    <Badge variant="outline" className={TONE.danger.badge}>
+      Bloqueada
     </Badge>
   );
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import { Search, X, SlidersHorizontal } from 'lucide-react'
 import { Input } from '@/shared/components/ui/input'
 import { Button } from '@/shared/components/ui/button'
@@ -24,6 +25,12 @@ import type {
 
 const toFilterValue = (val: string): string => (val === 'todos' ? '' : val)
 const toSelectValue = (val?: string): string => (!val ? 'todos' : val)
+
+/** Espera tras la última tecla antes de aplicar la búsqueda de texto. Los
+ *  selects/fechas se aplican de inmediato (son un cambio discreto, no hay
+ *  "ruido" de tipeo); el texto libre debounea para no disparar un fetch por
+ *  cada letra. */
+const DEBOUNCE_BUSQUEDA_MS = 350
 
 /** Envuelve cualquier campo con un label opcional arriba, alineado a los demás */
 function FieldShell({
@@ -55,6 +62,38 @@ function SearchFilterField({
   onChange: (patch: FilterBarValues) => void
 }) {
   const value = values[field.key] ?? ''
+  // Estado local: el input responde al instante mientras se escribe; lo que
+  // se debounea es la propagación hacia `onChange` (y de ahí, el fetch).
+  const [local, setLocal] = useState(value)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Si el valor cambia por otra vía (ej. "Limpiar filtros" del padre),
+  // sincroniza el input. Ajuste de estado durante el render (no en un
+  // efecto) para no disparar un render en cascada.
+  const [valorPrevio, setValorPrevio] = useState(value)
+  if (value !== valorPrevio) {
+    setValorPrevio(value)
+    setLocal(value)
+  }
+
+  useEffect(() => () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+  }, [])
+
+  const handleChange = (next: string) => {
+    setLocal(next)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(
+      () => onChange({ [field.key]: next }),
+      DEBOUNCE_BUSQUEDA_MS,
+    )
+  }
+
+  const handleClear = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setLocal('')
+    onChange({ [field.key]: '' })
+  }
 
   return (
     <FieldShell label={field.label}>
@@ -62,18 +101,18 @@ function SearchFilterField({
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
         <Input
           placeholder={field.placeholder ?? 'Buscar...'}
-          value={value}
-          onChange={e => onChange({ [field.key]: e.target.value })}
+          value={local}
+          onChange={e => handleChange(e.target.value)}
           className={cn(
             'pl-8 h-8 text-xs border-border/60',
             'focus-visible:border-primary/50 focus-visible:ring-primary/20',
             field.width ?? 'w-75',
           )}
         />
-        {value && (
+        {local && (
           <button
             type="button"
-            onClick={() => onChange({ [field.key]: '' })}
+            onClick={handleClear}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Limpiar búsqueda"
           >

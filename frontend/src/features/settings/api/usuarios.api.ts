@@ -23,4 +23,6 @@ export const usuariosApi = {
     apiAuth(`/admin/usuarios/${id}/desactivar`, { method: "PATCH", body: {} }),
   revocarAcceso: (id: string): Promise<UsuarioResponse> =>
     apiAuth(`/admin/usuarios/${id}/revocar-acceso`, { method: "PATCH", body: {} }),
+  desbloquear: (id: string): Promise<UsuarioResponse> =>
+    apiAuth(`/admin/usuarios/${id}/desbloquear`, { method: "PATCH", body: {} }),
 };

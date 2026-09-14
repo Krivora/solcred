@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronsUpDown,
   ShieldOff,
+  Unlock,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -36,7 +37,7 @@ import {
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/tooltip";
 
-import { RolBadge, TipoPersonaBadge, EstadoBadge } from "./UsuariosBadge";
+import { RolBadge, TipoPersonaBadge, EstadoBadge, BloqueadaBadge } from "./UsuariosBadge";
 import type { Usuario, UsuarioFiltros, TipoPersona } from "@/features/settings/types/usuario.types";
 import type { RolAplicacion } from "@/shared/types/auth.types";
 import { obtenerRolEfectivo } from "@/shared/types/auth.types";
@@ -45,6 +46,10 @@ import { useEsSoloLectura } from "@/shared/lib/permisos";
 type SortKey = "nombre" | "correo" | "rol" | "creadoEn";
 type SortDir = "asc" | "desc";
 
+/** Cuenta bloqueada tras 5 intentos fallidos de login (ver Usuario.bloqueadoHasta). */
+const estaBloqueado = (usuario: Usuario): boolean =>
+  !!usuario.bloqueadoHasta && new Date(usuario.bloqueadoHasta) > new Date();
+
 interface UsuariosTableProps {
   usuarios: Usuario[];
   isLoading: boolean;
@@ -52,6 +57,7 @@ interface UsuariosTableProps {
   onCambiarRol: (usuario: Usuario) => void;
   onRevocarAcceso: (usuario: Usuario) => void; // ── NUEVO ──
   onDesactivar: (usuario: Usuario) => void;
+  onDesbloquear: (usuario: Usuario) => void; // ── NUEVO ──
   onRecargar: () => void;
 }
 
@@ -62,6 +68,7 @@ export function UsuariosTable({
   onCambiarRol,
   onRevocarAcceso,
   onDesactivar,
+  onDesbloquear,
   onRecargar,
 }: UsuariosTableProps) {
   const soloLectura = useEsSoloLectura();
@@ -299,7 +306,10 @@ export function UsuariosTable({
                         <TipoPersonaBadge tipoPersona={usuario.tipoPersona} />
                       </td>
                       <td className="px-4 py-3">
-                        <EstadoBadge activo={usuario.activo} />
+                        <div className="flex flex-col items-start gap-1">
+                          <EstadoBadge activo={usuario.activo} />
+                          {estaBloqueado(usuario) && <BloqueadaBadge />}
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground text-xs">
                         {format(new Date(usuario.creadoEn), "dd MMM yyyy", { locale: es })}
@@ -335,6 +345,12 @@ export function UsuariosTable({
                                   <DropdownMenuItem onClick={() => onRevocarAcceso(usuario)}>
                                     <ShieldOff className="mr-2 h-4 w-4" />
                                     Revocar acceso
+                                  </DropdownMenuItem>
+                                )}
+                                {estaBloqueado(usuario) && (
+                                  <DropdownMenuItem onClick={() => onDesbloquear(usuario)}>
+                                    <Unlock className="mr-2 h-4 w-4" />
+                                    Desbloquear
                                   </DropdownMenuItem>
                                 )}
                                 {usuario.activo && (

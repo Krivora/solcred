@@ -59,6 +59,7 @@ export function MisCasosTable({ solicitudes, meta, cargando, onPaginar, onRefres
           mostrarColumnaGestor:  false,
           mostrarColumnaEstatus: true,
           mostrarColumnaComentario: true,
+          mostrarColumnaComunicacion: true,
           mostrarColumnaPdf:     false,
           labelFecha: 'Asignada',
           vacioCopy: {

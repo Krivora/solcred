@@ -205,3 +205,11 @@ export type TicketSlaPolitica = Prisma.TicketSlaPoliticaModel
  * consultar el historial completo de un cliente (varias solicitudes) por índice.
  */
 export type Comunicacion = Prisma.ComunicacionModel
+/**
+ * Model Notificacion
+ * Bandeja de notificaciones internas por usuario (cliente o personal).
+ * `solicitudId`/`documentoId` quedan nulos en notificaciones agrupadas de
+ * personal (ej. "se te asignaron 5 solicitudes"): no hay una sola entidad a
+ * la que navegar, el clic debe ir a la lista filtrada, no a un detalle.
+ */
+export type Notificacion = Prisma.NotificacionModel

@@ -73,12 +73,6 @@ const NAV_BASE: NavItem[] = [
         icon: FolderKanban,
         roles: ["GESTOR"],
       },
-      {
-        label: "Historico",
-        href: "/dashboard/admin/promocion/historico",
-        icon: ClipboardClock,
-        roles: ["ADMIN", "GESTOR", "ENCARGADO_PROMOCION"],
-      },
     ],
   },
   {
@@ -117,6 +111,15 @@ const NAV_BASE: NavItem[] = [
         roles: ["ADMIN", "SUPERVISOR", "ENCARGADO_FINANCIAMIENTO"],
       },
     ],
+  },
+  {
+    // Cubre toda la tubería más allá de la revisión inicial (Promoción y
+    // Financiamiento), por eso vive fuera de ambos grupos, no anidado en uno.
+    label: "Histórico",
+    href: "/dashboard/historico",
+    icon: ClipboardClock,
+    roles: ["ADMIN", "GESTOR", "ENCARGADO_PROMOCION", "ANALISTA", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL"],
+    exact: true,
   },
   {
     label: "Reportes",

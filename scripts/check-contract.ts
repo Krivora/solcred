@@ -17,6 +17,7 @@ import type * as Front from '../frontend/src/shared/types/domain.enums'
 import type * as SolContract from '../backend/src/modules/clientes/solicitudes/solicitudes.contract'
 import type * as ExpContract from '../backend/src/modules/expediente/expediente.contract'
 import type * as CrmContract from '../backend/src/modules/crm/crm.contract'
+import type * as NotifContract from '../backend/src/modules/notificaciones/notificaciones.contract'
 import type {
   Solicitud as FrontSolicitud,
   SolicitudListItem as FrontSolicitudListItem,
@@ -35,6 +36,7 @@ import type {
   Comunicacion as FrontComunicacion,
   ResumenComunicaciones as FrontResumenComunicaciones,
 } from '../frontend/src/features/crm/types/crm.types'
+import type { Notificacion as FrontNotificacion } from '../frontend/src/features/notificaciones/types/notificaciones.types'
 
 type IgualA<A, B> = [A] extends [B]
   ? [B] extends [A]
@@ -68,6 +70,8 @@ type _CampoRegla = Assert<IgualA<Prisma.CampoRegla, Front.CampoRegla>>
 type _ComunicacionTipo = Assert<IgualA<Prisma.ComunicacionTipo, Front.ComunicacionTipo>>
 type _ComunicacionMotivo = Assert<IgualA<Prisma.ComunicacionMotivo, Front.ComunicacionMotivo>>
 type _ComunicacionResultado = Assert<IgualA<Prisma.ComunicacionResultado, Front.ComunicacionResultado>>
+type _NotificacionTipo = Assert<IgualA<Prisma.NotificacionTipo, Front.NotificacionTipo>>
+type _NotificacionCanal = Assert<IgualA<Prisma.NotificacionCanal, Front.NotificacionCanal>>
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHAPES DE RESPUESTA — solicitud y expediente
@@ -119,6 +123,9 @@ type _Comunicacion = Assert<Satisface<CrmContract.ComunicacionResponse, FrontCom
 type _ResumenComunicaciones = Assert<
   Satisface<CrmContract.ResumenComunicaciones, FrontResumenComunicaciones>
 >
+
+// GET /notificaciones (fila del listado paginado)
+type _Notificacion = Assert<Satisface<NotifContract.NotificacionResponse, FrontNotificacion>>
 
 // Sub-formularios: PUT /clientes/solicitudes/:id/{solicitante,aval,credito,...}
 type ConId<T> = T & { id: string }

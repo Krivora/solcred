@@ -57,6 +57,7 @@ export function PromocionTable({ solicitudes, meta, cargando, onPaginar, onRefre
           getExpedienteUrl: (id) => `/dashboard/admin/promocion/expediente/${id}`,
           mostrarColumnaGestor:  true,
           mostrarColumnaEstatus: true,
+          mostrarColumnaComunicacion: true,
           mostrarColumnaPdf:     false,
           labelFecha: 'Recibida',
           vacioCopy: {

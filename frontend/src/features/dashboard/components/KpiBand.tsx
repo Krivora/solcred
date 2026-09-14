@@ -3,8 +3,6 @@ import { cn } from '@/shared/lib/cn'
 import { Sparkline } from './Sparkline'
 import {
   formatEntero,
-  formatMontoCompacto,
-  formatDias,
   formatPct,
   formatDelta,
   tonoDelta,
@@ -22,32 +20,28 @@ interface Tile {
   delta: string | null
   tono: Tono
   spark?: (number | null)[]
-  accent?: 'primary' | 'success' | 'warning'
+  /** El único número que además del héroe merece dominar la pantalla. */
+  enfasis?: boolean
 }
 
-function buildTiles(p: Panorama): Tile[] {
-  const k = p.kpis
-  const sp = p.tendencia.sparklines
+const DELTA_STYLES: Record<Tono, string> = {
+  up: 'text-ok-ink bg-ok-surface',
+  down: 'text-danger-ink bg-danger-surface',
+  flat: 'text-muted-foreground bg-muted',
+}
 
-  return [
-    {
-      key: 'activas',
-      label: 'Solicitudes activas',
-      value: formatEntero(k.activas.valor),
-      hint: 'en proceso ahora mismo',
-      delta: null,
-      tono: 'flat',
-      accent: 'primary',
-    },
-    {
-      key: 'recibidas',
-      label: `Recibidas · ${RANGO_LABELS[p.rango]}`,
-      value: formatEntero(k.recibidas.valor),
-      hint: 'vs. periodo anterior',
-      delta: formatDelta(k.recibidas.delta, 'pct'),
-      tono: tonoDelta(k.recibidas.delta, k.recibidas.deltaTipo),
-      spark: sp.recibidas,
-    },
+/**
+ * Tira de KPIs secundarios. `activas` y `tiempoResolucion` ya viven en el
+ * veredicto del héroe (`PipelineMesas`) — aquí solo van los que responden
+ * "¿estamos originando bien?": volumen y calidad de dictamen. La tasa de
+ * aprobación es la pregunta que más le importa a la gerencia día a día, así
+ * que es la única con énfasis de tamaño.
+ */
+export function KpiBand({ panorama }: { panorama: Panorama }) {
+  const k = panorama.kpis
+  const sp = panorama.tendencia.sparklines
+
+  const tiles: Tile[] = [
     {
       key: 'tasa',
       label: 'Tasa de aprobación',
@@ -56,77 +50,42 @@ function buildTiles(p: Panorama): Tile[] {
       delta: formatDelta(k.tasaAprobacion.delta, 'puntos'),
       tono: tonoDelta(k.tasaAprobacion.delta, k.tasaAprobacion.deltaTipo),
       spark: sp.tasaAprobacion,
+      enfasis: true,
     },
     {
-      key: 'resolucion',
-      label: 'Resolución de punta a punta',
-      value: formatDias(k.tiempoResolucion.valor),
-      hint: 'promedio del periodo',
-      delta: formatDelta(k.tiempoResolucion.delta, 'dias'),
-      tono: tonoDelta(k.tiempoResolucion.delta, k.tiempoResolucion.deltaTipo),
-      spark: sp.tiempoResolucion,
-      accent: 'success',
-    },
-    {
-      key: 'pipeline',
-      label: 'Monto en pipeline',
-      value: formatMontoCompacto(k.montoPipeline.valor),
-      hint: 'solicitado, sin dictaminar',
-      delta: null,
-      tono: 'flat',
-      accent: 'primary',
-    },
-    {
-      key: 'aprobado',
-      label: 'Monto aprobado en el periodo',
-      value: formatMontoCompacto(k.montoAprobado.valor),
+      key: 'recibidas',
+      label: `Recibidas · ${RANGO_LABELS[panorama.rango]}`,
+      value: formatEntero(k.recibidas.valor),
       hint: 'vs. periodo anterior',
-      delta: formatDelta(k.montoAprobado.delta, 'pct'),
-      tono: tonoDelta(k.montoAprobado.delta, k.montoAprobado.deltaTipo),
-      accent: 'success',
+      delta: formatDelta(k.recibidas.delta, 'pct'),
+      tono: tonoDelta(k.recibidas.delta, k.recibidas.deltaTipo),
+      spark: sp.recibidas,
     },
   ]
-}
-
-const ACCENT_BAR: Record<string, string> = {
-  primary: 'bg-primary',
-  success: 'bg-success',
-  warning: 'bg-warning',
-}
-
-const DELTA_STYLES: Record<Tono, string> = {
-  up: 'text-success bg-success/10',
-  down: 'text-destructive bg-destructive/10',
-  flat: 'text-muted-foreground bg-muted',
-}
-
-export function KpiBand({ panorama }: { panorama: Panorama }) {
-  const tiles = buildTiles(panorama)
 
   return (
-    <section
-      aria-label="Indicadores clave"
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
-    >
+    <section aria-label="Indicadores clave" className="grid grid-cols-1 gap-6 sm:grid-cols-[1.6fr_1fr]">
       {tiles.map((t) => {
         const DeltaIcon = t.tono === 'up' ? TrendingUp : t.tono === 'down' ? TrendingDown : Minus
         return (
           <article
             key={t.key}
-            className="relative flex flex-col gap-2.5 overflow-hidden rounded-xl border border-border/70 bg-card p-3.5 shadow-sm"
+            className="flex flex-col gap-2 sm:border-l sm:border-border sm:pl-5 sm:first:border-l-0 sm:first:pl-0"
           >
-            <span className={cn('absolute inset-y-0 left-0 w-[3px]', ACCENT_BAR[t.accent ?? 'primary'])} />
-            <p className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-              {t.label}
-            </p>
-            <p className="font-mono text-[26px] font-semibold leading-none tracking-tight text-foreground tabular-nums">
+            <p className="text-caption font-medium text-muted-foreground">{t.label}</p>
+            <p
+              className={cn(
+                'font-serif leading-none text-foreground tabular-nums',
+                t.enfasis ? 'text-[2.25rem]' : 'text-[1.5rem]',
+              )}
+            >
               {t.value}
             </p>
-            <div className="mt-auto flex min-h-[22px] items-center gap-2">
+            <div className="mt-auto flex min-h-5.5 items-center gap-2 pt-0.5">
               {t.delta && (
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold',
+                    'inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-caption font-semibold',
                     DELTA_STYLES[t.tono],
                   )}
                 >
@@ -136,7 +95,7 @@ export function KpiBand({ panorama }: { panorama: Panorama }) {
               )}
               {t.spark && <Sparkline data={t.spark} className="ml-auto" />}
             </div>
-            <p className="text-[11px] text-muted-foreground/80">{t.hint}</p>
+            <p className="text-caption text-muted-foreground/80">{t.hint}</p>
           </article>
         )
       })}

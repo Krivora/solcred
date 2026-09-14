@@ -67,7 +67,7 @@ function ListaSkeleton() {
                     {Array.from({ length: 8 }).map((_, i) => (
                         <TableRow key={i} className="border-b border-border/40">
                             {Array.from({ length: 8 }).map((_, j) => (
-                                <TableCell key={j} className="py-3">
+                                <TableCell key={j} className="py-1">
                                     <Skeleton className="h-4 w-full rounded-md" />
                                 </TableCell>
                             ))}
@@ -156,7 +156,7 @@ export function AsignacionSolicitudesTable({
                             <TableHead
                                 key={label || i}
                                 className={cn(
-                                    'text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3',
+                                    'text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1',
                                     extra
                                 )}
                             >
@@ -215,7 +215,7 @@ function SolicitudRow({
             )}
         >
             {/* Checkbox — oculto en modo solo lectura */}
-            <TableCell className="py-3">
+            <TableCell className="py-1">
                 {!soloLectura && (
                 <div className={cn(
                     'w-4 h-4 rounded border flex items-center justify-center transition-colors',
@@ -231,14 +231,14 @@ function SolicitudRow({
             </TableCell>
 
             {/* Folio */}
-            <TableCell className="py-3">
+            <TableCell className="py-1">
                 <span className="font-mono text-xs font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
                     {solicitud.folio}
                 </span>
             </TableCell>
 
             {/* Solicitante */}
-            <TableCell className="py-3">
+            <TableCell className="py-1">
                 <SolicitanteCell
                     datos={solicitud.datosSolicitante}
                     tipoPersona={solicitud.tipoPersona}
@@ -246,7 +246,7 @@ function SolicitudRow({
             </TableCell>
 
             {/* Programa + Monto */}
-            <TableCell className="py-3">
+            <TableCell className="py-1">
                 <div className="flex flex-col gap-0.5">
                     <span className="text-xs font-medium text-foreground leading-tight">
                         {solicitud.programa.nombre}
@@ -259,7 +259,7 @@ function SolicitudRow({
             </TableCell>
 
             {/* Sector + Tamaño */}
-            <TableCell className="py-3 hidden lg:table-cell">
+            <TableCell className="py-1 hidden lg:table-cell">
                 <div className="flex flex-col gap-0.5">
                     {solicitud.sector
                         ? <span className="text-xs font-medium text-foreground">
@@ -275,19 +275,19 @@ function SolicitudRow({
             </TableCell>
 
             {/* Estatus */}
-            <TableCell className="py-3 hidden sm:table-cell">
+            <TableCell className="py-1 hidden sm:table-cell">
                 <EstatusBadge estatus={solicitud.estatus} />
             </TableCell>
 
             {/* Antigüedad */}
-            <TableCell className="py-3 text-right">
+            <TableCell className="py-1 text-right">
                 <div className="inline-flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                     <Clock className="h-3 w-3 shrink-0" />
                     {tiempoRelativo(solicitud.creadoEn)}
                 </div>
             </TableCell>
 
-            <TableCell className="py-3">
+            <TableCell className="py-1">
                 {solicitud.asignacion ? (
                     <div className="flex flex-col gap-0.5">
                         <span className="text-xs font-medium text-foreground leading-tight">
@@ -305,7 +305,7 @@ function SolicitudRow({
             </TableCell>
 
             {/* Asignar rápido — oculto en modo solo lectura */}
-            <TableCell className="py-3" onClick={e => e.stopPropagation()}>
+            <TableCell className="py-1" onClick={e => e.stopPropagation()}>
                 {!soloLectura && (
                 <Tooltip>
                     <TooltipTrigger asChild>

@@ -21,7 +21,7 @@ import {
 } from '@/shared/components/ui/tabs'
 
 import { Button } from '@/shared/components/ui/button'
-import { PageHeader } from '@/shared/components/ui/page-header'
+import { PageHeader } from '@/shared/components/common/PageHeader'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { useNavAnimation } from '@/shared/hooks/useNavAnimation'
 
@@ -148,17 +148,7 @@ export default function ExpedientePage({
     return (
         <div className={`${claseAnimacion} space-y-5`}>
             <PageHeader
-                leading={
-                    <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="-ml-1 mt-0.5"
-                        onClick={handleRegresar}
-                        aria-label="Regresar"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                }
+                onBack={handleRegresar}
                 title="Expediente digital"
                 description={
                     expediente
@@ -167,37 +157,29 @@ export default function ExpedientePage({
                             ? 'Cargando información…'
                             : 'Gestión de documentos del crédito'
                 }
-                actions={
-                    <>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                                sessionStorage.setItem('nav-direction', 'adelante')
-                                router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)
-                            }}
-                        >
-                            <FileText className="h-3.5 w-3.5" />
-                            Ver solicitud
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push(`/dashboard/admin/solicitudes/${solicitudId}/pdf`)}
-                        >
-                            <FileText className="h-3.5 w-3.5" />
-                            Generar PDF
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push(`/dashboard/admin/promocion/expediente/${solicitudId}`)}
-                        >
-                            <FileText className="h-3.5 w-3.5" />
-                            Tarjeta Informativa
-                        </Button>
-                    </>
-                }
+                actions={[
+                    {
+                        label: 'Ver solicitud',
+                        icon: <FileText />,
+                        variant: 'outline',
+                        onClick: () => {
+                            sessionStorage.setItem('nav-direction', 'adelante')
+                            router.push(`/dashboard/admin/promocion/solicitud/${solicitudId}`)
+                        },
+                    },
+                    {
+                        label: 'Generar PDF',
+                        icon: <FileText />,
+                        variant: 'outline',
+                        onClick: () => router.push(`/dashboard/admin/solicitudes/${solicitudId}/pdf`),
+                    },
+                    {
+                        label: 'Tarjeta Informativa',
+                        icon: <FileText />,
+                        variant: 'outline',
+                        onClick: () => router.push(`/dashboard/admin/promocion/expediente/${solicitudId}`),
+                    },
+                ]}
             />
 
             {/* Loading */}

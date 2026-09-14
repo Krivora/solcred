@@ -2,3 +2,6 @@
 # Si alguien corre `npm install` aquí por error, que no se cuele nada.
 /node_modules
 /package-lock.json
+
+# Config local del CLI de Claude Code (skills, permisos) — no es parte del proyecto.
+/.claude

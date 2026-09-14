@@ -24,7 +24,7 @@ export function Paginacion({ meta, onPaginar }: PaginacionProps) {
             <div className="flex items-center gap-1">
                 <Button
                     variant="outline" size="icon"
-                    className="h-7 w-7 border-border/60 hover:bg-accent"
+                    className="h-7 w-7"
                     disabled={meta.page <= 1}
                     onClick={() => onPaginar(meta.page - 1)}
                 >
@@ -39,10 +39,8 @@ export function Paginacion({ meta, onPaginar }: PaginacionProps) {
                             key={p}
                             variant={p === meta.page ? 'default' : 'outline'}
                             size="icon"
-                            className={`h-7 w-7 text-xs border-border/60 ${p === meta.page
-                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
-                                : 'hover:bg-accent'
-                                }`}
+                            className="h-7 w-7 text-xs"
+                            aria-current={p === meta.page ? 'page' : undefined}
                             onClick={() => onPaginar(p)}
                         >
                             {p}
@@ -52,7 +50,7 @@ export function Paginacion({ meta, onPaginar }: PaginacionProps) {
 
                 <Button
                     variant="outline" size="icon"
-                    className="h-7 w-7 border-border/60 hover:bg-accent"
+                    className="h-7 w-7"
                     disabled={meta.page >= meta.totalPages}
                     onClick={() => onPaginar(meta.page + 1)}
                 >

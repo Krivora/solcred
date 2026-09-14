@@ -33,10 +33,13 @@
   --hover: oklch(0.958 0.006 264);          /* fondo de fila/ítem interactivo */
 
   /* ── Marca ───────────────────────────────────────────────────────────── */
-  --brand: oklch(0.549 0.155 274);          /* relleno de botón primario, nav */
-  --brand-ink: oklch(0.497 0.160 274);      /* enlaces, íconos sobre surface  */
-  --brand-surface: oklch(0.955 0.028 274);  /* nav seleccionada, hover fantasma */
-  --brand-contrast: oklch(0.985 0.006 274); /* texto sobre el relleno de marca */
+  /* h258: azul-marino institucional, deliberadamente fuera de la franja
+     índigo/violeta (~265–285) que domina los defaults de Tailwind/shadcn —
+     validado contra ok/warn/danger/info con scripts/validate_palette.js. */
+  --brand: oklch(0.42 0.10 258);            /* relleno de botón primario, nav */
+  --brand-ink: oklch(0.36 0.095 258);       /* enlaces, íconos sobre surface  */
+  --brand-surface: oklch(0.955 0.025 258);  /* nav seleccionada, hover fantasma */
+  --brand-contrast: oklch(0.985 0.006 258); /* texto sobre el relleno de marca */
 
   /* ── Estados (trío: solid / ink / surface) ───────────────────────────── */
   --ok: oklch(0.567 0.110 152);
@@ -105,9 +108,11 @@
   --sidebar-ring: var(--brand);
 
   /* ── Tipografía ──────────────────────────────────────────────────────── */
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-serif: "Source Serif 4", ui-serif, serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-zilla), "Zilla Slab", Georgia, ui-serif, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Cara de despliegue: títulos y cifras grandes en toda la app. */
+  --font-display: var(--font-zilla), "Zilla Slab", Georgia, serif;
 
   /* ── Forma y ritmo ───────────────────────────────────────────────────── */
   --radius: 0.625rem;   /* 10px — tarjetas; sm=6, md=8, lg=10, xl=14 vía @theme */
@@ -144,16 +149,16 @@
   --line-strong: oklch(0.352 0.010 274);
   --hover: oklch(0.262 0.008 274);
 
-  --brand: oklch(0.631 0.152 274);
-  --brand-ink: oklch(0.740 0.130 274);
-  --brand-surface: oklch(0.297 0.055 274);
-  --brand-contrast: oklch(0.160 0.020 274);
+  --brand: oklch(0.60 0.13 258);
+  --brand-ink: oklch(0.74 0.10 258);
+  --brand-surface: oklch(0.30 0.05 258);
+  --brand-contrast: oklch(0.16 0.02 258);
 
   --ok: oklch(0.640 0.110 152);
   --ok-ink: oklch(0.775 0.100 152);
   --ok-surface: oklch(0.270 0.045 152);
 
-  --warn: oklch(0.760 0.115 78);
+  --warn: oklch(0.640 0.135 78);
   --warn-ink: oklch(0.830 0.100 82);
   --warn-surface: oklch(0.285 0.045 70);
 
@@ -262,6 +267,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -309,6 +315,19 @@
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Cara de despliegue — reservada para lo que de verdad es un título de página
+   o una cifra veredicto. `text-heading` (título de cada card) se queda en
+   Plex: con ~10 cards por pantalla, ponerlas todas en Zilla las igualaba a
+   todas — el tamaño/peso dejaba de comunicar importancia. Sin capa, para
+   ganar a las utilidades de Tailwind (que para estas clases no fijan
+   `font-family`).
+   ───────────────────────────────────────────────────────────────────────────── */
+.text-display,
+.text-title {
+  font-family: var(--font-display);
 }
 
 /* ─── Slide transition: nivel padre → nivel hijo ─────────────────── */

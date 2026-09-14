@@ -24,6 +24,8 @@ export interface Usuario {
   activo: boolean;
   creadoEn: string;
   actualizadoEn: string;
+  intentosFallidos: number;
+  bloqueadoHasta: string | null;
   // ── FIX: rol ya no es plano, se anida vía personal. null si es CLIENTE ──
   personal: PersonalInfo | null;
 }

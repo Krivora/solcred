@@ -210,6 +210,18 @@ export interface SolicitudListItem {
     apellidoMaterno: string
   }
   datosCredito?: DatosCredito & { id: string }
+  /** Asignación activa de gestor (Promoción). Vacío = aún sin asignar. */
+  asignaciones?: {
+    gestor: {
+      usuario: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }
+    }
+  }[]
+  /** Asignación activa de analista (Financiamiento). Vacío = aún sin asignar. */
+  asignacionesFinanciamiento?: {
+    analista: {
+      usuario: { nombre: string; apellidoPaterno: string; apellidoMaterno: string }
+    }
+  }[]
   creadoEn: string
   actualizadoEn: string
 }

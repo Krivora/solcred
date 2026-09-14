@@ -64,6 +64,15 @@ export function useUsuarios() {
     onError: () => usuarioToast.revocarAccesoError(),
   });
 
+  const desbloquearMut = useMutation({
+    mutationFn: (id: string) => usuariosApi.desbloquear(id),
+    onSuccess: () => {
+      usuarioToast.desbloqueado();
+      invalidar();
+    },
+    onError: () => usuarioToast.desbloquearError(),
+  });
+
   const actualizar = async (id: string, datos: ActualizarUsuarioDto): Promise<boolean> => {
     try {
       await actualizarMut.mutateAsync({ id, datos });
@@ -100,6 +109,15 @@ export function useUsuarios() {
     }
   };
 
+  const desbloquear = async (id: string): Promise<boolean> => {
+    try {
+      await desbloquearMut.mutateAsync(id);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   return {
     usuarios,
     isLoading,
@@ -109,6 +127,7 @@ export function useUsuarios() {
     cambiarRol,
     revocarAcceso,
     desactivar,
+    desbloquear,
   };
 }
 

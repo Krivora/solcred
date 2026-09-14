@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import prisma from "../../config/db";
+import prisma from "@config/db";
 import { AppError } from "../../middlewares/error.middleware";
 import { hashContrasena, verificarContrasena } from "../../utils/bcrypt";
 import { generarToken, RolAplicacion } from "../../utils/jwt";
@@ -15,6 +15,12 @@ export interface ContextoSesion {
   ip?: string | null;
   userAgent?: string | null;
 }
+
+// Bloqueo temporal de cuenta tras intentos fallidos de login. Se aplica por
+// igual a CLIENTE y PERSONAL (decisión deliberada: mantenerlo simple y
+// proteger ambos tipos de usuario, no solo al staff).
+const MAX_INTENTOS_FALLIDOS = 5;
+const MINUTOS_BLOQUEO = 15;
 
 /** Selección estándar del usuario que consume el frontend (store de sesión). */
 const SELECT_USUARIO_SESION = {
@@ -101,11 +107,29 @@ export const iniciarSesion = async (
 ) => {
   const usuario = await prisma.usuario.findUnique({
     where: { correo: dto.correo },
-    select: { ...SELECT_USUARIO_SESION, contrasena: true },
+    select: {
+      ...SELECT_USUARIO_SESION,
+      contrasena: true,
+      intentosFallidos: true,
+      bloqueadoHasta: true,
+    },
   });
 
   if (!usuario) {
     throw new AppError("Credenciales inválidas", 401);
+  }
+
+  // El bloqueo se revisa antes de verificar la contraseña: si la cuenta ya
+  // está bloqueada no vale la pena gastar tiempo comprobando el hash.
+  if (usuario.bloqueadoHasta && usuario.bloqueadoHasta.getTime() > Date.now()) {
+    const minutosRestantes = Math.ceil(
+      (usuario.bloqueadoHasta.getTime() - Date.now()) / 60_000
+    );
+    throw new AppError(
+      `Cuenta bloqueada temporalmente por múltiples intentos fallidos. Intenta de nuevo en ${minutosRestantes} minuto(s).`,
+      423,
+      "CUENTA_BLOQUEADA"
+    );
   }
 
   const contrasenaValida = await verificarContrasena(
@@ -114,6 +138,22 @@ export const iniciarSesion = async (
   );
 
   if (!contrasenaValida) {
+    const nuevosIntentos = usuario.intentosFallidos + 1;
+    const seBloquea = nuevosIntentos >= MAX_INTENTOS_FALLIDOS;
+
+    await prisma.usuario.update({
+      where: { id: usuario.id },
+      data: seBloquea
+        ? {
+            intentosFallidos: 0,
+            bloqueadoHasta: new Date(Date.now() + MINUTOS_BLOQUEO * 60_000),
+          }
+        : { intentosFallidos: nuevosIntentos },
+    });
+
+    // No se revela el conteo de intentos aquí (evita dar pistas a un
+    // atacante); el mensaje de bloqueo explícito llega hasta el siguiente
+    // intento, una vez que `bloqueadoHasta` ya está activo.
     throw new AppError("Credenciales inválidas", 401);
   }
 
@@ -121,7 +161,14 @@ export const iniciarSesion = async (
     throw new AppError("Usuario inactivo", 403);
   }
 
-  const { contrasena: _, ...usuarioSinContrasena } = usuario;
+  if (usuario.intentosFallidos !== 0 || usuario.bloqueadoHasta) {
+    await prisma.usuario.update({
+      where: { id: usuario.id },
+      data: { intentosFallidos: 0, bloqueadoHasta: null },
+    });
+  }
+
+  const { contrasena: _, intentosFallidos: __, bloqueadoHasta: ___, ...usuarioSinContrasena } = usuario;
   const rol = rolEfectivo(usuarioSinContrasena);
 
   const token = generarToken({

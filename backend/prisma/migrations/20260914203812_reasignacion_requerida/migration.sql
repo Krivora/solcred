@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "NotificacionTipo" ADD VALUE 'REASIGNACION_REQUERIDA';

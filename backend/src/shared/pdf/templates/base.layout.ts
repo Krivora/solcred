@@ -35,7 +35,9 @@ export function baseLayout({ folio, lugar, fechaEnvio, contenido, nombreSolicita
     margin: 0;
   }
 
-  .page { padding: 26px 34px 24px 34px; }
+  /* padding-top reducido: el margen superior de página (20px, ver pdf.service.ts)
+     ya aporta el resto para igualar los 26px originales de la primera hoja */
+  .page { padding: 6px 34px 24px 34px; }
 
   /* ---------- ENCABEZADO ---------- */
   .top-header {
@@ -141,9 +143,12 @@ export function baseLayout({ folio, lugar, fechaEnvio, contenido, nombreSolicita
   table.data-table tfoot td { font-weight: 700; background: var(--row-alt); }
 
   /* ---------- FIRMA ÚNICA ---------- */
+  /* .firma-spacer se dimensiona por JS (pdf.service.ts) para que la firma
+     quede siempre pegada al fondo de la última hoja; min-height es el
+     respaldo por si el cálculo no llegara a aplicarse. */
+  .firma-spacer { min-height: 24px; }
   .firma {
     break-inside: avoid;
-    margin-top: 30px;
     display: flex;
     justify-content: center;
   }
@@ -204,6 +209,7 @@ export function baseLayout({ folio, lugar, fechaEnvio, contenido, nombreSolicita
 
     ${contenido}
 
+    <div class="firma-spacer"></div>
     <div class="firma">
       <div class="firma-box">
         <div class="firma-linea">

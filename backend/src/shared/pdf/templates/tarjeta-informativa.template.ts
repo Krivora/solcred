@@ -28,7 +28,7 @@ function baseLayoutTarjeta({ folio, contenido }: { folio: string; contenido: str
         fechaEnvio: '',
         contenido,
         nombreSolicitante: '',
-    }).replace(/<div class="firma">[\s\S]*?<\/div>\s*<\/div>\s*<\/body>/, '</div></body>')
+    }).replace(/<div class="firma-spacer"><\/div>\s*<div class="firma">[\s\S]*?<\/div>\s*<\/div>\s*<\/body>/, '</div></body>')
         .replace('SOLICITUD DE FINANCIAMIENTO', 'TARJETA INFORMATIVA')
         .replace('Solicitud de Financiamiento', 'Tarjeta Informativa');
 }

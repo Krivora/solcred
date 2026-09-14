@@ -1,7 +1,10 @@
 import prisma from "@config/db";
 import { AppError } from "@middlewares/error.middleware";
 import { ActualizarUsuarioDto, CambiarRolDto } from "./usuarios.schema";
-import { Rol } from "../../../../generated/prisma/client";
+import { Prisma, Rol } from "../../../../generated/prisma/client";
+import { notificarReasignacionRequerida } from "@modules/notificaciones/notificaciones.service";
+
+type Tx = Prisma.TransactionClient;
 
 const seleccionSegura = {
   id: true,
@@ -16,6 +19,8 @@ const seleccionSegura = {
   activo: true,
   creadoEn: true,
   actualizadoEn: true,
+  intentosFallidos: true,
+  bloqueadoHasta: true,
   // El rol y el resto del perfil de staff se anidan vía Personal.
   personal: {
     select: {
@@ -109,6 +114,79 @@ export const cambiarRol = async (id: string, dto: CambiarRolDto) => {
 };
 
 /**
+ * Si el `Personal` que se está dando de baja es GESTOR/ANALISTA y tiene
+ * solicitudes con asignación activa, las libera (`activa: false`, con motivo)
+ * — quedan visibles de inmediato en la cola de "sin asignar" de Asignación,
+ * en vez de aparecer como "ya atendidas" por alguien que ya no puede actuar.
+ * Notifica el lote a quien deba reasignar: el supervisor directo
+ * (`Personal.supervisorId`) o, si no tiene, cualquier encargado activo del
+ * área correspondiente. Best-effort: un fallo notificando no debe impedir la baja.
+ */
+const liberarAsignacionesDePersonal = async (
+  tx: Tx,
+  personal: { id: string; rol: Rol; supervisorId: string | null },
+  nombreCompleto: string
+): Promise<void> => {
+  if (personal.rol !== "GESTOR" && personal.rol !== "ANALISTA") return;
+
+  const solicitudes =
+    personal.rol === "GESTOR"
+      ? await tx.asignacionSolicitud.findMany({
+          where: { gestorId: personal.id, activa: true },
+          select: { id: true, solicitudId: true, solicitud: { select: { folio: true } } },
+        })
+      : await tx.asignacionFinanciamiento.findMany({
+          where: { analistaId: personal.id, activa: true },
+          select: { id: true, solicitudId: true, solicitud: { select: { folio: true } } },
+        });
+
+  if (solicitudes.length === 0) return;
+
+  const motivoReasignacion = `Reasignación requerida: ${personal.rol === "GESTOR" ? "gestor" : "analista"} dado de baja`;
+  if (personal.rol === "GESTOR") {
+    await tx.asignacionSolicitud.updateMany({
+      where: { id: { in: solicitudes.map((a) => a.id) } },
+      data: { activa: false, fechaReasignacion: new Date(), motivoReasignacion },
+    });
+  } else {
+    await tx.asignacionFinanciamiento.updateMany({
+      where: { id: { in: solicitudes.map((a) => a.id) } },
+      data: { activa: false, fechaReasignacion: new Date(), motivoReasignacion },
+    });
+  }
+
+  let destinatarioUserId: string | null = null;
+  if (personal.supervisorId) {
+    const supervisor = await tx.personal.findUnique({
+      where: { id: personal.supervisorId },
+      select: { userId: true },
+    });
+    destinatarioUserId = supervisor?.userId ?? null;
+  }
+  if (!destinatarioUserId) {
+    const rolEncargado = personal.rol === "GESTOR" ? "ENCARGADO_PROMOCION" : "ENCARGADO_FINANCIAMIENTO";
+    const encargado = await tx.personal.findFirst({
+      where: { rol: rolEncargado, activo: true },
+      select: { userId: true },
+    });
+    destinatarioUserId = encargado?.userId ?? null;
+  }
+
+  if (destinatarioUserId) {
+    try {
+      await notificarReasignacionRequerida(
+        tx,
+        destinatarioUserId,
+        { nombre: nombreCompleto, rol: personal.rol },
+        solicitudes.map((a) => ({ id: a.solicitudId, folio: a.solicitud.folio }))
+      );
+    } catch {
+      // Best-effort: ver comentario de la función.
+    }
+  }
+};
+
+/**
  * Revoca el acceso de staff de un usuario: desactiva su Personal
  * (no lo borra, para conservar el historial de asignaciones/auditoría)
  * y regresa el usuario a tipoUsuario CLIENTE.
@@ -130,6 +208,12 @@ export const revocarAccesoPersonal = async (id: string) => {
       data: { activo: false },
     });
 
+    await liberarAsignacionesDePersonal(
+      tx,
+      usuario.personal!,
+      `${usuario.nombre} ${usuario.apellidoPaterno}`
+    );
+
     return tx.usuario.update({
       where: { id },
       data: { tipoUsuario: "CLIENTE" },
@@ -138,19 +222,48 @@ export const revocarAccesoPersonal = async (id: string) => {
   });
 };
 
+/**
+ * Desbloquea manualmente una cuenta que quedó bloqueada por intentos fallidos
+ * de login (ver `intentosFallidos`/`bloqueadoHasta` en el modelo Usuario).
+ * No falla si la cuenta no estaba bloqueada: es un no-op seguro.
+ */
+export const desbloquearUsuario = async (id: string) => {
+  const usuario = await prisma.usuario.findUnique({ where: { id } });
+  if (!usuario) throw new AppError("Usuario no encontrado", 404);
+
+  return prisma.usuario.update({
+    where: { id },
+    data: { intentosFallidos: 0, bloqueadoHasta: null },
+    select: seleccionSegura,
+  });
+};
+
 export const desactivarUsuario = async (id: string, solicitanteId: string) => {
   if (id === solicitanteId) {
     throw new AppError("No puedes desactivar tu propia cuenta", 400);
   }
 
-  const usuario = await prisma.usuario.findUnique({ where: { id } });
+  const usuario = await prisma.usuario.findUnique({
+    where: { id },
+    include: { personal: true },
+  });
 
   if (!usuario) throw new AppError("Usuario no encontrado", 404);
   if (!usuario.activo) throw new AppError("El usuario ya está desactivado", 400);
 
-  return prisma.usuario.update({
-    where: { id },
-    data: { activo: false },
-    select: seleccionSegura,
+  return prisma.$transaction(async (tx) => {
+    if (usuario.personal?.activo) {
+      await liberarAsignacionesDePersonal(
+        tx,
+        usuario.personal,
+        `${usuario.nombre} ${usuario.apellidoPaterno}`
+      );
+    }
+
+    return tx.usuario.update({
+      where: { id },
+      data: { activo: false },
+      select: seleccionSegura,
+    });
   });
 };

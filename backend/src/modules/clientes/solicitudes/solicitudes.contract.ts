@@ -40,13 +40,40 @@ export const INCLUDE_SOLICITUD_DETALLE = {
   datosBancarios: true,
 } satisfies Prisma.SolicitudInclude;
 
-/** Fila del listado paginado `GET /`. */
+/** Fila del listado paginado `GET /`. Incluye el gestor/analista activo (si
+ *  ya se asignó) para que el cliente vea a quién le toca su solicitud. */
 export const INCLUDE_SOLICITUD_LISTA = {
   programa: { select: { id: true, nombre: true } },
   datosSolicitante: {
     select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
   },
   datosCredito: { include: { conceptos: true } },
+  asignaciones: {
+    where: { activa: true },
+    take: 1,
+    select: {
+      gestor: {
+        select: {
+          usuario: {
+            select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+          },
+        },
+      },
+    },
+  },
+  asignacionesFinanciamiento: {
+    where: { activa: true },
+    take: 1,
+    select: {
+      analista: {
+        select: {
+          usuario: {
+            select: { nombre: true, apellidoPaterno: true, apellidoMaterno: true },
+          },
+        },
+      },
+    },
+  },
 } satisfies Prisma.SolicitudInclude;
 
 /** Detalle + `documentos`: solo para armar el PDF de la solicitud. */

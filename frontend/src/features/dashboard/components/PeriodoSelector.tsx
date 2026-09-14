@@ -16,7 +16,7 @@ export function PeriodoSelector({ value, onChange }: Props) {
     <div
       role="group"
       aria-label="Periodo del panorama"
-      className="inline-flex gap-0.5 rounded-lg border border-border bg-muted p-0.5"
+      className="inline-flex overflow-hidden rounded-lg border border-line-strong bg-card"
     >
       {OPCIONES.map((op) => (
         <button
@@ -25,9 +25,9 @@ export function PeriodoSelector({ value, onChange }: Props) {
           aria-pressed={value === op}
           onClick={() => onChange(op)}
           className={cn(
-            'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+            'border-l border-border px-3 py-1.5 text-xs transition-colors first:border-l-0',
             value === op
-              ? 'bg-card text-foreground shadow-sm'
+              ? 'bg-brand font-medium text-brand-contrast'
               : 'text-muted-foreground hover:text-foreground',
           )}
         >

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
+import { Button } from '@/shared/components/ui/button';
 
 interface ErrorStateProps {
     icon: LucideIcon;
@@ -32,14 +33,11 @@ export function ErrorState({
             }
         >
             <Icon className="h-12 w-12 text-muted-foreground" />
-            <h1 className="text-2xl font-semibold">{title}</h1>
+            <h1 className="text-display text-foreground">{title}</h1>
             <p className="max-w-md text-sm text-muted-foreground">{description}</p>
-            <Link
-                href={href}
-                className="mt-2 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
-            >
-                {actionLabel}
-            </Link>
+            <Button asChild className="mt-2">
+                <Link href={href}>{actionLabel}</Link>
+            </Button>
         </div>
     );
 }

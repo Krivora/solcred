@@ -10,6 +10,11 @@ import {
   registrarHistorial,
   validarTransicion,
 } from "@modules/admin/_shared/solicitud-estado";
+import {
+  notificarCambioEstatus,
+  notificarSolicitudRegresada,
+} from "@modules/notificaciones/notificaciones.service";
+import { diasSinAvance, estadoEstancamiento } from "../../../shared/sla-solicitudes";
 
 export { obtenerSolicitudPorId } from "@modules/admin/_shared/solicitud-estado";
 
@@ -164,11 +169,12 @@ export const listarPromocion = async (filtros: FiltrosPromocion) => {
   ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
-    const { asignaciones, ...resto } = s;
+    const { asignaciones, comunicaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
       gestorAsignado: asignaciones[0] ?? null,
+      ultimaComunicacion: comunicaciones[0] ?? null,
     };
   });
 
@@ -207,12 +213,15 @@ export const listarMisCasos = async (filtros: FiltrosMisCasos) => {
   ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
-    const { asignaciones, historialEstatus, ...resto } = s;
+    const { asignaciones, historialEstatus, comunicaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
       comentarioPromotor: historialEstatus[0]?.motivo ?? null,
       gestorAsignado: asignaciones[0] ?? null,
+      ultimaComunicacion: comunicaciones[0] ?? null,
+      estadoEstancamiento: estadoEstancamiento(s.estatus, s.actualizadoEn),
+      diasSinAvance: diasSinAvance(s.actualizadoEn),
     };
   });
 
@@ -238,12 +247,13 @@ export const listarAprobacion = async (filtros: Omit<FiltrosPromocion, 'estatus'
   ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
-    const { asignaciones, historialEstatus, ...resto } = s;
+    const { asignaciones, historialEstatus, comunicaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
       comentarioPromotor: historialEstatus[0]?.motivo ?? null,
       gestorAsignado: asignaciones[0] ?? null,
+      ultimaComunicacion: comunicaciones[0] ?? null,
     };
   });
 
@@ -269,11 +279,12 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus'>
   ]);
 
   const solicitudesConMetricas = solicitudes.map((s) => {
-    const { asignaciones, ...resto } = s;
+    const { asignaciones, comunicaciones, ...resto } = s;
     return {
       ...resto,
       metricas: calcularMetricas(s),
       gestorAsignado: asignaciones[0] ?? null,
+      ultimaComunicacion: comunicaciones[0] ?? null,
     };
   });
 
@@ -286,7 +297,11 @@ export const listarHistorico = async (filtros: Omit<FiltrosPromocion, 'estatus'>
  * dentro de una sola transacción. Espejo de `financiamiento.transicion`.
  */
 const transicionPromocion =
-  (permitidos: EstatusSolicitud[], destino: EstatusSolicitud) =>
+  (
+    permitidos: EstatusSolicitud[],
+    destino: EstatusSolicitud,
+    opciones?: { notificarRegresoGestor?: boolean }
+  ) =>
   async (solicitudId: string, dto: { motivo?: string }, usuarioId: string) => {
     const solicitud = await validarTransicion(solicitudId, permitidos);
 
@@ -299,6 +314,30 @@ const transicionPromocion =
 
       await registrarHistorial(tx, solicitudId, solicitud.estatus, destino, usuarioId, dto.motivo);
 
+      await notificarCambioEstatus(
+        tx,
+        actualizada.solicitanteId,
+        { id: solicitudId, folio: actualizada.folio },
+        solicitud.estatus,
+        destino,
+        dto.motivo
+      );
+
+      if (opciones?.notificarRegresoGestor) {
+        const asignacion = await tx.asignacionSolicitud.findFirst({
+          where: { solicitudId, activa: true },
+          select: { gestor: { select: { userId: true } } },
+        });
+        if (asignacion) {
+          await notificarSolicitudRegresada(
+            tx,
+            asignacion.gestor.userId,
+            { id: solicitudId, folio: actualizada.folio },
+            dto.motivo
+          );
+        }
+      }
+
       return actualizada;
     });
   };
@@ -307,7 +346,9 @@ export const devolverAlSolicitante = transicionPromocion(
   ["PENDIENTE", "EN_REVISION", "EN_APROBACION"],
   "EN_CORRECCION",
 );
-export const regresarAlPromotor = transicionPromocion(["EN_APROBACION"], "EN_REVISION");
+export const regresarAlPromotor = transicionPromocion(["EN_APROBACION"], "EN_REVISION", {
+  notificarRegresoGestor: true,
+});
 export const enviarAAprobacion = transicionPromocion(["EN_REVISION"], "EN_APROBACION");
 export const enviarAFinanciamiento = transicionPromocion(["EN_APROBACION"], "EN_FINANCIAMIENTO");
 export const cancelar = transicionPromocion(

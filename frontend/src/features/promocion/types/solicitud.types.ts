@@ -58,6 +58,13 @@ export interface SolicitudPromocion {
         analista: PersonalResumen
         fechaAsignacion: string
     } | null
+    /** Último contacto CRM con el cliente (todos los listados). `null` = sin contacto registrado. */
+    ultimaComunicacion?: { fechaContacto: string } | null
+    /** Solo en listados de "Mis Casos" (Promoción/Financiamiento); en el resto siempre indefinido.
+     *  `undefined`/`'en_curso'` = caso normal, sin nada que resaltar. */
+    estadoEstancamiento?: 'en_curso' | 'en_riesgo' | 'vencido'
+    /** Solo en listados de "Mis Casos". Días sin avance del caso. */
+    diasSinAvance?: number
     creadoEn: string
     actualizadoEn: string
 }

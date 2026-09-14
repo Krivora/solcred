@@ -127,6 +127,29 @@ export const desactivar = async (
   }
 };
 
+export const desbloquear = async (
+  req: RequestAutenticado,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const usuario = await usuariosService.desbloquearUsuario(req.params.id as string);
+
+    await registrarLog({
+      accion: AccionLog.ACTUALIZAR,
+      modulo: ModuloLog.USUARIOS,
+      descripcion: `Usuario desbloqueado manualmente: ${usuario.correo}`,
+      usuarioId: req.usuario!.id,
+      entidadId: usuario.id,
+      req,
+    });
+
+    res.status(200).json(ok("Usuario desbloqueado correctamente", usuario));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const revocarAcceso = async (
   req: RequestAutenticado,
   res: Response,

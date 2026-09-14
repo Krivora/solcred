@@ -74,6 +74,20 @@ export interface PanoramaTendencia {
   }
 }
 
+export interface SerieTendenciaAprobacion {
+  /** Nombre del programa, o el sector (ej. "TECNOLOGIA"). */
+  clave: string
+  /** Tasa de aprobación % por periodo, mismo orden/longitud que `periodos`. `null` = sin dictámenes ese periodo. */
+  porBucket: (number | null)[]
+}
+
+export interface TendenciaAprobacion {
+  /** Labels del eje X — mismo criterio que `PanoramaTendencia` (semanas "S1".."S12" o meses). */
+  periodos: string[]
+  porPrograma: SerieTendenciaAprobacion[]
+  porSector: SerieTendenciaAprobacion[]
+}
+
 export interface TiempoEtapa {
   estatus: string
   label: string
@@ -91,6 +105,10 @@ export interface CarteraPrograma {
   programa: string
   solicitado: number
   aprobado: number
+  /** Solicitudes distintas del programa en el periodo (no conceptos de crédito). */
+  solicitudes: number
+  /** `null` si el programa no tiene dictamen (aprobado/rechazado) todavía. */
+  tasaAprobacion: number | null
 }
 
 export interface ComposicionItem {
@@ -115,6 +133,26 @@ export interface PanoramaEquipo {
   analistas: PersonaCarga[]
 }
 
+export interface DesempenoGestor {
+  nombre: string
+  /** Solicitudes que su gestión movió a Mesa de Control (EN_FINANCIAMIENTO) en el periodo. */
+  avances: number
+}
+
+export interface DesempenoAnalista {
+  nombre: string
+  /** Casos dictaminados (aprobado + rechazado) en el periodo. */
+  resueltas: number
+  tasaAprobacion: number | null
+  tiempoPromedioDias: number | null
+}
+
+/** Desempeño real del equipo en el periodo — complementa `PanoramaEquipo` (carga actual). */
+export interface PanoramaDesempeno {
+  gestores: DesempenoGestor[]
+  analistas: DesempenoAnalista[]
+}
+
 export interface PanoramaAlerta {
   id: string
   nivel: 'warning' | 'critico'
@@ -124,6 +162,7 @@ export interface PanoramaAlerta {
 }
 
 export interface PanoramaActividad {
+  solicitudId: string
   folio: string
   estatusAnterior: EstatusSolicitud
   estatusNuevo: EstatusSolicitud
@@ -140,10 +179,12 @@ export interface Panorama {
   embudoFormulario: PanoramaEmbudoFormulario
   resolucion: PanoramaResolucion
   tendencia: PanoramaTendencia
+  tendenciaAprobacion: TendenciaAprobacion
   tiempoPorEtapa: PanoramaTiempoPorEtapa
   cartera: CarteraPrograma[]
   composicion: PanoramaComposicion
   equipo: PanoramaEquipo
+  desempeno: PanoramaDesempeno
   alertas: PanoramaAlerta[]
   actividad: PanoramaActividad[]
 }

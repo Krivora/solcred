@@ -2,10 +2,11 @@
 
 // src/components/layout/Header.tsx
 import { usePathname } from "next/navigation";
-import { Bell, Search, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { cn } from "@/shared/lib/cn";
+import { NotificacionesMenu } from "@/features/notificaciones/components/NotificacionesMenu";
 
 const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Inicio",
@@ -25,6 +26,8 @@ const BREADCRUMB_MAP: Record<string, string> = {
   nueva: "Nueva Solicitud",
   expediente: "Expediente digital",
   editar: "Editar",
+  notificaciones: "Notificaciones",
+  historico: "Histórico",
 };
 
 // Segmentos que son identificadores (uuid / cuid / hash) — no aportan al breadcrumb
@@ -53,7 +56,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
   const currentPage = breadcrumbs[breadcrumbs.length - 1];
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/95 backdrop-blur-sm px-3 sm:px-6 gap-2 sm:gap-4">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border bg-sidebar px-3 sm:px-6 gap-2 sm:gap-4">
       {/* Left: hamburger (mobile) + page title / breadcrumb */}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <Button
@@ -113,9 +116,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         </Button>
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" aria-label="Notificaciones" className="h-8 w-8">
-          <Bell className="h-4 w-4" />
-        </Button>
+        <NotificacionesMenu />
 
         {/* Avatar */}
         {usuario && (

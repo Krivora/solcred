@@ -29,16 +29,16 @@ export function Sparkline({ data, width = 72, height = 26, className }: Props) {
       aria-hidden="true"
       style={{ overflow: 'visible' }}
     >
-      <path d={area} fill="var(--color-primary)" fillOpacity={0.1} />
+      <path d={area} fill="var(--color-brand)" fillOpacity={0.1} />
       <path
         d={line}
         fill="none"
-        stroke="var(--color-primary)"
+        stroke="var(--color-brand)"
         strokeWidth={1.6}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx={lx} cy={ly} r={2.4} fill="var(--color-primary)" stroke="var(--color-card)" strokeWidth={1.5} />
+      <circle cx={lx} cy={ly} r={2.4} fill="var(--color-brand)" stroke="var(--color-card)" strokeWidth={1.5} />
     </svg>
   )
 }

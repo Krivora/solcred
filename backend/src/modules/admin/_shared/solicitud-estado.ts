@@ -61,6 +61,14 @@ export const INCLUDE_SOLICITUD_BASE = {
     where: { activo: true },
     select: { tipoDocumentoId: true, estatus: true, activo: true },
   },
+  // Última comunicación con el cliente (CRM), para el chip "última
+  // comunicación / sin contacto" en los listados. `take: 1` con `orderBy`
+  // trae solo la más reciente en la misma consulta — nada de N+1 por fila.
+  comunicaciones: {
+    orderBy: { fechaContacto: "desc" as const },
+    take: 1,
+    select: { fechaContacto: true },
+  },
 };
 
 function withHistorial(estatusNuevo: EstatusSolicitud) {

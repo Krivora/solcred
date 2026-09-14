@@ -351,3 +351,25 @@ export const ComunicacionResultado = {
 } as const
 
 export type ComunicacionResultado = (typeof ComunicacionResultado)[keyof typeof ComunicacionResultado]
+
+
+export const NotificacionTipo = {
+  ASIGNACION_GESTOR: 'ASIGNACION_GESTOR',
+  ASIGNACION_ANALISTA: 'ASIGNACION_ANALISTA',
+  SOLICITUD_REGRESADA: 'SOLICITUD_REGRESADA',
+  CAMBIO_ESTATUS: 'CAMBIO_ESTATUS',
+  RESPONSABLE_ASIGNADO: 'RESPONSABLE_ASIGNADO',
+  DOCUMENTO_RECHAZADO: 'DOCUMENTO_RECHAZADO',
+  REASIGNACION_REQUERIDA: 'REASIGNACION_REQUERIDA',
+  SOLICITUD_ESTANCADA: 'SOLICITUD_ESTANCADA'
+} as const
+
+export type NotificacionTipo = (typeof NotificacionTipo)[keyof typeof NotificacionTipo]
+
+
+export const NotificacionCanal = {
+  APP: 'APP',
+  CORREO: 'CORREO'
+} as const
+
+export type NotificacionCanal = (typeof NotificacionCanal)[keyof typeof NotificacionCanal]

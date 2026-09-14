@@ -29,7 +29,10 @@ router.get("/promocion/gestores", autorizar("ADMIN", "GESTOR", "ENCARGADO_PROMOC
 router.get("/promocion",          autorizar("ADMIN", "GESTOR", "ENCARGADO_PROMOCION", "SUPERVISOR"), solicitudesController.listarPromocion);
 router.get("/mis-casos",       autorizar("GESTOR"),            solicitudesController.listarMisCasos);
 router.get("/aprobacion", autorizar("ADMIN", "ENCARGADO_PROMOCION", "SUPERVISOR"), solicitudesController.listarAprobacion);
-router.get("/historico", autorizar("ADMIN", "GESTOR", "ENCARGADO_PROMOCION", "SUPERVISOR"), solicitudesController.listarHistorico);
+// Histórico cubre toda la tubería (todo menos BORRADOR/PENDIENTE/EN_REVISION),
+// así que también lo consulta el personal de Financiamiento, no solo Promoción
+// — mismo criterio de acceso que STAFF_LECTURA_SOLICITUD.
+router.get("/historico", autorizar(...STAFF_LECTURA_SOLICITUD), solicitudesController.listarHistorico);
 router.get("/:id", autorizar("ADMIN", "GESTOR", "ENCARGADO_PROMOCION", "ENCARGADO_FINANCIAMIENTO", "MESA_CONTROL", "SUPERVISOR"), solicitudesController.obtenerPorId);
 router.get("/:id/pdf", autorizar(...STAFF_LECTURA_SOLICITUD), solicitudesController.descargarPDF);
 router.get("/:id/carta-rechazo", autorizar(...STAFF_LECTURA_SOLICITUD), solicitudesController.descargarCartaRechazo);

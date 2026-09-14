@@ -76,6 +76,14 @@ export interface ResumenDocumento {
   estatus: EstatusDocumento | "NO_SUBIDO";
 }
 
+/** Un peldaño del historial: a qué estatus llegó y cuándo. Sin `usuario`/`motivo`
+ *  — esto alimenta la línea de tiempo horizontal del cliente, no el timeline
+ *  interno detallado (ese es `obtenerSolicitudPorId`, solo para staff). */
+export interface HistorialEstatusItem {
+  estatusNuevo: EstatusSolicitud;
+  creadoEn: Date;
+}
+
 export interface MetricasExpediente {
   totalRequeridos: number;
   totalAprobados: number;
@@ -116,4 +124,6 @@ export interface ExpedienteResponse {
   fechaAsignacion: Date | null;
   documentos: ResumenDocumento[];
   metricas: MetricasExpediente;
+  /** Orden cronológico ascendente — alimenta la línea de tiempo horizontal. */
+  historialEstatus: HistorialEstatusItem[];
 }

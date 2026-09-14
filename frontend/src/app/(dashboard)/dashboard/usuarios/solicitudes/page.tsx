@@ -102,7 +102,7 @@ export default function MisSolicitudesPage() {
             <Button
               onClick={() => {
                 setDialogOpen(false)
-                router.push(`/dashboard/usuarios/solicitudes/${solicitudActiva?.id}`)
+                router.push(`/dashboard/usuarios/expediente/${solicitudActiva?.id}`)
               }}
             >
               Ver mi solicitud

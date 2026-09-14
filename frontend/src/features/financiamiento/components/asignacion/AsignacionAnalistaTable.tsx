@@ -38,7 +38,7 @@ function ListaSkeleton() {
           {Array.from({ length: 8 }).map((_, i) => (
             <TableRow key={i} className="border-b border-border/40">
               {Array.from({ length: 8 }).map((_, j) => (
-                <TableCell key={j} className="py-3"><Skeleton className="h-4 w-full rounded-md" /></TableCell>
+                <TableCell key={j} className="py-1"><Skeleton className="h-4 w-full rounded-md" /></TableCell>
               ))}
             </TableRow>
           ))}
@@ -90,7 +90,7 @@ export function AsignacionAnalistaTable({
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
             {['', 'Folio', 'Solicitante', 'Programa / Monto', 'Sector / Tamaño', 'Estatus', 'Analista', 'Antigüedad', ''].map((h, i) => (
-              <TableHead key={h || i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">{h}</TableHead>
+              <TableHead key={h || i} className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">{h}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -108,7 +108,7 @@ export function AsignacionAnalistaTable({
                   seleccionada ? 'bg-primary/5 border-l-2 border-l-primary' : 'hover:bg-accent/40',
                 )}
               >
-                <TableCell className="py-3">
+                <TableCell className="py-1">
                   {!soloLectura && (
                   <div className={cn('w-4 h-4 rounded border flex items-center justify-center transition-colors',
                     seleccionada ? 'bg-primary border-primary' : 'border-border/60 group-hover:border-primary/40')}>
@@ -116,13 +116,13 @@ export function AsignacionAnalistaTable({
                   </div>
                   )}
                 </TableCell>
-                <TableCell className="py-3">
+                <TableCell className="py-1">
                   <span className="font-mono text-xs font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">{s.folio}</span>
                 </TableCell>
-                <TableCell className="py-3">
+                <TableCell className="py-1">
                   <SolicitanteCell datos={s.datosSolicitante} tipoPersona={s.tipoPersona} />
                 </TableCell>
-                <TableCell className="py-3">
+                <TableCell className="py-1">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs font-medium text-foreground leading-tight">{s.programa.nombre}</span>
                     {monto
@@ -130,14 +130,14 @@ export function AsignacionAnalistaTable({
                       : <span className="text-xs text-muted-foreground/40">Sin monto</span>}
                   </div>
                 </TableCell>
-                <TableCell className="py-3 hidden lg:table-cell">
+                <TableCell className="py-1 hidden lg:table-cell">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs font-medium text-foreground">{s.sector ? (SECTOR_LABELS[s.sector] ?? s.sector) : '—'}</span>
                     <span className="text-xs text-muted-foreground">{s.tamanoEmpresa ? TAMANO_LABELS[s.tamanoEmpresa] : '—'}</span>
                   </div>
                 </TableCell>
-                <TableCell className="py-3"><EstatusBadge estatus={s.estatus} /></TableCell>
-                <TableCell className="py-3">
+                <TableCell className="py-1"><EstatusBadge estatus={s.estatus} /></TableCell>
+                <TableCell className="py-1">
                   {s.analistaAsignado ? (
                     <div className="flex flex-col gap-0.5">
                       <span className="text-xs font-medium text-foreground leading-tight">
@@ -149,12 +149,12 @@ export function AsignacionAnalistaTable({
                     <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/50 bg-muted/40 border border-border/40 px-2 py-0.5 rounded-md">Sin asignar</span>
                   )}
                 </TableCell>
-                <TableCell className="py-3 text-right">
+                <TableCell className="py-1 text-right">
                   <div className="inline-flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                     <Clock className="h-3 w-3 shrink-0" />{tiempoRelativo(s.creadoEn)}
                   </div>
                 </TableCell>
-                <TableCell className="py-3" onClick={(e) => e.stopPropagation()}>
+                <TableCell className="py-1" onClick={(e) => e.stopPropagation()}>
                   {!soloLectura && (
                   <Tooltip>
                     <TooltipTrigger asChild>

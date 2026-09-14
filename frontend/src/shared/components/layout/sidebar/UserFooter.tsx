@@ -21,7 +21,7 @@ export function UserFooter({ collapsed }: { collapsed: boolean }) {
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div className="flex justify-center py-1">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-primary/10 text-sidebar-primary text-[11px] font-semibold">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sidebar-primary/10 text-sidebar-primary text-caption font-semibold">
                                 {initials}
                             </div>
                         </div>
@@ -36,14 +36,14 @@ export function UserFooter({ collapsed }: { collapsed: boolean }) {
 
     return (
         <div className="flex items-center gap-2.5 rounded-lg px-2 py-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/10 text-sidebar-primary text-[11px] font-semibold">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/10 text-sidebar-primary text-caption font-semibold">
                 {initials}
             </div>
             <div className="min-w-0 flex-1 leading-tight">
                 <p className="truncate text-xs font-medium text-sidebar-foreground">
                     {fullName}
                 </p>
-                <p className="truncate text-[11px] text-muted-foreground">
+                <p className="truncate text-caption text-muted-foreground">
                     {email}
                 </p>
             </div>

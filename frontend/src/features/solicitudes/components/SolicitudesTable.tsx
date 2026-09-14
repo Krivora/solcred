@@ -40,6 +40,18 @@ const currency = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n)
 
+/** Nombre del gestor asignado a la solicitud, o `null` si aún no se asigna. */
+const nombreGestor = (s: SolicitudListItem): string | null => {
+  const usuario = s.asignaciones?.[0]?.gestor.usuario
+  return usuario ? `${usuario.nombre} ${usuario.apellidoPaterno}` : null
+}
+
+/** Nombre del analista asignado a la solicitud, o `null` si aún no se asigna. */
+const nombreAnalista = (s: SolicitudListItem): string | null => {
+  const usuario = s.asignacionesFinanciamiento?.[0]?.analista.usuario
+  return usuario ? `${usuario.nombre} ${usuario.apellidoPaterno}` : null
+}
+
 /** Navega al expediente marcando la transición como "avance" (slide de entrada). */
 const irAExpediente = (router: ReturnType<typeof useRouter>, id: string) => {
   sessionStorage.setItem('nav-direction', 'adelante')
@@ -55,17 +67,17 @@ function TableSkeleton() {
     <>
       {Array.from({ length: 5 }).map((_, i) => (
         <TableRow key={i}>
-          <TableCell className="py-3 pl-4">
+          <TableCell className="py-1 pl-4">
             <div className="flex flex-col gap-1">
               <Skeleton className="h-3.5 w-20" />
               <Skeleton className="h-3 w-12" />
             </div>
           </TableCell>
-          <TableCell className="py-3"><Skeleton className="h-4 w-40" /></TableCell>
-          <TableCell className="py-3"><Skeleton className="h-4 w-20" /></TableCell>
-          <TableCell className="py-3"><Skeleton className="h-5 w-24 rounded-full" /></TableCell>
-          <TableCell className="py-3"><Skeleton className="h-4 w-28" /></TableCell>
-          <TableCell className="py-3 pr-4"><Skeleton className="h-8 w-24 ml-auto" /></TableCell>
+          <TableCell className="py-1"><Skeleton className="h-4 w-40" /></TableCell>
+          <TableCell className="py-1"><Skeleton className="h-4 w-20" /></TableCell>
+          <TableCell className="py-1"><Skeleton className="h-5 w-24 rounded-full" /></TableCell>
+          <TableCell className="py-1"><Skeleton className="h-4 w-28" /></TableCell>
+          <TableCell className="py-1 pr-4"><Skeleton className="h-8 w-24 ml-auto" /></TableCell>
         </TableRow>
       ))}
     </>
@@ -137,7 +149,7 @@ function SolicitudCard({
         ) : null}
       </div>
 
-      {/* Meta grid: sector, fecha */}
+      {/* Meta grid: sector, fecha, gestor, analista */}
       <div className="grid grid-cols-2 gap-y-1.5 gap-x-3 mb-4 text-xs">
         <div>
           <span className="text-muted-foreground/70">Sector</span>
@@ -147,6 +159,18 @@ function SolicitudCard({
           <span className="text-muted-foreground/70">Fecha</span>
           <p className="text-foreground">
             {format(new Date(s.creadoEn), "d MMM, yyyy", { locale: es })}
+          </p>
+        </div>
+        <div>
+          <span className="text-muted-foreground/70">Gestor</span>
+          <p className={nombreGestor(s) ? 'text-foreground' : 'text-muted-foreground/60'}>
+            {nombreGestor(s) ?? 'Pendiente'}
+          </p>
+        </div>
+        <div>
+          <span className="text-muted-foreground/70">Analista</span>
+          <p className={nombreAnalista(s) ? 'text-foreground' : 'text-muted-foreground/60'}>
+            {nombreAnalista(s) ?? 'Pendiente'}
           </p>
         </div>
       </div>
@@ -251,6 +275,12 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
   const isEmpty = !isLoading && solicitudes.length === 0
   const montoTotal = (s: SolicitudListItem) =>
     s.datosCredito?.conceptos.reduce((acc, c) => acc + c.monto, 0) ?? 0
+  const esEditable = (s: SolicitudListItem) =>
+    s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION'
+  // La columna "Acciones" solo tiene sentido si al menos una fila la usa
+  // (BORRADOR/EN_CORRECCION); si todas ya avanzaron, no hay nada que mostrar ahí.
+  const hayAcciones = solicitudes.some(esEditable)
+  const totalColumnas = hayAcciones ? 11 : 10
   return (
     <>
       {/* ── MOBILE / TABLET: cards (< md) ─────────────────────── */}
@@ -283,33 +313,44 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-28">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-28">
                   Folio
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 w-80">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 w-80">
                   Solicitante
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                   Programa
                 </TableHead>
-                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
+                  Monto
+                </TableHead>
+                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                   Sector
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                   Estatus
                 </TableHead>
-                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3">
+                <TableHead className="hidden xl:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
+                  Gestor
+                </TableHead>
+                <TableHead className="hidden xl:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
+                  Analista
+                </TableHead>
+                <TableHead className="hidden lg:table-cell text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1">
                   Fecha
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-10">
                   Exp.
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-center w-10">
+                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-center w-10">
                   PDF
                 </TableHead>
-                <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-3 text-right pr-4">
-                  Acciones
-                </TableHead>
+                {hayAcciones && (
+                  <TableHead className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest py-1 text-right pr-4">
+                    Acciones
+                  </TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -318,7 +359,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
 
               {isEmpty && (
                 <TableRow>
-                  <TableCell colSpan={8} className="p-0">
+                  <TableCell colSpan={totalColumnas} className="p-0">
                     <SolicitudesEmptyState />
                   </TableCell>
                 </TableRow>
@@ -331,32 +372,34 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     className="cursor-pointer hover:bg-accent/40 transition-colors duration-100 border-b border-border/40 last:border-0 group"
                   >
                     {/* Folio */}
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       <span className="text-xs font-mono font-semibold text-primary/80 bg-primary/5 border border-primary/10 px-2 py-0.5 rounded-md">
                         {s.folio}
                       </span>
                     </TableCell>
 
                     {/* Solicitante */}
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       <SolicitanteCell datos={s.datosSolicitante} tipoPersona={s.tipoPersona} />
                     </TableCell>
 
                     {/* Programa */}
-                    <TableCell className="py-3">
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-sm text-foreground font-medium leading-tight">
-                          {s.programa.nombre}
-                        </span>
-                        {montoTotal(s) > 0
-                          ? <span className="text-xs text-muted-foreground tabular-nums">{currency(montoTotal(s))}</span>
-                          : <span className="text-xs text-muted-foreground/40">Sin monto</span>
-                        }
-                      </div>
+                    <TableCell className="py-1">
+                      <span className="text-sm text-foreground font-medium leading-tight">
+                        {s.programa.nombre}
+                      </span>
+                    </TableCell>
+
+                    {/* Monto */}
+                    <TableCell className="py-1">
+                      {montoTotal(s) > 0
+                        ? <span className="text-xs text-foreground tabular-nums">{currency(montoTotal(s))}</span>
+                        : <span className="text-xs text-muted-foreground/40">Sin monto</span>
+                      }
                     </TableCell>
 
                     {/* Sector */}
-                    <TableCell className="hidden lg:table-cell py-3">
+                    <TableCell className="hidden lg:table-cell py-1">
                       {s.sector
                         ? <span className="text-xs font-medium text-foreground">{SECTOR_LABELS[s.sector]}</span>
                         : <span className="text-xs text-muted-foreground/40">—</span>
@@ -364,19 +407,37 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     </TableCell>
 
                     {/* Estatus */}
-                    <TableCell className="py-3">
+                    <TableCell className="py-1">
                       <EstatusBadge estatus={s.estatus} size="sm" />
                     </TableCell>
 
+                    {/* Gestor */}
+                    <TableCell className="hidden xl:table-cell py-1">
+                      {nombreGestor(s) ? (
+                        <span className="text-xs font-medium text-foreground">{nombreGestor(s)}</span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/60">Pendiente</span>
+                      )}
+                    </TableCell>
+
+                    {/* Analista */}
+                    <TableCell className="hidden xl:table-cell py-1">
+                      {nombreAnalista(s) ? (
+                        <span className="text-xs font-medium text-foreground">{nombreAnalista(s)}</span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/60">Pendiente</span>
+                      )}
+                    </TableCell>
+
                     {/* Fecha */}
-                    <TableCell className="hidden lg:table-cell py-3">
+                    <TableCell className="hidden lg:table-cell py-1">
                       <span className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                         {format(new Date(s.creadoEn), "d MMM, yyyy", { locale: es })}
                       </span>
                     </TableCell>
 
                     {/* Expediente */}
-                    <TableCell className="py-3 text-center" onClick={(e) => e.stopPropagation()}>
+                    <TableCell className="py-1 text-center" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="ghost" size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -388,7 +449,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     </TableCell>
 
                     {/* PDF */}
-                    <TableCell className="py-3 text-center" onClick={(e) => e.stopPropagation()}>
+                    <TableCell className="py-1 text-center" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="ghost" size="icon"
                         className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -405,8 +466,9 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                     </TableCell>
 
                     {/* Acciones */}
-                    <TableCell className="py-3 pr-4" onClick={(e) => e.stopPropagation()}>
-                      {s.estatus === 'BORRADOR' || s.estatus === 'EN_CORRECCION' ? (
+                    {hayAcciones && (
+                    <TableCell className="py-1 pr-4" onClick={(e) => e.stopPropagation()}>
+                      {esEditable(s) ? (
                         <div className="flex items-center justify-end gap-1.5">
                           <Button
                             variant="outline"
@@ -428,6 +490,7 @@ export function SolicitudesTable({ solicitudes, isLoading, onEnviada }: Solicitu
                         </div>
                       ) : null}
                     </TableCell>
+                    )}
                   </TableRow>
                 ))}
             </TableBody>

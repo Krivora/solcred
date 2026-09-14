@@ -33,7 +33,7 @@ export function TiempoEtapas({ data }: { data: PanoramaTiempoPorEtapa }) {
       title="Dónde se atora"
       description="Tiempo promedio de permanencia por etapa (últimos 120 días)"
       aside={
-        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1.5 text-caption text-muted-foreground">
           <Minus className="size-3" strokeWidth={3} /> objetivo {data.slaDias.toFixed(1)} d
         </span>
       }
@@ -66,7 +66,7 @@ export function TiempoEtapas({ data }: { data: PanoramaTiempoPorEtapa }) {
                 <Cell
                   key={e.estatus}
                   fill={
-                    e.estatus === data.peorEtapa ? 'var(--color-warning)' : 'var(--color-primary)'
+                    e.estatus === data.peorEtapa ? 'var(--color-warn)' : 'var(--color-brand)'
                   }
                 />
               ))}

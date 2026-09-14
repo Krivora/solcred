@@ -13,7 +13,7 @@ import { PageHeader } from "@/shared/components/common/PageHeader";
 import { UsuarioRevocarAccesoDialog } from "@/features/settings/components/usuarios/UsuarioRevocarAccesoDialog";
 
 export default function UsuariosPage() {
-  const { usuarios, isLoading, recargar, actualizar, cambiarRol, desactivar, revocarAcceso } =
+  const { usuarios, isLoading, recargar, actualizar, cambiarRol, desactivar, revocarAcceso, desbloquear } =
     useUsuarios();
 
   const [usuarioDetalle, setUsuarioDetalle] = useState<Usuario | null>(null);
@@ -37,6 +37,10 @@ export default function UsuariosPage() {
     return desactivar(id);
   };
 
+  const handleDesbloquear = async (usuario: Usuario): Promise<boolean> => {
+    return desbloquear(usuario.id);
+  };
+
 return (
     <div className="space-y-6 p-6">
       <PageHeader
@@ -54,6 +58,7 @@ return (
         onCambiarRol={setUsuarioRol}
         onRevocarAcceso={setUsuarioRevocar} // ── NUEVO ──
         onDesactivar={setUsuarioDesactivar}
+        onDesbloquear={handleDesbloquear} // ── NUEVO ──
         onRecargar={recargar}
       />
 

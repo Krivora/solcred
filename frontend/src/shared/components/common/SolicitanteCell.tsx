@@ -27,11 +27,11 @@ export function SolicitanteCell({ datos, tipoPersona }: SolicitanteCellProps) {
             {/* Ícono */}
             <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${
                 esMoral
-                    ? 'bg-primary/10 border border-primary/15'
+                    ? 'bg-brand-surface border border-brand/15'
                     : 'bg-accent border border-accent-foreground/10'
             }`}>
                 {esMoral
-                    ? <Building2 className="h-3.5 w-3.5 text-primary" />
+                    ? <Building2 className="h-3.5 w-3.5 text-brand-ink" />
                     : <User className="h-3.5 w-3.5 text-accent-foreground" />
                 }
             </div>
@@ -43,8 +43,8 @@ export function SolicitanteCell({ datos, tipoPersona }: SolicitanteCellProps) {
                 <div className="flex flex-col gap-0.5 min-w-0">
                     <span className="font-medium text-sm leading-tight text-foreground truncate">{nombre}</span>
                     {tipoLabel
-                        ? <span className="text-[11px] text-muted-foreground">{tipoLabel}</span>
-                        : <span className="text-[11px] text-muted-foreground">—</span>
+                        ? <span className="text-caption text-muted-foreground">{tipoLabel}</span>
+                        : <span className="text-caption text-muted-foreground">—</span>
                     }
                 </div>
             )}

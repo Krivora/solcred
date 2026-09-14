@@ -25,6 +25,7 @@ import uploadsRouter from "./modules/uploads/uploads.routes";
 import solicitudesRoutes from "./modules/clientes/solicitudes/solicitudes.routes";
 import soporteRoutes from "./modules/soporte/soporte.routes";
 import crmRoutes from "./modules/crm/crm.routes";
+import notificacionesRoutes from "./modules/notificaciones/notificaciones.routes";
 
 const app = express();
 
@@ -107,6 +108,9 @@ app.use("/api/soporte", soporteRoutes);
 
 // ── CRM (comunicaciones con el cliente) — solo staff ────
 app.use("/api/crm", crmRoutes);
+
+// ── Notificaciones internas — cliente y staff, cada quien su bandeja ────
+app.use("/api/notificaciones", notificacionesRoutes);
 
 // ── 404 ────────────────────────────────────
 app.use((_req, res) => {

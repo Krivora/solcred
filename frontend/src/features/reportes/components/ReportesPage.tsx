@@ -67,9 +67,6 @@ export function ReportesPage() {
         catalogos={catalogos}
         cargandoCatalogos={cargandoCatalogos}
       />
-
-      <ResumenReporte resumen={resumen} cargando={cargandoPrevia} />
-
       {error ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-8 text-center text-sm text-destructive">
           {error}
